@@ -1,0 +1,16 @@
+<?php
+
+if($_POST)
+    $search = $_POST["searchbox"];
+    
+$entities = Info::findEntity($search);
+
+// if there is only one result, we redirect.
+if(count($entities) == 1) {
+	$type = $entities[0]["type"];
+	$values = array_values($entities[0]);
+	$id = $values[0];
+	$app->redirect("/$type/$id/", 301);
+}
+
+$app->render("search.html", array("data" => $entities));

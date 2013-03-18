@@ -1,0 +1,98 @@
+body {
+	padding-top: 55px;
+	padding-bottom: 25px;
+}
+
+.centered { vertical-align:middle; text-align:center; }
+.centered img { display:block; margin:0 auto; }
+
+.eveimage { background-color: #222; max-width:100%; height:auto; overflow: hidden; font-size: 0.1px;}
+
+#back-top {
+	position: fixed;
+	bottom: 50px;
+	margin-left: -65px;
+}
+
+#back-top a {
+	width: 55px;
+	display: block;
+	text-align: center;
+	font: 11px/100% Arial, Helvetica, sans-serif;
+	text-transform: uppercase;
+	text-decoration: none;
+	color: #444;
+
+	/* transition */
+	-webkit-transition: 1s;
+	-moz-transition: 1s;
+	transition: 1s;
+}
+#back-top a:hover {
+	color: #999;
+}
+
+/* arrow icon (span tag) */
+#back-top span {
+	width: 55px;
+	height: 60px;
+	display: block;
+	margin-bottom: 7px;
+	background: url(/img/up-arrow.png) no-repeat center center;
+
+	/* transition */
+	-webkit-transition: 1s;
+	-moz-transition: 1s;
+	transition: 1s;
+}
+
+.accordion-group {
+  margin-bottom: 0px;
+  border: 0px;
+  -webkit-border-radius: 0px;
+     -moz-border-radius: 0px;
+          border-radius: 0px;
+}
+.accordion-inner{
+    padding:0px 0px;
+    border-top:0px solid #e5e5e5;
+}
+
+#left-banner {
+position: fixed;
+top: 70px;
+left: 5px;
+z-index: 0;
+cursor: pointer;
+width: 160px;
+}
+
+#right-banner {
+position: fixed;
+top: 70px;
+right: 5px;
+z-index: 9500;
+cursor: pointer;
+width: 160px;
+}
+
+.facebook{
+	background: url("/img/social/fb_1.png") no-repeat center center;
+}
+.twitter {
+	background: url("/img/social/twitter_1.png") no-repeat center center;
+}
+.googleplus {
+	background: url("/img/social/google_plus.png") no-repeat center center;
+}
+.reddit {
+	background: url("/img/social/reddit.png") no-repeat center center;
+}
+
+.rank-table tr td, .rank-table tr th {
+	text-align: right;
+}
+
+.collapse {
+overflow: hidden !important;
+}
