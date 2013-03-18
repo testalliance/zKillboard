@@ -2,7 +2,9 @@
 require_once dirname(__FILE__) . "/../init.php";
 $logging = false;
 
-$stomp = new Stomp("tcp://10.10.10.197:61613", "zkb", "myp4ss1sm1n3");
+global $stompServer $stompUser, $stompPassword;
+
+$stomp = new Stomp($stompServer, $stompUser, $stompPassword);
 $destination = "/topic/kills";
 $kills = $stomp->subscribe($destination);
 

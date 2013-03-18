@@ -3,7 +3,9 @@
 $base = dirname(__FILE__);
 require_once "$base/../init.php";
 
-$stomp = new Stomp("tcp://10.10.10.197:61613", "zkb", "myp4ss1sm1n3");
+global $stompServer $stompUser, $stompPassword;
+
+$stomp = new Stomp($stompServer, $stompUser, $stompPassword);
 
 $stompKey = "StompSend::lastFetch";
 $lastFetch = time() - (12 * 3600);

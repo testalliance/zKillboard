@@ -22,6 +22,11 @@ $memcachePort = "11211";
 $cookie_name = "zKB";
 $cookie_time = (3600 * 24 * 30); // 30 days
 
+// Stomp
+$stompServer = "";
+$stompUser = "";
+$stompPassword = "";
+
 // CloudFlare
 $cfUser = "";
 $cfKey = "";
