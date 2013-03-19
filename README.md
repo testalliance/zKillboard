@@ -14,8 +14,9 @@ see LICENSE.md File
 - Composer: http://getcomposer.org/
 
 ## INSTALLATION
-1. Import the zKB table structure
-2. Get the latest mySQL version of the CCP dump, and import it.
-3. Setup the config
-4. Setup Apache / Lighttpd
-5. Access the killboard.
+1. Get composer: curl -s https://getcomposer.org/installer | php
+2. Install vendor files with composer: php composer.phar install
+3. Create database
+4. Run installer
+5. Setup stomp (Poke Karbowiak, Squizz_C or PeterPowers on IRC for access to it)
+6. Setup cronjobs
