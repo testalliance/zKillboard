@@ -1,7 +1,6 @@
 <?php
 $base = dirname(__FILE__);
 require_once "$base/../init.php";
-require_once "$base/pheal/config.php";
 require_once "$base/cron.php";
 
 @$keyID = $argv[1];
@@ -14,8 +13,9 @@ if ($keyID == "" || $vCode == "") {
 }
 
 try {
-	$charCorp = $isDirector == "T" ? 'corp' : 'char';
-	$pheal = new Pheal($keyID, $vCode, $charCorp);
+	$pheal = Util::getPheal($keyID, $vCode);
+	$charCorp = ($isDirector == "T" ? 'corp' : 'char');
+	$pheal->scope = $charCorp;
 	$result = null;
 
 	// Update last checked
