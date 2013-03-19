@@ -1,6 +1,6 @@
 <?php
 require_once( "config.php" );
-require_once( "vendor/mobileDetect/Mobile_Detect.php" );
+require_once( "vendor/mobiledetect/mobiledetectlib/Mobile_Detect.php" );
 spl_autoload_register("zkbautoload");
 
 function zkbautoload($class_name)

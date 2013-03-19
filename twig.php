@@ -10,10 +10,6 @@ $app->view(new \Slim\Extras\Views\Twig());
     'autoescape'        => true
 );
 
-\Slim\Extras\Views\Twig::$twigExtensions = array(
-    'Twig_Extensions_Slim'
-);
-
 $twig = $app->view()->getEnvironment();
 // Twig globals
 $twig->addGlobal("siteurl", $baseAddr);
