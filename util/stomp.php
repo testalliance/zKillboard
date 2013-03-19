@@ -1,6 +1,6 @@
 <?php
 require_once dirname(__FILE__) . "/../init.php";
-$logging = true;
+$logging = false;
 
 global $stompServer, $stompUser, $stompPassword;
 
@@ -14,7 +14,7 @@ while(true)
 	if($frame)
 	{
 		$killdata = json_decode($frame->body, true);
-		var_dump($killdata);
+
 		if(!empty($killdata))
 		{
 			$killID = $killdata["killID"];
