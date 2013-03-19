@@ -33,7 +33,7 @@ $settings["dbhost"] = prompt("Database server?", "localhost");
 echo "\nSome memcache questions:\n";
 
 $settings["memcache"] = prompt("Memcache server?", "localhost");
-$settings["memcacheport"] = prompt("Memcache port?", "63211");
+$settings["memcacheport"] = prompt("Memcache port?", "11211");
 
 $configFile = file_get_contents("$base/config.new.php");
 

@@ -2,21 +2,21 @@
 date_default_timezone_set("UTC");
 
 // Database parameters
-$dbUser = "";
-$dbPassword = "";
-$dbName = "";
-$dbHost = "";
+$dbUser = "%dbuser%";
+$dbPassword = "%dbpassword%";
+$dbName = "%dbname%";
+$dbHost = "%dbhost%";
 
 // Base
 $baseFile = __FILE__;
 $baseDir = dirname($baseFile) . "/";
 $baseUrl = "/";
-$baseAddr = "zkillboard.com";
+$baseAddr = "%baseaddr%";
 chdir($baseDir);
 
 // Memcache
-$memcacheServer = "127.0.0.1";
-$memcachePort = "11211";
+$memcacheServer = "%memcache%";
+$memcachePort = "%memcacheport%";
 
 // Cookiiieeeee
 $cookie_name = "zKB";
