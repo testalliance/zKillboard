@@ -33,10 +33,10 @@ try {
 } catch (Exception $ex) {
     $html = "<html>";
     $html .= "<head>";
-    $html .= "<title>Database down</title>";
+    $html .= "<title>Oh noes an error!</title>";
     $html .= "</head>";
     $html .= "<body>";
-    $html .= "We are having database issues at the moment, please check back in a bit. Thank you!";
+    $html .= $e->getMessage();
     $html .= "</body>";
     $html .= "</html>";
     echo $html;
