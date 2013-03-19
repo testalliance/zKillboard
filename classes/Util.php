@@ -31,9 +31,22 @@ class Util
 
 	public static function getPheal($keyID = null, $vCode = null)
 	{
-		$base = dirname(__FILE__);
-		$base .= "/../util/";
-		require_once "$base/pheal/config.php";
+		$pluginBasePath = dirname(__FILE__);
+		require_once "$pluginBasePath/../vendor/pheal/Pheal.php";
+
+		spl_autoload_register("Pheal::classload");
+
+		PhealConfig::getInstance()->http_method = "curl";
+		PhealConfig::getInstance()->http_user_agent = "zKillboard API Fetcher (Pheal)";
+		PhealConfig::getInstance()->http_post = false;
+		PhealConfig::getInstance()->http_keepalive = true; // default 15 seconds
+		PhealConfig::getInstance()->http_keepalive = 10; // KeepAliveTimeout in seconds
+		PhealConfig::getInstance()->http_timeout = 30;
+		PhealConfig::getInstance()->cache = new PhealFileCache("/var/killboard/cache/");
+		PhealConfig::getInstance()->log = new PhealLogger();
+		PhealConfig::getInstance()->api_customkeys = true;
+		PhealConfig::getInstance()->api_base = 'https://api.zkillboard.com/'; // API proxy server, to get everything gzipped.
+
 		if ($keyID != null && $vCode != null) $pheal = new Pheal($keyID, $vCode);
 		else $pheal = new Pheal();
 		return $pheal;
@@ -235,7 +248,7 @@ class Util
 	}
 
 	private static $longMonths = array("", "January", "February", "March", "April", "May", "June", "July", "August",
-																		 "September", "October", "November", "December");
+			"September", "October", "November", "December");
 
 	public static function getLongMonth($month)
 	{
