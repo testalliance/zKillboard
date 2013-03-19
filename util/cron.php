@@ -128,7 +128,6 @@ function maintenanceMode() {
  */
 function parseKills()
 {
-return;
 	if (maintenanceMode()) return;
 
 	$timer = new Timer();
