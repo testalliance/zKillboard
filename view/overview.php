@@ -76,6 +76,7 @@ $topLists = array();
 if ($pageType == "top") {
 	$topParameters = $parameters; // array("limit" => 10, "kills" => true, "$columnName" => $id);
 	$topParameters["limit"] = 10;
+	if (!array_key_exists("kills", $topParameters) && !array_key_exists("losses", $topParameters)) $topParameters["kills"] = true;
 
 	$topLists[] = array("type" => "character", "data" => Stats::getTopPilots($topParameters, true));
 	$topLists[] = array("type" => "corporation", "data" => Stats::getTopCorps($topParameters, true));
