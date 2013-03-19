@@ -1,7 +1,6 @@
 <?php
 $base = dirname(__FILE__);
 require_once "$base/../init.php";
-require_once "$base/pheal/config.php";
 require_once "$base/cron.php";
 
 
@@ -14,7 +13,9 @@ foreach($api120 as $api) {
 	$charID = $api["characterID"];
 
 	try {
-		$pheal = new Pheal($keyID, $vCode, ($isDirector == "T" ? 'corp' : 'char'));
+    	$pheal = Util::getPheal($keyID, $vCode);
+    	$pheal->scope = ($isDirector == "T" ? 'corp' : 'char');
+
 		if ($isDirector == "T") $pheal->KillLog();
 		else $pheal->KillLog(array('characterID' => $charID));
 		Db::execute("update zz_api_characters set errorCode = 0, lastChecked = 0, cachedUntil = 0 where keyID = $keyID and characterID = $charID");
