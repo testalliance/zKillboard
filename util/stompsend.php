@@ -3,7 +3,7 @@
 $base = dirname(__FILE__);
 require_once "$base/../init.php";
 
-global $stompServer $stompUser, $stompPassword;
+global $stompServer, $stompUser, $stompPassword;
 
 $stomp = new Stomp($stompServer, $stompUser, $stompPassword);
 

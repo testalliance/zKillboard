@@ -1,8 +1,8 @@
 <?php
 require_once dirname(__FILE__) . "/../init.php";
-$logging = false;
+$logging = true;
 
-global $stompServer $stompUser, $stompPassword;
+global $stompServer, $stompUser, $stompPassword;
 
 $stomp = new Stomp($stompServer, $stompUser, $stompPassword);
 $destination = "/topic/kills";
@@ -14,6 +14,7 @@ while(true)
 	if($frame)
 	{
 		$killdata = json_decode($frame->body, true);
+		var_dump($killdata);
 		if(!empty($killdata))
 		{
 			$killID = $killdata["killID"];
