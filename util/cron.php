@@ -6,7 +6,6 @@ if (!$cle) return; // Prevent web execution
 
 $base = dirname(__FILE__);
 require_once "$base/../init.php";
-require_once "$base/pheal/config.php";
 
 function handleApiException($keyID, $charID, $exception)
 {
