@@ -75,15 +75,7 @@ $solo = Kills::mergeKillArrays($soloKills, array(), $limit, $columnName, $id);
 $topLists = array();
 if ($pageType == "top") {
 	$topParameters = $parameters; // array("limit" => 10, "kills" => true, "$columnName" => $id);
-
-	$amount = "";
-	if(isset($parameters["amount"]))
-		$amount = $parameters["amount"];
-		
-	if($amount == 10) $topParameters["limit"] = 10;
-	elseif($amount == 50) $topParameters["limit"] = 50;
-	elseif($amount == 100) $topParameters["limit"] = 100;
-	else $topParameters["limit"] = 10;
+	$topParameters["limit"] = 10;
 
 	$topLists[] = array("type" => "character", "data" => Stats::getTopPilots($topParameters, true));
 	$topLists[] = array("type" => "corporation", "data" => Stats::getTopCorps($topParameters, true));

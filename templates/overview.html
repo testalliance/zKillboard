@@ -21,13 +21,7 @@
             <li class="{{ isActive('Description', pageType) }}"><a href="/item/{{ id }}/">Description</a></li>
 	{% endif %}
 			<li class="dropdown hidden-phone">
-				<a href="#" class="dropdown-toggle" data-toggle="dropdown">Top List</a>
-				<ul class="dropdown-menu">
-					<li><a href="/{{ key }}/{{ id }}/top/amount/10/">Top 10</a></li>
-					<li><a href="/{{ key }}/{{ id }}/top/amount/50/">Top 50</a></li>
-					<li><a href="/{{ key }}/{{ id }}/top/amount/100/">Top 100</a></li>
-				</ul>
-			</li>
+            <li class="{{ isActive('top', pageType) }} hidden-phone"><a href="/{{ key }}/{{ id }}/top/">Top</a></li>
             <li class="{{ isActive('history', pageType) }} hidden-phone"><a href="/{{ key }}/{{ id }}/history/">History</a></li>
 	{% if key == "alliance" %}
 			<li class="{{ isActive('Corpstats', pageType) }} hidden-phone"><a href="/{{ key }}/{{ id }}/corpstats/">Corp Stats</a></li>
