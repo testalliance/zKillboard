@@ -1,0 +1,9 @@
+RewriteEngine on
+
+RewriteRule ^css/(.*)$ /public/css/$1 [L]
+RewriteRule ^js/(.*)$ /public/js/$1 [L]
+RewriteRule ^img/(.*)$ /public/img/$1 [L]
+RewriteRule ^xml/(.*)$ /public/xml/$1 [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ /index.php/$1 [L]
