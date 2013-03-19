@@ -1,7 +1,6 @@
-{% set loopIndex = 0 %}
-
 <div class="row">
 {% for list in topLists %}
+	{% set loopIndex = 0 %}
 	{% if (loop.index -1) is divisibleby(3) %}
 		<div class="span12">
 	{% endif %}
