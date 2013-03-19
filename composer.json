@@ -1,9 +1,14 @@
 {
     "require": {
-        "slim/slim": "2.*",
-        "slim/extras": "2.*",
-        "twig/twig": "1.*",
-        "twig/extensions": "*"
+        "slim/slim": "*",
+        "slim/extras": "*",
+        "twig/twig": "*",
+        "twig/extensions": "*",
+		"pheal/pheal": "*",
+		"phpmailer/phpmailer": "*",
+		"mobiledetect/mobiledetectlib": "*",
+		"realityking/pchart": "*",
+		"dg/twitter-php": "*"
     },
     "minimum-stability": "dev"
 }
