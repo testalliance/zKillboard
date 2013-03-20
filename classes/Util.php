@@ -213,22 +213,6 @@ class Util
 		return $res;
 	}
 
-	// There is probably a better way to do this, but i'm tired..
-	public static function translation($string)
-	{
-		global $baseDir;
-		$line = "";
-		$lang = UserConfig::get("lang");
-		if (!$lang)
-			$lang = "english";
-
-		$data = file_get_contents($baseDir . "translations/" . $lang . "/" . $string . ".lang");
-		if (!$data)
-			return "";
-		else
-			return $data;
-	}
-
 	public static function pageTimer()
 	{
 		global $timer;

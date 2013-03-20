@@ -42,7 +42,6 @@ $twig->addFunction("truncate", new Twig_Function_Function("Util::truncate"));
 $twig->addFunction("chart", new Twig_Function_Function("Chart::addChart"));
 $twig->addFunction("getMonth", new Twig_Function_Function("Util::getMonth"));
 $twig->addFunction("getLongMonth", new Twig_Function_Function("Util::getLongMonth"));
-$twig->addFunction("lang", new Twig_Function_Function("Util::translation", array("is_safe" => array("html"))));
 
 $igb = false;
 if(stristr(@$_SERVER["HTTP_USER_AGENT"], "EVE-IGB"))
