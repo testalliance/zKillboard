@@ -226,7 +226,7 @@ function removeTempTables() {
 
 function fetchApis()
 {
-	$fetchesPerSecond = 10;
+	$fetchesPerSecond = 30;
 
 	$timer = new Timer();
 
