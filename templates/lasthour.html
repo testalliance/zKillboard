@@ -8,17 +8,14 @@
 {% set showImage = true %}
 
 <h4>Top Killers in the Last Hour as of {{ time }}</h4>
-<div class="row">
 {% set topLists = topKillers %}
 {% include 'components/top_list.html' %}
-</div>
 
 <hr/>
 <h4>Top Losers in the Last Hour as of {{ time }}</h4>
-<div class="row">
-{% for list in topLosers %}
-	{% include 'components/top_list.html' %}
-{% endfor %}
-</div>
+
+{% set topList = topLosers %}
+{% include 'components/top_list.html' %}
+
 
 {% endblock %}
