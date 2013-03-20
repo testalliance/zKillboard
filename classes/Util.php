@@ -31,8 +31,8 @@ class Util
 
 	public static function getPheal($keyID = null, $vCode = null)
 	{
-		$pluginBasePath = dirname(__FILE__);
-		require_once "$pluginBasePath/../vendor/pheal/pheal/Pheal.php";
+		$base = dirname(__FILE__);
+		require_once "$base/../vendor/pheal/pheal/Pheal.php";
 
 		spl_autoload_register("Pheal::classload");
 
