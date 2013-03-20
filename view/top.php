@@ -1,5 +1,4 @@
 <?php
-
 if(!isset($page))
 	$page = "weekly";
 
