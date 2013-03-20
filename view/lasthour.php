@@ -25,5 +25,4 @@ $topLosers[] = array("type" => "faction", "ranked" => "Losses", "data" => Stats:
 $topLosers[] = array("type" => "ship", "ranked" => "Losses", "data" => Stats::getTopShips($parameters, $alltime));
 $topLosers[] = array("type" => "group", "ranked" => "Losses", "data" => Stats::getTopGroups($parameters, $alltime));
 
-
 $app->render("lasthour.html", array("topKillers" => $topKillers, "topLosers" => $topLosers, "time" => date("H:i")));
