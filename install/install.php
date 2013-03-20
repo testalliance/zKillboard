@@ -65,12 +65,12 @@ try {
 
 // Now install the db structure
 try {
-	$sqlFiles = scandir("$base/../sql");
+	$sqlFiles = scandir("$base/sql");
 	foreach($sqlFiles as $file) {
 		if (Util::endsWith($file, ".sql.gz")) {
 			$table = str_replace(".sql.gz", "", $file);
 			echo "Adding table $table ... ";
-			$sqlFile = "$base/../sql/$file";
+			$sqlFile = "$base/sql/$file";
 			loadFile($sqlFile);
 			echo "done\n";
 		}
