@@ -3,7 +3,6 @@ class Twit
 {
 	public static function sendMessage($message)
 	{
-		require_once("vendor/dg/twitter-php/src/twitter.class.php");
 		global $consumerKey, $consumerSecret, $accessToken, $accessTokenSecret;
 		$twitter = new Twitter($consumerKey, $consumerSecret, $accessToken, $accessTokenSecret);
 
@@ -12,7 +11,6 @@ class Twit
 
 	public static function getMessages($amount = 1)
 	{
-		require_once("vendor/dg/twitter-php/src/twitter.class.php");
 		global $consumerKey, $consumerSecret, $accessToken, $accessTokenSecret;
 		$twitter = new Twitter($consumerKey, $consumerSecret, $accessToken, $accessTokenSecret);
 
@@ -21,7 +19,6 @@ class Twit
 
 	public static function findMessages($amount = 1)
 	{
-		require_once("vendor/dg/twitter-php/src/twitter.class.php");
 		global $consumerKey, $consumerSecret, $accessToken, $accessTokenSecret;
 		$twitter = new Twitter($consumerKey, $consumerSecret, $accessToken, $accessTokenSecret);
 

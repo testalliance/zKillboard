@@ -31,11 +31,6 @@ class Util
 
 	public static function getPheal($keyID = null, $vCode = null)
 	{
-		$base = dirname(__FILE__);
-		require_once "$base/../vendor/pheal/pheal/Pheal.php";
-
-		spl_autoload_register("Pheal::classload");
-
 		PhealConfig::getInstance()->http_method = "curl";
 		PhealConfig::getInstance()->http_user_agent = "zKillboard API Fetcher (Pheal)";
 		PhealConfig::getInstance()->http_post = false;

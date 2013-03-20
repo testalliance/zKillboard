@@ -36,15 +36,7 @@ class Chart
 
 	private static function buildKillLossChart($chartID, $title, $dataset)
 	{
-		global $baseDir;
-		$pChart = $baseDir . "/vendor/pChart2/";
-
 		if (file_exists("$baseDir/public/img/charts/chart{$chartID}.png")) return "/img/charts/chart{$chartID}.png";
-
-		// Standard inclusions
-		include("$pChart/class/pData.class.php");
-		include("$pChart/class/pDraw.class.php");
-		include("$pChart/class/pImage.class.php");
 
 		// Dataset definition
 		$indexes = array();

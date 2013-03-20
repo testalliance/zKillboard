@@ -4,7 +4,6 @@ class Email
 	public static function send($email, $subject, $body)
 	{
 		global $emailsmtp, $emailusername, $emailpassword, $sentfromemail, $sentfromdomain, $baseDir;
-		require_once("$baseDir/vendor/phpmailer/phpmailer/class.phpmailer.php");
 		$mail = new PHPMailer();
 		$mail->isSMTP();
 		$mail->SMTPDebug = 0;
