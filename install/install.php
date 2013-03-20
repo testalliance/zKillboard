@@ -35,6 +35,9 @@ echo "\nSome memcache questions:\n";
 $settings["memcache"] = prompt("Memcache server?", "localhost");
 $settings["memcacheport"] = prompt("Memcache port?", "11211");
 
+echo "\nAnd now what is the address of your server?  Just use the domain name!  e.g. zkillboard.com\n";
+$settings["baseaddr"] = prompt("Domain name?", "zkillboard.com");
+
 $configFile = file_get_contents("$base/config.new.php");
 
 foreach($settings as $key=>$value) {
