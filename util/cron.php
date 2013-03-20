@@ -25,14 +25,17 @@ function handleApiException($keyID, $charID, $exception)
 			Log::irc($msg);
 			Log::admin($msg);
 			break;
+		case   7: // wtf ccp?
+		case  35: // wtf ccp?
 		case 403:
+		case 502:
 		case 503: // Service Unavailable - try again later
-			$cacheUntil = time() + 3600;
+			$cacheUntil = time() + 300;
 			$updateCacheTime = true;
 			break;
 		case 119: // Kills exhausted: retry after [{0}]
 			$r = rand(1,3);
-			$cacheUntil = max(time() + ((5 + $r) * 3600), $exception->cached_until_unixtime + 3);
+			$cacheUntil = max(time() + ((2 + $r) * 3600), $exception->cached_until_unixtime + 3);
 			$updateCacheTime = true;
 			break;
 		case 120: // Expected beforeKillID [{0}] but supplied [{1}]: kills previously loaded.

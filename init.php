@@ -1,9 +1,11 @@
 <?php
+// config load
 require_once( "config.php" );
 
-// Autoload Slim + Twig
+// vendor autoload
 require( "vendor/autoload.php" );
 
+// zkb class autoloader
 spl_autoload_register("zkbautoload");
 
 function zkbautoload($class_name)
