@@ -209,6 +209,13 @@ $app->get("/revoke/", function() use ($app) {
 	$app->render("revoked_reason.html");
 });
 
+// Autocomplete
+$app->get("/autocomplete/", function() use ($app) {
+	$result = Info::findNames($_GET["q"]);
+	$app->contentType("application/json; charset=utf-8");
+	echo json_encode($result);
+});
+
 // EVE-KILL kill_detail intercept
 $app->get("/evekilldetailintercept/:id/", function($id) use ($app) {
 	include( "view/evekilldetailintercept.php" );
@@ -219,6 +226,7 @@ $app->get("/evekillrelatedintercept/:id/", function($id) use ($app) {
 	include( "view/evekillrelatedintercept.php" );
 });
 
+// The Overview stuff
 $app->get("/:input+/", function($input) use ($app) {
 	include("view/overview.php");
 });
