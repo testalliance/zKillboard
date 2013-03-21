@@ -90,8 +90,8 @@ class Filters
 			$unixTime = strtotime($relatedTime);
 			if ($unixTime % 3600 != 0) throw new Exception("User attempted an unsupported value.  Fail.");
 			$tables[] = "zz_participants p";
-			$whereClauses[] = "p.dttm >= '" . date($unixTime - 3600) . "'";
-			$whereClauses[] = "p.dttm <= '" . date($unixTime + 3600) . "'";
+			$whereClauses[] = "p.dttm >= '" . date("Y:m:d H:i:00", $unixTime - 3600) . "'";
+			$whereClauses[] = "p.dttm <= '" . date("Y:m:d H:i:00", $unixTime + 3600) . "'";
 			$parameters["limit"] = 10000;
 		}
 		if (array_key_exists("startTime", $parameters)) {
