@@ -38,6 +38,9 @@ class irc_api implements ircCommand {
 				return;
 		}
 		$intParam = (int) $parameters[0];
+		if($intParam == 0 || !empty($intParam) || !isset($intParam))
+			irc_out("Please set an API key ID..");
+			
 		$strIntParam = "$intParam";
 		if (sizeof($parameters) == 1 && ((int) $parameters[0]) && strlen($parameters[0]) == strlen($strIntParam)) {
 			$keyIDs[] = (int) $parameters[0];
