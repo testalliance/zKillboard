@@ -150,9 +150,21 @@ class Filters
 		if (sizeof($tables) == 0) $tables[] = "zz_participants p";
 		foreach ($tables as $table) {
 			$tablePrefix = substr($table, strlen($table) - 1, 1);
-			if (isset($year)) $whereClauses[] = "year(${tablePrefix}.dttm) = $year";
-			if (isset($week)) $whereClauses[] = "week(${tablePrefix}.dttm) = $week";
-			if (isset($month)) $whereClauses[] = "month(${tablePrefix}.dttm) = $month";
+			if (isset($year)) {
+				$whereClauses[] = "{$tablePrefix}.dttm >= '$year-01-01 00:00:00'";
+				$whereClauses[] = "{$tablePrefix}.dttm <= '$year-12-31 23:59:59'";
+			}
+			if (isset($week)) {
+				if (!isset($year)) throw new Exception("Must include a year when setting week!");
+				$weekStart = date("Y-m-d H:i:00", strtotime("{$year}W{$week}"));
+				$whereClauses[] = "{$tablePrefix}.dttm >= '$weekStart'";
+				$whereClauses[] = "{$tablePrefix}.dttm <= date_add('$weekStart', interval 7 day)";
+			}
+			if (isset($month)) {
+				if (!isset($year)) throw new Exception("Must include a year when setting month!");
+				$whereClauses[] = "{$tablePrefix}.dttm >= '$year-$month-01 00:00:00'";
+				$whereClauses[] = "{$tablePrefix}.dttm <= '$year-$month-31 23:59:59'";
+			}
 		}
 	}
 }
