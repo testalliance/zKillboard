@@ -24,7 +24,7 @@ foreach($result as $kill)
 	if(!empty($kill["kill_json"]))
 		$stomp->send($destinations, $kill["kill_json"]);
 }
-Log::log("Sent out " . sizeof($result) . " killmails via stomp");
+if(sizeof($result) > 0) Log::log("Sent out " . sizeof($result) . " killmails via stomp");
 
 function Destinations($kill)
 {
