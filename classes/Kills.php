@@ -31,7 +31,7 @@ class Kills
 		$page = array_key_exists("page", $parameters) ? (int)$parameters["page"] : 1;
 		$offset = ($page - 1) * $limit;
 
-		$orderBy = array_key_exists("orderBy", $parameters) ? $parameters["orderBy"] : "${tablePrefix}.unix_timestamp";
+		$orderBy = array_key_exists("orderBy", $parameters) ? $parameters["orderBy"] : "${tablePrefix}.dttm";
 		$orderDirection = array_key_exists("orderDirection", $parameters) ? $parameters["orderDirection"] : "desc";
 		$query .= " order by $orderBy $orderDirection limit $offset, $limit";
 

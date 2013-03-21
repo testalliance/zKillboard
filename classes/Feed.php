@@ -51,7 +51,7 @@ class Feed
 		}
 
 		$orderDirection = array_key_exists("orderDirection", $parameters) ? $parameters["orderDirection"] : "desc";
-		$query .= " order by ${tablePrefix}.unix_timestamp $orderDirection limit $offset, $limit";
+		$query .= " order by ${tablePrefix}.dttm $orderDirection limit $offset, $limit";
 
 		$cacheTime = 3600;
 

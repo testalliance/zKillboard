@@ -197,7 +197,6 @@ function parseKills()
 			$totalCost += processItems($year, $week, $kill, $killID, $kill->items, $itemInsertOrder);
 			$totalCost += processVictim($year, $month, $week, $kill, $killID, $kill->victim, false);
 			foreach ($kill->attackers as $attacker) processAttacker($year, $month, $week, $kill, $killID, $attacker, $kill->victim->shipTypeID, $totalCost);
-			processKill($year, $week, $kill, sizeof($kill->attackers), $totalCost);
 			$points = Points::calculatePoints($killID, true);
 			Db::execute("update zz_participants_temporary set points = :points, number_involved = :numI, total_price = :tp where killID = :killID", array(":killID" => $killID, ":points" => $points, ":numI" => sizeof($kill->attackers), ":tp" => $totalCost));
 
@@ -389,60 +388,21 @@ function validKill(&$kill)
 	return true;
 }
 
-function processKill(&$year, &$week, &$kill, $number_involved, $totalCost)
-{
-	return;
-	$date = $kill->killTime;
-
-	$date = strtotime($date);
-	$month = date("m", $date);
-	$day = date("d", $date);
-	$unix = date("U", $date);
-
-	$month = strlen("$month") < 2 ? "0$month" : $month;
-
-	$regionID = Info::getRegionIDFromSystemID($kill->solarSystemID);
-
-	Db::execute("
-			insert into zz_kills_temporary
-			(killID, solarSystemID, regionID, moonID, year, month, week, day,
-			 unix_timestamp, number_involved, total_price, processed_timestamp)
-			values
-			(:killID, :solarSystemID, :regionID, :moonID, :year, :month, :week, :day,
-			 :unix_timestamp, :number_involved, :total_price, :unix_timestamp)",
-			(array(
-				   ":killID" => $kill->killID,
-				   ":solarSystemID" => $kill->solarSystemID,
-				   ":regionID" => $regionID,
-				   ":moonID" => $kill->moonID,
-				   ":year" => $year,
-				   ":month" => $month,
-				   ":week" => $week,
-				   ":day" => $day,
-				   ":unix_timestamp" => $unix,
-				   ":number_involved" => $number_involved,
-				   ":total_price" => $totalCost,
-				  )));
-	Memcached::set("LAST_KILLMAIL_PROCESSED", $unix);
-}
-
 function processVictim(&$year, &$month, &$week, &$kill, $killID, &$victim, $isNpcVictim)
 {
 	$shipPrice = getPrice($victim->shipTypeID);
 	$groupID = Info::getGroupID($victim->shipTypeID);
 	$regionID = Info::getRegionIDFromSystemID($kill->solarSystemID);
 
-	$date = $kill->killTime;
-	$date = strtotime($date);
-	$unix = date("U", $date);
+	$dttm = (string) $kill->killTime;
 
 	if (!$isNpcVictim) Db::execute("
 			insert into zz_participants_temporary
 			(killID, solarSystemID, regionID, isVictim, shipTypeID, groupID, shipPrice, damage, factionID, allianceID,
-			 corporationID, characterID, year, month, week, unix_timestamp, vGroupID)
+			 corporationID, characterID, dttm, vGroupID)
 			values
 			(:killID, :solarSystemID, :regionID, 1, :shipTypeID, :groupID, :shipPrice, :damageTaken, :factionID, :allianceID,
-			 :corporationID, :characterID, :year, :month, :week, :unix, :vGroupID)",
+			 :corporationID, :characterID, :dttm, :vGroupID)",
 			(array(
 				   ":killID" => $killID,
 				   ":solarSystemID" => $kill->solarSystemID,
@@ -456,10 +416,7 @@ function processVictim(&$year, &$month, &$week, &$kill, $killID, &$victim, $isNp
 				   ":allianceID" => $victim->allianceID,
 				   ":corporationID" => $victim->corporationID,
 				   ":characterID" => $victim->characterID,
-				   ":year" => $year,
-				   ":month" => $month,
-				   ":week" => $week,
-				   ":unix" => $unix,
+					":dttm" => $dttm,
 				  )));
 
 	Info::addChar($victim->characterID, $victim->characterName);
@@ -475,17 +432,15 @@ function processAttacker(&$year, &$month, &$week, &$kill, &$killID, &$attacker, 
 	$attackerGroupID = Info::getGroupID($attacker->shipTypeID);
 	$regionID = Info::getRegionIDFromSystemID($kill->solarSystemID);
 
-	$date = $kill->killTime;
-	$date = strtotime($date);
-	$unix = date("U", $date);
+	$dttm = (string) $kill->killTime;
 
 	Db::execute("
 			insert into zz_participants_temporary
 			(killID, solarSystemID, regionID, isVictim, characterID, corporationID, allianceID, total_price, vGroupID,
-			 factionID, securityStatus, damage, finalBlow, weaponTypeID, shipTypeID, groupID, year, month, week, unix_timestamp)
+			 factionID, damage, finalBlow, weaponTypeID, shipTypeID, groupID, dttm)
 			values
 			(:killID, :solarSystemID, :regionID, 0, :characterID, :corporationID, :allianceID, :total, :vGroupID,
-			 :factionID, :securityStatus, :damageDone, :finalBlow, :weaponTypeID, :shipTypeID, :groupID, :year, :month, :week, :unix)",
+			 :factionID, :damageDone, :finalBlow, :weaponTypeID, :shipTypeID, :groupID, :dttm)",
 			(array(
 				   ":killID" => $killID,
 				   ":solarSystemID" => $kill->solarSystemID,
@@ -494,16 +449,12 @@ function processAttacker(&$year, &$month, &$week, &$kill, &$killID, &$attacker, 
 				   ":corporationID" => $attacker->corporationID,
 				   ":allianceID" => $attacker->allianceID,
 				   ":factionID" => $attacker->factionID,
-				   ":securityStatus" => $attacker->securityStatus,
 				   ":damageDone" => $attacker->damageDone,
 				   ":finalBlow" => $attacker->finalBlow,
 				   ":weaponTypeID" => $attacker->weaponTypeID,
 				   ":shipTypeID" => $attacker->shipTypeID,
 				   ":groupID" => $attackerGroupID,
-				   ":year" => $year,
-				   ":month" => $month,
-				   ":week" => $week,
-				   ":unix" => $unix,
+					":dttm" => $dttm,
 				   ":total" => $totalCost,
 				   ":vGroupID" => $victimGroupID,
 				  )));

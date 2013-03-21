@@ -493,7 +493,7 @@
 
 		public static function getPilotDetails($id)
 		{
-			$data = Db::queryRow("select characterID, corporationID, allianceID, factionID from zz_participants where characterID = :id and unix_timestamp >= (unix_timestamp() - 604800) order by killID desc limit 1", array(":id" => $id), 30);
+			$data = Db::queryRow("select characterID, corporationID, allianceID, factionID from zz_participants where characterID = :id and dttm >= date_sub(now(), interval 7 day) order by killID desc limit 1", array(":id" => $id), 30);
 			if (sizeof($data) == 0) {
 				$data = Db::queryRow("select characterID, corporationID, allianceID, 0 factionID from zz_characters where characterID = :id", array(":id" => $id));
 			}
@@ -511,7 +511,7 @@
 
 		public static function getCorpDetails($id, $parameters = array())
 		{
-			$data = Db::queryRow("select corporationID, allianceID, factionID from zz_participants where corporationID = :id  and unix_timestamp >= (unix_timestamp() - 604800) order by killID desc limit 1",  array(":id" => $id), 30);
+			$data = Db::queryRow("select corporationID, allianceID, factionID from zz_participants where corporationID = :id  and dttm >= date_sub(now(), interval 7 day) order by killID desc limit 1",  array(":id" => $id), 30);
 			if (sizeof($data) == 0) $data = Db::queryRow("select corporationID, allianceID, 0 factionID from zz_corporations where corporationID = :id", array(":id" => $id), 30);
 			if (sizeof($data) == 0) $data["corporationID"] == $id;
 			$moreData = Db::queryRow("select * from zz_corporations where corporationID = :id", array(":id" => $id), 30);
@@ -526,7 +526,7 @@
 
 		public static function getAlliDetails($id, $parameters = array())
 		{
-			$data = Db::queryRow("select allianceID, factionID from zz_participants where allianceID = :id and unix_timestamp >= (unix_timestamp() - 604800) order by killID desc limit 1", array(":id" => $id), 30);
+			$data = Db::queryRow("select allianceID, factionID from zz_participants where allianceID = :id and dttm >= date_sub(now(), interval 7 day) order by killID desc limit 1", array(":id" => $id), 30);
 			if (sizeof($data) == 0) $data["allianceID"] == $id;
 			// Add membercount, etc.
 			$moreData = Db::queryRow("select * from zz_alliances where allianceID = :id", array(":id" => $id), 30);
@@ -596,10 +596,11 @@
 					case "cachedUntil":
 						$element["cachedUntilTime"] = date("Y-m-d H:i", $value);
 						break;
-					case "unix_timestamp":
-						$element["ISO8601"] = date("c", $value);
-						$element["killTime"] = date("Y-m-d H:i", $value);
-						$element["MonthDayYear"] = date("F j, Y", $value);
+					case "dttm":
+						$dttm = strtotime($value);
+						$element["ISO8601"] = date("c", $dttm);
+						$element["killTime"] = date("Y-m-d H:i", $dttm);
+						$element["MonthDayYear"] = date("F j, Y", $dttm);
 						break;
 					case "shipTypeID":
 						if (!isset($element["shipName"])) $element["shipName"] = Info::getItemName($value);

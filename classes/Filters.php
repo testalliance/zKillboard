@@ -90,26 +90,26 @@ class Filters
 			$unixTime = strtotime($relatedTime);
 			if ($unixTime % 3600 != 0) throw new Exception("User attempted an unsupported value.  Fail.");
 			$tables[] = "zz_participants p";
-			$whereClauses[] = "p.unix_timestamp >= " . ($unixTime - 3600);
-			$whereClauses[] = "p.unix_timestamp <= " . ($unixTime + 3600);
+			$whereClauses[] = "p.dttm >= '" . date($unixTime - 3600) . "'";
+			$whereClauses[] = "p.dttm <= '" . date($unixTime + 3600) . "'";
 			$parameters["limit"] = 10000;
 		}
 		if (array_key_exists("startTime", $parameters)) {
 			$time = $parameters["startTime"];
 			$unixTime = strtotime($time);
 			$tables[] = "zz_participants p";
-			$whereClauses[] = "p.unix_timestamp >= " . ((int)$unixTime);
+			$whereClauses[] = "p.dttm >= '" . date((int)$unixTime) . "'";
 		}
 		if (array_key_exists("endTime", $parameters)) {
 			$time = $parameters["endTime"];
 			$unixTime = strtotime($time);
 			$tables[] = "zz_participants p";
-			$whereClauses[] = "p.unix_timestamp <= " . ((int)$unixTime);
+			$whereClauses[] = "p.dttm <= '" . date((int)$unixTime) . "'";
 		}
 
 		if (array_key_exists("pastSeconds", $parameters)) {
 			$tables[] = "zz_participants p";
-			$whereClauses[] = "p.unix_timestamp >= (unix_timestamp() - " . ((int)$parameters["pastSeconds"]) . ")";
+			$whereClauses[] = "p.dttm >= date_sub(now(), interval " . ((int) $parameters["pastSeconds"]) . " second)";
 		}
 
 		if (array_key_exists("iskValue", $parameters)) {
