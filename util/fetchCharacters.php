@@ -8,8 +8,6 @@ $vCode = Db::queryField("select vCode from zz_api where keyID = :keyID", "vCode"
 
 if ($keyID == 0 && strlen($vCode) == 0) return;
 
-Db::execute("update zz_api set lastValidation = now() where keyID = :keyID", array(":keyID" => $keyID));
-
 $pheal = Util::getPheal($keyID, $vCode);
 try {
 	$apiKeyInfo = $pheal->ApiKeyInfo();
@@ -18,6 +16,8 @@ try {
 	handleApiException($keyID, null, $ex);
 	return;
 }
+
+Db::execute("update zz_api set lastValidation = now() where keyID = :keyID", array(":keyID" => $keyID));
 
 // Clear the error code
 $characterIDs = array();            
