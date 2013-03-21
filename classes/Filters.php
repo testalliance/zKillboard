@@ -150,9 +150,9 @@ class Filters
 		if (sizeof($tables) == 0) $tables[] = "zz_participants p";
 		foreach ($tables as $table) {
 			$tablePrefix = substr($table, strlen($table) - 1, 1);
-			if (isset($year)) $whereClauses[] = "${tablePrefix}.year = $year";
-			if (isset($week)) $whereClauses[] = "${tablePrefix}.week = $week";
-			if (isset($month)) $whereClauses[] = "${tablePrefix}.month = $month";
+			if (isset($year)) $whereClauses[] = "year(${tablePrefix}.dttm) = $year";
+			if (isset($week)) $whereClauses[] = "week(${tablePrefix}.dttm) = $week";
+			if (isset($month)) $whereClauses[] = "month(${tablePrefix}.dttm) = $month";
 		}
 	}
 }
