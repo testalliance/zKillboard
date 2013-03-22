@@ -1,10 +1,9 @@
-<div class="row">
 {% for list in topLists %}
 	{% set loopIndex = 0 %}
 	{% if (loop.index -1) is divisibleby(3) %}
-		<div class="span10">
+		<div class="row-fluid" style="margin-left:20px;">
 	{% endif %}
-			<div class="pull-left span3" style="margin: 0px; padding-left: 1em;">
+			<div class="pull-left" style="width: 325px; margin-left: 0px; padding-left: 1em;">
 				<table class="table table-condensed table-striped table-hover table-bordered">
 					{% if list.name is defined %}
 						<caption><strong>{{ list.name }}</strong></caption>
@@ -50,4 +49,3 @@
 		</div>
 	{% endif %}
 {% endfor %}
-</div>
