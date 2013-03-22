@@ -1,6 +1,4 @@
 <?php
-//include_once("/var/killboard/xhprof/inc/prepend.php");
-
 // Fire up the session!
 session_cache_limiter(false);
 session_start();
@@ -11,6 +9,14 @@ require( "init.php" );
 // initiate the timer!
 $timer = new Timer();
 
+// Slim config
+$config = array(
+	"templates.path" => $baseDir."templates/",
+	"mode" => "production",
+	"debug" => false,
+	"log.enabled" => false
+	);
+	
 // Start slim and load the config from the config file
 $app = new \Slim\Slim($config);
 
@@ -38,5 +44,3 @@ include( "twig.php" );
 
 // Run the thing!
 $app->run();
-
-//include_once("/var/killboard/xhprof/inc/append.php");
