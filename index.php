@@ -11,8 +11,8 @@ $timer = new Timer();
 
 // Theme
 if(User::isLoggedIn())
-	$themeview = UserConfig::get("themeview");
-$config["templates.path"] = $baseDir."templates/" . ($themeview ? $themeview : "bootstrap");
+	$viewtheme = UserConfig::get("viewtheme");
+$config["templates.path"] = $baseDir."templates/" . ($viewtheme ? $viewtheme : "bootstrap");
 	
 // Start slim and load the config from the config file
 $app = new \Slim\Slim($config);

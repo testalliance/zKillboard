@@ -19,6 +19,7 @@ if($_POST)
 	$vcode = "";
 	$label = null;
 	$theme = "";
+	$viewtheme = "";
 	$deletekeyid = "";
     $deleteentity = "";
 	$orgpw = "";
@@ -47,6 +48,8 @@ if($_POST)
 		$vcode = trim($_POST["vcode"]);
 	if(isset($_POST["label"]))
 		$label = $_POST["label"];
+	if(isset($_POST["viewtheme"]))
+		$viewtheme = $_POST["viewtheme"];
 	if(isset($_POST["theme"]))
 		$theme = $_POST["theme"];
 	if(isset($_POST["deletekeyid"]))
@@ -100,12 +103,17 @@ if($_POST)
     }
     
 	// Theme stuff
+	if($viewtheme)
+	{
+		UserConfig::set("viewtheme", $viewtheme);
+		$app->redirect($_SERVER["REQUEST_URI"]);
+	}
 	if($theme)
 	{
 		UserConfig::set("theme", $theme);
 		$error = "Theme has been set";
 	}
-
+	
 	// Password
 	if($orgpw && $password && $password2)
 	{
@@ -233,6 +241,7 @@ $userID = User::getUserID();
 $data["domainentities"] = Domains::getUserEntities($userID);
 $data["entities"] = $entlist;
 $data["themes"] = array("default", "amelia", "cerulean", "cyborg", "journal", "readable", "simplex", "slate", "spacelab", "spruce", "superhero", "united");
+$data["viewthemes"] = array("bootstrap", "edk");
 $data["apiKeys"] = Api::getKeys($userID);
 $data["apiChars"] = Api::getCharacters();
 $charKeys = Api::getCharacterKeys();

@@ -1,4 +1,5 @@
 <legend>Themes</legend>
+{% if sessionviewtheme != "edk" %}
 <form class="well" name="themes" method="post" action="/account/sitesettings/">
     <fieldset>
         <table class="table table-condensed">
@@ -9,6 +10,26 @@
 	                        {% set selected = "" %}
        		                {% if theme == sessiontheme %}{% set selected = "selected"%}{% endif %}
        	        	        <option value="{{ theme }}" {{ selected }}>{{ theme }}</option>
+                        {% endfor %}
+                        </select></td>
+                    <td><input type="submit" class="btn btn-primary" value="Select Theme"></td>
+                </tr>
+            </tbody>
+        </table>
+    </fieldset>
+</form>
+{% endif %}
+
+<form class="well" name="viewthemes" method="post" action="/account/sitesettings/">
+    <fieldset>
+        <table class="table table-condensed">
+            <tbody class="pull-left">
+                <tr>
+                    <td><select name="viewtheme">
+                        {% for viewtheme in data.viewthemes %}
+	                        {% set selected = "" %}
+       		                {% if viewtheme == sessionviewtheme %}{% set selected = "selected"%}{% endif %}
+       	        	        <option value="{{ viewtheme }}" {{ selected }}>{{ viewtheme }}</option>
                         {% endfor %}
                         </select></td>
                     <td><input type="submit" class="btn btn-primary" value="Select Theme"></td>
