@@ -2,9 +2,15 @@
 // Load Twig globals
 $app->view(new \Slim\Extras\Views\Twig());
 
+// Theme
+$viewtheme = null;
+if(User::isLoggedIn())
+	$viewtheme = UserConfig::get("viewtheme");
+$cachepath = "cache/templates/" . ($viewtheme ? $viewtheme : "bootstrap");
+
 \Slim\Extras\Views\Twig::$twigOptions = array(
     'charset'           => 'utf-8',
-    'cache'             => "cache/templates",
+    'cache'             => $cachepath,
     'auto_reload'       => true,
     'strict_variables'  => false,
     'autoescape'        => true
