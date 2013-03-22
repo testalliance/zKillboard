@@ -603,10 +603,6 @@ function fetchApis()
 
 		Db::execute("delete from zz_api_log where requestTime < date_sub(now(), interval 36 hour)");
 
-		$count = Db::queryField("select count(*) count from zz_manual_mail_list where processed = 0", "count", array(), 0);
-		$count = number_format($count);
-		Log::irc("Remaining manual mails to parse: |g|$count");
-
 		// Cleanout manual mail stuff where the manual mail has been api verified
 		Db::execute("update zz_killmails set kill_json = '' where processed = 2 and killID < 0 and kill_json != ''");
 		Db::execute("update zz_manual_mails set rawText = '' where killID > 0 and rawText != ''");
