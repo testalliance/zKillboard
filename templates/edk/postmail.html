@@ -16,13 +16,6 @@
 
 {% block content %}
 
-{% if message %}
-<pre>
-{% for msg in message %}
-{{ msg }}
-{% endfor %}
-</pre>
-{% endif %}
 <div class="pull-right span7" style="margin: 0px;">
 	<h4>Killmail Post</h4>
 	<p>Post a killmail from the ingame character sheet!</p>
@@ -62,6 +55,7 @@
 		</div>
 	</form>
 	<div class="well">
+		<h4>Frequently Asked Questions</h4>
 		<ul>
 			<li><h5>I posted my personal API but my kills didn't show up!!! Where are they?!</h5>
 				API will only post kills in which you are the final blow.  If someone else you were flying with got the final blow then they need to post their API.  However, the API will always post your losses.  Also keep in mind that personal (Character) api's only go back to the last 25 kills/losses.  Beyond that CCP doesn't provide any more history.</li>

@@ -16,91 +16,93 @@
 
 <div class="row" style="margin: 0px;">
 	<div class="pull-left">
-{% include 'components/info_top_image.html' %}
-{% if not detail.groupShips %}
-        <table class="table table-condensed table-striped table-hover span4 pull-left">
+		{% include 'components/info_top_image.html' %}
+	</div>
+	<div itemscope class="pull-left">
+		{% if not detail.groupShips %}
+        <table class="table table-condensed table-striped table-hover pull-left">
 		<tbody>
-            {% if detail.characterID and key != 'character' %}
+            {% if detail.characterID %}
             <tr>
                 <th class="span2">Character:</th>
-				<td style="width: 100%">{% include 'components/text_char.html' %}</td>
+				<td itemprop="name">{% include 'components/text_char.html' %}</td>
             </tr>
             {% endif %}
             {% if detail.ceoID and detail.ceoName %}
             <tr>
                 <th class="span2">CEO:</th>
-				<td style="width: 100%">{% include 'components/text_char.html' %}</td>
+				<td itemprop="ceo">{% include 'components/text_char.html' %}</td>
             </tr>
             {% endif %}
             {% if detail.executorCorpID and detail.executorCorpName %}
             <tr>
                 <th class="span2">Executor:</th>
-				<td style="width: 100%">{% include 'components/text_corp.html' %}</td>
+				<td itemprop="executor">{% include 'components/text_corp.html' %}</td>
             </tr>
             {% endif %}
-            {% if detail.corporationID and key != 'corporation' %}
+            {% if detail.corporationID %}
             <tr>
                 <th class="span2">Corporation:</th>
-		<td style="width: 100%">{% include 'components/text_corp.html' %}</td>
+				<td itemprop="corporation">{% include 'components/text_corp.html' %}</td>
             </tr>
             {% endif %}
-            {% if detail.allianceName and key != 'alliance' %}
+            {% if detail.allianceName %}
                 <tr>
                     <th class="span2">Alliance:</th>
-		    <td style="width: 100%">{% include 'components/text_alli.html' %}</td>
+					<td itemprop="alliance">{% include 'components/text_alli.html' %}</td>
                 </tr>
             {% endif %}
-            {% if detail.factionName and key != 'faction' %}
+            {% if detail.factionName %}
                 <tr>
                     <th class="span2">Faction:</th>
-			<td style="width: 100%">{% include 'components/text_faction.html' %}</td>
+					<td itemprop="faction">{% include 'components/text_faction.html' %}</td>
                 </tr>
             {% endif %}
             {% if detail.shipName and key != 'ship' %}
                 <tr>
                   <th class="span2">Ship:</th>
-                  <td style="width: 100%"><a href="/item/{{ detail.shipTypeID}}/">{{ detail.shipName }}</a></td>
+                  <td itemprop="ship"><a href="/item/{{ detail.shipTypeID}}/">{{ detail.shipName }}</a></td>
                 </tr>
             {% endif %}
             {% if detail.groupName and key != 'group' %}
                 <tr>
                   <th class="span2">Class:</th>
-                  <td style="width: 100%"><a href="/group/{{ detail.groupID }}/">{{ detail.groupName }}</a></td>
+                  <td itemprop="class"><a href="/group/{{ detail.groupID }}/">{{ detail.groupName }}</a></td>
                 </tr>
             {% endif %}
             {% if detail.solarSystemSecurity %}
                 <tr>
                   <th class="span2">Security:</th>
-                  <td style="width: 100%"><font color="{{ detail.systemColorCode}}">{{ detail.solarSystemSecurity|number_format(1) }}</font></td>
+                  <td itemprop="security"><font color="{{ detail.systemColorCode}}">{{ detail.solarSystemSecurity|number_format(1) }}</font></td>
                </tr>
             {% endif %}
 			{% if detail.systemClass %}
                 <tr>
                   <th class="span2">Class:</th>
-                  <td style="width: 100%">{{ detail.systemClass }}</td>
+                  <td itemprop="systemclass">{{ detail.systemClass }}</td>
                </tr>
 			{% endif %}
 			{% if detail.systemEffect %}
                 <tr>
                   <th class="span2">Effect:</th>
-                  <td style="width: 100%">{{ detail.systemEffect }}</td>
+                  <td itemprop="effect">{{ detail.systemEffect }}</td>
                </tr>
 			{% endif %}
             {% if detail.regionName %}
                 <tr>
                   <th class="span2">Region:</th>
-                  <td style="width: 100%"><a href="/region/{{detail.regionID}}/">{{ detail.regionName }}</a></td>
+                  <td itemprop="region"><a href="/region/{{detail.regionID}}/">{{ detail.regionName }}</a></td>
                </tr>
             {% endif %}
 	    	{% if detail.memberCount is defined %}
                 <tr>
                   <th class="span2">Members:</th>
-                  <td style="width: 100%">{% if detail.memberCount == 0 %}(Closed){% else %}{{ detail.memberCount | number_format(0) }}{% endif %}</a></td>
+                  <td itemprop="members">{% if detail.memberCount == 0 %}(Closed){% else %}{{ detail.memberCount | number_format(0) }}{% endif %}</td>
                </tr>
             {% endif %}
 		</tbody>
         </table>
-{% endif %}
+		{% endif %}
 	</div>
 	<div class="pull-right">
     {% include 'components/stats_box.html' %}

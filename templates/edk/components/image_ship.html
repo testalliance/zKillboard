@@ -6,7 +6,7 @@
 		<img src="/img/eve-question.png" height="{{imageSize}}" width="{{imageSize}}" class="eveimage img-rounded" alt=""/>
 	{% endif %}
 {% else %}
-	{% if shipImageLinkOverride > 0 %}
+	{% if shipImageLinkOverride != 0 %}
 	<a href="/detail/{{shipImageLinkOverride}}/" rel="tooltip" title="Detail for {{shipImageLinkOverride}}">
 	{% else %}
     <a href="/ship/{{ field.shipTypeID }}/" rel="tooltip" title="{{ field.shipName }}">

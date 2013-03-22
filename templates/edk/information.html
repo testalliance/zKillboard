@@ -26,7 +26,7 @@
 {% if pageview == "about" %}
 <h3>About</h3>
 <pre class="prettyprint">
-{{ lang("about") }}
+{% include 'information/about.html' %}
 </pre>
 {% elseif pageview == "statistics" %}
 <h3>Statistics</h3>
@@ -41,39 +41,39 @@
 {% elseif pageview == "contact" %}
 <h3>Contact Information</h3>
 <pre class="prettyprint">
-{{ lang("contact") }}
+{% include 'information/contact.html' %}
 </pre>
 {% elseif pageview == "faq" %}
 <h3>Frequently Asked Questions</h3>
-{{ lang("faq") }}
+{% include 'information/faq.html' %}
 {% elseif pageview == "tos" %}
 <h3>Terms of Service</h3>
 <pre class="prettyprint">
-{{ lang("tos") }}
+{% include 'information/tos.html' %}
 </pre>
 {% elseif pageview == "legal" %}
 <div class="row-fluid">
 <h3>CCP Legal Notice</h3>
 <pre class="prettyprint">
-{{ lang("ccplegal") }}
+{% include 'information/ccplegal.html' %}
 </pre>
 </div>
 {% elseif pageview == "3rd" %}
 <h3>3rd Party Information</h3>
 <pre class="prettyprint">
-{{ lang("3rdparties") }}
+{% include 'information/3rdparties.html' %}
 </pre>
 {% elseif pageview == "api" %}
 <h3>API</h3>
 <pre class="prettyprint">
-{{ lang("api") }}
+{% include 'information/api.html' %}
 </pre>
 {% elseif pageview == "license" %}
-{{ lang("license") }}
+{% include 'information/license.html' %}
 {% elseif pageview == "points" %}
 <h3>Points</h3>
 <pre>
-{{ lang("points") }}
+{% include 'information/points.html' %}
 {% for points in info.pointValues %}
  - {{ points.0 }}: {{ points.1 }}
 {% endfor %}
@@ -83,4 +83,7 @@
 
 {% block robots %}
         <meta name="robots" content="nofollow">
+{% endblock %}
+
+{% block script %}
 {% endblock %}

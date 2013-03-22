@@ -19,24 +19,27 @@
             <ul class="nav pull-left">
                 <li class="{{ isActive('overview', pageview) }}"><a href="/detail/{{ killdata.info.killID }}/overview/">Overview</a></li>
                 <li class="{{ isActive('involved', pageview) }} hidden-phone"><a href="/detail/{{ killdata.info.killID }}/involved/">Involved Pilots ({{ killdata.info.number_involved }})</a></li>
+				<li class="{{ isActive('shiptypes', pageview) }} hidden-phone hidden-tablet"><a href="/detail/{{ killdata.info.killID }}/shiptypes/">Ship Types ({{ extra.involvedshipscount }})</a></li>
                 <li class="{{ isActive('comments', pageview) }}"><a href="/detail/{{ killdata.info.killID }}/comments/">Comments ({{ extra.comments.count }})</a></li>
             </ul>
-            <ul class="nav pull-right">
-                <li class="hidden-phone"><a href="https://www.facebook.com/sharer/sharer.php?u={{url}}" target="_blank" class="facebook" style="margin: 2px; width: 32px; height: 17px;"></a></li>
-                <li class="hidden-phone"><a href="https://twitter.com/intent/tweet?text={{ pageTitle|url_encode }}&url={{url}}" target="_blank" class="twitter" style="margin: 2px; width: 32px; height: 17px;"></a></li>
-                <li class="hidden-phone hidden-tablet"><a href="https://plus.google.com/share?url={{url}}" target="_blank" class="googleplus" style="margin: 2px; width: 32px; height: 17px;"></a></li>
-                <li class="hidden-phone"><a href="http://www.reddit.com/submit?url={{url}}&title={{ pageTitle|url_encode }}" target="_blank" class="reddit" style="margin: 2px; width: 32px; height: 17px;"></a></li>
-                <li class="hidden-phone hidden-tablet"><a data-toggle="modal" data-target="#EFT" href="#">EFT Fitting</a></li>
-                <li class="hidden-phone hidden-tablet"><a data-toggle="modal" data-target="#rawMail" href="#">Killmail</a></li>
-                <li class="hidden-phone"><a href="/related/{{ killdata.info.solarSystemID }}/{{ extra.relatedtime }}/">Related Kills</a></li>
+            <ul class="nav pull-right hidden-phone">
+				<li><a data-toggle="modal" data-target="#EFT" href="#">EFT</a></li>
+				<li><a data-toggle="modal" data-target="#rawMail" href="#">Killmail</a></li>
+				<li class="hidden-desktop"><a href="/detail/{{ killdata.info.killID }}/shiptypes/">Ship Types ({{ extra.involvedshipscount }})</a></li>
+				<li><a href="/related/{{ killdata.info.solarSystemID }}/{{ extra.relatedtime }}/">Related Kills</a></li>
+				<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Social <i class="icon-chevron-down"></i></a>
+					<ul class="dropdown-menu">
+						<li><a href="https://www.facebook.com/sharer/sharer.php?u={{url}}" target="_blank"><img src="/img/social/fb_1.png"> Facebook</a></li>
+						<li><a href="https://twitter.com/intent/tweet?text={{ pageTitle|url_encode }}&url={{url}}" target="_blank"><img src="/img/social/twitter_1.png"> Twitter</a></li>
+						<li><a href="https://plus.google.com/share?url={{url}}" target="_blank"><img src="/img/social/google_plus.png"> Google+</a></li>
+						<li><a href="http://www.reddit.com/submit?url={{url}}&title={{ pageTitle|url_encode }}" target="_blank"><img src="/img/social/reddit.png"> Reddit</a></li>
+					</ul>
+				</li>
             </ul>
         </div>
     </div>
         {% if pageview == "overview" %}
-			<div class="span4 pull-right" style="margin: 0px;">
-				{% if killdata.victim.killID > 0 %}
-				<!--<div class="span4 pull-right" style="margin: 0px;"><font class="green pull-right" style="font-size: 125%; font-weight: bold">API VERIFIED</font></div>-->
-				{% endif %}
+			<div class="span4 pull-right">
 				<div class="span4 pull-right" style="margin: 0px;">{% include 'components/victim_info.html' %}</div>
 				<div class="span4 pull-right" style="margin: 0px;">{% include 'components/tdfb.html' %}</div>
 				<div class="span4 pull-right" style="margin: 0px;">
@@ -47,7 +50,7 @@
 				</div>
 			</div>
 			<div class="span6 pull-left" style="margin: 0px;">
-				<div class="pull-left" style="margin: 0px;">{% include 'components/fitting_wheel.html' %}</div>
+				<div class="span5 pull-left hidden-phone" style="margin: 0px;">{% include 'components/fitting_wheel.html' %}</div>
 				<div class="span6" style="margin: 0px;">{% if sessionddcombined == "true" or isMobile or isTablet %}{% include 'components/item_list_combined.html' %}{% else %}{% include 'components/item_list.html' %}{% endif %}</div>
 			</div>
 		{% elseif pageview == "involved" %}
@@ -80,6 +83,24 @@
 				</tr>
 				{% endfor %}
 			</table>
+{% elseif pageview == "shiptypes" %}
+	<table class="table table-condensed table-striped">
+		<thead>
+			<tr class="titles">
+				<th>Ship</th><th>Count</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for involved in extra.involvedships %}
+			<tr>
+				{% set field = involved %}
+				{% set imageSize = 32 %}
+				<td>{% include 'components/image_ship.html' %} {% include 'components/text_ship.html' %}</td>
+				<td>{{ involved.count }}</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
 {% elseif pageview == "comments" %}
 {% if sessionusername %}
 <div class="pull-right span4" style="margin: 5px;">
@@ -162,11 +183,11 @@
         <meta name="twitter:card" content="summary">
         <meta name="twitter:site" content="@eve_kill">
         <meta name="og:title" content="zKillboard.com / {{ pageTitle }}">
-        <meta name="og:url" content="http://{{ siteurl }}/detail/{{ killdata.info.killID }}/">
+        <meta name="og:url" content="https://{{ siteurl }}/detail/{{ killdata.info.killID }}/">
 {% if finalBlow.characterName == NULL %}
         <meta name="og:description" content="{{ killdata.victim.characterName }} ({{ killdata.victim.corporationName}}) lost their {{ killdata.victim.shipName }} in {{ killdata.info.solarSystemName }} ({{ killdata.info.regionName }})">
 {% else %}
         <meta name="og:description" content="{{ killdata.victim.characterName }} ({{ killdata.victim.corporationName}}) lost their {{ killdata.victim.shipName }} in {{ killdata.info.solarSystemName }} ({{ killdata.info.regionName }}). Final Blow by {{ finalBlow.characterName }} ({{ finalBlow.corporationName }}) flying in a {{ finalBlow.shipName }}. Total Value: {{ killdata.info.total_price|number_format(2, '.', ',')}} ISK">
 {% endif %}
-        <meta name="og:image" content="https://image.eveonline.com/Render/{{ killdata.victim.shipTypeID }}_128.png">
+        <meta name="og:image" content="https:{{ image_ship }}{{ killdata.victim.shipTypeID }}_128.png">
 {% endblock %}

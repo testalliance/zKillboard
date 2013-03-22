@@ -41,24 +41,17 @@
         {% endblock %}
     </head>
     <body>
-		<div id="main">
+		{% include "navigationbar.html" %}
+		<div id="main" style="margin-top: 47px;">
+			<div id="boardmessage" align="center">Board message</div>
 			<div id="header">
-				<a href="?a=home">
+				<a href="/">
 					<img src="http://eve-kill.net/banner/evsco-banner2.png" style="border:0px" alt="Banner"/>
 				</a>
 			</div>
-			<div id="navigation">
-				<table class="navigation" width="100%" style="height:25px;" border="0" cellspacing="1">
-					<tr class="kb-table-row-odd">
-					<td style="width:7%; text-align:center"><a class="link" style="display: block;" href="/">Home</a></td>
-					</tr>
-				</table>
-			</div>
-			
-			<div id="boardmessage" align="center">Board message</div>
 			
 			<div id="content">
-				{% block header %}<div id="page-title">February, 2013</div>{% endblock %}
+				{% block header %}{% endblock %}
 
 				{% block content %}Default content{% endblock %}
 			</div>
@@ -84,9 +77,6 @@
 {% block script %}
 {% endblock %}
         <script type="text/javascript" src="//{{ siteurl }}/js/googleanalytics.js"></script>
-		{% if isTablet == false or isMobile == false %}
-        <script type="text/javascript" src="//{{ siteurl }}/js/userreport.js"></script>
-		{% endif %}
 <script type="text/javascript">
 $(document).ready(function()
     {

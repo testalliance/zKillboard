@@ -94,8 +94,9 @@
         {% include 'components/image_ship.html' %}
 </div>
 {% endif %}
-
+{% if killdata.victim.killID > 0 %}<span class="green"><small>API Verified</small></span>{% endif %}
 </div>
+
 {% set eveImageClass = true %}
 
 
