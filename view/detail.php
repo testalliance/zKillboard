@@ -95,9 +95,7 @@ $extra["efttext"] = EFT::getText($extra["fittingwheel"]);
 $extra["rawmail"] = EPIC::getMail($id);
 $extra["slotCounts"] = Info::getSlotCounts($killdata["victim"]["shipTypeID"]);
 
-$app->etag(md5(serialize($id."_".$extra["comments"]["count"])));
-$app->expires("+1 hour");
-$url = "http://". $_SERVER["SERVER_NAME"] ."/detail/$id/";
+$url = "https://". $_SERVER["SERVER_NAME"] ."/detail/$id/";
 $app->render("detail.html", array("pageview" => $pageview, "killdata" => $killdata, "extra" => $extra, "message" => $message, "flags" => Info::$effectToSlot, "topDamage" => $topDamage, "finalBlow" => $finalBlow, "url" => $url));
 
 function involvedships($array)
