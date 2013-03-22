@@ -51,11 +51,12 @@
 			</div>
 			
 			<div id="content">
+				<div class="centered" id="adsensetop">{{ topad|raw }}</div>
 				{% block header %}{% endblock %}
 
 				{% block content %}Default content{% endblock %}
+				<div class="centered" id="adsensebottom">{{ bottomad|raw }}</div>
 			</div>
-			
 			<div id="footer">
 				{% include "footer.html" %}
 			</div>
@@ -63,7 +64,7 @@
         <script type="text/javascript" src="//{{ siteurl }}/js/modernizr.min.js"></script>
         <script type="text/javascript" src="//{{ siteurl }}/js/jquery.min.js"></script>
         <script type="text/javascript" src="//{{ siteurl }}/js/jquery.timeago.js"></script>
-        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/jquery.dataTables.min.js"></script>
+        <script type="text/javascript" src="//{{ siteurl }}/js/jquery.dataTables.min.js"></script>
         <script type="text/javascript" src="//{{ siteurl }}/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="//{{ siteurl }}/js/bootstrap-transition.js"></script>
         <script type="text/javascript" src="//{{ siteurl }}/js/bootstrap-popover.js"></script>
@@ -77,16 +78,5 @@
 {% block script %}
 {% endblock %}
         <script type="text/javascript" src="//{{ siteurl }}/js/googleanalytics.js"></script>
-<script type="text/javascript">
-$(document).ready(function()
-    {
-		setTimeout(updateKillsLastHour, 60000);
-	});
-function updateKillsLastHour() {
-		$("#lasthour").load("/killslasthour/");
-		setTimeout(updateKillsLastHour, 60000);
-}
-$('body').on('touchstart.dropdown', '.dropdown-menu', function (e) { e.stopPropagation(); });
-</script>
     </body>
 </html>
