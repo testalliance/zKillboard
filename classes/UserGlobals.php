@@ -26,6 +26,7 @@ class UserGlobals extends Twig_Extension
 			$this->addGlobal($result, "sessionsystems", UserConfig::get("system"));
 			$this->addGlobal($result, "sessionregions", UserConfig::get("region"));
 			$this->addGlobal($result, "sessiontheme", UserConfig::get("theme"), "cyborg");
+			$this->addGlobal($result, "sessionthemeview", UserConfig::get("themeview"), "bootstrap");
 			$this->addGlobal($result, "defaultCommentCharacter", UserConfig::get("defaultCommentCharacter"));
 			$this->addGlobal($result, "sessiontimeago", UserConfig::get("timeago"));
 			$this->addGlobal($result, "sessionddcombined", UserConfig::get("ddcombine"));

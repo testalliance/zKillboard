@@ -9,13 +9,10 @@ require( "init.php" );
 // initiate the timer!
 $timer = new Timer();
 
-// Slim config
-$config = array(
-	"templates.path" => $baseDir."templates/",
-	"mode" => "production",
-	"debug" => false,
-	"log.enabled" => false
-	);
+// Theme
+if(User::isLoggedIn())
+	$themeview = UserConfig::get("themeview");
+$config["templates.path"] = $baseDir."templates/" . ($themeview ? $themeview : "bootstrap");
 	
 // Start slim and load the config from the config file
 $app = new \Slim\Slim($config);
