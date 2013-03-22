@@ -1,0 +1,62 @@
+<div class="row">
+<div class="span6">
+{% set imageSize = 32 %}
+{% if data.entities %}
+<table class="table table-condensed table-striped table-hover span5">
+{% for type, entity in data.entities %}
+    {% for field in entity %}
+	<tr><td style="width: 32px;">
+        {% if type == "faction" %}{% include 'components/image_faction.html' %}</td><td>{% include 'components/text_faction.html' %}
+        {% elseif type == "alliance" %}{% include 'components/image_alli.html' %}</td><td>{% include 'components/text_alli.html' %}
+        {% elseif type == "corporation" %}{% include 'components/image_corp.html' %}</td><td>{% include 'components/text_corp.html' %}
+        {% elseif type == "character" %}{% include 'components/image_char.html' %}</td><td>{% include 'components/text_char.html' %}
+        {% elseif type == "ship" %}{% include 'components/image_ship.html' %}</td><td>{% include 'components/text_ship.html' %}
+        {% elseif type == "region" %}{% include 'components/image_region.html' %}</td><td><a href="/region/{{ field.regionID }}/">{{ field.regionName }}</a>
+        {% elseif type == "system" %}{% include 'components/image_system.html' %}</td><td><a href="/system/{{ field.solarSystemID }}/">{{ field.solarSystemName }}</a>
+      {% endif %}
+	</td>
+	<td>
+        <form name="deleteentity" method="post" action="/account/tracker/">
+            <input id="deleteentityid" name="deleteentityid" type="hidden" value="{{ field.id }}">
+            <input id="deleteentitytype" name="deleteentitytype" type="hidden" value="{{ type }}">
+            <input type="submit" class="btn btn-danger" value="Remove" onclick="return confirm('Are you sure you want to remove {{ field.name }}?');">
+        </form>
+    </td>
+	</tr>
+    {% endfor %}
+{% endfor %}
+</table>
+{% endif %}
+
+
+</div>
+<div class="span6">
+<legend>Character / Corporations / Alliances / Factions</legend>
+<p>Select which Character / Corporations / Alliances / Factions / Ship / System / Region you'd like to follow.</p>
+<p><strong>Names must be exact, and Corporation/Alliance must NOT be closed</strong></p>
+
+<form class="well" name="addentity" method="post" action="/account/tracker/">
+    <fieldset>
+        <table class="table table-condensed">
+            <tbody class="pull-left">
+            <tr><td>Name:</td><td class="clearfix"><input id="entity" name="entity" type="text" required placeholder="Name"></td></tr>
+			<tr><td>Type:</td>
+				<td>
+					<select name="entitytype">
+						<option value="character">Character</option>
+						<option value="corporation">Corporation</option>
+						<option value="alliance">Alliance</option>
+						<option value="faction">Faction</option>
+                        <option value="ship">Ship</option>
+                        <option value="system">System</option>
+                        <option value="region">Region</option>
+					</select>
+				</td>
+			</tr>
+            <tr><td><input type="submit" class="btn btn-primary" value="Add Entity"></td></tr>
+            </tbody>
+        </table>
+    </fieldset>
+</form>
+</div>
+</div>

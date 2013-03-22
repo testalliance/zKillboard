@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html prefix="og: http://ogp.me/ns#" lang="en" class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+{% set description = "zKillboard.com is a killboard for the Massively Multiplayer Online Role Playing Game (MMORPG) EVE-Online." %}
+        <meta name="description" content="{{ description }}">
+        <meta name="title" content="zKillboard.com / {{ pageTitle }}">
+        <meta name="keywords" content="eve-online, eve, ccp, ccp games, kills, kill, massively, multiplayer, online, role, playing, game, mmorpg, rank, isk, mmorpg, killboard, eve-kill, zkillboard">
+        <meta name="robots" content="index,follow">
+{% block opengraph %}
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="@eve_kill">
+        <meta name="og:title" content="zKillboard.com / {{ pageTitle }}">
+        <meta name="og:url" content="{{ fullsiteurl }}">
+        <meta name="og:description" content="{{ description }}">
+		<meta name="google-site-verification" content="4YdeWaZKjMbr1Fnia-8e2DMgfn4nBT6OVuXqtZc2suA" />
+{% endblock %}
+{% block robots %}
+{% endblock %}
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <title>{% block title %}zKillboard.com{% endblock %}</title>
+		<link rel="canonical" href="https://zkillboard.com{{ requesturi }}">
+        <link rel="search" type="application/opensearchdescription+xml" href="//{{ siteurl }}/xml/zkbsearch.xml" title="zKillboard">
+{% if sessiontheme is not defined %}{% set sessiontheme = 'cyborg' %}{% endif %}
+        <link rel="stylesheet" href="//{{ siteurl }}/css/themes/{{ sessiontheme }}/bootstrap.no-icons.min.css">
+        <link rel="stylesheet" href="//{{ siteurl }}/css/theme-edits/{{sessiontheme}}-main.css">
+        <link rel="stylesheet" href="//{{ siteurl }}/css/bootstrap-responsive.min.css">
+        <link rel="stylesheet" href="//{{ siteurl }}/css/font-awesome.css">
+        <link rel="stylesheet" href="//{{ siteurl }}/css/main.css">
+
+        {% block style %}
+        {% endblock %}
+    </head>
+    <body>
+        {% include "navigationbar.html" %}
+
+		<div class="centered"><div id="adsensetop" style="height: 90px; margin-bottom: 10px;">{{ topad|raw }}</div></div>
+		
+        <div class="container">
+			{% if sessionrevoked %}
+				<div class="alert alert-info fade in" data-dismiss="alert"><button type="button" class="close" data-dismiss="alert">&times;</button>You have had access revoked to certain parts of the site, more info <a href="/information/faq/">here</a></div>
+			{% endif %}
+
+            {% block header %}
+            {% endblock %}
+
+            {% block content %}Default content{% endblock %}
+			{% if not isMobile %}
+            <div id="back-top"><a href="#top"><span></span>Back to the Top</a></div>
+			{% endif %}
+        </div>
+		
+        <div class="centered" id="adsensebottom" style="height: 90px;">{{ bottomad|raw }}</div>
+		
+        <div class="container" id="footer">
+            {% include "footer.html" %}
+        </div>
+		
+        <script type="text/javascript" src="//{{ siteurl }}/js/modernizr.min.js"></script>
+        <script type="text/javascript" src="//{{ siteurl }}/js/jquery.min.js"></script>
+        <script type="text/javascript" src="//{{ siteurl }}/js/jquery.timeago.js"></script>
+        <script type="text/javascript" src="//{{ siteurl }}/js/jquery.dataTables.min.js"></script>
+        <script type="text/javascript" src="//{{ siteurl }}/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="//{{ siteurl }}/js/bootstrap-transition.js"></script>
+        <script type="text/javascript" src="//{{ siteurl }}/js/bootstrap-popover.js"></script>
+        <script type="text/javascript" src="//{{ siteurl }}/js/bootstrap-tooltip.js"></script>
+        <script type="text/javascript" src="//{{ siteurl }}/js/bootstrap-typeahead.js"></script>
+        <script type="text/javascript" src="//{{ siteurl }}/js/common.js"></script>
+        <script type="text/javascript" src="//{{ siteurl }}/js/sclock1.js"></script>
+{% if 'now'|date('m') == 12 %}
+        <script type="text/javascript" src="//{{ siteurl }}/js/snowstorm.js"></script> <!-- Snowstorm yo! -->
+{% endif %}
+{% block script %}
+{% endblock %}
+        <script type="text/javascript" src="//{{ siteurl }}/js/googleanalytics.js"></script>
+    </body>
+</html>

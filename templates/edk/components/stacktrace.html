@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% set pageTitle = 'stackTrace' %}
+{% block title %}{% include 'components/title.html' %}{% endblock %}
+
+{% block content %}
+<h2>stackTrace</h2>
+<pre>
+{{ stacktrace|raw }}
+</pre>
+
+{% endblock %}
