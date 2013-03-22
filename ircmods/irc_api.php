@@ -37,17 +37,12 @@ class irc_api implements ircCommand {
 				irc_out("API Stats 1 Hour: |g|$sum |n|requests with |r|$errorSum |n|errors. Frequency: |g|$sumFreq|n|/s |r|$errorFreq|n|/s");
 				return;
 		}
-		$intParam = (int) $parameters[0];
-		if($intParam == 0)
-		{
-			irc_out("Please set an API key ID..");
-			die();
-		}	
 		$strIntParam = "$intParam";
 		if (sizeof($parameters) == 1 && ((int) $parameters[0]) && strlen($parameters[0]) == strlen($strIntParam)) {
 			$keyIDs[] = (int) $parameters[0];
 		}
 		else {
+			if (strlen($entity) == 0) irc_error("Please specify a name or keyID, see help if you are further confused.");
 			// Perform a search
 
 			$chars = array();
