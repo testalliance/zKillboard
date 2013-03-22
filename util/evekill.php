@@ -1,19 +1,14 @@
 <?php
 require_once "../init.php";
-Bin::set("BreakOnInvalidDamage", false);
 Bin::set("WaitForProcessing", false);
-Bin::set("FixFaction", true);
-Bin::set("Disallow5bKills", false);
 
-do {
-    $count = Db::queryField("select count(*) count from zz_killmails where processed = 0", "count", array(), 0);
-    if ($count > 500) sleep(10);
-} while ($count > 500);
+$count = Db::queryField("select count(*) count from zz_killmails where processed = 0", "count", array(), 0);
+if ($count > 500) return;
 
 $eveKillURL = "http://eve-kill.net/mailexport.php?hash=dfF67GjsddF34hj89324SFccxVXHjk";
 
 // Pull the latest manual postings
-Db::execute("insert ignore into zz_manual_mail_list select kll_id, 0 from killboard.kb3_mails where kll_external_id = 0 or kll_external_id is null and kll_modified_time >= date_sub(now(), interval 2 hour)");
+Db::execute("insert ignore into zz_manual_mail_list select kll_id, 0 from killboard.kb3_mails where kll_external_id = 0 or kll_external_id is null and kll_modified_time >= date_sub(now(), interval 10 minute)");
 
 $result = Db::query("select eveKillID from zz_manual_mail_list where processed = 0 order by eveKillID desc limit 500", array(), 0);
 foreach($result as $row)
@@ -63,5 +58,5 @@ foreach($result as $row)
 		die("Some unknown bug just happened..\n");
 	}
 }
-if (sizeof($result) == 0) sleep(5);
+Log::log("Posted " . sizeof($result) . " manual mails from EveKill");
 
