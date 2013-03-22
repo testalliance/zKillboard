@@ -10,6 +10,7 @@ require( "init.php" );
 $timer = new Timer();
 
 // Theme
+$viewtheme = null;
 if(User::isLoggedIn())
 	$viewtheme = UserConfig::get("viewtheme");
 $config["templates.path"] = $baseDir."templates/" . ($viewtheme ? $viewtheme : "bootstrap");
