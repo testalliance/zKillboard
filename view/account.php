@@ -66,8 +66,8 @@ if($_POST)
 		$defaultcommentcharacter = $_POST["defaultcommentcharacter"];
 	if(isset($_POST["timeago"]))
 		$timeago = $_POST["timeago"];
-	if(isset($_POST["entity"]))
-		$entity = $_POST["entity"];
+	if(isset($_POST["addentitybox"]))
+		$entity = $_POST["addentitybox"];
 	if(isset($_POST["entitytype"]))
 		$entitytype = $_POST["entitytype"];
 	if(isset($_POST["ddcombine"]))
