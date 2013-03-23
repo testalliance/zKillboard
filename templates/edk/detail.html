@@ -18,8 +18,8 @@
         <div class="navbar-inner">
             <ul class="nav pull-left">
                 <li class="{{ isActive('overview', pageview) }}"><a href="/detail/{{ killdata.info.killID }}/overview/">Overview</a></li>
-                <li class="{{ isActive('involved', pageview) }} hidden-phone"><a href="/detail/{{ killdata.info.killID }}/involved/">Involved Pilots ({{ killdata.info.number_involved }})</a></li>
-				<li class="{{ isActive('shiptypes', pageview) }} hidden-phone hidden-tablet"><a href="/detail/{{ killdata.info.killID }}/shiptypes/">Ship Types ({{ extra.involvedshipscount }})</a></li>
+                <li class="{{ isActive('involved', pageview) }}"><a href="/detail/{{ killdata.info.killID }}/involved/">Involved Pilots ({{ killdata.info.number_involved }})</a></li>
+				<li class="{{ isActive('shiptypes', pageview) }}"><a href="/detail/{{ killdata.info.killID }}/shiptypes/">Ship Types ({{ extra.involvedshipscount }})</a></li>
                 <li class="{{ isActive('comments', pageview) }}"><a href="/detail/{{ killdata.info.killID }}/comments/">Comments ({{ extra.comments.count }})</a></li>
             </ul>
             <ul class="nav pull-right hidden-phone">
@@ -39,19 +39,19 @@
         </div>
     </div>
         {% if pageview == "overview" %}
-			<div class="span4 pull-right">
-				<div class="span4 pull-right" style="margin: 0px;">{% include 'components/victim_info.html' %}</div>
-				<div class="span4 pull-right" style="margin: 0px;">{% include 'components/tdfb.html' %}</div>
-				<div class="span4 pull-right" style="margin: 0px;">
+			<div class="pull-right" style="width: 400px;">
+				<div style="margin: 0px;">{% include 'components/victim_info.html' %}</div>
+				<div style="margin: 0px;">{% include 'components/tdfb.html' %}</div>
+				<div style="margin: 0px;">
 					{% if extra.invAll | length %}
 						<div style="margin: 0px;">{% set field = extra.invAll %}{% include 'components/involved_summary.html' %}</div>
 					{% endif %}
 					<div style="margin: 0px;">{% include 'components/attackers.html' %}</div>
 				</div>
 			</div>
-			<div class="span6 pull-left" style="margin: 0px;">
-				<div class="span5 pull-left hidden-phone" style="margin: 0px;">{% include 'components/fitting_wheel.html' %}</div>
-				<div class="span6" style="margin: 0px;">{% if sessionddcombined == "true" or isMobile or isTablet %}{% include 'components/item_list_combined.html' %}{% else %}{% include 'components/item_list.html' %}{% endif %}</div>
+			<div class="pull-left" style="margin: 0px; width: 550px;">
+				<div class="pull-left" style="margin: 0px;">{% include 'components/fitting_wheel.html' %}</div>
+				<div style="margin: 0px;">{% if sessionddcombined == "true" or isMobile or isTablet %}{% include 'components/item_list_combined.html' %}{% else %}{% include 'components/item_list.html' %}{% endif %}</div>
 			</div>
 		{% elseif pageview == "involved" %}
 			<table class="table table-condensed table-striped">

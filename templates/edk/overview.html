@@ -28,7 +28,7 @@
             <li class="{{ isActive('api', pageType) }} hidden-phone"><a href="/{{ key }}/{{ id }}/api/">API</a></li>
 	{% endif %}
 		</ul>
-		<ul class="nav pull-right hidden-phone">
+		<ul class="nav pull-right">
 			{% if key == "character" %}
 				<li><a href="http://eveboard.com/pilot/{{ pageName }}/" target="_blank">EVE-Board</a></li>
 				<li><a href="http://eve-search.com/search/author/{{ pageName|url_encode }}/" target="_blank">EVE-Search</a></li>
@@ -86,7 +86,9 @@
     {% include "components/history.html" %}
 {% elseif pageType == 'top' %}
 	{% set showImage = true %}
+	<div class="row">
 	{% include 'components/top_list.html' %}
+	</div>
 {% elseif pageType == 'corpstats' %}
 	{% include 'components/corpstats.html' %}
 {% endif %}

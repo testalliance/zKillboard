@@ -1,8 +1,7 @@
 {% set history = detail.history %} 
 {% set lastYear = 0 %}
 {% set currentYear = 0 %}
-<div class="row">
-<table class="table table-condensed table-striped table-hover table-bordered span3">
+<table class="table table-condensed table-striped table-hover table-bordered">
 <tr style="text-align: right;"><th>&nbsp;</th><th>Kills</th><th>Points</th><th>ISK</th><th>Losses</th><th>Points</th><th>ISK</th></tr>
 {% for month in history %}
 	{% if currentYear != month.year %}
@@ -20,4 +19,3 @@
 	<tr>
 {% endfor %}
 </table>
-</div>
