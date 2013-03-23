@@ -85,6 +85,29 @@ $(document).ready(function() {
 			$('form[name="search"]').submit();
 		}
    });
+   	// Autocomplete search
+    $("#addentitybox").typeahead({
+		source: function(typeahead, query) {
+			//clear the old rate limiter
+			clearTimeout($('#typeahead').data('limiter'));
+
+			var ajax_request = function()
+			{
+				$.ajax({
+					url: "/autocomplete/",
+					type: "GET",
+					data: "q=" + query,
+					dataType: "JSON",
+					async: true,
+					success: function(data) {
+						typeahead.process(data);
+					}
+				});
+			}
+            //start the new timer
+            $('#typeahead').data('limiter', setTimeout(ajax_request, 500));
+		}
+   });
 });
 
 function checkAds() {
