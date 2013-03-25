@@ -37,7 +37,7 @@ class irc_api implements ircCommand {
 				irc_out("API Stats 1 Hour: |g|$sum |n|requests with |r|$errorSum |n|errors. Frequency: |g|$sumFreq|n|/s |r|$errorFreq|n|/s");
 				return;
 		}
-		$strIntParam = "$intParam";
+		$strIntParam = (string) $parameters[0];
 		if (sizeof($parameters) == 1 && ((int) $parameters[0]) && strlen($parameters[0]) == strlen($strIntParam)) {
 			$keyIDs[] = (int) $parameters[0];
 		}
