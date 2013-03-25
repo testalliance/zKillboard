@@ -10,7 +10,7 @@ if(count($entities) == 1) {
 	$type = $entities[0]["type"];
 	$values = array_values($entities[0]);
 	$id = $values[0];
-	$app->redirect("/$type/$id/", 301);
+	$app->redirect("/$type/$id/");
 }
 
 $app->render("search.html", array("data" => $entities));
