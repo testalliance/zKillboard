@@ -527,7 +527,7 @@
 		public static function getAlliDetails($id, $parameters = array())
 		{
 			$data = Db::queryRow("select allianceID, factionID from zz_participants where allianceID = :id and dttm >= date_sub(now(), interval 7 day) order by killID desc limit 1", array(":id" => $id), 30);
-			if (sizeof($data) == 0) $data["allianceID"] == $id;
+			if (sizeof($data) == 0) $data["allianceID"] = $id;
 			// Add membercount, etc.
 			$moreData = Db::queryRow("select * from zz_alliances where allianceID = :id", array(":id" => $id), 30);
 			if ($moreData) {
