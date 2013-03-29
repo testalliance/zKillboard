@@ -1,6 +1,8 @@
 $(document).ready(function() {
-	checkAds();
 	
+	// Check to see if the user has ad's enabled
+	if ( $("iframe").length == 0 ) { $("#adsensetop, #adsensebottom").html("<div>Advertising seems to be blocked by your browser.<br/>This isn't very nice as the ads pay for the servers!<br/>May all your ships quickly become wrecks...</div>"); }
+
     if ($("[rel=tooltip]").length) {
 		$("[rel=tooltip]").tooltip({
 			placement: "bottom",
@@ -8,19 +10,11 @@ $(document).ready(function() {
 		});
     }
 	 
+	// 
     $('.dropdown-toggle').dropdown();
-    
-    // Javascript to enable link to tab
-    var url = document.location.toString();
-    if (url.match('#')) {
-        $('.nav-tabs a[href=#'+url.split('#')[1]+']').tab('show') ;
-    } 
-
-    // Change hash for page-reload
-    $('.nav-tabs a').on('shown', function (e) {
-        window.location.hash = e.target.hash;
-    })
-
+    $("abbr.timeago").timeago();
+    $(".alert").alert()
+	
     // Javascript to enable link to tab
     var url = document.location.toString();
     if (url.match('#')) {
@@ -31,11 +25,6 @@ $(document).ready(function() {
     $('.nav-pills a').on('shown', function (e) {
         window.location.hash = e.target.hash;
     })
-
-    jQuery(document).ready(function() {
-      jQuery("abbr.timeago").timeago();
-    });
-    $(".alert").alert()
 
 	// hide #back-top first
 	$("#back-top").hide();
@@ -58,66 +47,10 @@ $(document).ready(function() {
 			return false;
 		});
 	});
-	
-	// Autocomplete search
-    $("#searchbox").typeahead({
-		source: function(typeahead, query) {
-			//clear the old rate limiter
-			clearTimeout($('#typeahead').data('limiter'));
-
-			var ajax_request = function()
-			{
-				$.ajax({
-					url: "/autocomplete/",
-					type: "GET",
-					data: "q=" + query,
-					dataType: "JSON",
-					async: true,
-					success: function(data) {
-						typeahead.process(data);
-					}
-				});
-			}
-            //start the new timer
-            $('#typeahead').data('limiter', setTimeout(ajax_request, 500));
-		},
-		onselect: function(obj) {
-			$('form[name="search"]').submit();
-		}
-   });
-   	// Autocomplete search
-    $("#addentitybox").typeahead({
-		source: function(typeahead, query) {
-			//clear the old rate limiter
-			clearTimeout($('#typeahead').data('limiter'));
-
-			var ajax_request = function()
-			{
-				$.ajax({
-					url: "/autocomplete/",
-					type: "GET",
-					data: "q=" + query,
-					dataType: "JSON",
-					async: true,
-					success: function(data) {
-						typeahead.process(data);
-					}
-				});
-			}
-            //start the new timer
-            $('#typeahead').data('limiter', setTimeout(ajax_request, 500));
-		}
-   });
+   
+	//add the autocomplete search thing
+	$('#searchbox, #addentitybox').zz_search();   
 });
-
-function checkAds() {
-	if(document.getElementsByTagName("iframe").item(0) == null)
-	{
-		$message = "<div>Advertising seems to be blocked by your browser.<br/>This isn't very nice as the ads pay for the servers!<br/>May all your ships quickly become wrecks...</div>";
-		$("#adsensetop").html($message);
-		$("#adsensebottom").html($message);
-	};
-}
 
 function updateKillsLastHour() {
 	return;

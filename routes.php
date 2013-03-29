@@ -210,10 +210,8 @@ $app->get("/revoke/", function() use ($app) {
 });
 
 // Autocomplete
-$app->get("/autocomplete/", function() use ($app) {
-	$result = Info::findNames($_GET["q"]);
-	$app->contentType("application/json; charset=utf-8");
-	echo json_encode($result);
+$app->post("/autocomplete/", function() use ($app) {
+	include( "view/autocomplete.php" );
 });
 
 // EVE-KILL kill_detail intercept
