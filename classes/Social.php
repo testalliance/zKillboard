@@ -6,13 +6,15 @@ class Social
 	public static function findConversations()
 	{
 		$timer = new Timer();
-		$lastSocialTime = Storage::retrieve("Social:lastSocialTime", (time() - (12 * 3600)));
+		$locker = "Social:lastSocialTime";
+		$now = time();
+		$lastSocialTime = Storage::retrieve($locker, (time() - (12 * 3600)));
 		$result = Db::query("select killID, unix_timestamp(insertTime) insertTime from zz_killmails where killID > 0 and processed = 1 and insertTime >= from_unixtime(:last) order by insertTime", array(":last" => $lastSocialTime), 0);
 		foreach ($result as $row) {
 			$lastSocialTime = $row["insertTime"];
 			Social::beSocial($row["killID"]);
 		}
-		Storage::store("Social:lastSocialTime", $lastSocialTime);
+		Storage::store($locker, $now);
 	}
 
 	public static function beSocial($killID)
@@ -43,8 +45,8 @@ class Social
 		if (!in_array($victimInfo["characterID"], $laugh)) { // If in laugh array, skip the checks
 			// Check the minimums, min. price and happened in last 12 hours
 			if ($totalPrice < $ircMin) return;
-			if ($time > (time() - (24*3600))) continue;
 		}
+		if ($time > (time() - (24*3600))) continue;
 
 		Info::addInfo($victimInfo);
 		$emizeko = Db::queryField("select count(1) count from zz_participants where characterID = 1389468720 and killID = $killID and isVictim = 0", "count");
