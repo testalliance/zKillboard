@@ -40,7 +40,7 @@ class Util
 		PhealConfig::getInstance()->cache = new PhealFileCache("/var/killboard/cache/");
 		PhealConfig::getInstance()->log = new PhealLogger();
 		PhealConfig::getInstance()->api_customkeys = true;
-		PhealConfig::getInstance()->api_base = 'https://api.eveonline.com/'; // API proxy server, to get everything gzipped.
+		PhealConfig::getInstance()->api_base = 'https://api.zkillboard.com/'; // API proxy server, to get everything gzipped.
 
 		if ($keyID != null && $vCode != null) $pheal = new Pheal($keyID, $vCode);
 		else $pheal = new Pheal();
@@ -167,7 +167,8 @@ class Util
 					break;
 				case "orderDirection":
 					if (!($value == "asc" || $value == "desc")) throw new Exception("Invalid orderDirection!  Allowed: asc, desc");
-					$parameters[$key] = $value;
+					$parameters[$key] = "desc";
+					//$parameters[$key] = $value;
 					break;
 				case "pastSeconds":
 					$value = (int) $value;

@@ -4,8 +4,6 @@ scrapeCheck();
 
 $parameters = Util::convertUriToParameters();
 
-if(isset($parameters["regionID"])) die("RegionID is currently wtf raping the server, please come by irc if you desperately need to do these calls");
-
 // Enforcement
 if (sizeof($parameters) < 2) die("Invalid request.  Must provide at least two request parameters");
 // At least one of these modifiers is required
