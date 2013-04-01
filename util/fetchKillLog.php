@@ -31,7 +31,7 @@ try {
 	Db::execute("update zz_api_characters set cachedUntil = :cachedUntil, errorCode = '0' where keyID = :keyID and characterID = :characterID",
 			array(":cachedUntil" => $cachedUntil, ":keyID" => $keyID, ":characterID" => $charID));
 
-	$file = "/var/log/zkb_killlogs/{$keyID}_{$charID}_0.xml";
+	$file = "/var/killboard/zkb_killlogs/{$keyID}_{$charID}_0.xml";
 	@unlink($file);
 	error_log($pheal->xml . "\n", 3, $file);
 
