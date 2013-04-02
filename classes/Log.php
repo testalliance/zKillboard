@@ -10,7 +10,9 @@ class Log
 
 	public static function log($text)
 	{
-		error_log(date("Ymd H:i:s") . " $text \n", 3, "/var/log/kb/kb.log");
+		global $logfile;
+		if (!file_exists($logfile) && !is_writable(dirname($logfile))) return; // Can't create the file
+		if (is_writable($logfile)) error_log(date("Ymd H:i:s") . " $text \n", 3, $logfile);
 	}
 
 	/*

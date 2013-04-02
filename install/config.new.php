@@ -14,6 +14,9 @@ $baseUrl = "/";
 $baseAddr = "%baseaddr%";
 chdir($baseDir);
 
+// Logfile
+$logfile = "%logfile%";
+
 // Memcache
 $memcacheServer = "%memcache%";
 $memcachePort = "%memcacheport%";
