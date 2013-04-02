@@ -68,8 +68,8 @@ if($_POST)
 		$timeago = $_POST["timeago"];
 	if(isset($_POST["addentitybox"]))
 		$entity = $_POST["addentitybox"];
-	if(isset($_POST["entitytype"]))
-		$entitytype = $_POST["entitytype"];
+	if(isset($_POST["entitymetadata"]))
+		$entitymetadata = $_POST["entitymetadata"];
 	if(isset($_POST["ddcombine"]))
 		$ddcombine = $_POST["ddcombine"];
     if(isset($_POST["deleteentityid"]))
@@ -154,47 +154,26 @@ if($_POST)
         }
         UserConfig::set($deleteentitytype, $q);
     }
-    
-	if($entity && $entitytype)
-	{
-		if($entitytype == "character")
-			$query = "SELECT characterID AS id, name FROM zz_characters WHERE name = :name";
-		if($entitytype == "corporation")
-			$query = "SELECT corporationID AS id, name FROM zz_corporations WHERE name = :name AND memberCount > 0";
-		if($entitytype == "alliance")
-			$query = "SELECT allianceID AS id, name FROM zz_alliances WHERE name = :name AND memberCount > 0";
-		if($entitytype == "faction")
-			$query = "SELECT factionID AS id, name FROM zz_factions WHERE name = :name";
-		if($entitytype == "ship")
-			$query = "SELECT typeID as id, typeName AS name FROM ccp_invTypes WHERE typeName = :name";
-		if($entitytype == "system")
-			$query = "SELECT solarSystemID AS id, solarSystemName AS name FROM ccp_systems WHERE solarSystemName = :name";
-		if($entitytype == "region")
-			$query = "SELECT regionID AS id, regionName AS name FROM ccp_regions WHERE regionName = :name";
 
-		$id = Db::query($query, array(":name" => $entity));
-        if($id)
-        {
-            $q = UserConfig::get($entitytype);
-            if(!empty($q))
-            {
-                if(in_array($id, $q))
-                    $error = "$entity is already added";
-                else
-                {
-                    $q[] = $id[0];
-                    UserConfig::set($entitytype, $q);
-                    $error = "$entity has been added";
-                }
-            }
-            else
-            {
-                UserConfig::set($entitytype, $id);
-                $error = "$entity has been added";
-            }
-        }
-        else
-            $error = "No entity found with that name";
+	if($entity && $entitymetadata)
+	{
+		$entitymetadata = json_decode($entitymetadata, true);
+
+		$entities = UserConfig::get($entitymetadata['type']);
+
+		$entity = array('id' => $entitymetadata['id'], 'name' => $entitymetadata['name']);
+		
+		if(empty($entities) || !in_array($entity, $entities))
+		{
+			$entities[] = $entity;
+			
+			UserConfig::set($entitymetadata['type'], $entities);
+			$error = "{$entitymetadata['name']} has been added to your tracking list";
+		}
+		else
+		{
+			 $error = "{$entitymetadata['name']} is already being tracked";
+		}
 	}
 
 	if($ddcombine)

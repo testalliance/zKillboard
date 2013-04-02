@@ -27,36 +27,16 @@
 {% endfor %}
 </table>
 {% endif %}
-
-
 </div>
 <div class="span6">
-<legend>Character / Corporations / Alliances / Factions</legend>
-<p>Select which Character / Corporations / Alliances / Factions / Ship / System / Region you'd like to follow.</p>
-<p><strong>Names must be exact, and Corporation/Alliance must NOT be closed</strong></p>
-
-<form class="well" name="addentity" method="post" action="/account/tracker/">
-    <fieldset>
-        <table class="table table-condensed">
-            <tbody class="pull-left">
-            <tr><td>Name:</td><td class="clearfix"><input type="text" autocomplete="off" data-provider="typeahead" placeholder="Name" id="addentitybox" name="addentitybox"></td></tr>
-			<tr><td>Type:</td>
-				<td>
-					<select name="entitytype">
-						<option value="character">Character</option>
-						<option value="corporation">Corporation</option>
-						<option value="alliance">Alliance</option>
-						<option value="faction">Faction</option>
-                        <option value="ship">Ship</option>
-                        <option value="system">System</option>
-                        <option value="region">Region</option>
-					</select>
-				</td>
-			</tr>
-            <tr><td><input type="submit" class="btn btn-primary" value="Add Entity"></td></tr>
-            </tbody>
-        </table>
-    </fieldset>
-</form>
+	<legend>Add Tracker</legend>
+	<p>Select which Character / Corporations / Alliances / Factions / Ship / System / Region you would like to follow.</p>
+	<form class="well form-inline" name="addentity" id="addentity" method="post" action="/account/tracker/">
+		<fieldset>
+			<input type="hidden" name="entitymetadata" value="" />
+			<label for="addentitybox">Name</label>
+			<input type="text" class="span5" autocomplete="off" placeholder="Name" id="addentitybox" name="addentitybox">
+		</fieldset>
+	</form>
 </div>
 </div>

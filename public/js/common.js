@@ -47,25 +47,15 @@ $(document).ready(function() {
 			return false;
 		});
 	});
-
+	
 	//add the autocomplete search thing
-	$('#searchbox').zz_search();
-
-	// Autocomplete search
-	$("#addentitybox").typeahead({
-		source: function(typeahead, query) {
-			//clear the old rate limiter
-			clearTimeout($('#typeahead').data('limiter'));
-
-			var ajax_request = function() {
-				$.ajax({url: "/autocomplete/", type: "POST", data: {"query" : query}, dataType: "JSON",	async: true, success: function(data) {
-						typeahead.process(data);
-				}});
-			}
-			
-			//start the new timer
-			$('#typeahead').data('limiter', setTimeout(ajax_request, 500));
-		}
+	$('#searchbox').zz_search( function(data) { window.location = '/' + data.type + '/' + data.id + '/'; return false; } );
+	
+	//and for the tracker entity lookup
+	$('#addentitybox').zz_search( function(data) { 
+		$('#addentity input[name="entitymetadata"]').val(JSON.stringify(data));
+		$('#addentity input[name="addentitybox"]').val(data.name);
+		$('#addentity').submit();
 	});
 });
 
