@@ -11,7 +11,8 @@ class irc_resetapi implements ircCommand {
 
 	public function execute($nick, $uhost, $channel, $command, $parameters, $nickAccessLevel) {
 		$keyIDs = array();
-		$entity = implode(" ", $parameters);
+		$entity = implode(" ", trim($parameters));
+		if (strlen($entity) == 0) irc_error("|r|Please specify a name, keyID, or all");
 		if ($entity == "all") {
             Db::execute("update zz_api_characters set lastChecked = 0, cachedUntil = 0, maxKillID = 0, errorCode = 0 where errorCode != 0");
             Db::execute("update zz_api set lastValidation = 0, errorCode = 0 where errorCode != 0");
