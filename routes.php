@@ -181,6 +181,10 @@ $app->get("/stacktrace/:hash/", function($hash) use ($app) {
 });
 
 // API
+$app->get("/api/stats/:type/:id/(:return_method)/", function($type, $id, $return_method = 'json') use ($app) {
+    include( "view/apistats.php" );
+});
+
 $app->get("/api/:input+", function($input) use ($app) {
     include( "view/api.php" );
 });

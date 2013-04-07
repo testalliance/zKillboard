@@ -83,6 +83,21 @@ Examples:
 -- <a href="https://zkillboard.com/api/w-space/corporationID/98076299/page/2/">https://zkillboard.com/api/w-space/corporationID/98076299/page/2/</a>
 -- <a href="https://zkillboard.com/api/kills/shipID/644,638/orderDirection/asc/">https://zkillboard.com/api/kills/shipID/644,638/orderDirection/asc/</a>
 
+Stats API
+For those people wishing to pull general statistics about character/corporation/alliance or faction there is an additional stats API.
+This API will not accept any of the modifiers used above.
+
+Allowed Types
+- <strong>Character</strong>
+- <strong>Corporation</strong>
+- <strong>Alliance</strong>
+- <strong>Faction</strong>
+
+Examples:
+-- <a href="https://zkillboard.com/api/stats/character/268946627/">https://zkillboard.com/api/stats/character/268946627/</a>
+-- <a href="https://zkillboard.com/api/stats/corporation/98076299/xml/">https://zkillboard.com/api/stats/corporation/98076299/xml/</a>
+-- <a href="https://zkillboard.com/api/stats/alliance/386292982/json/">https://zkillboard.com/api/stats/alliance/386292982/json/</a>
+
 <strong>Please Note:</strong>
 <p>If you aren't using the api-only modifier, then it is possible to pull kills that include a negative killID. Negative killIDs denote manual mails.
 Those manual mails could later get verified by the API, and get a positive killID (API mails).
