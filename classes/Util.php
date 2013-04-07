@@ -234,4 +234,55 @@ class Util
 	{
 		return self::$longMonths[$month];
 	}
+	
+	public static function scrapeCheck()
+	{
+		global $app;
+		$timeLimit = 60; // Number of seconds allowed between requests
+		$numAccesses = 10; // Number of accesses before hammer is thrown
+
+		if (isset($_SERVER["HTTP_CF_CONNECTING_IP"])) $ip = $_SERVER["HTTP_CF_CONNECTING_IP"];
+		elseif (isset($_SERVER["HTTP_X_FORWARDED_FOR"])) $ip = $_SERVER["HTTP_X_FORWARDED_FOR"];
+		else $ip = $_SERVER['REMOTE_ADDR'];
+
+		$validScrapers = array(
+			"85.88.24.82", // DOTLAN
+		);
+		$isValidScraper = false;
+		foreach ($validScrapers as $validScraper) {
+			if (strpos($ip, $validScraper) !== false) $isValidScraper = true;
+		}
+		if ($isValidScraper == false) {
+			$session = Memcached::get("session_$ip");
+			if ($session == null) {
+				$session = array("accesses" => array());
+			}
+			$oldAccess = 0;
+			foreach($session["accesses"] as $access) {
+				if ($access < (time() - $timeLimit)) $oldAccess++;
+			}
+			$session["accesses"][] = time();
+			$session["last_access"] = time();
+			Memcached::set("session_$ip", $session, $timeLimit + $oldAccess);
+			if (sizeof($session["accesses"]) - $oldAccess >= 10 || sizeof($session["accesses"]) > $numAccesses ) {
+				Log::log("$ip has hit the scrape limit, adding them to the naughty list.");
+				throw new Exception("Hammering the API isn't very nice.  Please keep your requests $timeLimit seconds apart.  Thank you.");
+			}
+		}
+	}
+	
+	public static function isValidCallback($subject)
+	{
+		$identifier_syntax = '/^[$_\p{L}][$_\p{L}\p{Mn}\p{Mc}\p{Nd}\p{Pc}\x{200C}\x{200D}]*+$/u';
+
+		$reserved_words = array('break', 'do', 'instanceof', 'typeof', 'case',
+		'else', 'new', 'var', 'catch', 'finally', 'return', 'void', 'continue', 
+		'for', 'switch', 'while', 'debugger', 'function', 'this', 'with', 
+		'default', 'if', 'throw', 'delete', 'in', 'try', 'class', 'enum', 
+		'extends', 'super', 'const', 'export', 'import', 'implements', 'let', 
+		'private', 'public', 'yield', 'interface', 'package', 'protected', 
+		'static', 'null', 'true', 'false');
+
+		return preg_match($identifier_syntax, $subject) && ! in_array(mb_strtolower($subject, 'UTF-8'), $reserved_words);
+	}
 }
