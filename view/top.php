@@ -1,8 +1,5 @@
 <?php
-if(!isset($page))
-	$page = "weekly";
-
-	// $time is an array
+// $time is an array
 if(!isset($time))
 	$time = array();
 
