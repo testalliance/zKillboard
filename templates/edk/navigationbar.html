@@ -96,7 +96,18 @@
 <input type="text" class="search-query" placeholder="Search" autocomplete="off" id="searchbox" name="searchbox">
 </form>
 </li>
-<li class="hidden-phone"><a href="/information/"><i class="icon-info-sign"></i></a></li>
+<li class="dropdown hidden-phone">
+<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-info-sign"></i></a>
+<ul class="dropdown-menu">
+<li class="nav-header">Information</li>
+<li><a href="/information/">Information</a></li>
+<li><a href="/information/api/">API</a></li>
+<li><a href="/information/contact/">Contact</a></li>
+<li class="nav-header">Support</li>
+<li><a href="/support/">Support</a></li>
+<li><a href="/support/chat/">Live Chat</a></li>
+</ul>
+</li>
 {% if sessionusername %}
 <li class="dropdown">
 <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-user"></i></a>

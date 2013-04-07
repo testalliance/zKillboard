@@ -16,6 +16,14 @@ $app->get("/information/:page/", function($page) use ($app) {
     include( "view/information.php" );
 });
 
+// Support
+$app->get("/support/", function() use ($app) {
+	include( "view/support.php" );
+});
+$app->get("/support/:page/", function($page) use ($app) {
+	include( "view/support.php" );
+});
+
 // Tracker
 $app->get("/tracker/", function() use ($app) {
     include( "view/tracker.php" );
