@@ -1,7 +1,4 @@
 <?php
-if(!isset($page))
-    $page = "about";
-    
 $info = array();
 if($page == "statistics")
 {

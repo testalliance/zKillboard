@@ -9,18 +9,12 @@ $app->get("/", function () use ($app){
 });
 
 //  information about zKillboard
-$app->get("/information/", function() use ($app) {
-    include( "view/information.php" );
-});
-$app->get("/information/:page/", function($page) use ($app) {
+$app->get("/information(/:page)/", function($page = "about") use ($app) {
     include( "view/information.php" );
 });
 
 // Support
-$app->get("/support/", function() use ($app) {
-	include( "view/support.php" );
-});
-$app->get("/support/:page/", function($page) use ($app) {
+$app->get("/support(/:page)/", function($page = "support") use ($app) {
 	include( "view/support.php" );
 });
 
@@ -30,10 +24,7 @@ $app->get("/tracker/", function() use ($app) {
 });
 
 // View kills
-$app->get("/kills/", function() use ($app) {
-    include( "view/kills.php" );
-});
-$app->get("/kills/:type/", function($type) use ($app) {
+$app->get("/kills(/:type)/", function($type = NULL) use ($app) {
     include( "view/kills.php" );
 });
 
@@ -41,6 +32,7 @@ $app->get("/kills/:type/", function($type) use ($app) {
 $app->get("/related/:system/:time/", function($system, $time) use ($app) {
     include( "view/related.php" );
 });
+
 // View related kills
 $app->get("/r2/:system/:time/", function($system, $time) use ($app) {
     include( "view/r2.php" );
@@ -53,13 +45,7 @@ $app->get("/top/lasthour/", function() use ($app) {
 $app->get("/ranks/:pageType/:subType/", function($pageType, $subType) use ($app) {
     include( "view/ranks.php" );
 });
-$app->get("/top/", function() use ($app) {
-    include( "view/top.php" );
-});
-$app->get("/top/:type/", function($type) use ($app) {
-    include( "view/top.php" );
-});
-$app->get("/top/:type/:page/(:time+/)", function($type, $page, $time = array()) use ($app) {
+$app->get("/top(/:type)(/:page)(/:time+)/", function($type = "weekly", $page = NULL, $time = array()) use ($app) {
     include( "view/top.php" );
 });
 
@@ -69,13 +55,10 @@ $app->get("/raw/:id/", function($id) use ($app) {
 });
 
 // Kill Detail View
-$app->get("/detail/:id/", function($id) use ($app) {
+$app->get("/detail/:id(/:pageview)/", function($id, $pageview = "overview") use ($app) {
     include( "view/detail.php" );
 });
-$app->get("/detail/:id/:pageview/", function($id, $pageview) use ($app) {
-    include( "view/detail.php" );
-});
-$app->post("/detail/:id/:pageview/", function($id, $pageview) use ($app) {
+$app->post("/detail/:id(/:pageview)/", function($id, $pageview = "overview") use ($app) {
     include( "view/detail.php" );
 });
 
@@ -117,8 +100,6 @@ $app->post("/forgotpassword/", function() use ($app) {
 $app->get("/changepassword/:hash", function($hash) use ($app) {
     include( "view/changepassword.php" );
 });
-
-// Change password
 $app->post("/changepassword/:hash", function($hash) use ($app) {
     include( "view/changepassword.php" );
 });
@@ -134,19 +115,11 @@ $app->post("/register/", function() use ($app) {
 });
 
 // Account
-$app->get("/account/", function() use ($app) {
+$app->get("/account(/:req)/", function($req = NULL) use ($app) {
     global $cookie_name, $cookie_time;
     include( "view/account.php" );
 });
-$app->post("/account/", function() use ($app) {
-    global $cookie_name, $cookie_time;
-    include( "view/account.php" );
-});
-$app->get("/account/:req/", function($req) use ($app) {
-    global $cookie_name, $cookie_time;
-    include( "view/account.php" );
-});
-$app->post("/account/:req/", function($req) use ($app) {
+$app->post("/account(/:req)/", function($req = NULL) use ($app) {
     global $cookie_name, $cookie_time;
     include( "view/account.php" );
 });
@@ -154,19 +127,11 @@ $app->post("/account/:req/", function($req) use ($app) {
 // Moderator
 
 // Admin
-$app->get("/admin/", function () use ($app) {
+$app->get("/admin(/:req)/", function ($req = NULL) use ($app) {
     global $cookie_name, $cookie_time;
     include( "view/admin.php" );
 });
-$app->post("/admin/", function () use ($app) {
-    global $cookie_name, $cookie_time;
-    include( "view/admin.php" );
-});
-$app->get("/admin/:req/", function ($req) use ($app) {
-    global $cookie_name, $cookie_time;
-    include( "view/admin.php" );
-});
-$app->post("/admin/:req/", function ($req) use ($app) {
+$app->post("/admin(/:req)/", function ($req = NULL) use ($app) {
     global $cookie_name, $cookie_time;
     include( "view/admin.php" );
 });

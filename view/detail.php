@@ -3,9 +3,6 @@ $involved = array();
 $message = "";
 $pageID = "detail:$id";
 
-if(!isset($pageview))
-	$pageview = "overview";
-
 if($_POST && !User::isRevoked())
 {
 	$comment = "";
