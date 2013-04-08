@@ -17,7 +17,7 @@ if($_POST)
 	{
 		$name = $info["username"];
 		$moderator = $info["moderator"];
-		$check = Db::query("SELECT * FROM zz_tickets_replies WHERE reply = :reply AND userid = :userid", array(":reply" => $reply, ":userid" => $info["id"]), 0);
+		$check = Db::query("SELECT * FROM zz_tickets_replies WHERE reply = :reply AND userid = :userid AND belongsTo = :id", array(":reply" => $reply, ":userid" => $info["id"], ":id" => $id), 0);
 		if(!$check)
 		{
 			Db::execute("INSERT INTO zz_tickets_replies (userid, belongsTo, name, reply, moderator) VALUES (:userid, :belongsTo, :name, :reply, :moderator)", array(":userid" => $info["id"], ":belongsTo" => $id, ":name" => $name, ":reply" => $reply, ":moderator" => $moderator));

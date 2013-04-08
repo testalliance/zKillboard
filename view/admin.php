@@ -2,19 +2,10 @@
 
 if (!User::isAdmin()) $app->notFound();
 
-if(!isset($req))
-    $req = "users";
-
 $message = "";
 
 if($_POST)
 {
-    if(isset($_POST["blog"]))
-        $blog = $_POST["blog"];
-    if(isset($_POST["title"]))
-        $title = $_POST["title"];
-    if(isset($_POST["delete"]))
-        $delete = $_POST["delete"];
     if(isset($_POST["ircuserid"]))
         $ircuserid = $_POST["ircuserid"];
     if(isset($_POST["accessLevelID"]))
@@ -38,21 +29,6 @@ if($_POST)
 	if(isset($_POST["userID"]))
 		$userID = $_POST["userID"];
 		
-    if(isset($blog) && isset($title))
-    {
-        $url = str_replace(" ", "-", $title);
-        $url = urlencode($url);
-        $by = User::getUserInfo();
-        Db::execute("INSERT INTO zz_blog (url, title, postedBy, post) VALUES (:url, :title, :by, :post)", array(":url" => $url, ":title" => $title, ":by" => $by["username"], ":post" => $blog));
-        $message = "Blog post is inserted";
-    }
-    if(isset($delete))
-    {
-        Db::execute("DELETE FROM zz_blog WHERE url = :url", array(":url" => $delete));
-        $url = "/blog/".$delete."/";
-        Db::execute("DELETE FROM zz_comments WHERE pageID = :url", array(":url" => $url));
-        $message = "Blog post deleted";
-    }
     if(isset($ircuserid))
     {
         Db::execute("DELETE FROM zz_irc_access WHERE id = :id", array(":id" => $ircuserid));

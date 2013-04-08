@@ -21,6 +21,11 @@ if($_POST)
 		{
 			Db::execute("INSERT INTO zz_tickets (userid, name, email, tags, ticket) VALUES (:userid, :name, :email, :tags, :ticket)", array(":userid" => User::getUserID(), ":name" => $name, ":email" => $email, ":tags" => $tags, ":ticket" => $ticket));
 			$id = Db::queryField("SELECT id FROM zz_tickets WHERE userid = :userid AND name = :name AND tags = :tags AND ticket = :ticket", "id", array(":userid" => User::getUserID(), ":name" => $name, ":tags" => $tags, ":ticket" => $ticket));
+			global $baseUrl;
+			Log::ircAdmin("New ticket from $name: https://$baseUrl/moderator/$id/");
+			$subject = "zKillboard Ticket";
+			$message = "$name, you can find your ticket here, we will reply to your ticket asap. https://$baseAddr/tickets/view/$id/";
+			Email::send($email, $subject, $message);
 			$app->redirect("/tickets/view/$id/");
 		}
 		else

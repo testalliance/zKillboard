@@ -139,13 +139,21 @@ $app->post("/account(/:req)/", function($req = NULL) use ($app) {
 });
 
 // Moderator
+$app->get("/moderator(/:req)(/:id)/", function ($req = NULL, $id = NULL) use ($app) {
+    global $cookie_name, $cookie_time;
+    include( "view/moderator.php" );
+});
+$app->post("/moderator(/:req)(/:id)/", function ($req = NULL, $id = NULL) use ($app) {
+    global $cookie_name, $cookie_time;
+    include( "view/moderator.php" );
+});
 
 // Admin
-$app->get("/admin(/:req)/", function ($req = NULL) use ($app) {
+$app->get("/admin(/:req)/", function ($req = "users") use ($app) {
     global $cookie_name, $cookie_time;
     include( "view/admin.php" );
 });
-$app->post("/admin(/:req)/", function ($req = NULL) use ($app) {
+$app->post("/admin(/:req)/", function ($req = "users") use ($app) {
     global $cookie_name, $cookie_time;
     include( "view/admin.php" );
 });

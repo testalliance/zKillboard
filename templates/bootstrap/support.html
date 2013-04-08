@@ -8,7 +8,7 @@
     <div class="navbar-inner">
         <ul class="nav pull-left">
             <li class="{{ isActive('support', pageview) }}"><a href="/support/">Support</a></li>
-			<li class="{{ isActive('tickets', pageview) }}"><a href="/support/tickets/">Tickets</a></li>
+			<li><a href="/tickets/">Tickets</a></li>
 			<li class="{{ isActive('chat', pageview) }}"><a href="/support/chat/">Live Chat</a></li>
         </ul>
     </div>
@@ -16,7 +16,7 @@
 
 {% if pageview == "support" %}
 <pre class="prettyprint">
-Currently we only do support for zKB via IRC, so click on chat above, to go there.
+Currently we only do support for zKB via IRC and Tickets, so click on chat or tickets above, to go there.
 
 You COULD try and contact us via twitter, by writing to @eve_kill, but this might not get you a response.
 </pre>
