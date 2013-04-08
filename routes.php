@@ -19,12 +19,17 @@ $app->get("/support(/:page)/", function($page = "support") use ($app) {
 });
 
 // Tickets
-$app->get("/tickets(/:page)/", function($page = "tickets") use ($app) {
+$app->get("/tickets/", function() use ($app) {
 	include( "view/tickets.php" );
 });
-
-$app->post("/tickets(/:page)/", function($page = "tickets") use ($app) {
+$app->post("/tickets/", function() use ($app) {
 	include( "view/tickets.php" );
+});
+$app->get("/tickets/view/:id/", function($id) use ($app) {
+	include( "view/tickets_view.php" );
+});
+$app->post("/tickets/view/:id/", function($id) use ($app) {
+	include( "view/tickets_view.php" );
 });
 
 // Tracker
