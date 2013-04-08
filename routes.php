@@ -18,6 +18,15 @@ $app->get("/support(/:page)/", function($page = "support") use ($app) {
 	include( "view/support.php" );
 });
 
+// Tickets
+$app->get("/tickets(/:page)/", function($page = "tickets") use ($app) {
+	include( "view/tickets.php" );
+});
+
+$app->post("/tickets(/:page)/", function($page = "tickets") use ($app) {
+	include( "view/tickets.php" );
+});
+
 // Tracker
 $app->get("/tracker/", function() use ($app) {
     include( "view/tracker.php" );
