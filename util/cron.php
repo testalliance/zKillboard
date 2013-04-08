@@ -25,8 +25,6 @@ function handleApiException($keyID, $charID, $exception)
 			Log::irc($msg);
 			Log::admin($msg);
 			break;
-		case   7: // wtf ccp?
-		case  35: // wtf ccp?
 		case 403:
 		case 502:
 		case 503: // Service Unavailable - try again later
@@ -78,7 +76,6 @@ function handleApiException($keyID, $charID, $exception)
 			$clearAllCharacters = true;
 			$clearApiEntry = true;
 			break;
-		case 0: // API Date could not be read / parsed, original exception (Something is wrong with the XML and it couldn't be parsed)
 		case 500: // Internal Server Error (More CCP Issues)
 		case 520: // Unexpected failure accessing database. (More CCP issues)
 		case 404: // URL Not Found (CCP having issues...)
@@ -86,11 +83,12 @@ function handleApiException($keyID, $charID, $exception)
 			$updateCacheTime = true;
 			$cacheUntil = time() + 3600; // Try again in an hour...
 			break;
-		default:
+		case 0: // API Date could not be read / parsed, original exception (Something is wrong with the XML and it couldn't be parsed)
+		default: // try again in 5 minutes
 			Log::log("$keyID - Unhandled error - Code $code - $message");
-			$updateCacheTime = true;
+			//$updateCacheTime = true;
 			$clearApiEntry = true;
-			$cacheUntil = time() + 3600;
+			//$cacheUntil = time() + 300;
 	}
 
 	if ($demoteCharacter && $charID != 0) {
@@ -312,7 +310,7 @@ function fetchApis()
 		$timer = new Timer();
 		$maxTime = 65 * 1000;
 
-		$fetchesPerSecond = 5;
+		$fetchesPerSecond = 20;
 		$iterationCount = 0;
 
 		while ($timer->stop() < $maxTime) {
@@ -321,14 +319,14 @@ function fetchApis()
 
 			if ($keyID) {
 				//echo "$keyID\n";
-				Db::execute("update zz_api set lastValidation = date_add(lastValidation, interval 5 minute)  where keyID = :keyID", array(":keyID" => $keyID));
-				usleep(ceil(1000000/$fetchesPerSecond));
 				$m = $iterationCount % $fetchesPerSecond;
+				Db::execute("update zz_api set lastValidation = date_add(lastValidation, interval 5 minute) where keyID = :keyID", array(":keyID" => $keyID));
 				$command = "flock -w 60 /tmp/locks/preFetchChars.$m php5 " . dirname(__FILE__) . "/fetchCharacters.php $keyID";
 				$command = escapeshellcmd($command);
 				//Log::log($command);
 				exec("$command >/dev/null 2>/dev/null &");
 				$iterationCount++;
+				if ($iterationCount % $fetchesPerSecond == 0) sleep(1);
 			} else sleep(1);
 
 		}
