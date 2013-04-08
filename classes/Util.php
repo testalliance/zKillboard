@@ -168,7 +168,7 @@ class Util
 				case "orderDirection":
 					if (!($value == "asc" || $value == "desc")) throw new Exception("Invalid orderDirection!  Allowed: asc, desc");
 					$parameters[$key] = "desc";
-					//$parameters[$key] = $value;
+					$parameters[$key] = $value;
 					break;
 				case "pastSeconds":
 					$value = (int) $value;

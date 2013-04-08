@@ -126,11 +126,15 @@ class Filters
 			$killID = (int)$parameters["beforeKillID"];
 			$tables[] = "zz_participants p";
 			$whereClauses[] = "killID < $killID";
+			// Using this crazy subquery allows us to limit the query to certain partitions
+			$whereClauses[] = "p.dttm <= (select dttm from zz_participants where killID = $killID order by killID limit 1)";
 		}
 		if (array_key_exists("afterKillID", $parameters)) {
 			$killID = (int)$parameters["afterKillID"];
 			$tables[] = "zz_participants p";
 			$whereClauses[] = "killID > $killID";
+			// Using this crazy subquery allows us to limit the query to certain partitions
+			$whereClauses[] = "p.dttm >= (select dttm from zz_participants where killID = $killID order by killID limit 1)";
 		}
 
 		$kills = array_key_exists("kills", $parameters);
