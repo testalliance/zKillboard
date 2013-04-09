@@ -21,14 +21,16 @@ class Log
 	public static function irc($text, $from = "zkillboard - ")
 	{
 		$text = Log::addIRCColors($text);
-		error_log("\n${from}$text\n", 3, "/var/killboard/bot/esc.txt");
+    $file = "/var/killboard/bot/esc.txt";
+		if (is_writable($file)) error_log("\n${from}$text\n", 3, $file);
 	}
 
 
 	public static function ircAdmin($text, $from = "zkillboard - ")
 	{
 		$text = Log::addIRCColors($text);
-		error_log("\n${from}$text\n", 3, "/var/killboard/bot/escadmin.txt");
+    $file = "/var/killboard/bot/escadmin.txt";
+		if (is_writable($file)) error_log("\n${from}$text\n", 3, $file);
 	}
 
 	public static function error($text)
