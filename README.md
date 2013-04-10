@@ -2,6 +2,8 @@
 this is a work in progress, it lacks documentation and is currently
 not meant for use in production.
 
+All the crap code was written by me - Karbowiak
+
 ## LICENSE
 see LICENSE.md File
 
