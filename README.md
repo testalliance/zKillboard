@@ -4,8 +4,9 @@ not meant for use in production.
 
 ## IRC
 We reside on Coldfront.
-irc.coldfront.net
-channel #esc
+- irc.coldfront.net
+- #esc
+- http://chat.mibbit.com/?channel=%23esc&server=irc.coldfront.net
 
 ## LICENSE
 see LICENSE.md File
@@ -28,7 +29,7 @@ not currently supported.
 3. Move to the install directory
 4. Execute the installation script: php5 install.php
 5. Follow the instructions and fill in the prompts
-6. Setup stomp
+6. Setup stomp (Follow guide further down)
 7. Setup cronjobs
 
 ## Basic cronjobs
@@ -51,7 +52,8 @@ Till then, clone this repo, and install it like any other php module
 - make install
 - add stuff to php so it loads it
 
-The stomp service is read only.
+The stomp service is read only, and might very well be moved some place else, nothing is certain with this
+So do not use the stomp service for anything super important, not yet!
 - Stomp server: tcp://82.221.99.197:61613
 - Stomp user: guest
 - Stomp pass: guest
