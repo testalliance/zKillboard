@@ -37,7 +37,21 @@ not currently supported.
 - * * * * * flock -w 63 /tmp/lock.doPopulateCharactersTable php5 /path/to/zKillboard/util/doJob.php doPopulateCharactersTable
 
 ## Stomp
-This stomp service is read only.
+Stomp requires a custom php module, which you have to install from the following git repo.
+https://github.com/ppetermann/pecl-tools-stomp
+
+Reason is that the stomp library in pecl has a flaw, once that flaw is fixed (like it is in this repo) you can install from there.
+Till then, clone this repo, and install it like any other php module
+
+- git clone https://github.com/ppetermann/pecl-tools-stomp.git
+- cd pecl-tools-stomp
+- phpize
+- ./configure
+- make
+- make install
+- add stuff to php so it loads it
+
+The stomp service is read only.
 - Stomp server: tcp://82.221.99.197:61613
 - Stomp user: guest
 - Stomp pass: guest
