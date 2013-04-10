@@ -2,7 +2,10 @@
 this is a work in progress, it lacks documentation and is currently
 not meant for use in production.
 
-All the crap code was written by me - Karbowiak
+## IRC
+We reside on Coldfront.
+irc.coldfront.net
+channel #esc
 
 ## LICENSE
 see LICENSE.md File
@@ -27,7 +30,6 @@ see LICENSE.md File
 * * * * * flock -w 63 /tmp/lock.stomp php5 /path/to/zKillboard/util/stomp.php
 * * * * * flock -w 63 /tmp/lock.parseKills php5 /path/to/zKillboard/util/doJob.php parseKills
 * * * * * flock -w 63 /tmp/lock.doPopulateCharactersTable php5 /path/to/zKillboard/util/doJob.php doPopulateCharactersTable
-
 
 ## Stomp
 You will only be able to listen, and you should NOT share this with others
