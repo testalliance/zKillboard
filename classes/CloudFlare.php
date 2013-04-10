@@ -170,6 +170,26 @@ class CloudFlare {
         $data['service_mode'] = ($mode == true) ? 1 : 0;
         return $this->http_post($data);
     }
+	
+    /**
+     * Edit a DNS record
+     * $zone = zone
+	 * $type = A|CNAME
+	 * $content = The value of the cname or IP address (the destination)
+	 * $id = The ID of the DNS record you wish to edit - you can use rec_load_all to get all IDs
+     * $mode = 0 or 1. 0 means CloudFlare is off (grey cloud) for the new zone, while 1 means a happy orange cloud.
+     */
+	public function edit_dns_record($zone, $type, $content, $name, $id, $mode) {
+		$data['a']            = 'rec_edit';
+		$data['z']            = $zone;
+        $data['type']         = ($type == 'A') ? 'A' : 'CNAME';
+		$data['name']         = $name;
+		$data['content']      = $content;
+        $data['id']           = $id;
+    	$data['ttl']          = '1';
+        $data['service_mode'] = ($mode == true) ? 1 : 0;
+		return $this->http_post($data);
+	}
     
     /**
      * Update an existing DNS record - Update a DNS record for your site. This needs to be an A record.
