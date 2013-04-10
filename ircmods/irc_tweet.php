@@ -2,7 +2,7 @@
 
 class irc_tweet implements ircCommand {
 	public function getRequiredAccessLevel() {
-		return 10;
+		return 0;
 	}
 
 	public function getDescription() {
@@ -27,7 +27,7 @@ class irc_tweet implements ircCommand {
         {
             $return = Twit::sendMessage($message);
             if($return)
-                irc_out("|g|Message sent:|n| ". $url.$return);
+                irc_out("|g|Message sent:|n| ". $url.$return->id);
             else
                 irc_out("|r|Error sending message|n|");
         }
