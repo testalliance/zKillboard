@@ -18,7 +18,7 @@ see LICENSE.md File
 2. Install vendor files with composer: php composer.phar install
 3. Create database
 4. Run installer
-5. Setup stomp (Poke Karbowiak, Squizz_C or PeterPowers on IRC for access to it)
+5. Setup stomp
 6. Setup cronjobs
 
 ## Basic cronjobs
