@@ -17,7 +17,7 @@ if($_POST && !User::isRevoked())
 		
 	if (isset($report))
 	{
-		if($id > 0)
+		if($id < 0)
 		{
 			$info = User::getUserInfo();
 			$name = $info["username"];
