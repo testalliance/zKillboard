@@ -1,16 +1,9 @@
 <?php
 class Password
-{
+{	
 	public static function genPassword($password)
 	{
-		for ($i = 0; $i <= 87421; $i++)
-		{
-			if ($i == 0)
-				$pw = hash("sha256", $password);
-			else
-				$pw = hash("sha256", $pw);
-		}
-		return $pw;
+		return password_hash($password, PASSWORD_BCRYPT);
 	}
 
 	public static function updatePassword($password)
@@ -21,14 +14,10 @@ class Password
 		return "Updated password";
 	}
 
-	public static function checkPassword($password)
+	public static function checkPassword($plainTextPassword, $storedPassword)
 	{
-		$userID = user::getUserID();
-		$password = self::genPassword($password);
-		$pw = Db::queryField("SELECT password FROM zz_users WHERE id = :userID", "password", array(":userID" => $userID));
-		if ($pw == $password)
-			return true;
-		else
+		if (!password_verify($plainTextPassword, $storedPassword))
 			return false;
+		return true;
 	}
 }

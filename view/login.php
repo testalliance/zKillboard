@@ -28,7 +28,7 @@ if($_POST)
     elseif($username && $password)
     {
         $check = User::checkLogin($username, $password);
-        if($check > 0) // Success
+        if($check) // Success
         {
             $message = User::setLogin($username, $password, $autologin);
             $app->view(new \Slim\Extras\Views\Twig());
