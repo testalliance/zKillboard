@@ -1,0 +1,24 @@
+<div class="row">
+	<div class="span12">
+		<table class="table table-condensed table-hover">
+			<thead>
+				<tr>
+				<th class="span2"></th>
+				<th class="span7"></th>
+				<th class="span1"></th>
+				<th class="span3"></th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for data in info %}
+				<tr onclick="window.location='/moderator/reportedkills/{{ data.id }}/'">
+				<td><strong>{{ data.name }}</strong></td>
+				<td><strong>{{ shortString(data.reason, 60) }}</strong></td>
+				<td><span class="label label-success pull-right">{{ data.killid }}</span></td>
+				<td><strong>{{ data.dateReported }}</strong></td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>

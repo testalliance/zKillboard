@@ -1,23 +1,19 @@
 <?php
 require_once( dirname(__FILE__) . "/../init.php" );
 $message = array();
-$url = "https://twitter.com/eve_kill/status/";
 $storageName = "smsLatestID";
 
 $latest = Db::queryField("SELECT contents FROM zz_storage WHERE locker = '$storageName'", "contents", array(), 0);
 if ($latest == null) $latest = 0;
 $maxID = $latest;
 
-$url = "http://www.bulksms.co.uk:5567/eapi/reception/get_inbox/1/1.1?username=karbowiak&password=29641363&last_retrieved_id=$maxID";
-echo "$url\n";
+global $smsUsername, $smsPassword;
+$url = "http://www.bulksms.co.uk:5567/eapi/reception/get_inbox/1/1.1?username=".$smsUsername."&password=".$smsPassword."&last_retrieved_id=$maxID";
+
 $response = file_get_contents($url);
-
-print_r($response);
-
 $msgs = explode("\n", $response);
 
 $cleanMsgs = array();
-// Clean it up
 foreach ($msgs as $msg) {
 	$line = explode("|", $msg);
 	if (sizeof($line) >= 6) $cleanMsgs[] = $msg;

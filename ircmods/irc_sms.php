@@ -10,8 +10,7 @@ class irc_sms implements ircCommand {
 	}
 
 	public function execute($nick, $uhost, $channel, $command, $parameters, $nickAccessLevel) {
-        $username = "karbowiak";
-        $password = "29641363";
+		global $smsUsername, $smsPassword;
         $smstoname = $parameters[0];
         
         $smsto = Db::queryField("SELECT mobilenumber FROM zz_irc_mobile WHERE name = :name", "mobilenumber", array(":name" => $smstoname));
@@ -22,7 +21,7 @@ class irc_sms implements ircCommand {
         $message = $message." //".$nick;
 
         $url = "http://www.bulksms.co.uk/eapi/submission/send_sms/2/2.0";
-		$data = "username=".$username."&password=".$password."&routing_group=2&message=".urlencode($message)."&repliable=1&msisdn=".$smsto;
+		$data = "username=".$smsUsername."&password=".$smsPassword."&routing_group=2&message=".urlencode($message)."&repliable=1&msisdn=".$smsto;
 
         $opts = array("http" =>
             array(

@@ -22,10 +22,12 @@
 				<li class="{{ isActive('shiptypes', pageview) }}"><a href="/detail/{{ killdata.info.killID }}/shiptypes/">Ship Types ({{ extra.involvedshipscount }})</a></li>
                 <li class="{{ isActive('comments', pageview) }}"><a href="/detail/{{ killdata.info.killID }}/comments/">Comments ({{ extra.comments.count }})</a></li>
             </ul>
-            <ul class="nav pull-right hidden-phone">
+            <ul class="nav pull-right">
+				{% if killdata.info.killID < 0 %}
+				<li><a data-toggle="modal" data-target="#report" href="#">Report ({{ extra.reports }})</a></li>
+				{% endif %}
 				<li><a data-toggle="modal" data-target="#EFT" href="#">EFT</a></li>
 				<li><a data-toggle="modal" data-target="#rawMail" href="#">Killmail</a></li>
-				<li class="hidden-desktop"><a href="/detail/{{ killdata.info.killID }}/shiptypes/">Ship Types ({{ extra.involvedshipscount }})</a></li>
 				<li><a href="/related/{{ killdata.info.solarSystemID }}/{{ extra.relatedtime }}/">Related Kills</a></li>
 				<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Social <i class="icon-chevron-down"></i></a>
 					<ul class="dropdown-menu">
@@ -143,6 +145,24 @@
 {% endif %}
 
 <!-- modal -->
+<div class="modal hide fade" id="report">
+	<div class="modal-header">
+		<h3>Report Mail</h3>
+	</div>
+	<div class="modal-body">
+		<form class="well" name="report" method="post" action="/detail/{{ killdata.info.killID }}/">
+			<table>
+			<tr><td>
+				<textarea id="report" name="report" type="text" required placeholder="Report Reason" class="span5" rows="12"></textarea>
+			</td></tr>
+			<tr><td>
+				<button type="submit" class="btn btn-primary">Post Report</button>
+			</td></tr>
+			</table>
+		</form>
+	</div>
+</div>
+
 <div class="modal hide fade" id="EFT">
 	<div class="modal-header">
 	<h3>EFT</h3>

@@ -15,6 +15,7 @@
                 <li class="{{ isActive('Tickets', key) }}"><a href="/moderator/tickets/">Tickets</a></li>
                 <li class="{{ isActive('revokes', key) }}"><a href="/moderator/revokes/">Revokes</a></li>
 				<li class="{{ isActive('users', key) }}"><a href="/moderator/users/">Users</a></li>
+				<li class="{{ isActive('reportedkills', key) }}"><a href="/moderator/reportedkills/">Reported Kills</a></li>
 			</ul>
 		</div>
 	</div>
@@ -26,6 +27,10 @@
 		{% include "moderator/revokes.html" %}
 	{% elseif key == 'users' %}
 		{% include "moderator/users.html" %}
+	{% elseif key == 'reportedkills' and id != 0 %}
+		{% include "moderator/reportedkills_view.html" %}
+	{% elseif key == 'reportedkills' %}
+		{% include "moderator/reportedkills.html" %}
 	{% endif %}
 {% endblock %}
 
