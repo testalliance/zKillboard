@@ -7,15 +7,36 @@ if($_POST && !User::isRevoked())
 {
 	$comment = "";
 	$characterID = "";
+	$report = "";
+	if(isset($_POST["report"]))
+		$report = $_POST["report"];
 	if(isset($_POST["comment"]))
 		$comment = $_POST["comment"];
 	if(isset($_POST["characterID"]))
 		$characterID = $_POST["characterID"];
-	if(!$comment)
-		$message = "You didn't write anything in the comment field, try again";
-	if (isset($comment) && isset($characterID)) {
+		
+	if (isset($report))
+	{
+		if($id > 0)
+		{
+			$info = User::getUserInfo();
+			$name = $info["username"];
+			$userid = $info["id"];
+			$email = $info["email"];
+			$tags = "Reported Kill";
+			Db::execute("INSERT INTO zz_tickets (userid, name, email, tags, ticket, killID) VALUES (:userid, :name, :email, :tags, :ticket, :killid)",
+			array(":userid" => $userid, ":name" => $name, ":email" => $email, ":tags" => $tags, ":ticket" => $report, ":killid" => $id));
+			global $baseAddr;
+			Log::ircAdmin("Kill Reported by $name: https://$baseAddr/detail/$id/ - https://$baseAddr/moderator/tickets/$id/");
+			$app->redirect("/detail/$id/");
+		}
+	}
+	elseif (isset($comment) && isset($characterID)) {
 		$message = Comments::addComment($comment, $characterID, $pageID);
 	}
+	else
+		$message = "You didn't write anything in the comment field, try again";
+	
 }
 
 if($_POST && User::isRevoked())
@@ -90,6 +111,7 @@ $extra["destroyedprice"] = usdeurgbp($extra["lostisk"]);
 $extra["droppedprice"] = usdeurgbp($extra["droppedisk"]);
 $extra["efttext"] = EFT::getText($extra["fittingwheel"]);
 $extra["rawmail"] = EPIC::getMail($id);
+$extra["reports"] = Db::queryField("SELECT count(*) as cnt FROM zz_tickets WHERE killID = :killid", "cnt", array(":killid" => $id), 0);
 $extra["slotCounts"] = Info::getSlotCounts($killdata["victim"]["shipTypeID"]);
 
 $url = "https://". $_SERVER["SERVER_NAME"] ."/detail/$id/";

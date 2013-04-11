@@ -287,4 +287,23 @@ class Util
 
 		return preg_match($identifier_syntax, $subject) && ! in_array(mb_strtolower($subject, 'UTF-8'), $reserved_words);
 	}
+	
+	public static function deleteKill($killID)
+	{
+		if($killID < 0)
+		{
+			// Verify the kill exists
+			$count = Db::execute("select count(*) count from zz_killmails where killID = :killID", array(":killID" => $killID));
+			if ($count == 0) return false;
+			// Remove it from the stats
+			Stats::calcStats($killID, false);
+			// Remove it from the kill tables
+			Db::execute("delete from zz_participants where killID = :killID", array(":killID" => $killID));
+			Db::execute("delete from zz_items where killID = :killID", array(":killID" => $killID));
+			// Mark the kill as deleted
+			Db::execute("update zz_killmails set processed = 2 where killID = :killID", array(":killID" => $killID));
+			return true;
+		}
+		return false;
+	}
 }

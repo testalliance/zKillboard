@@ -11,11 +11,15 @@ if($_POST)
 	$revokeaccess = NULL;
 	$grantaccess = NULL;
 	$reason = NULL;
+	$report = NULL;
+	$delete = NULL;
 	
 	if(isset($_POST["status"]))
 		$status = $_POST["status"];
 	if(isset($_POST["reply"]))
 		$reply = $_POST["reply"];
+	if(isset($_POST["report"]))
+		$report = $_POST["report"];
     if(isset($_POST["revokeaccess"]))
 		$revokeaccess = $_POST["revokeaccess"];
     if(isset($_POST["grantaccess"]))
@@ -24,7 +28,9 @@ if($_POST)
 		$reason = $_POST["reason"];
 	if(isset($_POST["userID"]))
 		$userID = $_POST["userID"];
-	
+	if(isset($_POST["delete"]))
+		$delete = $_POST["delete"];
+		
 	if(isset($status))
 	{
 		Db::execute("UPDATE zz_tickets SET status = :status WHERE id = :id", array(":status" => $status, ":id" => $id));
@@ -44,8 +50,25 @@ if($_POST)
 			global $baseAddr;
 			$message = "$ticname, there is a new reply to your ticket from $name - https://$baseAddr/tickets/view/$id/";
 			Email::send($ticmail, $subject, $message);
+			if(isset($report))
+				$app->redirect("/moderator/reportedkills/$id/");
 			$app->redirect("/moderator/tickets/$id/");
 		}
+	}
+	if(isset($delete))
+	{
+		if($delete < 0)
+		{
+			if(Util::deleteKill($delete))
+			{
+				Db::execute("DELETE FROM zz_tickets WHERE id = :id", array(":id" => $id));
+				Db::execute("DELETE FROM zz_tickets_replies WHERE belongsTo = :belongsTo", array(":belongsTo" => $id));
+				$app->redirect("/moderator/reportedkills/");
+			}
+			else
+				$message = "Error, kill could not be deleted";
+		}
+		$message = "Error, kill is positive, and thus api verified.. something is wrong!";
 	}
 	if(isset($grantaccess) && isset($userID))
 	{
@@ -67,7 +90,7 @@ if($req == "tickets" && $id)
 }
 elseif($req == "tickets")
 {
-	$info = Db::query("SELECT * FROM zz_tickets ORDER BY status DESC", array(),0);
+	$info = Db::query("SELECT * FROM zz_tickets WHERE killID = 0 ORDER BY status DESC", array(),0);
 	foreach($info as $key => $val)
 	{
 		if($val["tags"])
@@ -81,6 +104,20 @@ elseif($req == "users")
 elseif($req == "revokes")
 {
 	$info = Db::query("SELECT id, username, email, revoked_reason FROM zz_users WHERE revoked = 1 ORDER BY id DESC", array(), 0);
+}
+if($req == "reportedkills" && $id)
+{
+	$info["ticket"] = Db::query("SELECT * FROM zz_tickets WHERE id = :id", array(":id" => $id), 0);
+	$info["replies"] = Db::query("SELECT * FROM zz_tickets_replies WHERE belongsTo = :id", array(":id" => $id), 0);
+}
+elseif($req == "reportedkills")
+{
+	$info = Db::query("SELECT * FROM zz_tickets WHERE killID > 0 ORDER BY status DESC", array(),0);
+	foreach($info as $key => $val)
+	{
+		if($val["tags"])
+			$info[$key]["tags"] = explode(",", $val["tags"]);
+	}
 }
 
 $app->render("moderator/moderator.html", array("id" => $id, "info" => $info, "key" => $req, "message" => $message));

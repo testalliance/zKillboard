@@ -111,10 +111,10 @@ $app->post("/forgotpassword/", function() use ($app) {
 });
 
 // Change password
-$app->get("/changepassword/:hash", function($hash) use ($app) {
+$app->get("/changepassword/:hash/", function($hash) use ($app) {
     include( "view/changepassword.php" );
 });
-$app->post("/changepassword/:hash", function($hash) use ($app) {
+$app->post("/changepassword/:hash/", function($hash) use ($app) {
     include( "view/changepassword.php" );
 });
 
