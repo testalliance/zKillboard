@@ -35,6 +35,9 @@ echo "\nSome memcache questions:\n";
 $settings["memcache"] = prompt("Memcache server?", "localhost");
 $settings["memcacheport"] = prompt("Memcache port?", "11211");
 
+echo "\nPheal.  It is highly recommended you find a good location other than the default for these files.\n";
+$settings["phealcachelocation"] = prompt("Where do you want to store Pheal's cache files?", "/tmp/");
+
 echo "\nAnd now what is the address of your server?  Just use the domain name!  e.g. zkillboard.com\n";
 $settings["baseaddr"] = prompt("Domain name?", "zkillboard.com");
 

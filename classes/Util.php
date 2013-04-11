@@ -31,13 +31,15 @@ class Util
 
 	public static function getPheal($keyID = null, $vCode = null)
 	{
+		global $phealCacheLocation;
+
 		PhealConfig::getInstance()->http_method = "curl";
 		PhealConfig::getInstance()->http_user_agent = "zKillboard API Fetcher (Pheal)";
 		PhealConfig::getInstance()->http_post = false;
 		PhealConfig::getInstance()->http_keepalive = true; // default 15 seconds
 		PhealConfig::getInstance()->http_keepalive = 10; // KeepAliveTimeout in seconds
 		PhealConfig::getInstance()->http_timeout = 30;
-		PhealConfig::getInstance()->cache = new PhealFileCache("/var/killboard/cache/");
+		PhealConfig::getInstance()->cache = new PhealFileCache($phealCacheLocation);
 		PhealConfig::getInstance()->log = new PhealLogger();
 		PhealConfig::getInstance()->api_customkeys = true;
 		PhealConfig::getInstance()->api_base = 'https://api.zkillboard.com/'; // API proxy server, to get everything gzipped.

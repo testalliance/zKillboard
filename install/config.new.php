@@ -21,6 +21,9 @@ $logfile = "%logfile%";
 $memcacheServer = "%memcache%";
 $memcachePort = "%memcacheport%";
 
+// Pheal
+$phealCacheLocation = "%phealcachelocation%";
+
 // Cookiiieeeee
 $cookie_name = "zKB";
 $cookie_time = (3600 * 24 * 30); // 30 days
