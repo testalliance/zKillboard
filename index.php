@@ -9,6 +9,9 @@ require( "init.php" );
 // initiate the timer!
 $timer = new Timer();
 
+// Check if the user has autologin turned on
+if(!User::isLoggedIn()) User::autoLogin();
+
 // Theme
 $viewtheme = null;
 if(User::isLoggedIn())
@@ -22,9 +25,6 @@ $app = new \Slim\Slim($config);
 $app->error(function (\Exception $e) use ($app){
     include ( "view/error.php" );
 });
-
-// Check if the user has autologin turned on
-if(!User::isLoggedIn()) User::autoLogin();
 
 // Determine subdomain
 $restrictedSubDomains = array("www", "email", "mx", "ipv6", "blog", "forum", "cdn", "content", "static", "api");
