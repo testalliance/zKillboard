@@ -111,7 +111,7 @@
 
 		public static function getMonthlyHistory($type, $typeID)
 		{
-			return Db::query("select year, month, sum(if(isVictim, 0, 1)) destroyed, sum(if(isVictim, 0, total_price)) iskDestroyed, sum(if(isVictim, 0, points)) pointsDestroyed, sum(if(isVictim, 1, 0)) lost, sum(if(isVictim, total_price, 0)) iskLost, sum(if(isVictim, points, 0)) pointsLost from (select year(dttm) year, month(dttm) month, isVictim, total_price, points from zz_participants p where $type = $typeID group by killID) as foo group by year, month", array(), 3600);
+			return Db::query("select year, month, sum(if(isVictim, 0, 1)) destroyed, sum(if(isVictim, 0, total_price)) iskDestroyed, sum(if(isVictim, 0, points)) pointsDestroyed, sum(if(isVictim, 1, 0)) lost, sum(if(isVictim, total_price, 0)) iskLost, sum(if(isVictim, points, 0)) pointsLost from (select year(dttm) year, month(dttm) month, isVictim, total_price, points from zz_participants p where $type = $typeID group by killID) as foo group by year, month order by year desc, month desc", array(), 3600);
 		}
 
 		public static function buildSummary(&$kills, $parameters = array(), $key)
