@@ -60,12 +60,10 @@
         <div class="container" id="footer">
             {% include "footer.html" %}
         </div>
-		
-        <script type="text/javascript" src="//{{ siteurl }}/js/modernizr.min.js"></script>
-        <script type="text/javascript" src="//{{ siteurl }}/js/jquery.min.js"></script>
-        <script type="text/javascript" src="//{{ siteurl }}/js/jquery.timeago.js"></script>
-        <script type="text/javascript" src="//{{ siteurl }}/js/jquery.dataTables.min.js"></script>
-		<script type="text/javascript" src="//{{ siteurl }}/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.1.0/jquery.timeago.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/jquery.dataTables.min.js"></script>
+		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="//{{ siteurl }}/js/search.js"></script>
         <script type="text/javascript" src="//{{ siteurl }}/js/common.js"></script>
         <script type="text/javascript" src="//{{ siteurl }}/js/sclock1.js"></script>
@@ -74,6 +72,5 @@
 {% endif %}
 {% block script %}
 {% endblock %}
-        <script type="text/javascript" src="//{{ siteurl }}/js/googleanalytics.js"></script>
     </body>
 </html>
