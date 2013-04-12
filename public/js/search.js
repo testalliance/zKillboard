@@ -57,8 +57,7 @@
 				$.ajax('/autocomplete/', { 'data' : { 'query' : this.data['element'].val() }, 'type' : 'post', 'dataType' : 'json', 'success' : $.proxy(function(result) {
 					//empty the dropdown and append the new data
 					this.data['menu'].empty().append($.map(result, $.proxy(function(item, index) {
-						return '<li data-value=\'' + JSON.stringify(item) + '\'><a href="#">' + ((item.image != '') ? '<img src="https://image.zkillboard.com/' + item.image + '" width="32" height="32" alt=" ">' : '') + item.name.replace(RegExp('(' + this.data['element'].val() + ')', "gi"), function($1, match){ return '<strong>' + match + '</strong>'; } ) + '<span>' + item.type + '</span></a></li>';
-						//return '<li data-data="' + JSON.stringify(item) + '">' + ((item.image != '') ? '<img src="https://image.zkillboard.com/' + item.image + '" width="32" height="32" alt=" ">' : '') + item.name.replace(RegExp('(' + this.data['element'].val() + ')', "gi"), function($1, match){ return '<strong>' + match + '</strong>'; } ) + '<span>' + item.type + '</span></li>';
+						return $('<li><a href="#">' + ((item.image != '') ? '<img src="https://image.zkillboard.com/' + item.image + '" width="32" height="32" alt=" ">' : '') + item.name.replace(RegExp('(' + this.data['element'].val() + ')', "gi"), function($1, match){ return '<strong>' + match + '</strong>'; } ) + '<span>' + item.type + '</span></a></li>').attr('data-value', JSON.stringify(item));
 					}, this)));
 
 					//if its not visible already fade it in - and position it as needed and autoselect the first item
