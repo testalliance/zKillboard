@@ -1,8 +1,6 @@
 <?php
 global $subDomainKey, $subDomainRow;
 if ($subDomainRow) {
-	$p1 = $subDomainRow["type"];
-	$p2 = $subDomainRow["${p1}ID"];
 	include( "view/overview.php" );
 	return;
 }

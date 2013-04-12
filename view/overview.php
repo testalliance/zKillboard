@@ -1,5 +1,12 @@
 <?php
 
+global $subDomainRow;
+if ($subDomainRow) {
+	if (@!is_array($input)) $input = array();
+    array_unshift($input, $subDomainRow[$subDomainRow["type"] . "ID"]);
+    array_unshift($input, $subDomainRow["type"]);
+}
+
 @$key = $input[0];
 @$id = $input[1];
 @$pageType = $input[2];
