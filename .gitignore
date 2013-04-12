@@ -1,3 +1,4 @@
+public/google*
 /config.php
 vendor/
 /composer.phar
