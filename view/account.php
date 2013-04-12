@@ -219,7 +219,7 @@ foreach($entitytypes as $ent)
 $userID = User::getUserID();
 $data["domainentities"] = Domains::getUserEntities($userID);
 $data["entities"] = $entlist;
-$data["themes"] = array("default", "amelia", "cerulean", "cyborg", "journal", "readable", "simplex", "slate", "spacelab", "spruce", "superhero", "united");
+$data["themes"] = array("default", "amelia", "cerulean", "cosmo", "cyborg", "journal", "readable", "simplex", "slate", "spacelab", "spruce", "superhero", "united");
 $data["viewthemes"] = array("bootstrap", "edk");
 $data["apiKeys"] = Api::getKeys($userID);
 $data["apiChars"] = Api::getCharacters();

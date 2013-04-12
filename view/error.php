@@ -27,8 +27,12 @@ if ($trace) {
 
 $date = date("Y-m-d H:i:s");
 $url = $_SERVER["REQUEST_URI"];
+if (isset($_SERVER["HTTP_CF_CONNECTING_IP"])) $ip = $_SERVER["HTTP_CF_CONNECTING_IP"];
+elseif (isset($_SERVER["HTTP_X_FORWARDED_FOR"])) $ip = $_SERVER["HTTP_X_FORWARDED_FOR"];
+else $ip = $_SERVER['REMOTE_ADDR'];
+
 try {
-	Db::execute("INSERT INTO zz_errors (id, error, message, url) VALUES (:id, :error, :message, :url) ON DUPLICATE KEY UPDATE date = :date", array(":id" => $codeHash, ":error" => $html, ":message" => $message, ":url" => $url, ":date" => $date));
+	Db::execute("INSERT INTO zz_errors (id, error, message, url, ip) VALUES (:id, :error, :message, :url, :ip) ON DUPLICATE KEY UPDATE ip = :ip, date = :date", array(":id" => $codeHash, ":error" => $html, ":message" => $message, ":url" => $url, ":ip" => $ip, ":date" => $date));
 	$app->render("error.html", array("code" => $codeHash, "errorMessage" => $message, "error" => $html));
 } catch (Exception $ex) {
     $html = "<html>";
