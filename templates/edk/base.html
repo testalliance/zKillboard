@@ -29,7 +29,7 @@
         <link rel="canonical" href="https://zkillboard.com{{ requesturi }}">
         <link rel="search" type="application/opensearchdescription+xml" href="//{{ siteurl }}/xml/zkbsearch.xml" title="zKillboard">
 {% if sessiontheme is not defined %}{% set sessiontheme = 'cyborg' %}{% endif %}
-		{% if sessiontheme == default %}
+		{% if sessiontheme == "default" %}
 		<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
 		{% else %}
 		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootswatch/2.3.1/{{ sessiontheme }}/bootstrap.min.css">
