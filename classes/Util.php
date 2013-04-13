@@ -18,8 +18,10 @@ class Util
 		$array = array(":subDomain" => $subDomain);
 		$row = Db::queryRow("select factionID, name from zz_factions where ticker = :subDomain", $array, 3600);
 		if ($row != null) return Util::setSubdomainGlobals("factionID", $row, "faction");
-		$row = Db::queryRow("select allianceID, name from zz_alliances where ticker = :subDomain", $array, 3600);
+		/*$row = Db::queryRow("select allianceID, name from zz_alliances where ticker = :subDomain order by memberCount desc limit 1", $array, 3600);
 		if ($row != null) return Util::setSubdomainGlobals("allianceID", $row, "alliance");
+		$row = Db::queryRow("select corporationID, name from zz_corporations where ticker = :subDomain order by memberCount desc limit 1", $array, 3600);
+		if ($row != null) return Util::setSubdomainGlobals("corporationID", $row, "corporation");*/
 		return false;
 	}
 
@@ -122,11 +124,12 @@ class Util
 		return number_format($value, $numDecimals) . self::$formatIskIndexes[$iskIndex];
 	}
 
-	public static function convertUriToParameters()
+	public static function convertUriToParameters($additionalParameters = array())
 	{
 		$parameters = array();
 		@$uri = $_SERVER["REQUEST_URI"];
 		$split = explode("/", $uri);
+		//$split = array_merge($additionalParameters, $split);
 		$currentIndex = 0;
 		foreach ($split as $key) {
 			$value = $currentIndex + 1 < sizeof($split) ? $split[$currentIndex + 1] : null;

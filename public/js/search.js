@@ -16,10 +16,13 @@
 				case 27: $.proxy(this.hide_menu(event), this); break;
 			}
 		}, this));
-
+		
+		//handle any enter key presses intelligently
+		this.data['element'].on('keypress', $.proxy(function(event) { event.stopPropagation(); if (event.keyCode == 13 && this.data['menu'].find('.active').length == 1) { $.proxy(this.run_callback(event), this); } }, this));
+		
 		//handle a couple of other types of event
 		this.data['element'].on('blur', $.proxy(function(){ $.proxy(this.hide_menu(), this); }, this));
-		this.data['menu'].on('click', 'a', $.proxy(function(){ $.proxy(this.run_callback(), this); }, this));	
+		this.data['menu'].on('click', 'a', $.proxy(function(event){ $.proxy(this.run_callback(event), this); }, this));	
 		this.data['menu'].on('mouseenter', 'li', $.proxy(function(event){ this.data['menu'].find('.active').removeClass('active'); $(event.currentTarget).addClass('active').addClass('active'); }, this));
 	}
 
@@ -39,7 +42,7 @@
 		move_next: function(event) { event.preventDefault(); this.data['menu'].find('.active').removeClass('active').next().addClass('active'); if ( this.data['menu'].find('.active').length == 0) { this.data['menu'].find('li').first().addClass('active'); } },
 	
 		//goto the selected items seach page
-		run_callback: function() { $.proxy(this.callback(this.data['menu'].find('.active').data('value')), this); },
+		run_callback: function(event) { $.proxy(this.callback(this.data['menu'].find('.active').data('value'), event), this); },
 	
 		//hide the drop down
 		hide_menu: function(event) { this.data['menu'].fadeOut(200); },
