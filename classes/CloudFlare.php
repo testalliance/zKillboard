@@ -191,6 +191,17 @@ class CloudFlare {
 		return $this->http_post($data);
 	}
     
+	/**
+     * Delete a DNS record
+     * $id = The ID of the domain name you want to delete
+     */
+	public function delete_dns_record($zone, $id) {
+		$data['a']            = 'rec_delete';
+		$data['z']            = $zone;
+        $data['id']           = $id;
+		return $this->http_post($data);
+	}
+	 
     /**
      * Update an existing DNS record - Update a DNS record for your site. This needs to be an A record.
      * $ip = The value of the IP address (the destination).
