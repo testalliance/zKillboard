@@ -22,6 +22,18 @@ class Util
 		if ($row != null) return Util::setSubdomainGlobals("allianceID", $row, "alliance");
 		$row = Db::queryRow("select corporationID, name from zz_corporations where ticker = :subDomain order by memberCount desc limit 1", $array, 3600);
 		if ($row != null) return Util::setSubdomainGlobals("corporationID", $row, "corporation");*/
+		$row = Db::queryRow("select * from zz_domains where domain = :subDomain", $array, 3600);
+		if ($row) {
+			$jsonEntities = $row["entities"];
+			$entities = json_decode($jsonEntities, true);
+			foreach($entities as $entity) {
+				$ent = array();
+				$ent["type"] = $entity["type"];
+				$ent[$entity["type"] . "ID"] = $entity["id"];
+				$ent["name"] = $entity["name"];
+				return Util::setSubdomainGlobals($ent["type"] . "ID", $ent, $ent["type"]);
+			}
+		}
 		return false;
 	}
 
@@ -46,8 +58,8 @@ class Util
 		PhealConfig::getInstance()->api_customkeys = true;
 		PhealConfig::getInstance()->api_base = 'https://api.zkillboard.com/'; // API proxy server, to get everything gzipped.
 
-		if ($keyID != null && $vCode != null) $pheal = new Pheal($keyID, $vCode);
-		else $pheal = new Pheal();
+			if ($keyID != null && $vCode != null) $pheal = new Pheal($keyID, $vCode);
+			else $pheal = new Pheal();
 		return $pheal;
 	}
 
@@ -239,7 +251,7 @@ class Util
 	{
 		return self::$longMonths[$month];
 	}
-	
+
 	public static function scrapeCheck()
 	{
 		global $app;
@@ -251,8 +263,8 @@ class Util
 		else $ip = $_SERVER['REMOTE_ADDR'];
 
 		$validScrapers = array(
-			"85.88.24.82", // DOTLAN
-		);
+				"85.88.24.82", // DOTLAN
+				);
 		$isValidScraper = false;
 		foreach ($validScrapers as $validScraper) {
 			if (strpos($ip, $validScraper) !== false) $isValidScraper = true;
@@ -275,22 +287,22 @@ class Util
 			}
 		}
 	}
-	
+
 	public static function isValidCallback($subject)
 	{
 		$identifier_syntax = '/^[$_\p{L}][$_\p{L}\p{Mn}\p{Mc}\p{Nd}\p{Pc}\x{200C}\x{200D}]*+$/u';
 
 		$reserved_words = array('break', 'do', 'instanceof', 'typeof', 'case',
-		'else', 'new', 'var', 'catch', 'finally', 'return', 'void', 'continue', 
-		'for', 'switch', 'while', 'debugger', 'function', 'this', 'with', 
-		'default', 'if', 'throw', 'delete', 'in', 'try', 'class', 'enum', 
-		'extends', 'super', 'const', 'export', 'import', 'implements', 'let', 
-		'private', 'public', 'yield', 'interface', 'package', 'protected', 
-		'static', 'null', 'true', 'false');
+				'else', 'new', 'var', 'catch', 'finally', 'return', 'void', 'continue', 
+				'for', 'switch', 'while', 'debugger', 'function', 'this', 'with', 
+				'default', 'if', 'throw', 'delete', 'in', 'try', 'class', 'enum', 
+				'extends', 'super', 'const', 'export', 'import', 'implements', 'let', 
+				'private', 'public', 'yield', 'interface', 'package', 'protected', 
+				'static', 'null', 'true', 'false');
 
 		return preg_match($identifier_syntax, $subject) && ! in_array(mb_strtolower($subject, 'UTF-8'), $reserved_words);
 	}
-	
+
 	public static function deleteKill($killID)
 	{
 		if($killID < 0)

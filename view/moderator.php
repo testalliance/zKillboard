@@ -113,6 +113,7 @@ if($req == "reportedkills" && $id)
 elseif($req == "reportedkills")
 {
 	$info = Db::query("SELECT * FROM zz_tickets WHERE killID > 0 ORDER BY status DESC", array(),0);
+print_r($info); die();
 	foreach($info as $key => $val)
 	{
 		if($val["tags"])
