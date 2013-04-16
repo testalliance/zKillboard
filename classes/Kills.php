@@ -99,7 +99,6 @@ class Kills
 	{
 		$maxSize = max(0, $maxSize);
 		$resultArray = array_diff_key($array1, $array2) + $array2;
-		//krsort($resultArray); // TODO sort by date, not killID ...
 		while (sizeof($resultArray) > $maxSize) array_pop($resultArray);
 		foreach ($resultArray as $killID => $kill) {
 			if (!isset($kill["victim"])) continue;
