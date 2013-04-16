@@ -91,7 +91,7 @@ $app->post("/login/", function() use ($app) {
 
 // Logout
 $app->get("/logout/", function() use ($app) {
-    global $cookie_name, $cookie_time;
+    global $cookie_name, $cookie_time, $baseAddr;
     include( "view/logout.php" );
 });
 
