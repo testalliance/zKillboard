@@ -1,7 +1,8 @@
-<h2>{{ killListTitle }}</h2>
+<div class="pull-left"><h2>{{ killListTitle }}</h2></div>
 {% if killList|length == 0 %}
 <em>Nothing to display here...</em>
 {% else %}
+{% include 'components/pager.html' %}
 {% set MonthDayYear = '' %}
 <div class="row">
 <table class="table table-condensed table-striped table-hover span12">
@@ -74,27 +75,5 @@
     </tbody>
 </table>
 </div>
-{% if not mixed and numPages > 1 %}
-<div class="pull-right">
-    {% set pageBase = '/' ~ key ~ '/' ~ id ~ '/' ~ pageType ~ '/page/' %}
-    <div class="pagination">
-    <ul>
-    {% if page > 1 %}
-    <li><a href="{{ pageBase }}{{ page - 1 }}/">Prev</a></li>
-    {% endif %}
-    {% set startIndex = page - 3 %}
-    {% set endIndex = page + 3 %}
-    {% for pageIndex in startIndex..endIndex %}
-        {% if pageIndex > 0 and pageIndex <= numPages %}
-            <li class="{{ isActive(pageIndex, page, 'active') }}"><a href="{{ pageBase }}{{pageIndex}}/">{{ pageIndex }}</a></li>
-        {% endif %}
-    {% endfor %}
-    {% if page < numPages %}
-    <li><a href="{{ pageBase }}{{ page + 1 }}/">Next</a></li>
-    {% endif %}
-    {% set startIndex = page - 3 %}
-    </ul>
-    </div>
-</div>
-{% endif %}
+{% include 'components/pager.html' %}
 {% endif %}
