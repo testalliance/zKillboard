@@ -1,16 +1,15 @@
 <?php
-$ids = array();
+$parameters = array();
 $names = array();
 
-getIDs("characterID", $ids, UserConfig::get("character"));
-getIDs("corporationID", $ids, UserConfig::get("corporation"));
-getIDs("allianceID", $ids, UserConfig::get("alliance"));
-getIDs("factionID", $ids, UserConfig::get("faction"));
-getIDs("shipTypeID", $ids, UserConfig::get("ship"));
-getIDs("solarSystemID", $ids, UserConfig::get("system"));
-getIDs("regionID", $ids, UserConfig::get("region"));
-if(empty($ids))
-    throw new Exception("Nothing to track, please add entities to the tracker from your account page.");
+getIDs("characterID", $parameters, UserConfig::get("character"));
+getIDs("corporationID", $parameters, UserConfig::get("corporation"));
+getIDs("allianceID", $parameters, UserConfig::get("alliance"));
+getIDs("factionID", $parameters, UserConfig::get("faction"));
+getIDs("shipTypeID", $parameters, UserConfig::get("ship"));
+getIDs("solarSystemID", $parameters, UserConfig::get("system"));
+getIDs("regionID", $parameters, UserConfig::get("region"));
+if(empty($parameters)) throw new Exception("Nothing to track, please add entities to the tracker from your account page.");
 
 GetNames("character", $names, UserConfig::get("character"));
 GetNames("corporation", $names, UserConfig::get("corporation"));
@@ -20,12 +19,22 @@ GetNames("ship", $names, UserConfig::get("ship"));
 GetNames("systems", $names, UserConfig::get("system"));
 GetNames("regions", $names, UserConfig::get("region"));
 
-$ids["combined"] = true;
-$ids["limit"] = 100;
+$parameters["combined"] = true;
+$limit = 100;
+$parameters["limit"] = $limit;
 
 $pageTitle = "Tracking";
 
-$kills = Kills::getKills($ids);
+$kills = Kills::getKills($parameters);
+
+// Flag losses as red
+unset($parameters["limit"]);
+unset($parameters["combined"]);
+foreach($parameters as $columnName=>$ids) {
+	foreach($ids as $id) {
+		$kills = Kills::mergeKillArrays($kills, array(), $limit, $columnName, $id);
+	}
+}
 $app->render("tracker.html", array("kills" => $kills, "pageTitle" => $pageTitle, "tracking" => $names));
 
 function getIDs($filterName, &$ids, $array) {
