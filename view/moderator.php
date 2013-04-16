@@ -1,8 +1,12 @@
 <?php
 $info = "";
 $message = "";
+if (!User::isLoggedIn()) {
+    $app->render("login.html");
+    die();
+}
 $info = User::getUserInfo();
-if (!User::isModerator()) $app->notFound();
+if (!User::isModerator()) $app->redirect("/");
 
 if($_POST)
 {
@@ -81,6 +85,11 @@ if($_POST)
 		Db::execute("UPDATE zz_users SET revoked_reason = :reason WHERE id = :id", array(":id" => $userID, ":reason" => $reason));
 		$message = "User has had access to the site revoked";
 	}
+}
+
+if ($req == "") {
+	$app->redirect("tickets/");
+	die();
 }
 
 if($req == "tickets" && $id)
