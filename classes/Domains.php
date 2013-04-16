@@ -39,6 +39,10 @@ class Domains
 
 	public static function updateEntities($domain, $name, $type)
 	{
+		// Validate the domain, must start and end with a character and contain a-z, 0-9, or - only
+		$subDomain = strtolower($domain);
+		if (preg_match('/^[a-z][\-a-z0-9]+[a-z]$/', $subDomain) == 0) return "Invalid subDomain: $subDomain";
+
 		if ($type == "character") $query = "SELECT characterID AS id, name FROM zz_characters WHERE name = :name";
 		if ($type == "corporation") $query = "SELECT corporationID AS id, name FROM zz_corporations WHERE name = :name AND memberCount > 0";
 		if ($type == "alliance") $query = "SELECT allianceID AS id, name FROM zz_alliances WHERE name = :name AND memberCount > 0";
