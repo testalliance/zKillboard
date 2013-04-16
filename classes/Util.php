@@ -22,7 +22,7 @@ class Util
 		if ($row != null) return Util::setSubdomainGlobals("allianceID", $row, "alliance");
 		$row = Db::queryRow("select corporationID, name from zz_corporations where ticker = :subDomain order by memberCount desc limit 1", $array, 3600);
 		if ($row != null) return Util::setSubdomainGlobals("corporationID", $row, "corporation");*/
-		$row = Db::queryRow("select * from zz_domains where domain = :subDomain", $array, 3600);
+		$row = Db::queryRow("select * from zz_domains where domain = :subDomain", $array, 300);
 		if ($row) {
 			$jsonEntities = $row["entities"];
 			$entities = json_decode($jsonEntities, true);
