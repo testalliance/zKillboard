@@ -1,7 +1,7 @@
 {% if data.domainentities|length > 0 %}
 <table class="table table-striped table-bordered table-condensed">
     <thead>
-        <th>Domain</th>
+        <th class="span2">Domain</th>
         <th>Entities</th>
         <th class="span2">Remove</th>
     </thead>
@@ -9,13 +9,13 @@
     {% for key,val in data.domainentities %}
         {% for data in val %}
                 <tr>
-                    <td>{{ key }}</td>
+                    <td class="span2"><a href="https://{{ key }}.zkillboard.com" target="_blank">https://{{ key }}.zkillboard.com</a></td>
                     <td><a href="/{{ data.type}}/{{ data.id }}/" target="_blank">{{ data.name }}</a></td>
                     <td>
                     <form name="deleteapi" method="post" action="/account/domaintracker/">
                     <input id="deletekeyid" name="deletekeyid" type="hidden" value="{{ key }}">
                     <input id="deleteentity" name="deleteentity" type="hidden" value="{{ data.id }}">
-                    <input style="width: 100%" type="submit" class="btn btn-primary" value="Remove" onclick="return confirm('Are you sure you want to remove this Domain?');">
+                    <input style="width: 100%" type="submit" class="btn btn-primary btn-small" value="Remove" onclick="return confirm('Are you sure you want to remove this Domain?');">
                     </form>
                     </td>
                 <tr>
@@ -23,6 +23,7 @@
         {% endfor %}
     </tbody>
 </table>
+<em><small>A domain may take up to 10 minutes to pass through the cache and be available through Cloudflare...</small></em><br/><br/>
 {% endif %}
 
 <legend>Character/Corporations/Alliances/Factions</legend>
