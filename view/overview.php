@@ -1,10 +1,10 @@
 <?php
 
 global $subDomainRow;
-if ($subDomainRow) {
-	if (@!is_array($input)) $input = array();
-    array_unshift($input, $subDomainRow[$subDomainRow["type"] . "ID"]);
-    array_unshift($input, $subDomainRow["type"]);
+if (@!is_array($input)) $input = array();
+if ($subDomainRow && sizeof($input) == 0) {
+	$input[] = $subDomainRow["type"];
+	$input[] = $subDomainRow[$subDomainRow["type"] . "ID"];
 }
 
 @$key = $input[0];
