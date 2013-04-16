@@ -3,9 +3,19 @@
 {% set pageTitle = 'Tickets' %}
 {% block title %}{% include 'components/title.html' %}{% endblock %}
 
-{% block header %}{% if message %} <h1>{{ message.message }}</h1> {% endif %} <h3>Ticket By: <small>{{ ticket.0.name }}</small> Posted The: <small>{{ ticket.0.datePosted }}</small></h3>{% endblock %}
 {% block content %}
-<div class="well">{{ ticket.0.ticket|raw }}</div>
+<div class="navbar">
+    <div class="navbar-inner">
+        <ul class="nav pull-left">
+            <li class="{{ isActive('tickets', pageview) }}"><a href="/tickets/">Tickets</a></li>
+            {% if sessionusername %}<li><a data-toggle="modal" data-target="#newIssue" href="#">New Issue</a></li>{% endif %}
+        </ul>
+    </div>
+</div>
+
+{% if message %} <h1>{{ message.message }}</h1> {% endif %}
+<h3><small>Ticket By:</small> {{ ticket.0.name }} <small>Created:</small> {{ ticket.0.datePosted }}</h3>
+<div class="well"><pre>{{ ticket.0.ticket|raw }}</pre></div>
 <hr/>
 
 {% if replies is not empty %}
@@ -21,7 +31,7 @@
 			{% for data in replies %}
 			<tr>
 				<td><strong>{{ data.name }} {% if data.moderator %}<span class="label label-info pull-right">Moderator</span>{% endif %}</strong></td>
-				<td>{{ data.reply|raw }}</td>
+				<td><pre>{{ data.reply|raw }}</pre></td>
 			</tr>
 			{% endfor %}
 		</tbody>
