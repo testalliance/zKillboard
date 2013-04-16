@@ -16,6 +16,9 @@
 {% if sessionusername %}
 	<div class="row">
 		<div class="span12">
+			{% if tickets|length == 2 %}
+				<em>You do not have any tickets...</em>
+			{% else %}
 			<h3>Your Tickets</h3>
 			<table class="table table-condensed table-hover">
 				<thead>
@@ -41,6 +44,7 @@
 					{% endfor %}
 				</tbody>
 			</table>
+			{% endif %}
 		</div>
 	</div>
 
