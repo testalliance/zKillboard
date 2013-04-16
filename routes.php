@@ -47,11 +47,6 @@ $app->get("/related/:system/:time/", function($system, $time) use ($app) {
     include( "view/related.php" );
 });
 
-// View related kills
-$app->get("/r2/:system/:time/", function($system, $time) use ($app) {
-    include( "view/r2.php" );
-});
-
 // View top
 $app->get("/top/lasthour/", function() use ($app) {
     include( "view/lasthour.php" );
