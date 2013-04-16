@@ -72,10 +72,15 @@ class Domains
 
 			$domainID = $row["domainID"];
 			$subDomain = $row["domain"];
-			$response = $cf->add_dns_record("zkillboard.com", "A", "82.221.99.219", $subDomain, true);
-			$cfID = $response["response"]["rec"]["obj"]["rec_id"];
-			$cf->edit_dns_record("zkillboard.com", "A", "82.221.99.219", $subDomain, $cfID, true);
-			Db::execute("update zz_domains set cloudFlareID = :cfID where domainID = :dID", array(":dID" => $domainID, ":cfID" => $cfID));
+			try {
+				$response = $cf->add_dns_record("zkillboard.com", "A", "82.221.99.219", $subDomain, true);
+				$cfID = $response["response"]["rec"]["obj"]["rec_id"];
+				$cf->edit_dns_record("zkillboard.com", "A", "82.221.99.219", $subDomain, $cfID, true);
+				Db::execute("update zz_domains set cloudFlareID = :cfID where domainID = :dID", array(":dID" => $domainID, ":cfID" => $cfID));
+			} catch (Exception $ex) {
+				// Problem record, kill it wtih fire
+				Db::execute("delete from zz_domains where domainID = :dID", array(":dID" => $domainID));
+			}
 		}
 	}
 
