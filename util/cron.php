@@ -585,6 +585,7 @@ function fetchApis()
 	function minutely() {
 		$killsLastHour = Db::queryField("select count(*) count from zz_killmails where insertTime > date_sub(now(), interval 1 hour)", "count");
 		Storage::store("KillsLastHour", $killsLastHour);
+		Domains::registerDomainsWithCloudflare();
 	}
 
 	function hourly() {

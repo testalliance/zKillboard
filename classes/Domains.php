@@ -18,7 +18,6 @@ class Domains
 
 	public static function getUserEntities($userid)
 	{
-		self::registerDomainsWithCloudflare();
 		Db::execute("update zz_domains set expirationDTTM = date_add(createdDTTM, interval 90 day) where expirationDTTM is null");
 		$entities = Db::query("SELECT * FROM zz_domains WHERE userID = :userid", array(":userid" => $userid), 0);
 		$return = array();
@@ -34,7 +33,6 @@ class Domains
 		$userID = User::getUserID();
 		$entities = json_encode(array_values($array));
 		Db::execute("INSERT INTO zz_domains (userID, domain, entities) VALUES (:userID, :domain, :entities) ON DUPLICATE KEY UPDATE entities = :entities", array(":userID" => $userID, ":domain" => $domain, ":entities" => $entities));
-		self::registerDomainsWithCloudflare();
 	}
 
 	public static function updateEntities($domain, $name, $type)
@@ -61,7 +59,6 @@ class Domains
 			$entities = json_encode($entities);
 			Db::execute("INSERT INTO zz_domains (userID, domain, entities) VALUES (:userID, :domain, :entities) ON DUPLICATE KEY UPDATE entities = :entities", array(":userID" => $userID, ":domain" => $domain, ":entities" => $entities));
 		}
-		self::registerDomainsWithCloudflare();
 		return "$name is already added to $domain";
 	}
 
@@ -78,12 +75,14 @@ class Domains
 			$subDomain = $row["domain"];
 			try {
 				$response = $cf->add_dns_record("zkillboard.com", "A", "82.221.99.219", $subDomain, true);
+				print_r($response);
 				$cfID = $response["response"]["rec"]["obj"]["rec_id"];
 				$cf->edit_dns_record("zkillboard.com", "A", "82.221.99.219", $subDomain, $cfID, true);
 				Db::execute("update zz_domains set cloudFlareID = :cfID where domainID = :dID", array(":dID" => $domainID, ":cfID" => $cfID));
+				Log::ircAdmin("Registered |g|http://$subDomain.zkillboard.com|n| with CloudFlare");
 			} catch (Exception $ex) {
-				// Problem record, kill it wtih fire
-				Db::execute("delete from zz_domains where domainID = :dID", array(":dID" => $domainID));
+				Db::execute("update zz_domains set cloudFlareID = -1 where domainID = :dID", array(":dID" => $domainID, ":cfID" => $cfID));
+				Log::ircAdmin("|r|Problem registering |g|http://$subDomain.zkillboard.com|r| with CloudFlare: |n|" . $ex->getMessage());
 			}
 		}
 	}
