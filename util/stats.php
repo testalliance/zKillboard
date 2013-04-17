@@ -39,7 +39,7 @@ die();
 
 function recalc($type, $column, $calcKills = true) {
 	Log::log("Starting stat calculations for $type");
-	echo "$type ";
+	//echo "$type ";
 
 	Db::execute("drop table if exists zz_stats_temporary");
 	Db::execute("
@@ -53,12 +53,12 @@ function recalc($type, $column, $calcKills = true) {
 				PRIMARY KEY (`killID`,`groupName`,`groupNum`,`groupID`)
 				) ENGINE=InnoDB");
 
-	echo " losses ";
+	//echo " losses ";
 	Db::execute("insert ignore into zz_stats_temporary select killID, '$type', $column, groupID, points, total_price from zz_participants where $column != 0 and isVictim = 1");
 	Db::execute("replace into zz_stats (type, typeID, groupID, lost, pointsLost, iskLost) select groupName, groupNum, groupID, count(killID), sum(points), sum(price) from zz_stats_temporary group by 1, 2, 3");
 
 	if ($calcKills) {
-		echo " kills ";
+		//echo " kills ";
 		Db::execute("truncate table zz_stats_temporary");
 		Db::execute("insert ignore into zz_stats_temporary select killID, '$type', $column, vGroupID, points, total_price from zz_participants where $column != 0 and isVictim = 0");
 		Db::execute("insert into zz_stats (type, typeID, groupID, destroyed, pointsDestroyed, iskDestroyed) (select groupName, groupNum, groupID, count(killID), sum(points), sum(price) from zz_stats_temporary group by 1, 2, 3) on duplicate key update destroyed = values(destroyed), pointsDestroyed = values(pointsDestroyed), iskDestroyed = values(iskDestroyed)");
@@ -66,6 +66,6 @@ function recalc($type, $column, $calcKills = true) {
 
 	Db::execute("drop table if exists zz_stats_temporary");
 
-	echo "done!\n";
+	//echo "done!\n";
 	Log::log("Finished stat calculations for $type");
 }

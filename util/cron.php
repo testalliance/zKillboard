@@ -696,7 +696,7 @@ function fetchApis()
 			$oName = $row["name"];
 			$oTicker = $row["ticker"];
 
-			echo "$id $oName\n";
+			//echo "$id $oName\n";
 
 			$pheal = Util::getPheal();
 			$pheal->scope = "corp";

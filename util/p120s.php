@@ -34,7 +34,7 @@ foreach($api120 as $api) {
 				$new = processRawApi($keyID, $charID, $result);
 				if ($new) Log::log("(120) $keyID - $new kills");
 
-				$file = "/var/log/zkb_killlogs/{$keyID}_{$charID}_0.xml";
+				$file = "/var/killboard/zkb_killlogs/{$keyID}_{$charID}_0.xml";
 				@unlink($file);
 				error_log($result->xml . "\n", 3, $file);
 

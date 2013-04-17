@@ -1,5 +1,5 @@
 <?php
-require_once "../init.php";
+require_once( dirname(__FILE__) . "/../init.php" );
 Bin::set("WaitForProcessing", false);
 
 $count = Db::queryField("select count(*) count from zz_killmails where processed = 0", "count", array(), 0);
@@ -15,14 +15,14 @@ foreach($result as $row)
 {
 	$currentID = $row["eveKillID"];
 	Db::execute("update zz_manual_mail_list set processed = -2 where eveKillID = $currentID");
-	echo "\n$currentID: ";
+	//echo "\n$currentID: ";
 
 	$vars = "&kll_id=" . $currentID;
 	$url = $eveKillURL . $vars;
 	$killmail = file_get_contents($url);
 
 	if ($killmail == "error" || $killmail == "The specified kill ID is not valid." || $killmail == "") {
-		echo "$killmail\n";
+		//echo "$killmail\n";
 		continue;
 	}
 
@@ -32,16 +32,16 @@ foreach($result as $row)
 		$mKillID = -1 * $id["success"];
 		Db::execute("UPDATE zz_manual_mails SET eveKillID = :evekillid WHERE mKillID = :killID",
 				array(":evekillid" => $currentID, ":killID" => $mKillID));
-		echo "Posted with " . $id["success"] . " at http://zkillboard.com/detail/" . $id["success"] . "/\n";
+		//echo "Posted with " . $id["success"] . " at http://zkillboard.com/detail/" . $id["success"] . "/\n";
 		Db::execute("update zz_manual_mail_list set processed = 1 where eveKillID = $currentID");
 		continue;
 	}
 	elseif (isset($id["error"]) || (isset($id["success"]) && $id["success"] == 0))
 	{
 		// There are errors, echo them out and carry on
-		echo " has the following errors:\n";
+		//echo " has the following errors:\n";
 		if (isset($id["error"])) foreach ($id["error"] as $error) {
-			echo "Error: $error \n";
+			//echo "Error: $error \n";
 			Db::execute("insert ignore into zz_manual_mail_fails values (:id, :error)", array(":id" => $currentID, ":error" => $error));
 		}
 		Db::execute("update zz_manual_mail_list set processed = -1 where eveKillID = $currentID");
@@ -49,7 +49,7 @@ foreach($result as $row)
 	}
 	elseif (isset($id["dupe"]))
 	{
-		echo " is a duplicate...\n";
+		//echo " is a duplicate...\n";
 		Db::execute("update zz_manual_mail_list set processed = 1 where eveKillID = $currentID");
 		continue;
 	}
