@@ -58,5 +58,5 @@ foreach($result as $row)
 		die("Some unknown bug just happened..\n");
 	}
 }
-Log::log("Posted " . sizeof($result) . " manual mails from EveKill");
+if (sizeof($result)) Log::log("Posted " . sizeof($result) . " manual mails from EveKill");
 
