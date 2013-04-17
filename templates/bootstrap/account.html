@@ -17,7 +17,7 @@
 				<li class="{{ isActive('api', key) }}"><a href="/account/api/">API</a></li>
 				<li class="{{ isActive('sitesettings', key) }}"><a href="/account/sitesettings/">Site Settings</a></li>
 				<li class="{{ isActive('tracker', key) }}"><a href="/account/tracker/">Tracker</a></li>
-                <li class="{{ isActive('domaintracker', key) }}"><a href="/account/domaintracker/">Domain Tracker</a></li>
+                <li class="{{ isActive('subdomains', key) }}"><a href="/account/subdomains/">SubDomains</a></li>
 				<li class="{{ isActive('killdetail', key) }}"><a href="/account/killdetail/">Kill Detail Setup</a></li>
 				<li class="{{ isActive('comments', key) }}"><a href="/account/comments/">Comments Setup</a></li>
 				<li class="{{ isActive('wallet', key) }}"><a href="/account/wallet/">Wallet</a></li>
@@ -36,8 +36,8 @@
 		{% include "account/sitesettings.html" %}
 	{% elseif key == 'tracker' %}
 		{% include "account/tracker.html" %}
-    {% elseif key == 'domaintracker' %}
-        {% include "account/domaintracker.html" %}
+    {% elseif key == 'subdomains' %}
+        {% include "account/subdomains.html" %}
 	{% elseif key == 'killdetail' %}
 		{% include "account/killdetail.html" %}
 	{% elseif key == 'comments' %}
