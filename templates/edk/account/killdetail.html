@@ -1,5 +1,6 @@
 <legend>Combine Dropped/Destroyed to one column</legend>
 <p>Will remove the two colums (Dropped and Destroyed) and replace them with a single column (Quantity)</p>
+{{ data.ddcombine }}
 <form class="well" name="combinedd" method="post" action="/account/killdetail/">
     <fieldset>
         <table class="table table-condensed">
@@ -7,8 +8,13 @@
 			<tr>
 				<td>
 					<select name="ddcombine">
-                        <option value="true" {% if data.ddcombine == true %}selected{% endif %}>Yes</option>
-                        <option value="false" {% if data.ddcombine != true %}selected{% endif %}>No</option>
+						{% if data.ddcombine == "true" %}
+                        <option value="true" selected>Yes</option>
+						<option value="false">No</option>
+						{% else %}
+						<option value="true">Yes</option>
+                        <option value="false" selected>No</option>
+						{% endif %}
 					</select>
 				</td>
 			</tr>
