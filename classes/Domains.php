@@ -37,6 +37,10 @@ class Domains
 
 	public static function updateEntities($domain, $name, $type)
 	{
+		// Make sure the domain isn't on our restricted list
+		$restrictedSubDomains = array("www", "email", "mx", "ipv6", "blog", "forum", "cdn", "content", "static", "api");
+		if (in_array($subDomain, $restrictedSubDomains)) return "$subDomain is a restricted subDomain";
+
 		// Validate the domain, must start and end with a character and contain a-z, 0-9, or - only
 		$subDomain = strtolower($domain);
 		if (preg_match('/^[a-z][\-a-z0-9]+[a-z]$/', $subDomain) == 0) return "Invalid subDomain: $subDomain";
