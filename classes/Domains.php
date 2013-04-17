@@ -37,6 +37,7 @@ class Domains
 
 	public static function updateEntities($domain, $name, $type)
 	{
+		$userID = User::getUserID();
 		$subDomain = strtolower($domain);
 		// Make sure the domain isn't on our restricted list
 		$restrictedSubDomains = array("www", "email", "mx", "ipv6", "blog", "forum", "cdn", "content", "static", "api", "image", "news");
@@ -44,6 +45,10 @@ class Domains
 
 		// Validate the domain, must start and end with a character and contain a-z, 0-9, or - only
 		if (preg_match('/^[a-z][\-a-z0-9]+[a-z]$/', $subDomain) == 0) return "Invalid subDomain: $subDomain";
+
+		// Make sure this toon owns this subdomain
+		$count = Db::queryField("select count(*) count from zz_domains where domain = :subDomain and userID != :userID", "count", array(":subDomain" => $subDomain, ":userID" => $userID));
+		if ($count > 0) return "Someone else has already claimed this domain...";
 
 		if ($type == "character") $query = "SELECT characterID AS id, name FROM zz_characters WHERE name = :name";
 		if ($type == "corporation") $query = "SELECT corporationID AS id, name FROM zz_corporations WHERE name = :name AND memberCount > 0";
@@ -54,7 +59,6 @@ class Domains
 		if ($type == "region") $query = "SELECT regionID AS id, regionName AS name FROM ccp_regions WHERE regionName = :name";
 
 		$id = Db::queryField($query, "id", array(":name" => $name));
-		$userID = User::getUserID();
 		$entities = self::getEntities($domain);
 		if ($entities == NULL) $entities = array();
 		$ent = array("id" => $id, "type" => $type, "name" => $name);
