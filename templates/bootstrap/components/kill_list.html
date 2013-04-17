@@ -1,6 +1,9 @@
 <div class="pull-left"><h2>{{ killListTitle }}</h2></div>
 {% if killList|length == 0 %}
+<div class="well">
+<hr/>
 <em>Nothing to display here...</em>
+</div>
 {% else %}
 {% include 'components/pager.html' %}
 {% set MonthDayYear = '' %}
