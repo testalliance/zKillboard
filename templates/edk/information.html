@@ -17,6 +17,7 @@
             <li class="{{ isActive('legal', pageview) }}"><a href="/information/legal/">CCP Copyright</a></li>
         </ul>
         <ul class="nav pull-right">
+			<li class="{{ isActive('cookies', pageview) }}"><a href="/information/cookies/">Cookies</a></li>
 			<li class="{{ isActive('license', pageview) }}"><a href="/information/license/">License</a></li>
             <li class="{{ isActive('3rd', pageview) }}"><a href="/information/3rd/">3rd Parties</a></li>
         </ul>
@@ -78,6 +79,8 @@
  - {{ points.0 }}: {{ points.1 }}
 {% endfor %}
 </pre>
+{% elseif pageview == "cookies" %}
+{% include 'information/cookies.html' %}
 {% endif %}
 {% endblock %}
 
