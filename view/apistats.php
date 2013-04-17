@@ -1,20 +1,30 @@
 <?php
-
 //make sure the requester is not being a naughty boy
 Util::scrapeCheck();
 
 //make sure the type is allowed - and map it to our internal string
-$allowed_types = array('character' => 'pilot','corporation' => 'corp','alliance' => 'alli','faction' => 'faction');
+$allowed_types = array('faction' => 'faction', 'alliance' => 'alli', 'corporation' => 'corp', 'pilot' => 'pilot', 'group' => 'group', 'ship' => 'ship', 'system' => 'system', 'region' => 'region');
 
-//make sure its an allowed call
-if (!array_key_exists($type, $allowed_types)) throw new Exception("Must pass a valid type.  Please read API Information.");
+//parse the flags
+foreach($flags as $flag) { 
+	//a numeric flag is a our targets id
+	if (is_numeric($flag)) { $id = $flag; }
+	
+	//if the flag is in our allowed_types - treat it as a type
+	if (array_key_exists($flag, $allowed_types)) { $type = $allowed_types[$flag]; }
+}
 
-//make sure we have been passed an id - thats a number
-if (!is_numeric($id)) throw new Exception("Must pass a valid id.  Please read API Information.");
+//other flags are easier to handle like so
+$stats_table = ((in_array('recent', $flags)) ? 'zz_stats_recent' : 'zz_stats');
+$output_type = ((in_array('xml', $flags)) ? 'xml' : 'json');
 
-//get the statistics for our target character/corp/allaice/faction
-$stat_totals  = Db::query('SELECT SUM(destroyed) AS countDestroyed, SUM(lost) AS countLost, SUM(pointsDestroyed) AS pointsDestroyed, SUM(pointsLost) AS pointsLost, SUM(iskDestroyed) AS iskDestroyed, SUM(iskLost) AS iskLost FROM zz_stats WHERE type = :type AND typeID = :id', array(':type' => $allowed_types[$type], ':id' => $id));
-$stat_details = Db::query('SELECT groupID, destroyed AS countDestroyed, lost AS countLost, pointsDestroyed, pointsLost, iskDestroyed, iskLost FROM zz_stats WHERE type = :type AND typeID = :id', array(':type' => $allowed_types[$type], ':id' => $id));
+//make sure we have an allowed call
+if (!isset($id)) { throw new Exception("Must pass a valid id.  Please read API Information."); }
+if (!isset($type)) { throw new Exception("Must pass a valid type.  Please read API Information."); }
+
+//get the statistics for our target type
+$stat_totals  = Db::query('SELECT SUM(destroyed) AS countDestroyed, SUM(lost) AS countLost, SUM(pointsDestroyed) AS pointsDestroyed, SUM(pointsLost) AS pointsLost, SUM(iskDestroyed) AS iskDestroyed, SUM(iskLost) AS iskLost FROM ' . $stats_table . ' WHERE type = :type AND typeID = :id', array(':type' => $type, ':id' => $id));
+$stat_details = Db::query('SELECT groupID, destroyed AS countDestroyed, lost AS countLost, pointsDestroyed, pointsLost, iskDestroyed, iskLost FROM ' . $stats_table . ' WHERE type = :type AND typeID = :id', array(':type' => $type, ':id' => $id));
 
 //build our output data
 $output['totals'] = $stat_totals[0];
@@ -28,7 +38,7 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET");
 
 //now display the output in a way that is useable
-switch (strtolower($return_method))
+switch (strtolower($output_type))
 {
 	case 'json':
 	

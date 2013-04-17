@@ -171,7 +171,7 @@ $app->get("/stacktrace/:hash/", function($hash) use ($app) {
 });
 
 // API
-$app->get("/api/stats/:type/:id/(:return_method)/", function($type, $id, $return_method = 'json') use ($app) {
+$app->get("/api/stats/:flags+/", function($flags) use ($app) {
     include( "view/apistats.php" );
 });
 
