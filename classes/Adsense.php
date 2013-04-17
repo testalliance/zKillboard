@@ -10,9 +10,9 @@ class Adsense
 	public static function top()
 	{
 		$html = '<script type="text/javascript">
-		google_ad_client = "ca-pub-6702479302366531";
+		google_ad_client = "ca-pub-8111276931546791";
 		/* eve-kill */
-		google_ad_slot = "3192421769";
+		google_ad_slot = "3776014371";
 		google_ad_width = 728;
 		google_ad_height = 90;
 		</script>
@@ -23,9 +23,9 @@ class Adsense
 	public static function bottom()
 	{
 		$html = '<script type="text/javascript">
-		google_ad_client = "ca-pub-6702479302366531";
+		google_ad_client = "ca-pub-8111276931546791";
 		/* eve-kill */
-		google_ad_slot = "3192421769";
+		google_ad_slot = "3776014371";
 		google_ad_width = 728;
 		google_ad_height = 90;
 		</script>
@@ -36,9 +36,9 @@ class Adsense
 	public static function mobile()
 	{
 		$html = '<script type="text/javascript"><!--
-		google_ad_client = "ca-pub-6702479302366531";
+		google_ad_client = "ca-pub-8111276931546791";
 		/* eve-kill */
-		google_ad_slot = "3192421769";
+		google_ad_slot = "3776014371";
 		google_ad_width = 728;
 		google_ad_height = 90;
 		</script>
