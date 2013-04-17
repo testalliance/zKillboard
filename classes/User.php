@@ -8,8 +8,7 @@ class User
 		if ($autoLogin) {
 			$val = $username."/".hash("sha256", $username.$hash.time());
 			Db::execute("UPDATE zz_users SET autoLoginHash = :autoLoginHash WHERE username = :username", array(":username" => $username, ":autoLoginHash" => $val));
-			setcookie($cookie_name, $val, time() + $cookie_time, "/"); // Main domain
-			setcookie($cookie_name, $val, time() + $cookie_time, "/", ".".$baseAddr); // Subdomain
+			setcookie($cookie_name, $val, time() + $cookie_time, "/", $baseAddr); // Main domain (For some reason this also gets set for subdomains?!)
 		}
 		$_SESSION["loggedin"] = $username;
 		return true;
@@ -20,8 +19,7 @@ class User
 		global $cookie_name, $cookie_time, $baseAddr;
 		$val = $username."/".hash("sha256", $username.$hash.time());
 		Db::execute("UPDATE zz_users SET autoLoginHash = :autoLoginHash WHERE username = :username", array(":username" => $username, ":autoLoginHash" => $val));
-		setcookie($cookie_name, $val, time() + $cookie_time, "/"); // Main domain
-		setcookie($cookie_name, $val, time() + $cookie_time, "/", ".".$baseAddr); // Subdomain
+		setcookie($cookie_name, $val, time() + $cookie_time, "/", $baseAddr); // Main domain (For some reason this also gets set for subdomains?!)
 		$_SESSION["loggedin"] = $username;
 		return true;
 	}
@@ -32,7 +30,7 @@ class User
 		{
 			$user = $p[0]["username"];
 			$pw = $p[0]["password"];
-			
+
 			if(Password::checkPassword($password, $pw))
 				return true;
 			return false;
