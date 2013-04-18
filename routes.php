@@ -168,7 +168,7 @@ $app->get("/revoke/", function() use ($app) {
 // Autocomplete
 $app->map("/autocomplete/", function() use ($app) {
 	include( "view/autocomplete.php" );
-});
+})->via("POST");
 
 // EVE-KILL kill_detail intercept
 $app->get("/evekilldetailintercept/:id/", function($id) use ($app) {
