@@ -19,18 +19,13 @@ $app->get("/support(/:page)/", function($page = "support") use ($app) {
 });
 
 // Tickets
-$app->get("/tickets/", function() use ($app) {
+$app->map("/tickets/", function() use ($app) {
 	include( "view/tickets.php" );
-});
-$app->post("/tickets/", function() use ($app) {
-	include( "view/tickets.php" );
-});
-$app->get("/tickets/view/:id/", function($id) use ($app) {
+})->via("GET", "POST");
+
+$app->map("/tickets/view/:id/", function($id) use ($app) {
 	include( "view/tickets_view.php" );
-});
-$app->post("/tickets/view/:id/", function($id) use ($app) {
-	include( "view/tickets_view.php" );
-});
+})->via("GET", "POST");
 
 // Tracker
 $app->get("/tracker/", function() use ($app) {
@@ -64,30 +59,20 @@ $app->get("/raw/:id/", function($id) use ($app) {
 });
 
 // Kill Detail View
-$app->get("/detail/:id(/:pageview)/", function($id, $pageview = "overview") use ($app) {
+$app->map("/detail/:id(/:pageview)/", function($id, $pageview = "overview") use ($app) {
     include( "view/detail.php" );
-});
-$app->post("/detail/:id(/:pageview)/", function($id, $pageview = "overview") use ($app) {
-    include( "view/detail.php" );
-});
+})->via("GET", "POST");
 
 // Search
-$app->get("/search/:search/", function($search) use ($app) {
+$app->map("/search/", function() use ($app) {
     include( "view/search.php" );
-});
-$app->post("/search/", function() use ($app) {
-    include( "view/search.php" );
-});
+})->via("GET", "POST");
 
 // Login stuff
-$app->get("/login/", function() use ($app) {
+$app->map("/login/", function() use ($app) {
     global $cookie_name, $cookie_time;
     include( "view/login.php" );
-});
-$app->post("/login/", function() use ($app) {
-    global $cookie_name, $cookie_time;
-    include( "view/login.php" );
-});
+})->via("GET", "POST");
 
 // Logout
 $app->get("/logout/", function() use ($app) {
@@ -96,62 +81,39 @@ $app->get("/logout/", function() use ($app) {
 });
 
 // Forgot password
-$app->get("/forgotpassword/", function() use ($app) {
+$app->map("/forgotpassword/", function() use ($app) {
     global $cookie_name, $cookie_time;
     include( "view/forgotpassword.php" );
-});
-$app->post("/forgotpassword/", function() use ($app) {
-    global $cookie_name, $cookie_time;
-    include( "view/forgotpassword.php" );
-});
+})->via("GET", "POST");
 
 // Change password
-$app->get("/changepassword/:hash/", function($hash) use ($app) {
+$app->map("/changepassword/:hash/", function($hash) use ($app) {
     include( "view/changepassword.php" );
-});
-$app->post("/changepassword/:hash/", function($hash) use ($app) {
-    include( "view/changepassword.php" );
-});
+})->via("GET", "POST");
 
 // Register
-$app->get("/register/", function() use ($app) {
+$app->map("/register/", function() use ($app) {
     global $cookie_name, $cookie_time;
     include( "view/register.php" );
-});
-$app->post("/register/", function() use ($app) {
-    global $cookie_name, $cookie_time;
-    include( "view/register.php" );
-});
+})->via("GET", "POST");
 
 // Account
-$app->get("/account(/:req)/", function($req = NULL) use ($app) {
+$app->map("/account(/:req)/", function($req = NULL) use ($app) {
     global $cookie_name, $cookie_time;
     include( "view/account.php" );
-});
-$app->post("/account(/:req)/", function($req = NULL) use ($app) {
-    global $cookie_name, $cookie_time;
-    include( "view/account.php" );
-});
+})->via("GET", "POST");
 
 // Moderator
-$app->get("/moderator(/:req)(/:id)/", function ($req = NULL, $id = NULL) use ($app) {
+$app->map("/moderator(/:req)(/:id)/", function ($req = NULL, $id = NULL) use ($app) {
     global $cookie_name, $cookie_time;
     include( "view/moderator.php" );
-});
-$app->post("/moderator(/:req)(/:id)/", function ($req = NULL, $id = NULL) use ($app) {
-    global $cookie_name, $cookie_time;
-    include( "view/moderator.php" );
-});
+})->via("GET", "POST");
 
 // Admin
-$app->get("/admin(/:req)/", function ($req = "users") use ($app) {
+$app->map("/admin(/:req)/", function ($req = "users") use ($app) {
     global $cookie_name, $cookie_time;
     include( "view/admin.php" );
-});
-$app->post("/admin(/:req)/", function ($req = "users") use ($app) {
-    global $cookie_name, $cookie_time;
-    include( "view/admin.php" );
-});
+})->via("GET", "POST");
 
 // EveInfo
 $app->get("/item/:id/", function($id) use ($app) {
@@ -204,7 +166,7 @@ $app->get("/revoke/", function() use ($app) {
 });
 
 // Autocomplete
-$app->post("/autocomplete/", function() use ($app) {
+$app->map("/autocomplete/", function() use ($app) {
 	include( "view/autocomplete.php" );
 });
 
