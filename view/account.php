@@ -108,11 +108,9 @@ if($_POST)
 		UserConfig::set("viewtheme", $viewtheme);
 		$app->redirect($_SERVER["REQUEST_URI"]);
 	}
+	
 	if($theme)
-	{
 		UserConfig::set("theme", $theme);
-		$error = "Theme has been set";
-	}
 	
 	// Password
 	if($orgpw && $password && $password2)
@@ -130,16 +128,10 @@ if($_POST)
 
 	// Default comment character
 	if($defaultcommentcharacter > 0) 
-	{
 		UserConfig::set("defaultCommentCharacter", $defaultcommentcharacter);
-		$error = "Default Character has been set to $defaultcommentcharacter";
-	}
 
 	if($timeago)
-	{
 		UserConfig::set("timeago", $timeago);
-		$error = "Timeago has been set to $timeago";
-	}
 
     if($deleteentityid && $deleteentitytype)
     {
@@ -158,67 +150,32 @@ if($_POST)
 	if($entity && $entitymetadata)
 	{
 		$entitymetadata = json_decode($entitymetadata, true);
-
 		$entities = UserConfig::get($entitymetadata['type']);
-
 		$entity = array('id' => $entitymetadata['id'], 'name' => $entitymetadata['name']);
 		
 		if(empty($entities) || !in_array($entity, $entities))
 		{
 			$entities[] = $entity;
-			
 			UserConfig::set($entitymetadata['type'], $entities);
 			$error = "{$entitymetadata['name']} has been added to your tracking list";
 		}
 		else
-		{
 			 $error = "{$entitymetadata['name']} is already being tracked";
-		}
 	}
 
 	if($ddcombine)
-	{
 		UserConfig::set("ddcombine", $ddcombine);
-		$error = "Combine Dropped/Destroyed set to $ddcombine";
-	}
+
     
     if($domainname && $domainentity && $domainentitytype)
     {
         $error = Domains::updateEntities($domainname, $domainentity, $domainentitytype);
     }
 }
-$entitytypes = array("character", "corporation", "alliance", "faction", "ship", "system", "region");
-$entlist = array();
-foreach($entitytypes as $ent)
-{
-	$result = UserConfig::get($ent);
-	$a = array();
-	if ($result != null) foreach($result as $row) {
-        if($ent == "system")
-        {
-            $row["solarSystemID"] = $row["id"];
-            $row["solarSystemName"] = $row["name"];
-            $sunType = Db::queryField("SELECT sunTypeID FROM ccp_systems WHERE solarSystemID = :id", "sunTypeID", array(":id" => $row["id"]));
-            $row["sunTypeID"] = $sunType;
-        }
-        elseif($ent == "ship")
-        {
-            $row["shipTypeID"] = $row["id"];
-            $row["${ent}Name"] = $row["name"];
-        }
-        else
-        {
-            $row["${ent}ID"] = $row["id"];
-            $row["${ent}Name"] = $row["name"];
-        }
-		$a[] = $row;
-	}
-	$entlist[$ent] = $a;
-}
 
 $userID = User::getUserID();
 $data["domainentities"] = Domains::getUserEntities($userID);
-$data["entities"] = $entlist;
+$data["entities"] = Account::getUserTrackerData();
 $data["themes"] = array("default", "amelia", "cerulean", "cosmo", "cyborg", "journal", "readable", "simplex", "slate", "spacelab", "spruce", "superhero", "united");
 $data["viewthemes"] = array("bootstrap", "edk");
 $data["apiKeys"] = Api::getKeys($userID);
@@ -232,5 +189,6 @@ $data["userInfo"] = User::getUserInfo();
 $data["currentTheme"] = UserConfig::get("theme", "default");
 $data["timeago"] = UserConfig::get("timeago");
 $data["ddcombine"] = UserConfig::get("ddcombine");
+
 
 $app->render("account.html", array("data" => $data, "message" => $error, "key" => $key));
