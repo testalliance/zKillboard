@@ -43,7 +43,7 @@ $settings["baseaddr"] = prompt("Domain name?", "zkillboard.com");
 $settings["logfile"] = prompt("Log file location?", "/var/log/zkb.log");
 
 echo "\nA secret key is needed for your cookies to be encrypted.\n";
-$settings["cookiesecret"] = promt("Secret key for cookies?", "MY_SECRET");
+$settings["cookiesecret"] = prompt("Secret key for cookies?", "MY_SECRET");
 
 $configFile = file_get_contents("$base/config.new.php");
 
