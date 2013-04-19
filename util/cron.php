@@ -594,7 +594,8 @@ function fetchApis()
 		$good = $row["good"];
 		$bad = $row["bad"];
 		if ($bad > (($bad + $good) * ($percentage / 100))) {
-			Log::irc("|r|API gone haywire?  Over $percentage% of API's reporting an error atm.");
+			if($percentage > 15)
+				Log::irc("|r|API gone haywire?  Over $percentage% of API's reporting an error atm.");
 			$percentage += 5;
 		} else if ($bad < (($bad + $good) * (($percentage - 5) / 100))) $percentage -= 5;
 		if ($percentage < 10) $percentage = 10;
