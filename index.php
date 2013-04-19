@@ -2,18 +2,15 @@
 // Load modules + database stuff (and the config)
 require( "init.php" );
 
-// Fire up the session! (Yes this isn't pretty, but for whatever reason this makes the sessions work properly across multiple domains..)
-session_cache_limiter(false);
-$session_id_name = md5("session_id");
-if(isset($_COOKIE[$session_id_name]))
-	session_id($_COOKIE[$session_id_name]);
-session_start();
-if(!isset($_COOKIE[$session_id_name]))
-	setcookie($session_id_name, session_id(), 0, "/", ".".$baseAddr); //Expires in 30 days
-
-
 // initiate the timer!
 $timer = new Timer();
+
+// Start slim
+$app = new \Slim\Slim($config);
+
+// Session
+session_cache_limiter(false);
+session_start();
 
 // Check if the user has autologin turned on
 if(!User::isLoggedIn()) User::autoLogin();
@@ -22,10 +19,7 @@ if(!User::isLoggedIn()) User::autoLogin();
 $viewtheme = null;
 if(User::isLoggedIn())
 	$viewtheme = UserConfig::get("viewtheme");
-$config["templates.path"] = $baseDir."templates/" . ($viewtheme ? $viewtheme : "bootstrap");
-
-// Start slim and load the config from the config file
-$app = new \Slim\Slim($config);
+$app->config(array("templates.path" => $baseDir."templates/" . ($viewtheme ? $viewtheme : "bootstrap")));
 
 // Error handling
 $app->error(function (\Exception $e) use ($app){

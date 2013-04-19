@@ -3,12 +3,12 @@ class User
 {
 	public static function setLogin($username, $password, $autoLogin)
 	{
-		global $cookie_name, $cookie_time, $baseAddr;
+		global $cookie_name, $cookie_time, $baseAddr, $app;
 		$hash = Password::genPassword($password);
 		if ($autoLogin) {
 			$val = $username."/".hash("sha256", $username.$hash.time());
 			Db::execute("UPDATE zz_users SET autoLoginHash = :autoLoginHash WHERE username = :username", array(":username" => $username, ":autoLoginHash" => $val));
-			setcookie($cookie_name, $val, time() + $cookie_time, "/", $baseAddr); // Main domain (For some reason this also gets set for subdomains?!)
+			$app->setEncryptedCookie($cookie_name, $val, time() + $cookie_time, "/", $baseAddr);
 		}
 		$_SESSION["loggedin"] = $username;
 		return true;
@@ -16,10 +16,10 @@ class User
 
 	public static function setLoginHashed($username, $hash)
 	{
-		global $cookie_name, $cookie_time, $baseAddr;
+		global $cookie_name, $cookie_time, $baseAddr, $app;
 		$val = $username."/".hash("sha256", $username.$hash.time());
 		Db::execute("UPDATE zz_users SET autoLoginHash = :autoLoginHash WHERE username = :username", array(":username" => $username, ":autoLoginHash" => $val));
-		setcookie($cookie_name, $val, time() + $cookie_time, "/", $baseAddr); // Main domain (For some reason this also gets set for subdomains?!)
+		$app->setEncryptedCookie($cookie_name, $val, time() + $cookie_time, "/", $baseAddr);
 		$_SESSION["loggedin"] = $username;
 		return true;
 	}
@@ -40,18 +40,19 @@ class User
 
 	public static function checkLoginHashed($username)
 	{
-		return Db::queryField("SELECT autoLoginHash FROM zz_users WHERE username = :username", "autoLoginHash", array(":username" => $username));
+		return Db::queryField("SELECT autoLoginHash FROM zz_users WHERE username = :username", "autoLoginHash", array(":username" => $username), 0);
 	}
 
 	public static function autoLogin()
 	{
-		global $cookie_name, $cookie_time;
-		if (isset($_COOKIE[$cookie_name])) {
-			$cookie = explode("/", $_COOKIE[$cookie_name]);
+		global $cookie_name, $cookie_time, $app;
+		$sessionCookie = $app->getEncryptedCookie($cookie_name);
+		if (!empty($sessionCookie)) {
+			$cookie = explode("/", $sessionCookie);
 			$username = $cookie[0];
 			$cookieHash = $cookie[1];
 			$hash = self::checkLoginHashed($username, $cookieHash);
-			if ($_COOKIE[$cookie_name] == $hash) {
+			if ($sessionCookie == $hash) {
 				self::setLoginHashed($username, $hash);
 				return true;
 			}

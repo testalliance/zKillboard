@@ -31,7 +31,6 @@ $settings["dbname"] = prompt("Database name?", "zkillboard");
 $settings["dbhost"] = prompt("Database server?", "localhost");
 
 echo "\nSome memcache questions:\n";
-
 $settings["memcache"] = prompt("Memcache server?", "localhost");
 $settings["memcacheport"] = prompt("Memcache port?", "11211");
 
@@ -42,6 +41,9 @@ echo "\nAnd now what is the address of your server?  Just use the domain name!  
 $settings["baseaddr"] = prompt("Domain name?", "zkillboard.com");
 
 $settings["logfile"] = prompt("Log file location?", "/var/log/zkb.log");
+
+echo "\nA secret key is needed for your cookies to be encrypted.\n";
+$settings["cookiesecret"] = promt("Secret key for cookies?", "MY_SECRET");
 
 $configFile = file_get_contents("$base/config.new.php");
 

@@ -27,6 +27,7 @@ $phealCacheLocation = "%phealcachelocation%";
 // Cookiiieeeee
 $cookie_name = "zKB";
 $cookie_time = (3600 * 24 * 30); // 30 days
+$cookie_secret = "%cookiesecret%";
 
 // Stomp
 $stompServer = "";
@@ -53,8 +54,8 @@ $accessTokenSecret = "";
 // Slim config
 // to enable log, add "log.writer" => call after "log.enabled" => true, - you might have to load it in index after init has run and do $config["log.writer"] = call;
 $config = array(
-	"templates.path" => $baseDir."templates/",
 	"mode" => "production",
 	"debug" => false,
-	"log.enabled" => false
+	"log.enabled" => false,
+	"cookies.secret_key" => $cookie_secret
 	);

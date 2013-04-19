@@ -31,13 +31,6 @@ if($_POST)
         if($check) // Success
         {
             $message = User::setLogin($username, $password, $autologin);
-            $app->view(new \Slim\Extras\Views\Twig());
-            $twig = $app->view()->getEnvironment();
-            $u = User::getUserInfo();
-            $twig->addGlobal("sessionusername", $u["username"]);
-            $twig->addGlobal("sessionuserid", $u["id"]);
-            $twig->addGlobal("sessionadmin", $u["admin"]);
-            $twig->addGlobal("sessionmoderator", (bool) $u["moderator"]);
 			$ignoreUris = array("/register/", "/login/", "/logout/");
             if (isset($requesturi) && !in_array($requesturi, $ignoreUris)) {
 				$app->redirect($requesturi);
