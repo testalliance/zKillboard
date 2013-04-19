@@ -9,6 +9,9 @@ class Registration
 
 	public static function registerUser($username, $password, $email)
 	{
+		if (strtolower($username) == "evekill" || strtolower($username) == "eve-kill")
+			return array("type" => "error", "message" => "Restrictd user name");
+
 		$check = Db::queryField("SELECT count(*) count FROM zz_users WHERE email = :email OR username = :username", "count", array(":email" => $email, ":username" => $username), 0);
 		if ($check == 0) {
 			$hashedpassword = Password::genPassword($password);
