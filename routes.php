@@ -64,7 +64,7 @@ $app->map("/detail/:id(/:pageview)/", function($id, $pageview = "overview") use 
 })->via("GET", "POST");
 
 // Search
-$app->map("/search/", function() use ($app) {
+$app->map("/search(/:search)/", function($search = NULL) use ($app) {
     include( "view/search.php" );
 })->via("GET", "POST");
 
