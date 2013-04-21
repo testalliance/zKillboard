@@ -2,7 +2,7 @@
 
 class irc_tweet implements ircCommand {
 	public function getRequiredAccessLevel() {
-		return 0;
+		return 4;
 	}
 
 	public function getDescription() {
