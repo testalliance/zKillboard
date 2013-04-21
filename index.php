@@ -5,7 +5,7 @@ require( "init.php" );
 // initiate the timer!
 $timer = new Timer();
 
-// Start slim
+// Start slim, yay
 $app = new \Slim\Slim($config);
 
 // Session
