@@ -33,7 +33,11 @@ $app->get("/tracker/", function() use ($app) {
 });
 
 // View kills
-$app->get("/kills(/:type)/", function($type = NULL) use ($app) {
+$app->get("/kills/page/:page/", function($page = 1) use ($app) {
+    $type = NULL;
+    include( "view/kills.php" );
+});
+$app->get("/kills(/:type)(/page/:page)/", function($type = NULL, $page = 1) use ($app) {
     include( "view/kills.php" );
 });
 
