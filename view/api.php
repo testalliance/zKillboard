@@ -107,10 +107,8 @@ function scrapeCheck() {
 	$timeLimit = 60; // Number of seconds allowed between requests
 	$numAccesses = 10; // Number of accesses before hammer is thrown
 
-	if (isset($_SERVER["HTTP_CF_CONNECTING_IP"])) $ip = $_SERVER["HTTP_CF_CONNECTING_IP"];
-	elseif (isset($_SERVER["HTTP_X_FORWARDED_FOR"])) $ip = $_SERVER["HTTP_X_FORWARDED_FOR"];
-	else $ip = $_SERVER['REMOTE_ADDR'];
-
+	$ip = IP::get();
+	
 	$validScrapers = array(
 		"85.88.24.82", // DOTLAN
 	);

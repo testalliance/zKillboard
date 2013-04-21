@@ -10,9 +10,7 @@ class Feed
 	 */
 	public static function getKills($parameters = array())
 	{
-	    if (isset($_SERVER["HTTP_CF_CONNECTING_IP"])) $ip = $_SERVER["HTTP_CF_CONNECTING_IP"];
-		elseif (isset($_SERVER["HTTP_X_FORWARDED_FOR"])) $ip = $_SERVER["HTTP_X_FORWARDED_FOR"];
-		else $ip = $_SERVER['REMOTE_ADDR'];
+		$ip = IP::get();
 
 		Log::log("$ip API Fetch: " . $_SERVER["REQUEST_URI"]);
 		$tables = array();
