@@ -19,7 +19,7 @@
 $entities = array();
 
 if($_POST)
-    $search = $_POST["searchbox"];
+	$app->redirect("/search/".$_POST["searchbox"]."/");
    
 if($search)
 {
