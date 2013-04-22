@@ -27,7 +27,7 @@ see `LICENSE.md` file
 - Apache + mod_rewrite or Lighttpd
 - Memcached
 - Linux, Mac OS X or Windows
-- MariaDB / MySQL (MariaDB is a drop-in replacement for MySQL, which is faster and better)
+- MariaDB 5.5+ / MySQL 5.5+ (MariaDB is a drop-in replacement for MySQL, which is faster and better)
 - Composer 
 
 ## Installation
