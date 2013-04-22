@@ -72,7 +72,7 @@ class Domains
 
 	public static function registerDomainsWithCloudflare() {
 		$cf = null;
-		$needsRegistered = Db::query("select * from zz_domains where cloudFlareID is null");
+		$needsRegistered = Db::query("select * from zz_domains where cloudFlareID is null", array(), 0);
 		foreach($needsRegistered as $row) {
 			if ($cf == null) {
 				global $cfUser, $cfKey;
@@ -82,6 +82,8 @@ class Domains
 			$domainID = $row["domainID"];
 			$subDomain = $row["domain"];
 			try {
+				// Flag it so repeats don't happen
+				Db::execute("update zz_domains set cloudFlareID = -1 where domainID = :dID", array(":dID" => $domainID));
 				$response = $cf->add_dns_record("zkillboard.com", "A", "82.221.99.219", $subDomain, true);
 				print_r($response);
 				$cfID = $response["response"]["rec"]["obj"]["rec_id"];
@@ -89,7 +91,6 @@ class Domains
 				Db::execute("update zz_domains set cloudFlareID = :cfID where domainID = :dID", array(":dID" => $domainID, ":cfID" => $cfID));
 				Log::ircAdmin("Registered |g|http://$subDomain.zkillboard.com|n| with CloudFlare");
 			} catch (Exception $ex) {
-				Db::execute("update zz_domains set cloudFlareID = -1 where domainID = :dID", array(":dID" => $domainID, ":cfID" => $cfID));
 				Log::ircAdmin("|r|Problem registering |g|http://$subDomain.zkillboard.com|r| with CloudFlare: |n|" . $ex->getMessage());
 			}
 		}
