@@ -135,7 +135,7 @@ class Api
 	public static function getKeys()
 	{
 		$userID = user::getUserID();
-		$result = Db::query("SELECT keyID, vCode, label, lastValidation FROM zz_api WHERE userID = :userID order by keyID", array(":userID" => $userID), 0);
+		$result = Db::query("SELECT keyID, vCode, label, lastValidation, errorCode FROM zz_api WHERE userID = :userID order by keyID", array(":userID" => $userID), 0);
 		return $result;
 	}
 
