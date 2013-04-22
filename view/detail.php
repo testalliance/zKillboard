@@ -19,6 +19,8 @@
 $involved = array();
 $message = "";
 $pageID = "detail:$id";
+
+
 $info = User::getUserInfo();
 $name = $info["username"];
 $userID = $info["id"];
@@ -41,7 +43,6 @@ if($_POST && !User::isRevoked())
 	{
 		if($id < 0)
 		{
-			$info = User::getUserInfo();
 			$tags = "Reported Kill";
 			Db::execute("INSERT INTO zz_tickets (userid, name, email, tags, ticket, killID) VALUES (:userid, :name, :email, :tags, :ticket, :killid)",
 			array(":userid" => $userID, ":name" => $name, ":email" => $email, ":tags" => $tags, ":ticket" => $report, ":killid" => $id));
