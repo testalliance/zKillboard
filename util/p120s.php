@@ -24,18 +24,19 @@ require_once "$base/cron.php";
 $api120 = Db::query("select * from zz_api_characters where errorCode in (120)", array(), 0);
 
 foreach($api120 as $api) {
+	$apiRowID = $api["apiRowID"];
 	$keyID = $api["keyID"];
 	$vCode = Db::queryField("select vCode from zz_api where keyID = $keyID", "vCode", array(), 300);
 	$isDirector = $api["isDirector"];
 	$charID = $api["characterID"];
 
 	try {
-    	$pheal = Util::getPheal($keyID, $vCode);
-    	$pheal->scope = ($isDirector == "T" ? 'corp' : 'char');
+		$pheal = Util::getPheal($keyID, $vCode);
+		$pheal->scope = ($isDirector == "T" ? 'corp' : 'char');
 
 		if ($isDirector == "T") $pheal->KillLog();
 		else $pheal->KillLog(array('characterID' => $charID));
-		Db::execute("update zz_api_characters set errorCode = 0, lastChecked = 0, cachedUntil = 0 where keyID = $keyID and characterID = $charID");
+		Db::execute("update zz_api_characters set errorCode = 0 where apiRowID = :id", array(":id" => $apiRowID));
 	} catch (Exception $ex) {
 		if ($ex->getCode() == 120) {
 			$msg = $ex->getMessage();
@@ -43,11 +44,13 @@ foreach($api120 as $api) {
 			$pos = strpos($msg, "]");
 			if ($pos !== false) {
 				$beforeKillID = substr($msg, 0, $pos);
-				//echo "$beforeKillID\n";
 				try {
 					$result = $pheal->KillLog(array('characterID' => $charID, "beforeKillID" => $beforeKillID));
-				} catch (Exception $ex) { continue; }
-				$cachedUntil = $result->cached_until_unixtime;
+				} catch (Exception $ex) { 
+					handleApiException($keyID, $charID, $ex);
+					continue;
+				}
+				$cachedUntil = $result->cached_until;
 				$new = processRawApi($keyID, $charID, $result);
 				if ($new) Log::log("(120) $keyID - $new kills");
 
@@ -55,12 +58,11 @@ foreach($api120 as $api) {
 				@unlink($file);
 				error_log($result->xml . "\n", 3, $file);
 
-				if ($cachedUntil < time()) $cachedUntil = time() + 3600;
-				Db::execute("update zz_api_characters set errorCode = 0, cachedUntil = :cachedUntil, lastChecked = unix_timestamp() where keyID = :keyID and characterID = :characterID",
-						array(":cachedUntil" => $cachedUntil, ":keyID" => $keyID, ":characterID" => $charID));
-
+				Db::execute("update zz_api_characters set errorCode = 0, cachedUntil = :cachedUntil, lastChecked = now() where apiRowID = :id", array(":cachedUntil" => $cachedUntil, ":id" => $apiRowID));
 			}
-		} else handleApiException($keyID, $charID, $ex);
+		} else {
+			handleApiException($keyID, $charID, $ex);
+		}
 	}
 	sleep(1);
 }
