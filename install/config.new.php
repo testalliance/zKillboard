@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 date_default_timezone_set("UTC");
 
 // Database parameters
@@ -22,6 +23,10 @@ $dbUser = "%dbuser%";
 $dbPassword = "%dbpassword%";
 $dbName = "%dbname%";
 $dbHost = "%dbhost%";
+
+// External Servers
+$apiServer = "https://api.zkillboard.com";
+$imageServer = "https://image.zkillboard.com";
 
 // Base
 $baseFile = __FILE__;

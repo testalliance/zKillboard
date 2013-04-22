@@ -61,7 +61,7 @@ class Util
 
 	public static function getPheal($keyID = null, $vCode = null)
 	{
-		global $phealCacheLocation;
+		global $phealCacheLocation, $apiServer;
 
 		PhealConfig::getInstance()->http_method = "curl";
 		PhealConfig::getInstance()->http_user_agent = "zKillboard API Fetcher (Pheal)";
@@ -72,7 +72,7 @@ class Util
 		PhealConfig::getInstance()->cache = new PhealFileCache($phealCacheLocation);
 		PhealConfig::getInstance()->log = new PhealLogger();
 		PhealConfig::getInstance()->api_customkeys = true;
-		PhealConfig::getInstance()->api_base = 'https://api.zkillboard.com/'; // API proxy server, to get everything gzipped.
+		PhealConfig::getInstance()->api_base = $apiServer;
 
 			if ($keyID != null && $vCode != null) $pheal = new Pheal($keyID, $vCode);
 			else $pheal = new Pheal();
