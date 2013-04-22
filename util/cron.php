@@ -310,15 +310,16 @@ function fetchApis()
 		$timer = new Timer();
 		$maxTime = 65 * 1000;
 
-		$fetchesPerSecond = 20;
+		$fetchesPerSecond = 25;
 		$iterationCount = 0;
 
 		while ($timer->stop() < $maxTime) {
-			$keyID = Db::queryField("select keyID from zz_api where errorCode not in (203, 220) and lastValidation < date_sub(now(), interval 2 hour)
-					order by lastValidation, dateAdded desc limit 1", "keyID", array(), 0);
+			$keyIDs = Db::query("select distinct keyID from zz_api where errorCode not in (203, 220) and lastValidation < date_sub(now(), interval 2 hour)
+					order by lastValidation, dateAdded desc limit 100", array(), 0);
 
-			if ($keyID) {
-				//echo "$keyID\n";
+			if (sizeof($keyIDs) == 0) sleep(1);
+			else foreach($keyIDs as $row) {
+				$keyID = $row["keyID"];
 				$m = $iterationCount % $fetchesPerSecond;
 				Db::execute("update zz_api set lastValidation = date_add(lastValidation, interval 5 minute) where keyID = :keyID", array(":keyID" => $keyID));
 				$command = "flock -w 60 /tmp/locks/preFetchChars.$m php5 " . dirname(__FILE__) . "/fetchCharacters.php $keyID";
@@ -327,8 +328,7 @@ function fetchApis()
 				exec("$command >/dev/null 2>/dev/null &");
 				$iterationCount++;
 				if ($iterationCount % $fetchesPerSecond == 0) sleep(1);
-			} else sleep(1);
-
+			}
 		}
 	}
 
