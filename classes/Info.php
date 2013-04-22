@@ -607,10 +607,10 @@
 				if (is_array($value)) $element[$key] = Info::addInfo($value);
 				else if ($value != 0) switch ($key) {
 					case "lastChecked":
-						$element["lastCheckedTime"] = date("Y-m-d H:i", $value);
+						$element["lastCheckedTime"] = $value;
 						break;
 					case "cachedUntil":
-						$element["cachedUntilTime"] = date("Y-m-d H:i", $value);
+						$element["cachedUntilTime"] = $value;
 						break;
 					case "dttm":
 						$dttm = strtotime($value);
