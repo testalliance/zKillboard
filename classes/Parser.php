@@ -435,7 +435,7 @@ class Parser
 		Db::execute("insert ignore into zz_killmails (killID, hash, source, kill_json) values (:killID, :hash, :source, :json)",
 				array(":killID" => $mKillID, ":hash" => $hash, ":source" => "userID:$userID", ":json" => json_encode($killMail)));
 
-		Log::log("Manual mail post from: $userID");
+		if ($userID != "EveKill") Log::log("Manual mail post from: $userID");
 		while (true) {
 			if (Bin::get("WaitForProcessing", true) == true) {
 				sleep(1);
