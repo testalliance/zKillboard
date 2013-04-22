@@ -9,22 +9,33 @@ $stomp = new Stomp($stompServer, $stompUser, $stompPassword);
 
 $stompKey = "StompSend::lastFetch";
 $lastFetch = time() - (12 * 3600);
+
 $lastFetch = Storage::retrieve($stompKey, $lastFetch);
+for ($i = 0; $i < 11; $i++) {
+	$result = Db::query("SELECT killID, unix_timestamp(insertTime) AS insertTime, kill_json FROM zz_killmails WHERE insertTime > from_unixtime(:lastFetch) ORDER BY killID", array(":lastFetch" => $lastFetch), 0);
 
-$result = Db::query("SELECT killID, unix_timestamp(insertTime) AS insertTime, kill_json FROM zz_killmails WHERE killID > 0 AND insertTime > from_unixtime(:lastFetch) ORDER BY killID", array(":lastFetch" => $lastFetch), 0);
+	$lastFetch = time();
+	Storage::store($stompKey, $lastFetch);
 
-$lastFetch = time();
-Storage::store($stompKey, $lastFetch);
+	foreach($result as $kill)
+	{
+		$destinations = Destinations($kill["kill_json"]);
+		$destinations = join(",", $destinations);
+		$lastFetch = max($lastFetch, $kill["insertTime"]);
+		if(!empty($kill["kill_json"]))
+		{
+			if($kill["killID"] > 0)
+				$stomp->send($destinations, $kill["kill_json"]);
 
-foreach($result as $kill)
-{
-	$destinations = Destinations($kill["kill_json"]);
-	$destinations = join(",", $destinations);
-	$lastFetch = max($lastFetch, $kill["insertTime"]);
-	if(!empty($kill["kill_json"]))
-		$stomp->send($destinations, $kill["kill_json"]);
+			// Send out stuff for the live starmap
+			$data = json_decode($kill["kill_json"], true);
+			$json = json_encode(array("solarSystemID" => $data["solarSystemID"], "killID" => $data["killID"], "shipTypeID" => $data["victim"]["shipTypeID"], "killTime" => $data["killTime"]));
+			$stomp->send("/topic/starmap.systems.active", $json);
+		}
+	}
+	//if(sizeof($result) > 0) Log::log("Sent out " . sizeof($result) . " killmails via stomp (Including pings to the starmap) (Count includes manual mails, but only killIDs LARGER than 0 (api) is sent to all the stomp routes)");
+	sleep(5);
 }
-if(sizeof($result) > 0) Log::log("Sent out " . sizeof($result) . " killmails via stomp");
 
 function Destinations($kill)
 {
