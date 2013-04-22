@@ -30,11 +30,11 @@ class irc_api implements ircCommand {
 		$entity = implode(" ", $parameters);
 		switch ($entity) {
 			case "errors":
-				$codes = Db::query("select errorCode, count(*) count from zz_api group by 1 order by 1");
+				$codes = Db::query("select errorCode, count(*) count from zz_api group by 1 order by 1", array(), 0);
 				$output = "API base:";
 				foreach($codes as $row)	$output .= " |n|| |r|" . $row["errorCode"] . ": |g|" . $row["count"];
 				irc_out($output);
-				$codes = Db::query("select errorCode, count(*) count from zz_api_characters group by 1 order by 1");
+				$codes = Db::query("select errorCode, count(*) count from zz_api_characters group by 1 order by 1", array(), 0);
 				$output = "API characters:";
 				foreach($codes as $row)	$output .= " |n|| |r|" . $row["errorCode"] . ": |g|" . $row["count"];
 				irc_out($output);
