@@ -25,8 +25,8 @@ $dbName = "%dbname%";
 $dbHost = "%dbhost%";
 
 // External Servers
-$apiServer = "https://api.zkillboard.com";
-$imageServer = "https://image.zkillboard.com";
+$apiServer = "%apiserver%";
+$imageServer = "%imageserver%";
 
 // Base
 $baseFile = __FILE__;

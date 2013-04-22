@@ -58,6 +58,10 @@ $settings["baseaddr"] = prompt("Domain name?", "zkillboard.com");
 
 $settings["logfile"] = prompt("Log file location?", "/var/log/zkb.log");
 
+echo "\nImage and API server defaults to the zKillboard proxies, you can however use CCPs servers if you want\n https://api.eveonline.com and https://image.eveonline.com\n";
+$settings["apiserver"] = prompt("API Server?", "https://api.zkillboard.com");
+$settings["imageserver"] = prompt("Image Server?", "https://image.zkillboard.com");
+
 echo "\nA secret key is needed for your cookies to be encrypted.\n";
 $settings["cookiesecret"] = prompt("Secret key for cookies?", "MY_SECRET");
 
