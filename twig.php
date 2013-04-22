@@ -36,11 +36,11 @@ $cachepath = "cache/templates/" . ($viewtheme ? $viewtheme : "bootstrap");
 $twig = $app->view()->getEnvironment();
 // Twig globals
 
-$twig->addGlobal("image_character", $imageServer."/Character/");
-$twig->addGlobal("image_corporation", $imageServer."/Corporation/");
-$twig->addGlobal("image_alliance", $imageServer."/Alliance/");
-$twig->addGlobal("image_item", $imageServer."/Type/");
-$twig->addGlobal("image_ship", $imageServer."/Render/");
+$twig->addGlobal("image_character", $imageServer."Character/");
+$twig->addGlobal("image_corporation", $imageServer."Corporation/");
+$twig->addGlobal("image_alliance", $imageServer."Alliance/");
+$twig->addGlobal("image_item", $imageServer."Type/");
+$twig->addGlobal("image_ship", $imageServer."Render/");
 
 $twig->addGlobal("siteurl", $baseAddr);
 $twig->addGlobal("fullsiteurl", "https://".$_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"]);
