@@ -8,7 +8,7 @@ if ($count > 500) return;
 $eveKillURL = "http://eve-kill.net/mailexport.php?";
 
 // Pull the latest manual postings
-Db::execute("insert ignore into zz_manual_mail_list select kll_id, 0 from killboard.kb3_mails where kll_external_id = 0 or kll_external_id is null and kll_modified_time >= date_sub(now(), interval 30 day)");
+Db::execute("insert ignore into zz_manual_mail_list select kll_id, 0 from killboard.kb3_mails where kll_external_id = 0 or kll_external_id is null and kll_modified_time >= date_sub(now(), interval 1 hour)");
 
 $result = Db::query("select eveKillID from zz_manual_mail_list where processed = 0 order by eveKillID desc limit 1000", array(), 0);
 foreach($result as $row)
