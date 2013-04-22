@@ -132,7 +132,7 @@ class Api
 	 * @static
 	 * @return Returns
 	 */
-	public static function getKeys()
+	public static function getKeys($userID)
 	{
 		$userID = user::getUserID();
 		$result = Db::query("SELECT keyID, vCode, label, lastValidation, errorCode FROM zz_api WHERE userID = :userID order by keyID", array(":userID" => $userID), 0);
@@ -145,9 +145,8 @@ class Api
 	 * @static
 	 * @return Returns
 	 */
-	public static function getCharacterKeys()
+	public static function getCharacterKeys($userID)
 	{
-		$userID = user::getUserID();
 		$result = Db::query("select c.* from zz_api_characters c left join zz_api a on (c.keyID = a.keyID) where a.userID = :userID", array(":userID" => $userID), 0);
 		return $result;
 	}
@@ -158,9 +157,8 @@ class Api
 	 * @static
 	 * @return array
 	 */
-	public static function getCharacters()
+	public static function getCharacters($userID)
 	{
-		$userID = user::getUserID();
 		$db = Db::query("SELECT characterID FROM zz_api_characters c left join zz_api a on (c.keyID = a.keyID) where userID = :userID", array(":userID" => $userID), 0);
 		$results = Info::addInfo($db);
 		return $results;
