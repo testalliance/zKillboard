@@ -40,7 +40,7 @@ try {
 	$result = null;
 
 	// Update last checked
-	Db::execute("update zz_api_characters set lastChecked = now() where keyID = :keyID and characterID = :characterID",
+	Db::execute("update zz_api_characters set errorCode = 0, lastChecked = now() where keyID = :keyID and characterID = :characterID",
 			array(":keyID" => $keyID, ":characterID" => $charID));
 
 	if ($isDirector == "T") $result = $pheal->KillLog();

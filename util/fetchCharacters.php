@@ -33,7 +33,7 @@ try {
 	return;
 }
 
-Db::execute("update zz_api set lastValidation = now() where keyID = :keyID", array(":keyID" => $keyID));
+Db::execute("update zz_api set errorCode = 0, lastValidation = now() where keyID = :keyID", array(":keyID" => $keyID));
 
 // Clear the error code
 $characterIDs = array();            
