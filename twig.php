@@ -46,8 +46,10 @@ $twig->addGlobal("requesturi", $_SERVER["REQUEST_URI"]);
 $twig->addGlobal("topad", Adsense::top());
 $twig->addGlobal("bottomad", Adsense::bottom());
 $twig->addGlobal("mobilead", Adsense::mobile());
-$twig->addGlobal("isMobile", mDetect::isMobile());
-$twig->addGlobal("isTablet", mDetect::isTablet());
+
+$detect = new Mobile_Detect();
+$twig->addGlobal("isMobile", ($detect->isMobile() ? true : false));
+$twig->addGlobal("isTablet", ($detect->isTablet() ? true : false));
 
 $twig->addExtension(new UserGlobals());
 
