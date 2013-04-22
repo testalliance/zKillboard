@@ -32,12 +32,11 @@ function handleApiException($keyID, $charID, $exception)
 			$updateCacheTime = true;
 			break;
 		case 119: // Kills exhausted: retry after [{0}]
-			$r = rand(1,3);
-			$cacheUntil = max(time() + ((2 + $r) * 3600), $exception->cached_until_unixtime + 3);
+			$cacheUntil = $exception->cached_until;
 			$updateCacheTime = true;
 			break;
 		case 120: // Expected beforeKillID [{0}] but supplied [{1}]: kills previously loaded.
-			$cacheUntil = max(time() + 3600, $exception->cached_until_unixtime + 3);
+			$cacheUntil = $exception->cached_until;
 			$updateCacheTime = true;
 			break;
 		case 221: // Demote toon, illegal page access
@@ -230,494 +229,466 @@ function fetchApis()
 	$preFetched = array();
 
 	$maxTime = 60 * 1000;
-
 	while ($timer->stop() < $maxTime) {
-		sleep(1);
 		Db::execute("delete from zz_api_characters where isDirector = ''");
 
-		$allChars = Db::query("select keyID, characterID, corporationID, isDirector, cachedUntil, lastChecked from zz_api_characters where lastChecked <= 10000 or cachedUntil < (unix_timestamp() + 30) and errorCode = 0 order by cachedUntil, keyID, characterID", array(), 0);
-		//echo sizeof($allChars) . " keys to process\n";
+		$allChars = Db::query("select apiRowID, cachedUntil from zz_api_characters where cachedUntil < date_sub(now(), interval 30 second) order by cachedUntil, keyID, characterID limit 1000", array(), 0);
 
 		$total = sizeof($allChars);
-		if ($total == 0) continue;
-
 		$corpsToSkip = array();
 		$iterationCount = 0;
-		foreach ($allChars as $char) {
+
+		if ($total == 0) sleep(1);
+		else foreach ($allChars as $char) {
 			if ($timer->stop() > $maxTime) return;
 
-			$keyID = $char['keyID'];
-			$vCode = Db::queryField("select vCode from zz_api where keyID = :keyID", "vCode", array(":keyID" => $keyID), 300);
-			$charID = $char['characterID'];
-			$corpID = $char['corporationID'];
-			$isDirector = $char['isDirector'];
-			$lastChecked = $char["lastChecked"];
+			$apiRowID = $char["apiRowID"];
+			$cachedUntil = $char["cachedUntil"];
 
+			Db::execute("update zz_api_characters set cachedUntil = date_add(if(cachedUntil=0, now(), cachedUntil), interval 5 minute), lastChecked = now() where apiRowID = :id", array(":id" => $apiRowID));
 
-			if (strlen(trim($vCode)) == 0) {
-				Db::execute("delete from zz_api_characters where keyID = :keyID", array(":keyID" => $keyID));
-				continue;
-			}
-
-			// Only attempt to stagger corp keys every 12 hours
-			if ($isDirector == "T" ) { //&& date("G") % 12 == 0) {
-				if ($lastChecked != 0 && in_array($corpID, $corpsToSkip)) continue;
-				// How many keys for this corp?
-				$corpCount = Db::queryField("select count(*) count from zz_api_characters where errorCode = 0 and isDirector = 'T' and corporationID = :corpID", "count", array(":corpID" => $corpID));
-				if ($corpCount > 1) {
-					// More then one key for this corp.. stagger them!
-					$minutes = ceil(60 / $corpCount);
-					$diff = $minutes * 60;
-					Db::execute("update zz_api_characters set cachedUntil = greatest(cachedUntil, (unix_timestamp() + $diff)) where (keyID > :keyID or (keyID = :keyID and characterID > :charID)) and corporationID = :corpID and isDirector = 'T' and errorCode = 0 order by keyID, characterID", array(":keyID" => $keyID, ":charID" => $charID, ":corpID" => $corpID));
-					$corpsToSkip[] = $corpID;
-				}
-			}
-
-			Db::execute("update zz_api_characters set cachedUntil = (unix_timestamp() + 300), lastChecked = unix_timestamp() where keyID = :keyID and characterID = :charID", array(":keyID" => $keyID, ":charID" => $charID));
-
-			usleep(ceil(1000000/$fetchesPerSecond));
 			$m = $iterationCount % $fetchesPerSecond;
-			//echo "$keyID $vCode $isDirector $charID\n";
-			$command = "flock -w 60 /tmp/locks/preFetch.$m php5 " . dirname(__FILE__) . "/fetchKillLog.php $keyID $vCode $isDirector $charID";
+			$command = "flock -w 60 /tmp/locks/preFetch.$m php5 " . dirname(__FILE__) . "/fetchKillLog.php $apiRowID";
+			$command = escapeshellcmd($command);
+			exec("$command >/dev/null 2>/dev/null &");
+
+			$iterationCount++;
+			if ($m == 0) sleep(1);
+		}
+	}
+}
+
+function doApiSummary()
+{
+	$lastActualKills = Db::queryField("select contents count from zz_storage where locker = 'actualKills'", "count", array(), 0);
+	$actualKills = Db::queryField("select count(*) count from zz_killmails where processed = 1", "count", array(), 0);
+
+	$lastTotalKills = Db::queryField("select contents count from zz_storage where locker = 'totalKills'", "count", array(), 0);
+	$totalKills = Db::queryField("select count(*) count from zz_killmails", "count", array(), 0);
+
+	Db::execute("replace into zz_storage (locker, contents) values ('totalKills', $totalKills)");
+	Db::execute("replace into zz_storage (locker, contents) values ('actualKills', $actualKills)");
+	Db::execute("delete from zz_storage where locker like '%KillsProcessed'");
+
+	$actualDifference = number_format($actualKills - $lastActualKills, 0);
+	$totalDifference = number_format($totalKills - $lastTotalKills, 0);
+
+	Log::irc("|g|$actualDifference|n| mails processed | |g|$totalDifference|n| kills added");
+}
+
+function doPopulateCharactersTable()
+{
+	$timer = new Timer();
+	$maxTime = 65 * 1000;
+
+	$fetchesPerSecond = 25;
+	$iterationCount = 0;
+
+	while ($timer->stop() < $maxTime) {
+		$keyIDs = Db::query("select distinct keyID from zz_api where errorCode not in (203, 220) and lastValidation < date_sub(now(), interval 2 hour)
+				order by lastValidation, dateAdded desc limit 100", array(), 0);
+
+		if (sizeof($keyIDs) == 0) sleep(1);
+		else foreach($keyIDs as $row) {
+			$keyID = $row["keyID"];
+			$m = $iterationCount % $fetchesPerSecond;
+			Db::execute("update zz_api set lastValidation = date_add(lastValidation, interval 5 minute) where keyID = :keyID", array(":keyID" => $keyID));
+			$command = "flock -w 60 /tmp/locks/preFetchChars.$m php5 " . dirname(__FILE__) . "/fetchCharacters.php $keyID";
 			$command = escapeshellcmd($command);
 			//Log::log($command);
 			exec("$command >/dev/null 2>/dev/null &");
 			$iterationCount++;
-			}
+			if ($iterationCount % $fetchesPerSecond == 0) sleep(1);
 		}
 	}
+}
 
-	function doApiSummary()
-	{
-		$lastActualKills = Db::queryField("select contents count from zz_storage where locker = 'actualKills'", "count", array(), 0);
-		$actualKills = Db::queryField("select count(*) count from zz_killmails where processed = 1", "count", array(), 0);
-
-		$lastTotalKills = Db::queryField("select contents count from zz_storage where locker = 'totalKills'", "count", array(), 0);
-		$totalKills = Db::queryField("select count(*) count from zz_killmails", "count", array(), 0);
-
-		Db::execute("replace into zz_storage (locker, contents) values ('totalKills', $totalKills)");
-		Db::execute("replace into zz_storage (locker, contents) values ('actualKills', $actualKills)");
-		Db::execute("delete from zz_storage where locker like '%KillsProcessed'");
-
-		$actualDifference = number_format($actualKills - $lastActualKills, 0);
-		$totalDifference = number_format($totalKills - $lastTotalKills, 0);
-
-		Log::irc("|g|$actualDifference|n| mails processed | |g|$totalDifference|n| kills added");
-	}
-
-	function doPopulateCharactersTable()
-	{
-		$timer = new Timer();
-		$maxTime = 65 * 1000;
-
-		$fetchesPerSecond = 25;
-		$iterationCount = 0;
-
-		while ($timer->stop() < $maxTime) {
-			$keyIDs = Db::query("select distinct keyID from zz_api where errorCode not in (203, 220) and lastValidation < date_sub(now(), interval 2 hour)
-					order by lastValidation, dateAdded desc limit 100", array(), 0);
-
-			if (sizeof($keyIDs) == 0) sleep(1);
-			else foreach($keyIDs as $row) {
-				$keyID = $row["keyID"];
-				$m = $iterationCount % $fetchesPerSecond;
-				Db::execute("update zz_api set lastValidation = date_add(lastValidation, interval 5 minute) where keyID = :keyID", array(":keyID" => $keyID));
-				$command = "flock -w 60 /tmp/locks/preFetchChars.$m php5 " . dirname(__FILE__) . "/fetchCharacters.php $keyID";
-				$command = escapeshellcmd($command);
-				//Log::log($command);
-				exec("$command >/dev/null 2>/dev/null &");
-				$iterationCount++;
-				if ($iterationCount % $fetchesPerSecond == 0) sleep(1);
-			}
-		}
-	}
-
-	function processRawApi($keyID, $charID, $killlog) {
-		$count = 0;
-		$maxKillID = Db::queryField("select maxKillID from zz_api_characters where keyID = :keyID and characterID = :charID", "maxKillID",
-				array(":keyID" => $keyID, ":charID" => $charID), 0);
-		if ($maxKillID === null) $maxKillID = 0;
-		$insertedMaxKillID = $maxKillID;
-		foreach ($killlog->kills as $kill) {
-			$killID = $kill->killID;
-			//if ($killID < $maxKillID) continue;
-			$insertedMaxKillID = max($insertedMaxKillID, $killID);
-
-			$json = json_encode($kill->toArray());
-			$hash = Util::getKillHash(null, $kill);
-			$mKillID = Db::queryField("select killID from zz_killmails where killID < 0 and processed = 1 and hash = :hash", "killID", array(":hash" => $hash), 0);
-			if ($mKillID) cleanDupe($mKillID, $killID);
-			$added = Db::execute("insert ignore into zz_killmails (killID, hash, source, kill_json) values (:killID, :hash, :source, :json)",
-					array(":killID" => $killID, ":hash" => $hash, ":source" => "keyID:$keyID", ":json" => $json));
-			$count += $added;
-		}
-		if ($maxKillID != $insertedMaxKillID) {
-			Db::execute("insert into zz_api_characters (keyID, characterID, maxKillID) values (:keyID, :charID, :maxKillID)
-					on duplicate key update maxKillID = :maxKillID",
-					array(":keyID" => $keyID, ":charID" => $charID, "maxKillID" => $insertedMaxKillID));
-		}
-		return $count;
-	}
-
-	/**
-	 * @param  $kill
-	 * @return bool
-	 */
-	function validKill(&$kill)
-	{
+function processRawApi($keyID, $charID, $killlog) {
+	$count = 0;
+	$maxKillID = Db::queryField("select maxKillID from zz_api_characters where keyID = :keyID and characterID = :charID", "maxKillID",
+			array(":keyID" => $keyID, ":charID" => $charID), 0);
+	if ($maxKillID === null) $maxKillID = 0;
+	$insertedMaxKillID = $maxKillID;
+	foreach ($killlog->kills as $kill) {
 		$killID = $kill->killID;
-		$victimCorp = $kill->victim->corporationID < 1000999 ? 0 : $kill->victim->corporationID;
-		$victimAlli = $kill->victim->allianceID;
+		//if ($killID < $maxKillID) continue;
+		$insertedMaxKillID = max($insertedMaxKillID, $killID);
 
-		$npcOnly = true;
-		$blueOnBlue = true;
-		foreach ($kill->attackers as $attacker) {
-			$attackerGroupID = Info::getGroupID($attacker->shipTypeID);
-			if ($attackerGroupID == 365) return true; // A tower is involved
-
-			// Don't process the kill if it's NPC only
-			$npcOnly &= $attacker->characterID == 0 && $attacker->corporationID < 1999999;
-
-			// Check for blue on blue
-			if ($attacker->characterID != 0) $blueOnBlue &= $victimCorp == $attacker->corporationID && $victimAlli == $attacker->allianceID;
-		}
-		if ($npcOnly /*|| $blueOnBlue*/) return false;
-
-		return true;
+		$json = json_encode($kill->toArray());
+		$hash = Util::getKillHash(null, $kill);
+		$mKillID = Db::queryField("select killID from zz_killmails where killID < 0 and processed = 1 and hash = :hash", "killID", array(":hash" => $hash), 0);
+		if ($mKillID) cleanDupe($mKillID, $killID);
+		$added = Db::execute("insert ignore into zz_killmails (killID, hash, source, kill_json) values (:killID, :hash, :source, :json)",
+				array(":killID" => $killID, ":hash" => $hash, ":source" => "keyID:$keyID", ":json" => $json));
+		$count += $added;
 	}
-
-	function processVictim(&$year, &$month, &$week, &$kill, $killID, &$victim, $isNpcVictim)
-	{
-		$shipPrice = getPrice($victim->shipTypeID);
-		$groupID = Info::getGroupID($victim->shipTypeID);
-		$regionID = Info::getRegionIDFromSystemID($kill->solarSystemID);
-
-		$dttm = (string) $kill->killTime;
-
-		if (!$isNpcVictim) Db::execute("
-				insert into zz_participants_temporary
-				(killID, solarSystemID, regionID, isVictim, shipTypeID, groupID, shipPrice, damage, factionID, allianceID,
-				 corporationID, characterID, dttm, vGroupID)
-				values
-				(:killID, :solarSystemID, :regionID, 1, :shipTypeID, :groupID, :shipPrice, :damageTaken, :factionID, :allianceID,
-				 :corporationID, :characterID, :dttm, :vGroupID)",
-				(array(
-				       ":killID" => $killID,
-				       ":solarSystemID" => $kill->solarSystemID,
-				       ":regionID" => $regionID,
-				       ":shipTypeID" => $victim->shipTypeID,
-				       ":groupID" => $groupID,
-				       ":vGroupID" => $groupID,
-				       ":shipPrice" => $shipPrice,
-				       ":damageTaken" => $victim->damageTaken,
-				       ":factionID" => $victim->factionID,
-				       ":allianceID" => $victim->allianceID,
-				       ":corporationID" => $victim->corporationID,
-				       ":characterID" => $victim->characterID,
-				       ":dttm" => $dttm,
-				      )));
-
-		Info::addChar($victim->characterID, $victim->characterName);
-		Info::addCorp($victim->corporationID, $victim->corporationName);
-		Info::addAlli($victim->allianceID, $victim->allianceName);
-
-		return $shipPrice;
+	if ($maxKillID != $insertedMaxKillID) {
+		Db::execute("insert into zz_api_characters (keyID, characterID, maxKillID) values (:keyID, :charID, :maxKillID)
+				on duplicate key update maxKillID = :maxKillID",
+				array(":keyID" => $keyID, ":charID" => $charID, "maxKillID" => $insertedMaxKillID));
 	}
+	return $count;
+}
 
-	function processAttacker(&$year, &$month, &$week, &$kill, &$killID, &$attacker, $victimShipTypeID, $totalCost)
-	{
-		$victimGroupID = Info::getGroupID($victimShipTypeID);
+/**
+ * @param  $kill
+ * @return bool
+ */
+function validKill(&$kill)
+{
+	$killID = $kill->killID;
+	$victimCorp = $kill->victim->corporationID < 1000999 ? 0 : $kill->victim->corporationID;
+	$victimAlli = $kill->victim->allianceID;
+
+	$npcOnly = true;
+	$blueOnBlue = true;
+	foreach ($kill->attackers as $attacker) {
 		$attackerGroupID = Info::getGroupID($attacker->shipTypeID);
-		$regionID = Info::getRegionIDFromSystemID($kill->solarSystemID);
+		if ($attackerGroupID == 365) return true; // A tower is involved
 
-		$dttm = (string) $kill->killTime;
+		// Don't process the kill if it's NPC only
+		$npcOnly &= $attacker->characterID == 0 && $attacker->corporationID < 1999999;
 
-		Db::execute("
-				insert into zz_participants_temporary
-				(killID, solarSystemID, regionID, isVictim, characterID, corporationID, allianceID, total_price, vGroupID,
-				 factionID, damage, finalBlow, weaponTypeID, shipTypeID, groupID, dttm)
-				values
-				(:killID, :solarSystemID, :regionID, 0, :characterID, :corporationID, :allianceID, :total, :vGroupID,
-				 :factionID, :damageDone, :finalBlow, :weaponTypeID, :shipTypeID, :groupID, :dttm)",
-				(array(
-				       ":killID" => $killID,
-				       ":solarSystemID" => $kill->solarSystemID,
-				       ":regionID" => $regionID,
-				       ":characterID" => $attacker->characterID,
-				       ":corporationID" => $attacker->corporationID,
-				       ":allianceID" => $attacker->allianceID,
-				       ":factionID" => $attacker->factionID,
-				       ":damageDone" => $attacker->damageDone,
-				       ":finalBlow" => $attacker->finalBlow,
-				       ":weaponTypeID" => $attacker->weaponTypeID,
-				       ":shipTypeID" => $attacker->shipTypeID,
-				       ":groupID" => $attackerGroupID,
-				       ":dttm" => $dttm,
-				       ":total" => $totalCost,
-				       ":vGroupID" => $victimGroupID,
-				      )));
-		Info::addChar($attacker->characterID, $attacker->characterName);
-		Info::addCorp($attacker->corporationID, $attacker->corporationName);
-		Info::addAlli($attacker->allianceID, $attacker->allianceName);
+		// Check for blue on blue
+		if ($attacker->characterID != 0) $blueOnBlue &= $victimCorp == $attacker->corporationID && $victimAlli == $attacker->allianceID;
+	}
+	if ($npcOnly /*|| $blueOnBlue*/) return false;
+
+	return true;
+}
+
+function processVictim(&$year, &$month, &$week, &$kill, $killID, &$victim, $isNpcVictim)
+{
+	$shipPrice = getPrice($victim->shipTypeID);
+	$groupID = Info::getGroupID($victim->shipTypeID);
+	$regionID = Info::getRegionIDFromSystemID($kill->solarSystemID);
+
+	$dttm = (string) $kill->killTime;
+
+	if (!$isNpcVictim) Db::execute("
+			insert into zz_participants_temporary
+			(killID, solarSystemID, regionID, isVictim, shipTypeID, groupID, shipPrice, damage, factionID, allianceID,
+			 corporationID, characterID, dttm, vGroupID)
+			values
+			(:killID, :solarSystemID, :regionID, 1, :shipTypeID, :groupID, :shipPrice, :damageTaken, :factionID, :allianceID,
+			 :corporationID, :characterID, :dttm, :vGroupID)",
+			(array(
+				   ":killID" => $killID,
+				   ":solarSystemID" => $kill->solarSystemID,
+				   ":regionID" => $regionID,
+				   ":shipTypeID" => $victim->shipTypeID,
+				   ":groupID" => $groupID,
+				   ":vGroupID" => $groupID,
+				   ":shipPrice" => $shipPrice,
+				   ":damageTaken" => $victim->damageTaken,
+				   ":factionID" => $victim->factionID,
+				   ":allianceID" => $victim->allianceID,
+				   ":corporationID" => $victim->corporationID,
+				   ":characterID" => $victim->characterID,
+				   ":dttm" => $dttm,
+				  )));
+
+	Info::addChar($victim->characterID, $victim->characterName);
+	Info::addCorp($victim->corporationID, $victim->corporationName);
+	Info::addAlli($victim->allianceID, $victim->allianceName);
+
+	return $shipPrice;
+}
+
+function processAttacker(&$year, &$month, &$week, &$kill, &$killID, &$attacker, $victimShipTypeID, $totalCost)
+{
+	$victimGroupID = Info::getGroupID($victimShipTypeID);
+	$attackerGroupID = Info::getGroupID($attacker->shipTypeID);
+	$regionID = Info::getRegionIDFromSystemID($kill->solarSystemID);
+
+	$dttm = (string) $kill->killTime;
+
+	Db::execute("
+			insert into zz_participants_temporary
+			(killID, solarSystemID, regionID, isVictim, characterID, corporationID, allianceID, total_price, vGroupID,
+			 factionID, damage, finalBlow, weaponTypeID, shipTypeID, groupID, dttm)
+			values
+			(:killID, :solarSystemID, :regionID, 0, :characterID, :corporationID, :allianceID, :total, :vGroupID,
+			 :factionID, :damageDone, :finalBlow, :weaponTypeID, :shipTypeID, :groupID, :dttm)",
+			(array(
+				   ":killID" => $killID,
+				   ":solarSystemID" => $kill->solarSystemID,
+				   ":regionID" => $regionID,
+				   ":characterID" => $attacker->characterID,
+				   ":corporationID" => $attacker->corporationID,
+				   ":allianceID" => $attacker->allianceID,
+				   ":factionID" => $attacker->factionID,
+				   ":damageDone" => $attacker->damageDone,
+				   ":finalBlow" => $attacker->finalBlow,
+				   ":weaponTypeID" => $attacker->weaponTypeID,
+				   ":shipTypeID" => $attacker->shipTypeID,
+				   ":groupID" => $attackerGroupID,
+				   ":dttm" => $dttm,
+				   ":total" => $totalCost,
+				   ":vGroupID" => $victimGroupID,
+				  )));
+	Info::addChar($attacker->characterID, $attacker->characterName);
+	Info::addCorp($attacker->corporationID, $attacker->corporationName);
+	Info::addAlli($attacker->allianceID, $attacker->allianceName);
+}
+
+function processItems(&$year, &$week, &$kill, &$killID, &$items, &$itemInsertOrder, $isCargo = false, $parentFlag = 0) {
+	$totalCost = 0;
+	foreach ($items as $item) {
+		$totalCost += processItem($year, $week, $kill, $killID, $item, $itemInsertOrder++, $isCargo, $parentFlag);
+		if (@is_array($item->items)) {
+			$itemContainerFlag = $item->flag;
+			$totalCost += processItems($year, $week, $kill, $killID, $item->items, $itemInsertOrder, true, $itemContainerFlag);
+		}
+	}
+	return $totalCost;
+}
+
+$itemNames = null;
+$itemPrices = null;
+
+function getPrice($typeID) {
+	global $itemPrices;
+	if ($itemPrices == null) {
+		$itemPrices = array();
+		$results = Db::query("select typeID, price from zz_prices", array(), 0);
+		foreach ($results as $row) {
+			$itemPrices[$row["typeID"]] = $row["price"];
+		}
+	}
+	$price = isset($itemPrices[$typeID]) ? $itemPrices[$typeID] : null;
+	if ($price === null || $price == 0 ) $price = Price::getItemPrice($typeID);
+
+	return $price;
+}
+
+function processItem(&$year, &$week, &$kill, &$killID, &$item, $itemInsertOrder, $isCargo = false, $parentContainerFlag = -1)
+{
+	global $itemNames;
+	if ($itemNames == null ) {
+		$itemNames = array();
+		$results = Db::query("select typeID, typeName from ccp_invTypes", array(), 3600);
+		foreach ($results as $row) {
+			$itemNames[$row["typeID"]] = $row["typeName"];
+		}
+	}
+	$typeID = $item->typeID;
+	$itemName = $itemNames[$item->typeID];
+
+	$price = getPrice($typeID);
+	if ($isCargo && strpos($itemName, "Blueprint") !== false) $item->singleton = 2;
+	if ($item->singleton == 2) {
+		$price = $price / 100;
 	}
 
-	function processItems(&$year, &$week, &$kill, &$killID, &$items, &$itemInsertOrder, $isCargo = false, $parentFlag = 0) {
-		$totalCost = 0;
-		foreach ($items as $item) {
-			$totalCost += processItem($year, $week, $kill, $killID, $item, $itemInsertOrder++, $isCargo, $parentFlag);
-			if (@is_array($item->items)) {
-				$itemContainerFlag = $item->flag;
-				$totalCost += processItems($year, $week, $kill, $killID, $item->items, $itemInsertOrder, true, $itemContainerFlag);
+	Db::execute("
+			insert into zz_items_temporary
+			(killID, typeID, flag, qtyDropped, qtyDestroyed, insertOrder, price, singleton, year, week, inContainer)
+			values
+			(:killID, :typeID, :flag, :qtyDropped, :qtyDestroyed, :insertOrder, :price, :singleton, :year, :week, :inContainer)",
+			(array(
+				   ":killID" => $killID,
+				   ":typeID" => $item->typeID,
+				   ":flag" => ($isCargo ? $parentContainerFlag : $item->flag),
+				   ":qtyDropped" => $item->qtyDropped,
+				   ":qtyDestroyed" => $item->qtyDestroyed,
+				   ":insertOrder" => $itemInsertOrder,
+				   ":price" => $price,
+				   ":singleton" => $item->singleton,
+				   ":year" => $year,
+				   ":week" => $week,
+				   ":inContainer" => ($isCargo ? 1 : 0),
+				  )));
+
+	return ($price * ($item->qtyDropped + $item->qtyDestroyed));
+}
+
+function populateAllianceList()
+{
+	Log::log("Repopulating alliance tables.");
+
+	$allianceCount = 0;
+	$corporationCount = 0;
+
+	$pheal = Util::getPheal();
+	$pheal->scope = "eve";
+	$list = null;
+	$exception = null;
+	try {
+		$list = $pheal->AllianceList();
+	} catch (Exception $ex) {
+		$exception = $ex;
+	}
+	if ($list != null && sizeof($list->alliances) > 0) {
+		Db::execute("update zz_alliances set memberCount = 0");
+		Db::execute("update zz_corporations set allianceID = 0");
+		foreach ($list->alliances as $alliance) {
+			$allianceCount++;
+			$allianceID = $alliance['allianceID'];
+			$shortName = $alliance['shortName'];
+			$name = $alliance['name'];
+			$executorCorpID = $alliance['executorCorpID'];
+			$memberCount = $alliance['memberCount'];
+			$parameters = array(":alliID" => $allianceID, ":shortName" => $shortName, ":name" => $name,
+					":execID" => $executorCorpID, ":memberCount" => $memberCount);
+			Db::execute("insert into zz_alliances (allianceID, ticker, name, executorCorpID, memberCount, lastUpdated) values
+					(:alliID, :shortName, :name, :execID, :memberCount, now())
+					on duplicate key update memberCount = :memberCount, ticker = :shortName, name = :name,
+					executorCorpID = :execID, lastUpdated = now()", $parameters);
+			$corporationCount += sizeof($alliance->memberCorporations);
+			foreach($alliance->memberCorporations as $corp) {
+				$corpID = $corp->corporationID;
+				Db::execute("update zz_corporations set allianceID = :alliID where corporationID = :corpID",
+						array(":alliID" => $allianceID, ":corpID" => $corpID));
 			}
 		}
-		return $totalCost;
+
+		$allianceCount = number_format($allianceCount, 0);
+		$corporationCount = number_format($corporationCount, 0);
+		Log::log("Alliance tables repopulated - $allianceCount active Alliances with a total of $corporationCount Corporations");
+	} else {
+		Log::log("Unable to pull Alliance XML from API.  Will try again later.");
+		if ($exception != null) throw $exception;
+		throw new Exception("Unable to pull Alliance XML from API.  Will try again later");
 	}
+}
 
-	$itemNames = null;
-	$itemPrices = null;
+function minutely() {
+	$killsLastHour = Db::queryField("select count(*) count from zz_killmails where insertTime > date_sub(now(), interval 1 hour)", "count");
+	Storage::store("KillsLastHour", $killsLastHour);
+	Domains::registerDomainsWithCloudflare();
+}
 
-	function getPrice($typeID) {
-		global $itemPrices;
-		if ($itemPrices == null) {
-			$itemPrices = array();
-			$results = Db::query("select typeID, price from zz_prices", array(), 0);
-			foreach ($results as $row) {
-				$itemPrices[$row["typeID"]] = $row["price"];
-			}
-		}
-		$price = isset($itemPrices[$typeID]) ? $itemPrices[$typeID] : null;
-		if ($price === null || $price == 0 ) $price = Price::getItemPrice($typeID);
+function hourly() {
+	$percentage = Storage::retrieve("LastHourPercentage", 10);
+	$row = Db::queryRow("select sum(if(errorCode = 0, 1, 0)) good, sum(if(errorCode != 0, 1, 0)) bad from zz_api_characters");
+	$good = $row["good"];
+	$bad = $row["bad"];
+	if ($bad > (($bad + $good) * ($percentage / 100))) {
+		if($percentage > 15)
+			Log::irc("|r|API gone haywire?  Over $percentage% of API's reporting an error atm.");
+		$percentage += 5;
+	} else if ($bad < (($bad + $good) * (($percentage - 5) / 100))) $percentage -= 5;
+	if ($percentage < 10) $percentage = 10;
+	Storage::store("LastHourPercentage", $percentage);
 
-		return $price;
+	Db::execute("delete from zz_api_log where requestTime < date_sub(now(), interval 36 hour)");
+
+	// Cleanout manual mail stuff where the manual mail has been api verified
+	Db::execute("update zz_killmails set kill_json = '' where processed = 2 and killID < 0 and kill_json != ''");
+	Db::execute("update zz_manual_mails set rawText = '' where killID > 0 and rawText != ''");
+}
+
+function social() {
+	Social::findConversations();
+}
+
+function fightFinder() {
+	Db::execute("delete from zz_social where insertTime < date_sub(now(), interval 23 hour)");
+	$minPilots = 100;
+	$minWrecks = 100;
+	$result = Db::query("select * from (select solarSystemID, count(distinct characterID) count, count(distinct killID) kills from zz_participants where characterID != 0 and killID > 0 and dttm > date_sub(now(), interval 1 hour) group by 1 order by 2 desc) f where count >= $minPilots and kills > $minWrecks");
+	foreach($result as $row) {
+		$systemID = $row["solarSystemID"];
+		$key = ($row["solarSystemID"] * 100) + date("H");
+		$key2 = ($row["solarSystemID"] * 100) + date("H", time() + 3600);
+
+		$count = Db::queryField("select count(*) count from zz_social where killID = :killID", "count", array(":killID" => $key), 0);
+		if ($count != 0) continue;
+		Db::execute("insert ignore into zz_social (killID) values (:k1), (:k2)", array(":k1" => $key, ":k2" => $key2));
+
+		Info::addInfo($row);
+		$wrecks = number_format($row['kills'], 0);
+		$involved = number_format($row['count'], 0);
+		$system = $row["solarSystemName"];
+		$date = date("YmdH00");
+		$link = "https://zkillboard.com/related/$systemID/$date/";
+
+		$message = "Battle detected in |g|$system|n| with |g|$involved|n| involved and |g|$wrecks|n| wrecks. |g|$link";
+		Log::irc($message);
+		// let this run for a few days to ensure it works correctly, then TODO make it twitter the msg too
+		//$message = Log::stripIRCColors($message);
 	}
+}
 
-	function processItem(&$year, &$week, &$kill, &$killID, &$item, $itemInsertOrder, $isCargo = false, $parentContainerFlag = -1)
-	{
-		global $itemNames;
-		if ($itemNames == null ) {
-			$itemNames = array();
-			$results = Db::query("select typeID, typeName from ccp_invTypes", array(), 3600);
-			foreach ($results as $row) {
-				$itemNames[$row["typeID"]] = $row["typeName"];
-			}
-		}
-		$typeID = $item->typeID;
-		$itemName = $itemNames[$item->typeID];
+function cleanDupe($mKillID, $killID) {
+	Db::execute("update zz_killmails set processed = 2 where killID = :mKillID", array(":mKillID" => $mKillID));
+	Db::execute("update zz_manual_mails set killID = :killID where mKillID = :mKillID",
+			array(":killID" => $killID, ":mKillID" => (-1 * $mKillID)));
+	Stats::calcStats($mKillID, false); // remove manual version from stats
+}
 
-		$price = getPrice($typeID);
-		if ($isCargo && strpos($itemName, "Blueprint") !== false) $item->singleton = 2;
-		if ($item->singleton == 2) {
-			$price = $price / 100;
-		}
-
-		Db::execute("
-				insert into zz_items_temporary
-				(killID, typeID, flag, qtyDropped, qtyDestroyed, insertOrder, price, singleton, year, week, inContainer)
-				values
-				(:killID, :typeID, :flag, :qtyDropped, :qtyDestroyed, :insertOrder, :price, :singleton, :year, :week, :inContainer)",
-				(array(
-				       ":killID" => $killID,
-				       ":typeID" => $item->typeID,
-				       ":flag" => ($isCargo ? $parentContainerFlag : $item->flag),
-				       ":qtyDropped" => $item->qtyDropped,
-				       ":qtyDestroyed" => $item->qtyDestroyed,
-				       ":insertOrder" => $itemInsertOrder,
-				       ":price" => $price,
-				       ":singleton" => $item->singleton,
-				       ":year" => $year,
-				       ":week" => $week,
-				       ":inContainer" => ($isCargo ? 1 : 0),
-				      )));
-
-		return ($price * ($item->qtyDropped + $item->qtyDestroyed));
+function updateCharacters() {
+	$minute = (int) date("i");
+	if ($minute == 0) {
+		Db::execute("insert ignore into zz_characters (characterID) select ceoID from zz_corporations");
+		Db::execute("insert ignore into zz_characters (characterID) select characterID from zz_api_characters where characterID != 0");
 	}
+	Db::execute("delete from zz_characters where characterID < 9000000");
+	Db::execute("update zz_characters set lastUpdated = now() where characterID >= 30000000 and characterID <= 31004590");
+	Db::execute("update zz_characters set lastUpdated = now() where characterID >= 40000000 and characterID <= 41004590");
+	$result = Db::query("select characterID, name from zz_characters where lastUpdated < date_sub(now(), interval 7 day) and corporationID != 1000001 order by lastUpdated limit 600", array(), 0);
+	foreach ($result as $row) {
+		$id = $row["characterID"];
+		$oName = $row["name"];
+		//Db::execute("update zz_characters set lastUpdated = now() where characterID = :id", array(":id" => $id));
 
-	function populateAllianceList()
-	{
-		Log::log("Repopulating alliance tables.");
+		/*$pheal = Util::getPheal();
+		  $pheal->scope = "eve";
+		  try {
+		  $charInfo = $pheal->CharacterInfo(array("characterid" => $id));
+		  $name = $charInfo->characterName;
+		  $corpID = $charInfo->corporationID;
+		  $alliID = $charInfo->allianceID;
+		//echo "$name $id $corpID $alliID\n";
+		Db::execute("update zz_characters set name = :name, corporationID = :corpID, allianceID = :alliID where characterID = :id", array(":id" => $id, ":name" 
+		=> $name, ":corpID" => $corpID, ":alliID" => $alliID));
+		} catch (Exception $ex) {
+		// Is this name even a participant?
+		$count = Db::queryField("select count(*) count from zz_participants where characterID = :id", "count", array(":id" => $id));
+		if ($count == 0) {
+		Db::execute("delete from zz_characters where characterID = :id", array(":id" => $id));
+		}
+		else if ($ex->getCode() != 503) Log::log("ERROR Validating Character $id" . $ex->getMessage());
+		}*/
+		$json = file_get_contents("http://evewho.com/ek_pilot_id.php?id=$id");
+		$info = json_decode($json, true);
+		Db::execute("update zz_characters set lastUpdated = now(), name = :name, corporationID = :corpID, allianceID = :alliID where characterID = :id", array(":id" => $id, ":name" => $info["name"], ":corpID" => $info["corporation_id"], ":alliID" => $info["alliance_id"]));
+		//usleep(100000);
+	}
+}
 
-		$allianceCount = 0;
-		$corporationCount = 0;
+function updateCorporations() {
+	Db::execute("delete from zz_corporations where corporationID = 0");
+	Db::execute("insert ignore into zz_corporations (corporationID) select executorCorpID from zz_alliances where executorCorpID > 0");
+	$result = Db::query("select corporationID, name, memberCount, ticker from zz_corporations where (memberCount is null or memberCount > 0 or lastUpdated = 0)  and corporationID >= 1000001 order by lastUpdated limit 100", array(), 0);
+	foreach($result as $row) {
+		$id = $row["corporationID"];
+		$oMemberCount = $row["memberCount"];
+		$oName = $row["name"];
+		$oTicker = $row["ticker"];
+
+		//echo "$id $oName\n";
 
 		$pheal = Util::getPheal();
-		$pheal->scope = "eve";
-		$list = null;
-		$exception = null;
+		$pheal->scope = "corp";
 		try {
-			$list = $pheal->AllianceList();
+			$corpInfo = $pheal->CorporationSheet(array("corporationID" => $id));
+			$name = $corpInfo->corporationName;
+			$ticker = $corpInfo->ticker;
+			$memberCount = $corpInfo->memberCount;
+			$ceoID = $corpInfo->ceoID;
+			if ($ceoID == 1) $ceoID = 0;
+			$dscr = $corpInfo->description;
+
+			Db::execute("update zz_corporations set name = :name, ticker = :ticker, memberCount = :memberCount, ceoID = :ceoID, description = :dscr, lastUpdated = now() where corporationID = :id",
+					array(":id" => $id, ":name" => $name, ":ticker" => $ticker, ":memberCount" => $memberCount, ":ceoID" => $ceoID, ":dscr" => $dscr));
+
 		} catch (Exception $ex) {
-			$exception = $ex;
+			print_r($ex);
+			Db::execute("update zz_corporations set lastUpdated = now() where corporationID = :id", array(":id" => $id));
+			if ($ex->getCode() != 503) Log::log("ERROR Validating Corp $id: " . $ex->getMessage());
 		}
-		if ($list != null && sizeof($list->alliances) > 0) {
-			Db::execute("update zz_alliances set memberCount = 0");
-			Db::execute("update zz_corporations set allianceID = 0");
-			foreach ($list->alliances as $alliance) {
-				$allianceCount++;
-				$allianceID = $alliance['allianceID'];
-				$shortName = $alliance['shortName'];
-				$name = $alliance['name'];
-				$executorCorpID = $alliance['executorCorpID'];
-				$memberCount = $alliance['memberCount'];
-				$parameters = array(":alliID" => $allianceID, ":shortName" => $shortName, ":name" => $name,
-						":execID" => $executorCorpID, ":memberCount" => $memberCount);
-				Db::execute("insert into zz_alliances (allianceID, ticker, name, executorCorpID, memberCount, lastUpdated) values
-						(:alliID, :shortName, :name, :execID, :memberCount, now())
-						on duplicate key update memberCount = :memberCount, ticker = :shortName, name = :name,
-						executorCorpID = :execID, lastUpdated = now()", $parameters);
-				$corporationCount += sizeof($alliance->memberCorporations);
-				foreach($alliance->memberCorporations as $corp) {
-					$corpID = $corp->corporationID;
-					Db::execute("update zz_corporations set allianceID = :alliID where corporationID = :corpID",
-							array(":alliID" => $allianceID, ":corpID" => $corpID));
-				}
-			}
-
-			$allianceCount = number_format($allianceCount, 0);
-			$corporationCount = number_format($corporationCount, 0);
-			Log::log("Alliance tables repopulated - $allianceCount active Alliances with a total of $corporationCount Corporations");
-		} else {
-			Log::log("Unable to pull Alliance XML from API.  Will try again later.");
-			if ($exception != null) throw $exception;
-			throw new Exception("Unable to pull Alliance XML from API.  Will try again later");
-		}
+		usleep(100000);
 	}
-
-	function minutely() {
-		$killsLastHour = Db::queryField("select count(*) count from zz_killmails where insertTime > date_sub(now(), interval 1 hour)", "count");
-		Storage::store("KillsLastHour", $killsLastHour);
-		Domains::registerDomainsWithCloudflare();
-	}
-
-	function hourly() {
-		$percentage = Storage::retrieve("LastHourPercentage", 10);
-		$row = Db::queryRow("select sum(if(errorCode = 0, 1, 0)) good, sum(if(errorCode != 0, 1, 0)) bad from zz_api_characters");
-		$good = $row["good"];
-		$bad = $row["bad"];
-		if ($bad > (($bad + $good) * ($percentage / 100))) {
-			if($percentage > 15)
-				Log::irc("|r|API gone haywire?  Over $percentage% of API's reporting an error atm.");
-			$percentage += 5;
-		} else if ($bad < (($bad + $good) * (($percentage - 5) / 100))) $percentage -= 5;
-		if ($percentage < 10) $percentage = 10;
-		Storage::store("LastHourPercentage", $percentage);
-
-		Db::execute("delete from zz_api_log where requestTime < date_sub(now(), interval 36 hour)");
-
-		// Cleanout manual mail stuff where the manual mail has been api verified
-		Db::execute("update zz_killmails set kill_json = '' where processed = 2 and killID < 0 and kill_json != ''");
-		Db::execute("update zz_manual_mails set rawText = '' where killID > 0 and rawText != ''");
-	}
-
-	function social() {
-		Social::findConversations();
-	}
-
-	function fightFinder() {
-		Db::execute("delete from zz_social where insertTime < date_sub(now(), interval 23 hour)");
-		$minPilots = 100;
-		$minWrecks = 100;
-		$result = Db::query("select * from (select solarSystemID, count(distinct characterID) count, count(distinct killID) kills from zz_participants where characterID != 0 and killID > 0 and dttm > date_sub(now(), interval 1 hour) group by 1 order by 2 desc) f where count >= $minPilots and kills > $minWrecks");
-		foreach($result as $row) {
-			$systemID = $row["solarSystemID"];
-			$key = ($row["solarSystemID"] * 100) + date("H");
-			$key2 = ($row["solarSystemID"] * 100) + date("H", time() + 3600);
-
-			$count = Db::queryField("select count(*) count from zz_social where killID = :killID", "count", array(":killID" => $key), 0);
-			if ($count != 0) continue;
-			Db::execute("insert ignore into zz_social (killID) values (:k1), (:k2)", array(":k1" => $key, ":k2" => $key2));
-
-			Info::addInfo($row);
-			$wrecks = number_format($row['kills'], 0);
-			$involved = number_format($row['count'], 0);
-			$system = $row["solarSystemName"];
-			$date = date("YmdH00");
-			$link = "https://zkillboard.com/related/$systemID/$date/";
-
-			$message = "Battle detected in |g|$system|n| with |g|$involved|n| involved and |g|$wrecks|n| wrecks. |g|$link";
-			Log::irc($message);
-			// let this run for a few days to ensure it works correctly, then TODO make it twitter the msg too
-			//$message = Log::stripIRCColors($message);
-		}
-	}
-
-	function cleanDupe($mKillID, $killID) {
-		Db::execute("update zz_killmails set processed = 2 where killID = :mKillID", array(":mKillID" => $mKillID));
-		Db::execute("update zz_manual_mails set killID = :killID where mKillID = :mKillID",
-				array(":killID" => $killID, ":mKillID" => (-1 * $mKillID)));
-		Stats::calcStats($mKillID, false); // remove manual version from stats
-	}
-
-	function updateCharacters() {
-		$minute = (int) date("i");
-		if ($minute == 0) {
-			Db::execute("insert ignore into zz_characters (characterID) select ceoID from zz_corporations");
-			Db::execute("insert ignore into zz_characters (characterID) select characterID from zz_api_characters where characterID != 0");
-		}
-		Db::execute("delete from zz_characters where characterID < 9000000");
-		Db::execute("update zz_characters set lastUpdated = now() where characterID >= 30000000 and characterID <= 31004590");
-		Db::execute("update zz_characters set lastUpdated = now() where characterID >= 40000000 and characterID <= 41004590");
-		$result = Db::query("select characterID, name from zz_characters where lastUpdated < date_sub(now(), interval 7 day) and corporationID != 1000001 order by lastUpdated limit 600", array(), 0);
-		foreach ($result as $row) {
-			$id = $row["characterID"];
-			$oName = $row["name"];
-			//Db::execute("update zz_characters set lastUpdated = now() where characterID = :id", array(":id" => $id));
-
-			/*$pheal = Util::getPheal();
-			  $pheal->scope = "eve";
-			  try {
-			  $charInfo = $pheal->CharacterInfo(array("characterid" => $id));
-			  $name = $charInfo->characterName;
-			  $corpID = $charInfo->corporationID;
-			  $alliID = $charInfo->allianceID;
-			//echo "$name $id $corpID $alliID\n";
-			Db::execute("update zz_characters set name = :name, corporationID = :corpID, allianceID = :alliID where characterID = :id", array(":id" => $id, ":name" 
-			=> $name, ":corpID" => $corpID, ":alliID" => $alliID));
-			} catch (Exception $ex) {
-			// Is this name even a participant?
-			$count = Db::queryField("select count(*) count from zz_participants where characterID = :id", "count", array(":id" => $id));
-			if ($count == 0) {
-			Db::execute("delete from zz_characters where characterID = :id", array(":id" => $id));
-			}
-			else if ($ex->getCode() != 503) Log::log("ERROR Validating Character $id" . $ex->getMessage());
-			}*/
-			$json = file_get_contents("http://evewho.com/ek_pilot_id.php?id=$id");
-			$info = json_decode($json, true);
-			Db::execute("update zz_characters set lastUpdated = now(), name = :name, corporationID = :corpID, allianceID = :alliID where characterID = :id", array(":id" => $id, ":name" => $info["name"], ":corpID" => $info["corporation_id"], ":alliID" => $info["alliance_id"]));
-			//usleep(100000);
-		}
-	}
-
-	function updateCorporations() {
-		Db::execute("delete from zz_corporations where corporationID = 0");
-		Db::execute("insert ignore into zz_corporations (corporationID) select executorCorpID from zz_alliances where executorCorpID > 0");
-		$result = Db::query("select corporationID, name, memberCount, ticker from zz_corporations where (memberCount is null or memberCount > 0 or lastUpdated = 0)  and corporationID >= 1000001 order by lastUpdated limit 100", array(), 0);
-		foreach($result as $row) {
-			$id = $row["corporationID"];
-			$oMemberCount = $row["memberCount"];
-			$oName = $row["name"];
-			$oTicker = $row["ticker"];
-
-			//echo "$id $oName\n";
-
-			$pheal = Util::getPheal();
-			$pheal->scope = "corp";
-			try {
-				$corpInfo = $pheal->CorporationSheet(array("corporationID" => $id));
-				$name = $corpInfo->corporationName;
-				$ticker = $corpInfo->ticker;
-				$memberCount = $corpInfo->memberCount;
-				$ceoID = $corpInfo->ceoID;
-				if ($ceoID == 1) $ceoID = 0;
-				$dscr = $corpInfo->description;
-
-				Db::execute("update zz_corporations set name = :name, ticker = :ticker, memberCount = :memberCount, ceoID = :ceoID, description = :dscr, lastUpdated = now() where corporationID = :id",
-						array(":id" => $id, ":name" => $name, ":ticker" => $ticker, ":memberCount" => $memberCount, ":ceoID" => $ceoID, ":dscr" => $dscr));
-
-			} catch (Exception $ex) {
-				print_r($ex);
-				Db::execute("update zz_corporations set lastUpdated = now() where corporationID = :id", array(":id" => $id));
-				if ($ex->getCode() != 503) Log::log("ERROR Validating Corp $id: " . $ex->getMessage());
-			}
-			usleep(100000);
-		}
-	}
+}
