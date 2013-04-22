@@ -19,6 +19,11 @@
 $involved = array();
 $message = "";
 $pageID = "detail:$id";
+$info = User::getUserInfo();
+$name = $info["username"];
+$userID = $info["id"];
+$email = $info["email"];
+
 
 if($_POST && !User::isRevoked())
 {
@@ -37,12 +42,9 @@ if($_POST && !User::isRevoked())
 		if($id < 0)
 		{
 			$info = User::getUserInfo();
-			$name = $info["username"];
-			$userid = $info["id"];
-			$email = $info["email"];
 			$tags = "Reported Kill";
 			Db::execute("INSERT INTO zz_tickets (userid, name, email, tags, ticket, killID) VALUES (:userid, :name, :email, :tags, :ticket, :killid)",
-			array(":userid" => $userid, ":name" => $name, ":email" => $email, ":tags" => $tags, ":ticket" => $report, ":killid" => $id));
+			array(":userid" => $userID, ":name" => $name, ":email" => $email, ":tags" => $tags, ":ticket" => $report, ":killid" => $id));
 			global $baseAddr;
 			$reportID = Db::queryField("SELECT id FROM zz_tickets WHERE killID = :killID AND name = :name", "id", array(":killID" => $id, ":name" => $name));
 			Log::ircAdmin("Kill Reported by $name: https://$baseAddr/detail/$id/ - https://$baseAddr/moderator/reportedkills/$reportID/");
@@ -111,7 +113,7 @@ if($pageview == "overview")
 }
 if($pageview == "comments")
 {
-	$extra["cmtChars"] = Api::getCharacters();
+	$extra["cmtChars"] = Api::getCharacters($userID);
 	$extra["cmtChars"][] = array("characterID" => 0, "characterName" => "Anonymous");
 }
 
