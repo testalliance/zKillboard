@@ -87,6 +87,35 @@ class Domains
 		return "$name is already added to $domain";
 	}
 
+	public static function deleteDomainsFromCloudflare() {
+		$cf = null;
+		$setToDelete = Db::query("SELECT * FROM zz_domains WHERE setToDelete is true", array(), 0);
+		foreach($setToDelete as $row) {
+			if($cf == null) {
+				global $cfUser, $cfKey;
+				$cf = new CloudFlare($cfUser, $cfKey);
+			}
+
+			$cfID = $row["cloudFlareID"];
+			$domain = $row["domain"];
+			$domainID = $row["domainID"];
+			try {
+				$return = $cf->delete_dns_record("zkillboard.com", $cfID);
+				$result = $return["result"];
+				if($result == "success"){
+					Log::ircAdmin("Deleted |g| http://$domain.zkillboard.com|n| from CloudFlare");
+					Db::execute("DELETE FROM zz_domains WHERE domainID = :domainID", array(":domainID" => $domainID));
+				}
+				else {
+					Log::ircAdmin("|r|Problem deleting |g| http://$domain.zkillboard.com|r| from CloudFlare");
+				}
+			}
+			catch (Exception $ex) {
+				Log::ircAdmin("|r|Problem deleteting |g|http://$domain.zkillboard.com|r| from CloudFlare: |n|" . $ex->getMessage());
+			}
+		}
+	}
+
 	public static function registerDomainsWithCloudflare() {
 		$cf = null;
 		$needsRegistered = Db::query("select * from zz_domains where cloudFlareID is null", array(), 0);
