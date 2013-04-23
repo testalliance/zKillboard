@@ -119,7 +119,7 @@ $app->map("/register/", function() use ($app) {
 })->via("GET", "POST");
 
 // Account
-$app->map("/account(/:req)/", function($req = NULL) use ($app) {
+$app->map("/account(/:req)(/:reqid)/", function($req = NULL, $reqid = NULL) use ($app) {
     global $cookie_name, $cookie_time;
     include( "view/account.php" );
 })->via("GET", "POST");
