@@ -23,16 +23,19 @@ class Domains
 		$domains = Db::query("SELECT * FROM zz_domains WHERE userID = :userID", array(":userID" => $userID), 0);
 		return $domains;
 	}
+
 	public static function addUserTrackerDomain($userID, $domainName)
 	{
 		$expire = date("Y-m-d H:i:s", time()+7776000);
 		Db::execute("INSERT INTO zz_domains (userID, expirationDTTM, domain) VALUES (:userID, :expirationDTTM, :domain)", array(":userID" => $userID, ":expirationDTTM" => $expire, ":domain" => $domainName));
 	}
+
 	public static function deleteUserTrackerDomain($userID, $domainID)
 	{
 		Db::execute("DELETE FROM zz_domains WHERE domainID = :domainID and userID = :userID", array(":domainID" => $domainID, ":userID" => $userID));
 		Db::execute("DELETE FROM zz_domains_entities WHERE domainID = :domainID", array(":domainID" => $domainID));
 	}
+	
 	public static function getUserTrackerEntities($domainID)
 	{
 		$entities = Db::query("SELECT * FROM zz_domains_entities WHERE domainID = :domainID", array(":domainID" => $domainID), 0);
