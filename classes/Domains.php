@@ -32,8 +32,7 @@ class Domains
 
 	public static function deleteUserTrackerDomain($userID, $domainID)
 	{
-		Db::execute("DELETE FROM zz_domains WHERE domainID = :domainID and userID = :userID", array(":domainID" => $domainID, ":userID" => $userID));
-		Db::execute("DELETE FROM zz_domains_entities WHERE domainID = :domainID", array(":domainID" => $domainID));
+		Db::execute("UPDATE zz_domains SET userID = NULL, setToDelete = 1 WHERE domainID = :domainID and userID = :userID", array(":domainID" => $domainID, ":userID" => $userID));
 	}
 	
 	public static function getUserTrackerEntities($domainID)
@@ -70,6 +69,7 @@ class Domains
 				if($result == "success"){
 					Log::ircAdmin("Deleted |g| http://$domain.zkillboard.com|n| from CloudFlare");
 					Db::execute("DELETE FROM zz_domains WHERE domainID = :domainID", array(":domainID" => $domainID));
+					Db::execute("DELETE FROM zz_domains_entities WHERE domainID = :domainID", array(":domainID" => $domainID));
 				}
 				else {
 					Log::ircAdmin("|r|Problem deleting |g|http://$domain.zkillboard.com|r| from CloudFlare");
