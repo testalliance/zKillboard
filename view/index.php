@@ -27,4 +27,30 @@ $topPods = Stats::getTopIsk(array("shipTypeID" => 670, "pastSeconds" => (3*86400
 $topPointList = Stats::getTopPoints("killID", array("losses" => true, "pastSeconds" => (3*86400), "limit" => 5));
 $topPoints = Kills::getKillsDetails($topPointList);
 
-$app->render("index.html", array("topPods" => $topPods, "topIsk" => $topIsk, "topPoints" => $topPoints));
+$p = array();
+$p["limit"] = 5;
+$p["pastSeconds"] = 3 * 86400;
+$p["kills"] = true;
+
+$top = array();
+$top[] = doMakeCommon("Top Characters - Last 3 Days", "characterID", Stats::getTopPilots($p));
+$top[] = doMakeCommon("Top Corporations - Last 3 Days", "corporationID", Stats::getTopCorps($p));
+$top[] = doMakeCommon("Top Alliances - Last 3 Days", "allianceID", Stats::getTopAllis($p));
+
+$app->render("index.html", array("topPods" => $topPods, "topIsk" => $topIsk, "topPoints" => $topPoints, "topKillers" => $top));
+
+function doMakeCommon($title, $field, $array) {
+    $retArray = array();
+    $retArray["type"] = str_replace("ID", "", $field);
+    $retArray["title"] = $title;
+    $retArray["values"] = array();
+    foreach($array as $row) {
+        $data = $row;
+        $data["id"] = $row[$field];
+        $data["name"] = $row[$retArray["type"] . "Name"];
+        $data["kills"] = $row["kills"];
+        $retArray["values"][] = $data;
+    }
+    return $retArray;
+}
+
