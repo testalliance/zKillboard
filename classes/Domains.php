@@ -82,7 +82,7 @@ class Domains
 		if (!in_array($ent, $entities)) {
 			$entities[] = $ent;
 			$entities = json_encode($entities);
-			Db::execute("INSERT INTO zz_domains (userID, domain, entities) VALUES (:userID, :domain, :entities) ON DUPLICATE KEY UPDATE entities = :entities", array(":userID" => $userID, ":domain" => $domain, ":entities" => $entities));
+			Db::execute("INSERT INTO zz_domains (userID, domain, entities) VALUES (:userID, :domain, :entities) ON DUPLICATE KEY UPDATE entities = :entities", array(":userID" => $userID, ":domain" => strtolower($domain), ":entities" => $entities));
 		}
 		return "$name is already added to $domain";
 	}
@@ -101,12 +101,15 @@ class Domains
 			try {
 				// Flag it so repeats don't happen
 				Db::execute("update zz_domains set cloudFlareID = -1 where domainID = :dID", array(":dID" => $domainID));
-				$response = $cf->add_dns_record("zkillboard.com", "A", "82.221.99.219", $subDomain, true);
-				print_r($response);
+				$response = $cf->add_dns_record("zkillboard.com", "CNAME", "zkillboard.com", $subDomain, true);
 				$cfID = $response["response"]["rec"]["obj"]["rec_id"];
-				$cf->edit_dns_record("zkillboard.com", "A", "82.221.99.219", $subDomain, $cfID, true);
-				Db::execute("update zz_domains set cloudFlareID = :cfID where domainID = :dID", array(":dID" => $domainID, ":cfID" => $cfID));
-				Log::ircAdmin("Registered |g|http://$subDomain.zkillboard.com|n| with CloudFlare");
+				$cf->edit_dns_record("zkillboard.com", "CNAME", "zkillboard.com", $subDomain, $cfID, true);
+				if ($cfID != null) {
+					Db::execute("update zz_domains set cloudFlareID = :cfID where domainID = :dID", array(":dID" => $domainID, ":cfID" => $cfID));
+					Log::ircAdmin("Registered |g|http://$subDomain.zkillboard.com|n| with CloudFlare");
+				} else {
+					Log::ircAdmin("|r|Problem registering |g|http://$subDomain.zkillboard.com|r| with CloudFlare: null cloudFlareID received");
+				}
 			} catch (Exception $ex) {
 				Log::ircAdmin("|r|Problem registering |g|http://$subDomain.zkillboard.com|r| with CloudFlare: |n|" . $ex->getMessage());
 			}
