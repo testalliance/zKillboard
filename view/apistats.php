@@ -20,7 +20,7 @@
 Util::scrapeCheck();
 
 //make sure the type is allowed - and map it to our internal string
-$allowed_types = array('faction' => 'faction', 'alliance' => 'alli', 'corporation' => 'corp', 'pilot' => 'pilot', 'group' => 'group', 'ship' => 'ship', 'system' => 'system', 'region' => 'region');
+$allowed_types = array('factionID' => 'faction', 'allianceID' => 'alli', 'corporationID' => 'corp', 'characterID' => 'pilot', 'groupID' => 'group', 'shipID' => 'ship', 'systemID' => 'system', 'regionID' => 'region');
 
 //parse the flags
 foreach($flags as $flag) { 
