@@ -44,6 +44,11 @@ $app->map("/tickets/view/:id/", function($id) use ($app) {
 	include( "view/tickets_view.php" );
 })->via("GET", "POST");
 
+// Campaigns
+$app->map("/campaigns/:type(/:id)/", function($type = "all", $id = NULL) use($app) {
+    include( "view/campaigns.php" );
+})->via("GET");
+
 // Tracker
 $app->get("/tracker/", function() use ($app) {
     include( "view/tracker.php" );

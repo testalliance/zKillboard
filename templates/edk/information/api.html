@@ -48,7 +48,7 @@ Page / time / limit modifiers:
 - <strong>afterKillID/id/</strong>
 - <strong>pastSeconds/seconds/</strong>
 
-Order modifiers (Not working atm.):
+Order modifiers (Not working atm):
 - <strong>orderDirection/asc/</strong>
 - <strong>orderDirection/desc/</strong>
 
@@ -88,18 +88,22 @@ For those people wishing to pull general statistics about character/corporation/
 This API will not accept any of the modifiers used above.
 
 Allowed Types
-- <strong>Character</strong>
-- <strong>Corporation</strong>
-- <strong>Alliance</strong>
-- <strong>Faction</strong>
+- <strong>characterID</strong>
+- <strong>corporationID</strong>
+- <strong>allianceID</strong>
+- <strong>factionID</strong>
+- <strong>shipID</strong>
+- <strong>groupID</strong>
+- <strong>systemID</strong>
+- <strong>regionID</strong>
 
 Examples:
--- <a href="https://zkillboard.com/api/stats/character/268946627/">https://zkillboard.com/api/stats/character/268946627/</a>
--- <a href="https://zkillboard.com/api/stats/corporation/98076299/xml/">https://zkillboard.com/api/stats/corporation/98076299/xml/</a>
--- <a href="https://zkillboard.com/api/stats/alliance/386292982/json/">https://zkillboard.com/api/stats/alliance/386292982/json/</a>
+-- <a href="https://zkillboard.com/api/stats/characterID/268946627/">https://zkillboard.com/api/stats/character/268946627/</a>
+-- <a href="https://zkillboard.com/api/stats/corporationID/98076299/xml/">https://zkillboard.com/api/stats/corporation/98076299/xml/</a>
+-- <a href="https://zkillboard.com/api/stats/allianceID/386292982/json/">https://zkillboard.com/api/stats/alliance/386292982/json/</a>
 
 <strong>Please Note:</strong>
-<p>If you aren't using the api-only modifier, then it is possible to pull kills that include a negative killID. Negative killIDs denote manual mails.
+If you aren't using the api-only modifier, then it is possible to pull kills that include a negative killID. Negative killIDs denote manual mails.
 Those manual mails could later get verified by the API, and get a positive killID (API mails).
 
-This means you could potentially pull the same kill twice. It is up to you to detect this.</p>
+This means you could potentially pull the same kill twice. It is up to you to detect this.

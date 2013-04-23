@@ -124,4 +124,9 @@ class User
 		$reason = Db::queryField("SELECT revoked_reason FROM zz_users WHERE id = :id", "revoked_reason", array(":id" => self::getUserID()));
 		return $reason;
 	}
+
+	public static function getUsername($userID)
+	{
+		return Db::queryField("SELECT username FROM zz_users WHERE userID = :userID", array(":userID" => $userID));
+	}
 }
