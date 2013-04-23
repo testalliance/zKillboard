@@ -40,15 +40,14 @@ try {
 	$result = null;
 
 	// Update last checked
-	Db::execute("update zz_api_characters set errorCode = 0, lastChecked = now() where keyID = :keyID and characterID = :characterID",
-			array(":keyID" => $keyID, ":characterID" => $charID));
+	Db::execute("update zz_api_characters set errorCode = 0, lastChecked = now() where apiRowID = :id", array(":id" => $apiRowID));
 
 	if ($isDirector == "T") $result = $pheal->KillLog();
 	else $result = $pheal->KillLog(array('characterID' => $charID));
 
 	$cachedUntil = $result->cached_until;
 	if ($cachedUntil == "") $cachedUntil = 0;
-	Db::execute("update zz_api_characters set cachedUntil = if(:cachedUntil = 0, date_add(now(), interval 1 hour), :cachedUntil), errorCode = '0' where keyID = :keyID and characterID = :characterID", array(":cachedUntil" => $cachedUntil, ":id" => $apiRowID));
+	Db::execute("update zz_api_characters set cachedUntil = if(:cachedUntil = 0, date_add(now(), interval 1 hour), :cachedUntil), errorCode = '0' where apiRowID = :id", array(":id" => $apiRowID, ":cachedUntil" => $cachedUntil));
 
 	$file = "/var/killboard/zkb_killlogs/{$keyID}_{$charID}_0.xml";
 	@unlink($file);
