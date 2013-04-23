@@ -107,7 +107,7 @@ class Domains
 					Db::execute("DELETE FROM zz_domains WHERE domainID = :domainID", array(":domainID" => $domainID));
 				}
 				else {
-					Log::ircAdmin("|r|Problem deleting |g| http://$domain.zkillboard.com|r| from CloudFlare");
+					Log::ircAdmin("|r|Problem deleting |g|http://$domain.zkillboard.com|r| from CloudFlare");
 				}
 			}
 			catch (Exception $ex) {
