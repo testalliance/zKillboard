@@ -1,4 +1,20 @@
 <?php
+/* zKillboard
+ * Copyright (C) 2012-2013 EVE-KILL Team and EVSCO.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 class irc_api implements ircCommand {
 	public function getRequiredAccessLevel() {
@@ -14,11 +30,11 @@ class irc_api implements ircCommand {
 		$entity = implode(" ", $parameters);
 		switch ($entity) {
 			case "errors":
-				$codes = Db::query("select errorCode, count(*) count from zz_api group by 1 order by 1");
+				$codes = Db::query("select errorCode, count(*) count from zz_api group by 1 order by 1", array(), 0);
 				$output = "API base:";
 				foreach($codes as $row)	$output .= " |n|| |r|" . $row["errorCode"] . ": |g|" . $row["count"];
 				irc_out($output);
-				$codes = Db::query("select errorCode, count(*) count from zz_api_characters group by 1 order by 1");
+				$codes = Db::query("select errorCode, count(*) count from zz_api_characters group by 1 order by 1", array(), 0);
 				$output = "API characters:";
 				foreach($codes as $row)	$output .= " |n|| |r|" . $row["errorCode"] . ": |g|" . $row["count"];
 				irc_out($output);

@@ -1,4 +1,21 @@
 <?php
+/* zKillboard
+ * Copyright (C) 2012-2013 EVE-KILL Team and EVSCO.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+ 
 $app->notFound(function () use ($app) {
     $app->render('404.html');
 });
@@ -27,13 +44,22 @@ $app->map("/tickets/view/:id/", function($id) use ($app) {
 	include( "view/tickets_view.php" );
 })->via("GET", "POST");
 
+// Campaigns
+$app->map("/campaigns/:type(/:id)/", function($type = "all", $id = NULL) use($app) {
+    include( "view/campaigns.php" );
+})->via("GET");
+
 // Tracker
 $app->get("/tracker/", function() use ($app) {
     include( "view/tracker.php" );
 });
 
 // View kills
-$app->get("/kills(/:type)/", function($type = NULL) use ($app) {
+$app->get("/kills/page/:page/", function($page = 1) use ($app) {
+    $type = NULL;
+    include( "view/kills.php" );
+});
+$app->get("/kills(/:type)(/page/:page)/", function($type = NULL, $page = 1) use ($app) {
     include( "view/kills.php" );
 });
 
@@ -69,7 +95,7 @@ $app->map("/detail/:id(/:pageview)/", function($id, $pageview = "overview") use 
 })->via("GET", "POST");
 
 // Search
-$app->map("/search/", function() use ($app) {
+$app->map("/search(/:search)/", function($search = NULL) use ($app) {
     include( "view/search.php" );
 })->via("GET", "POST");
 
@@ -103,7 +129,7 @@ $app->map("/register/", function() use ($app) {
 })->via("GET", "POST");
 
 // Account
-$app->map("/account(/:req)/", function($req = NULL) use ($app) {
+$app->map("/account(/:req)(/:reqid)/", function($req = NULL, $reqid = NULL) use ($app) {
     global $cookie_name, $cookie_time;
     include( "view/account.php" );
 })->via("GET", "POST");

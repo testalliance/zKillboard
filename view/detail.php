@@ -1,7 +1,31 @@
 <?php
+/* zKillboard
+ * Copyright (C) 2012-2013 EVE-KILL Team and EVSCO.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 $involved = array();
 $message = "";
 $pageID = "detail:$id";
+
+
+$info = User::getUserInfo();
+$name = $info["username"];
+$userID = $info["id"];
+$email = $info["email"];
+
 
 if($_POST && !User::isRevoked())
 {
@@ -19,13 +43,9 @@ if($_POST && !User::isRevoked())
 	{
 		if($id < 0)
 		{
-			$info = User::getUserInfo();
-			$name = $info["username"];
-			$userid = $info["id"];
-			$email = $info["email"];
 			$tags = "Reported Kill";
 			Db::execute("INSERT INTO zz_tickets (userid, name, email, tags, ticket, killID) VALUES (:userid, :name, :email, :tags, :ticket, :killid)",
-			array(":userid" => $userid, ":name" => $name, ":email" => $email, ":tags" => $tags, ":ticket" => $report, ":killid" => $id));
+			array(":userid" => $userID, ":name" => $name, ":email" => $email, ":tags" => $tags, ":ticket" => $report, ":killid" => $id));
 			global $baseAddr;
 			$reportID = Db::queryField("SELECT id FROM zz_tickets WHERE killID = :killID AND name = :name", "id", array(":killID" => $id, ":name" => $name));
 			Log::ircAdmin("Kill Reported by $name: https://$baseAddr/detail/$id/ - https://$baseAddr/moderator/reportedkills/$reportID/");
@@ -94,7 +114,7 @@ if($pageview == "overview")
 }
 if($pageview == "comments")
 {
-	$extra["cmtChars"] = Api::getCharacters();
+	$extra["cmtChars"] = Api::getCharacters($userID);
 	$extra["cmtChars"][] = array("characterID" => 0, "characterName" => "Anonymous");
 }
 

@@ -1,4 +1,20 @@
 <?php
+/* zKillboard
+ * Copyright (C) 2012-2013 EVE-KILL Team and EVSCO.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 class Util
 {
 	public static function setSubdomainGlobals($key, $row, $type)
@@ -13,7 +29,6 @@ class Util
 	public static function isValidSubdomain($subDomain)
 	{
 		if ($subDomain === null || trim($subDomain) == "") return true;
-
 		$subDomain = str_replace("_", " ", $subDomain);
 		$array = array(":subDomain" => $subDomain);
 		$row = Db::queryRow("select factionID, name from zz_factions where ticker = :subDomain", $array, 3600);
@@ -24,14 +39,13 @@ class Util
 		if ($row != null) return Util::setSubdomainGlobals("corporationID", $row, "corporation");*/
 		$row = Db::queryRow("select * from zz_domains where domain = :subDomain", $array, 300);
 		if ($row) {
-			$jsonEntities = $row["entities"];
-			$entities = json_decode($jsonEntities, true);
+			$entities = Db::query("SELECT * FROM zz_domains_entities WHERE domainID = :domainID", array(":domainID" => $row["domainID"]));
 			foreach($entities as $entity) {
 				$ent = array();
-				$ent["type"] = $entity["type"];
-				$ent[$entity["type"] . "ID"] = $entity["id"];
-				$ent["name"] = $entity["name"];
-				return Util::setSubdomainGlobals($ent["type"] . "ID", $ent, $ent["type"]);
+				$ent["type"] = $entity["entityType"];
+				$ent[$entity["entityType"] . "ID"] = $entity["entityID"];
+				$ent["name"] = $entity["entityName"];
+				return Util::setSubdomainGlobals($entity["entityType"] . "ID", $ent, $entity["entityType"]);
 			}
 		}
 		return false;
@@ -45,7 +59,7 @@ class Util
 
 	public static function getPheal($keyID = null, $vCode = null)
 	{
-		global $phealCacheLocation;
+		global $phealCacheLocation, $apiServer;
 
 		PhealConfig::getInstance()->http_method = "curl";
 		PhealConfig::getInstance()->http_user_agent = "zKillboard API Fetcher (Pheal)";
@@ -56,7 +70,7 @@ class Util
 		PhealConfig::getInstance()->cache = new PhealFileCache($phealCacheLocation);
 		PhealConfig::getInstance()->log = new PhealLogger();
 		PhealConfig::getInstance()->api_customkeys = true;
-		PhealConfig::getInstance()->api_base = 'https://api.zkillboard.com/'; // API proxy server, to get everything gzipped.
+		PhealConfig::getInstance()->api_base = $apiServer;
 
 			if ($keyID != null && $vCode != null) $pheal = new Pheal($keyID, $vCode);
 			else $pheal = new Pheal();
@@ -258,10 +272,7 @@ class Util
 		$timeLimit = 60; // Number of seconds allowed between requests
 		$numAccesses = 10; // Number of accesses before hammer is thrown
 
-		if (isset($_SERVER["HTTP_CF_CONNECTING_IP"])) $ip = $_SERVER["HTTP_CF_CONNECTING_IP"];
-		elseif (isset($_SERVER["HTTP_X_FORWARDED_FOR"])) $ip = $_SERVER["HTTP_X_FORWARDED_FOR"];
-		else $ip = $_SERVER['REMOTE_ADDR'];
-
+		$ip = IP::get();
 		$validScrapers = array(
 				"85.88.24.82", // DOTLAN
 				);

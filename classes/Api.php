@@ -1,4 +1,21 @@
 <?php
+/* zKillboard
+ * Copyright (C) 2012-2013 EVE-KILL Team and EVSCO.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 /**
  * Various API helper functions for the website
  */
@@ -115,10 +132,10 @@ class Api
 	 * @static
 	 * @return Returns
 	 */
-	public static function getKeys()
+	public static function getKeys($userID)
 	{
 		$userID = user::getUserID();
-		$result = Db::query("SELECT keyID, vCode, label, lastValidation FROM zz_api WHERE userID = :userID order by keyID", array(":userID" => $userID), 0);
+		$result = Db::query("SELECT keyID, vCode, label, lastValidation, errorCode FROM zz_api WHERE userID = :userID order by keyID", array(":userID" => $userID), 0);
 		return $result;
 	}
 
@@ -128,9 +145,8 @@ class Api
 	 * @static
 	 * @return Returns
 	 */
-	public static function getCharacterKeys()
+	public static function getCharacterKeys($userID)
 	{
-		$userID = user::getUserID();
 		$result = Db::query("select c.* from zz_api_characters c left join zz_api a on (c.keyID = a.keyID) where a.userID = :userID", array(":userID" => $userID), 0);
 		return $result;
 	}
@@ -141,9 +157,8 @@ class Api
 	 * @static
 	 * @return array
 	 */
-	public static function getCharacters()
+	public static function getCharacters($userID)
 	{
-		$userID = user::getUserID();
 		$db = Db::query("SELECT characterID FROM zz_api_characters c left join zz_api a on (c.keyID = a.keyID) where userID = :userID", array(":userID" => $userID), 0);
 		$results = Info::addInfo($db);
 		return $results;

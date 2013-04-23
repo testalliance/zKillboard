@@ -1,4 +1,20 @@
 <?php
+/* zKillboard
+ * Copyright (C) 2012-2013 EVE-KILL Team and EVSCO.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 $base = dirname(__FILE__);
 require_once "$base/../init.php";
@@ -9,22 +25,33 @@ $stomp = new Stomp($stompServer, $stompUser, $stompPassword);
 
 $stompKey = "StompSend::lastFetch";
 $lastFetch = time() - (12 * 3600);
+
 $lastFetch = Storage::retrieve($stompKey, $lastFetch);
+for ($i = 0; $i < 11; $i++) {
+	$result = Db::query("SELECT killID, unix_timestamp(insertTime) AS insertTime, kill_json FROM zz_killmails WHERE insertTime > from_unixtime(:lastFetch) ORDER BY killID", array(":lastFetch" => $lastFetch), 0);
 
-$result = Db::query("SELECT killID, unix_timestamp(insertTime) AS insertTime, kill_json FROM zz_killmails WHERE killID > 0 AND insertTime > from_unixtime(:lastFetch) ORDER BY killID", array(":lastFetch" => $lastFetch), 0);
+	$lastFetch = time();
+	Storage::store($stompKey, $lastFetch);
 
-$lastFetch = time();
-Storage::store($stompKey, $lastFetch);
+	foreach($result as $kill)
+	{
+		$destinations = Destinations($kill["kill_json"]);
+		$destinations = join(",", $destinations);
+		$lastFetch = max($lastFetch, $kill["insertTime"]);
+		if(!empty($kill["kill_json"]))
+		{
+			if($kill["killID"] > 0)
+				$stomp->send($destinations, $kill["kill_json"]);
 
-foreach($result as $kill)
-{
-	$destinations = Destinations($kill["kill_json"]);
-	$destinations = join(",", $destinations);
-	$lastFetch = max($lastFetch, $kill["insertTime"]);
-	if(!empty($kill["kill_json"]))
-		$stomp->send($destinations, $kill["kill_json"]);
+			// Send out stuff for the live starmap
+			$data = json_decode($kill["kill_json"], true);
+			$json = json_encode(array("solarSystemID" => $data["solarSystemID"], "killID" => $data["killID"], "shipTypeID" => $data["victim"]["shipTypeID"], "killTime" => $data["killTime"]));
+			$stomp->send("/topic/starmap.systems.active", $json);
+		}
+	}
+	//if(sizeof($result) > 0) Log::log("Sent out " . sizeof($result) . " killmails via stomp (Including pings to the starmap) (Count includes manual mails, but only killIDs LARGER than 0 (api) is sent to all the stomp routes)");
+	sleep(5);
 }
-if(sizeof($result) > 0) Log::log("Sent out " . sizeof($result) . " killmails via stomp");
 
 function Destinations($kill)
 {

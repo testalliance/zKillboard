@@ -3,3 +3,4 @@ public/google*
 vendor/
 /composer.phar
 /composer.lock
+*.sublime*

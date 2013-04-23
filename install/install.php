@@ -1,4 +1,20 @@
 <?php
+/* zKillboard
+ * Copyright (C) 2012-2013 EVE-KILL Team and EVSCO.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 function exception_error_handler($errno, $errstr, $errfile, $errline ) {
     throw new ErrorException($errstr, $errno, 0, $errfile, $errline);
@@ -41,6 +57,10 @@ echo "\nAnd now what is the address of your server?  Just use the domain name!  
 $settings["baseaddr"] = prompt("Domain name?", "zkillboard.com");
 
 $settings["logfile"] = prompt("Log file location?", "/var/log/zkb.log");
+
+echo "\nImage and API server defaults to the zKillboard proxies, you can however use CCPs servers if you want\n https://api.eveonline.com and https://image.eveonline.com\n";
+$settings["apiserver"] = prompt("API Server?", "https://api.zkillboard.com/");
+$settings["imageserver"] = prompt("Image Server?", "https://image.zkillboard.com/");
 
 echo "\nA secret key is needed for your cookies to be encrypted.\n";
 $settings["cookiesecret"] = prompt("Secret key for cookies?", "MY_SECRET");

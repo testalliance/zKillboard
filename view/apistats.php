@@ -1,9 +1,26 @@
 <?php
+/* zKillboard
+ * Copyright (C) 2012-2013 EVE-KILL Team and EVSCO.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 //make sure the requester is not being a naughty boy
 Util::scrapeCheck();
 
 //make sure the type is allowed - and map it to our internal string
-$allowed_types = array('faction' => 'faction', 'alliance' => 'alli', 'corporation' => 'corp', 'pilot' => 'pilot', 'group' => 'group', 'ship' => 'ship', 'system' => 'system', 'region' => 'region');
+$allowed_types = array('factionID' => 'faction', 'allianceID' => 'alli', 'corporationID' => 'corp', 'characterID' => 'pilot', 'groupID' => 'group', 'shipID' => 'ship', 'systemID' => 'system', 'regionID' => 'region');
 
 //parse the flags
 foreach($flags as $flag) { 
