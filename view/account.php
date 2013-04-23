@@ -30,16 +30,6 @@ if(isset($req))
 
 if($_POST)
 {
-<<<<<<< HEAD
-<<<<<<< HEAD
- //   var_dump($_POST);
-=======
-    var_dump($_POST);
-=======
-    //var_dump($_POST);
->>>>>>> c24f5304de479f699160f18f13ccbe4ff6b8f487
-    //die();
->>>>>>> 4bca9a2f82e1faa79500952d61b8d2dd9c86de86
 	// Post is just generic, we'll figure out what the user wants, based on what is set
 	$keyid = "";
 	$vcode = "";
