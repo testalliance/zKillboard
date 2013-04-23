@@ -29,7 +29,6 @@ class Util
 	public static function isValidSubdomain($subDomain)
 	{
 		if ($subDomain === null || trim($subDomain) == "") return true;
-
 		$subDomain = str_replace("_", " ", $subDomain);
 		$array = array(":subDomain" => $subDomain);
 		$row = Db::queryRow("select factionID, name from zz_factions where ticker = :subDomain", $array, 3600);
@@ -40,14 +39,13 @@ class Util
 		if ($row != null) return Util::setSubdomainGlobals("corporationID", $row, "corporation");*/
 		$row = Db::queryRow("select * from zz_domains where domain = :subDomain", $array, 300);
 		if ($row) {
-			$jsonEntities = $row["entities"];
-			$entities = json_decode($jsonEntities, true);
+			$entities = Db::query("SELECT * FROM zz_domains_entities WHERE domainID = :domainID", array(":domainID" => $row["domainID"]));
 			foreach($entities as $entity) {
 				$ent = array();
-				$ent["type"] = $entity["type"];
-				$ent[$entity["type"] . "ID"] = $entity["id"];
-				$ent["name"] = $entity["name"];
-				return Util::setSubdomainGlobals($ent["type"] . "ID", $ent, $ent["type"]);
+				$ent["type"] = $entity["entityType"];
+				$ent[$entity["entityType"] . "ID"] = $entity["entityID"];
+				$ent["name"] = $entity["entityName"];
+				return Util::setSubdomainGlobals($entity["entityType"] . "ID", $ent, $entity["entityType"]);
 			}
 		}
 		return false;

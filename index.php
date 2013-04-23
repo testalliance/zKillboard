@@ -46,9 +46,9 @@ $app->error(function (\Exception $e) use ($app){
 // Determine subdomain
 $restrictedSubDomains = array("www", "email", "mx", "ipv6", "blog", "forum", "cdn", "content", "static", "api", "image", "websocket", "news", "comments");
 $serverName = @$_SERVER["SERVER_NAME"];
-$subDomain = Util::endsWith($serverName, ".zkillboard.com") ? str_replace(".zkillboard.com", "", $serverName) : null;
+$subDomain = Util::endsWith($serverName, ".".$baseAddr) ? str_replace(".".$baseAddr, "", $serverName) : null;
 if (in_array($subDomain, $restrictedSubDomains) || !Util::isValidSubdomain($subDomain))
-	header("Location: http://zkillboard.com" . @$_SERVER["REQUEST_URI"]);
+	header("Location: https://zkillboard.com" . @$_SERVER["REQUEST_URI"]);
 
 // Load the routes - always keep at the bottom of the require list ;)
 include( "routes.php" );
