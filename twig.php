@@ -43,7 +43,7 @@ $twig->addGlobal("image_item", $imageServer."Type/");
 $twig->addGlobal("image_ship", $imageServer."Render/");
 
 $twig->addGlobal("siteurl", $baseAddr);
-$twig->addGlobal("fullsiteurl", "https://".$_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"]);
+$twig->addGlobal("fullsiteurl", $fullAddr);
 $twig->addGlobal("requesturi", $_SERVER["REQUEST_URI"]);
 $twig->addGlobal("topad", Adsense::top());
 $twig->addGlobal("bottomad", Adsense::bottom());
