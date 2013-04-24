@@ -20,7 +20,7 @@
 require( "init.php" );
 
 // Redirect if https
-if($_SERVER["HTTP_X_FORWARDED_PROTO"] == "https")
+if(@$_SERVER["HTTP_X_FORWARDED_PROTO"] == "https")
 	header("Location: $fullAddr");
 
 // initiate the timer!
