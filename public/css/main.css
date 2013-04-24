@@ -110,3 +110,12 @@ ul.autocomplete span { position: absolute; top: 8px; right: 5px; }
 	/* prevent hover loop when a tooltip is shown above its triggering element */
 	pointer-events: none;
 }
+
+/* /map/ specific css */
+#killmap_render { position: absolute; top: 0px; left: 0px; z-index: 1; } 
+#killmap_history { position: absolute; top: 60px; left: 10px; z-index: 2002; }
+#killmap_history ul { list-style-type: none; padding: 0px; margin: 0px; line-height: 14px !important; }
+#killmap_history ul li { font-size: 11px; color: #666666; margin: 0px; padding: 0px; }
+#killmap_history ul li.bold { font-weight: bold; }
+#killmap_controls { position: absolute; top: 60px; right: 10px; z-index: 2002; }
+#killmap_zenmode { position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; background-color: #000000; z-index: 2000; display: none; }
