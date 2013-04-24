@@ -21,7 +21,7 @@ require( "init.php" );
 
 // Redirect if https
 if($_SERVER["HTTP_X_FORWARDED_PROTO"] == "https")
-        $app->redirect($fullAddr);
+	header("Location: $fullAddr");
 
 // initiate the timer!
 $timer = new Timer();
