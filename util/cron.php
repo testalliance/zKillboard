@@ -269,7 +269,7 @@ function fetchApis()
 			exec("$command >/dev/null 2>/dev/null &");
 
 			$iterationCount++;
-			if ($m == 0) { echo "z"; sleep(1); }
+			if ($m == 0) { sleep(1); }
 		}
 	}
 }
