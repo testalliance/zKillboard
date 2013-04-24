@@ -29,7 +29,9 @@ class Feed
 	{
 		$ip = IP::get();
 
-		Log::log("$ip API Fetch: " . $_SERVER["REQUEST_URI"]);
+		$userAgent = @$_SERVER["HTTP_USER_AGENT"];
+
+		Log::log("$ip API Fetch: " . $_SERVER["REQUEST_URI"] . " (" . $ip . " / ". $userAgent . ")");
 		$tables = array();
 		$orWhereClauses = array();
 		$andWhereClauses = array();
