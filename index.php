@@ -55,7 +55,7 @@ $serverName = @$_SERVER["SERVER_NAME"];
 $restrictedSubDomains = array("www", "email", "mx", "ipv6", "blog", "forum", "cdn", "content", "static", "api", "image", "websocket", "news", "comments");
 $subDomain = Util::endsWith($serverName, ".".$baseAddr) ? str_replace(".".$baseAddr, "", $serverName) : null;
 if (in_array($subDomain, $restrictedSubDomains) || !Util::isValidSubdomain($subDomain))
-	$app->redirect($fullAddr);
+	header("Location: $fullAddr");
 
 // Load the routes - always keep at the bottom of the require list ;)
 include( "routes.php" );
