@@ -15,9 +15,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 // Load modules + database stuff (and the config)
 require( "init.php" );
+
+// Redirect if https
+if($_SERVER["HTTP_X_FORWARDED_PROTO"] == "https")
+        header("Location: $fullAddr");
 
 // initiate the timer!
 $timer = new Timer();
