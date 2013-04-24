@@ -33,7 +33,7 @@ $baseFile = __FILE__;
 $baseDir = dirname($baseFile) . "/";
 $baseUrl = "/";
 $baseAddr = "%baseaddr%";
-$fullAddr = "http://" . $baseAddr . "/" . $_SERVER["REQUEST_URI"];
+$fullAddr = "http://" . $baseAddr . $_SERVER["REQUEST_URI"];
 chdir($baseDir);
 
 // Logfile
