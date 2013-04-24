@@ -21,7 +21,7 @@ require( "init.php" );
 
 // Redirect if https
 if($_SERVER["HTTP_X_FORWARDED_PROTO"] == "https")
-        header("Location: $fullAddr");
+        $app->redirect($fullAddr);
 
 // initiate the timer!
 $timer = new Timer();
@@ -55,7 +55,7 @@ $serverName = @$_SERVER["SERVER_NAME"];
 $restrictedSubDomains = array("www", "email", "mx", "ipv6", "blog", "forum", "cdn", "content", "static", "api", "image", "websocket", "news", "comments");
 $subDomain = Util::endsWith($serverName, ".".$baseAddr) ? str_replace(".".$baseAddr, "", $serverName) : null;
 if (in_array($subDomain, $restrictedSubDomains) || !Util::isValidSubdomain($subDomain))
-	header("Location: https://zkillboard.com" . @$_SERVER["REQUEST_URI"]);
+	$app->redirect($fullAddr);
 
 // Load the routes - always keep at the bottom of the require list ;)
 include( "routes.php" );
