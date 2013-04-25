@@ -59,10 +59,10 @@ class Util
 
 	public static function getPheal($keyID = null, $vCode = null)
 	{
-		global $phealCacheLocation, $apiServer;
+		global $phealCacheLocation, $apiServer, $baseAddr;
 
 		PhealConfig::getInstance()->http_method = "curl";
-		PhealConfig::getInstance()->http_user_agent = "zKillboard API Fetcher (Pheal)";
+		PhealConfig::getInstance()->http_user_agent = "API Fetcher for http://$baseAddr";
 		PhealConfig::getInstance()->http_post = false;
 		PhealConfig::getInstance()->http_keepalive = true; // default 15 seconds
 		PhealConfig::getInstance()->http_keepalive = 10; // KeepAliveTimeout in seconds
@@ -155,6 +155,12 @@ class Util
 		$parameters = array();
 		@$uri = $_SERVER["REQUEST_URI"];
 		$split = explode("/", $uri);
+		if ($additionalParameters != null) foreach($additionalParameters as $key=>$value) {
+			if (strpos($key, "ID") !== false) {
+				$split[] = $key;
+				$split[] = $value;
+			}
+		}
 		//$split = array_merge($additionalParameters, $split);
 		$currentIndex = 0;
 		foreach ($split as $key) {
@@ -212,7 +218,7 @@ class Util
 					break;
 				default:
 					if (is_numeric($value) && $value < 0) throw new Exception("$value is not a valid entry for $key");
-					/*if ((int) $key != $key)*/ $parameters[$key] = $value;
+					if ($key != "" && $value != "") $parameters[$key] = $value;
 			}
 			$currentIndex++;
 		}
