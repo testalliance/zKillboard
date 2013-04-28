@@ -38,12 +38,12 @@ class MemcachedCache extends AbstractCache
 
 	public function set($key, $value, $timeout)
 	{
-		return $this->mc->set($key, $value, 0, $timeout);
+		return $this->mc->set($key, $value, $timeout);
 	}
 
 	public function replace($key, $value, $timeout)
 	{
-		return $this->mc->replace($key, $value, 0, $timeout);
+		return $this->mc->replace($key, $value, $timeout);
 	}
 
 	public function delete($key)
