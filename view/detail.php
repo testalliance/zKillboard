@@ -131,7 +131,7 @@ $extra["totalprice"] = usdeurgbp($killdata["info"]["total_price"]);
 $extra["destroyedprice"] = usdeurgbp($extra["lostisk"]);
 $extra["droppedprice"] = usdeurgbp($extra["droppedisk"]);
 $extra["efttext"] = EFT::getText($extra["fittingwheel"]);
-$extra["rawmail"] = Kills::getMail($id);
+$extra["rawmail"] = Kills::getRawMail($id);
 $extra["reports"] = Db::queryField("SELECT count(*) as cnt FROM zz_tickets WHERE killID = :killid", "cnt", array(":killid" => $id), 0);
 $extra["slotCounts"] = Info::getSlotCounts($killdata["victim"]["shipTypeID"]);
 
