@@ -16,6 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * zKillboard cache class
+ */
 class Cache
 {
 	function Cache()
@@ -23,92 +26,115 @@ class Cache
 		trigger_error('The class "cache" may only be invoked statically.', E_USER_ERROR);
 	}
 
-	protected static function getMC()
+	/**
+	 * Initiate the cache
+	 */
+	protected static function getCache()
 	{
-		global $mc, $memcacheServer, $memcachePort;
+		global $cache, $memcacheServer, $memcachePort;
 
-		if ($mc == null) {
-			if(extension_loaded("Memcache") && !extension_loaded("Memcached"))
+		if ($cache == null) {
+			if(extension_loaded("Memcache"))
 			{
-				$mc = new MemCache();
-				$mc->connect($memcacheServer, $memcachePort);
+				$cache = new MemCache();
+				$cache->connect($memcacheServer, $memcachePort);
 			}
-			elseif(extension_loaded("Memcached") && !extension_loaded("Memcache"))
+			elseif(extension_loaded("Memcached"))
 			{
-				$mc = new Memcached();
-				$mc->addServer($memcacheServer, $memcachePort);
+				$cache = new Memcached();
+				$cache->addServer($memcacheServer, $memcachePort);
 			}
 			else
 			{
-				// If both are loaded, we just use Memcached
-				$mc = new Memcached();
-				$mc->addServer($memcacheServer, $memcachePort);
+				$cache = new FileCache();
+				$cache->cacheDir = "cache/queryCache/";
 			}
 		}
-		return $mc;
+		return $cache;
 	}
 
-	// Define 1 hour std expiry time for objects
+	/**
+	 * Sets data to the cache
+	 * 
+	 * @param $key
+	 * @param $value
+	 * @param $timeout
+	 * @return bool
+	 */
 	public static function set($key, $value, $timeout = '3600')
 	{
-		$mc = Cache::getMC();
+		$cache = Cache::getCache();
 
 		// This is silly, but seeing as replace and set for memcache wants to know if it should package it or not, and memcached doesn't want to know, this is how it has to be :\
-		if(extension_loaded("Memcache") && !extension_loaded("Memcached"))
+		if(extension_loaded("Memcache"))
 		{
-			$result = $mc->replace($key, $value, 0, time() + $timeout);
+			$result = $cache->replace($key, $value, 0, time() + $timeout);
 			if ($result === FALSE)
-				$result = $mc->set($key, $value, 0, time() + $timeout);
-			if ($result !== TRUE && $result !== FALSE)
-				return false;
-			return true;
-		}
-		elseif(extension_loaded("Memcached") && !extension_loaded("Memcache"))
-		{
-			$result = $mc->replace($key, $value, time() + $timeout);
-			if ($result === FALSE)
-				$result = $mc->set($key, $value, time() + $timeout);
+				$result = $cache->set($key, $value, 0, time() + $timeout);
 			if ($result !== TRUE && $result !== FALSE)
 				return false;
 			return true;
 		}
 		else
 		{
-			$result = $mc->replace($key, $value, time() + $timeout);
+			$result = $cache->replace($key, $value, time() + $timeout);
 			if ($result === FALSE)
-				$result = $mc->set($key, $value, time() + $timeout);
+				$result = $cache->set($key, $value, time() + $timeout);
 			if ($result !== TRUE && $result !== FALSE)
 				return false;
 			return true;
 		}
 	}
 
+	/**
+	 * Gets data from the cache
+	 * 
+	 * @param $key
+	 * @return array
+	 */
 	public static function get($key)
 	{
-		$mc = Cache::getMC();
-		$value = $mc->get($key);
+		$cache = Cache::getCache();
+		$value = $cache->get($key);
 		return $value;
 	}
 
-	// Erases a key after [$timeout] seconds
-	// if that key exists
+	/**
+	 * Deletes data from the cache
+	 * 
+	 * @param $key
+	 * @param $timeout (This only works for Memcached, file cache flat out ignores it)
+	 * @return bool
+	 */
 	public static function delete($key, $timeout = 0)
 	{
-		$mc = Cache::getMC();
-		return $mc->delete($key, $timeout);
+		$cache = Cache::getCache();
+		return $cache->delete($key, $timeout);
 	}
 
+	/**
+	 * Increment a value
+	 * 
+	 * @param $key
+	 * @param $timeout (This only works for Memcached, file cache flat out ignores it)
+	 */
 	public static function increment($key, $timeout = 3600)
 	{
-		$mc = Cache::getMC();
-		$mc->add($key, 0, 0, $timeout);
-		return $mc->increment($key);
+		$cache = Cache::getCache();
+		$cache->add($key, 0, 0, $timeout);
+		return $cache->increment($key);
 	}
 
+	/**
+	 * Decrement a value
+	 * 
+	 * @param $key
+	 * @param $timeout (This only works for Memcached, file cache flat out ignores it)
+	 */
 	public static function decrement($key, $timeout = 3600)
 	{
-		$mc = Cache::getMC();
-		$mc->add($key, 0, $timeout);
-		return $mc->decrement($key);
+		$cache = Cache::getCache();
+		$cache->add($key, 0, $timeout);
+		return $cache->decrement($key);
 	}
 }
