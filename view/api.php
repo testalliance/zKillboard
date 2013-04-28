@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-scrapeCheck();
+//scrapeCheck();
 
 $parameters = Util::convertUriToParameters();
 
@@ -38,6 +38,7 @@ $app->etag(md5(serialize($return)));
 $app->expires("+1 hour");
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET");
+
 if(isset($parameters["xml"]))
 {
 	$app->contentType("text/xml; charset=utf-8");

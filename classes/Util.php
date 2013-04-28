@@ -218,7 +218,7 @@ class Util
 					break;
 				default:
 					if (is_numeric($value) && $value < 0) throw new Exception("$value is not a valid entry for $key");
-					if ($key != "" && $value != "") $parameters[$key] = $value;
+					if ($key != "") $parameters[$key] = $value;
 			}
 			$currentIndex++;
 		}
