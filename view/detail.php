@@ -207,43 +207,42 @@ function eftarray($md5, $items)
 					}
 					if($itm["flagName"] == "Mid Slots")
 					{
-                                                mid:
-                                                if(isset($eftarray["mid"][$itm["flag"]]))
-                                                {
-                                                        $itm["flag"] = $itm["flag"]+1;
-                                                        goto mid;
-                                                }
-
+						mid:
+						if(isset($eftarray["mid"][$itm["flag"]]))
+						{
+							$itm["flag"] = $itm["flag"]+1;
+							goto mid;
+						}
 						$eftarray["mid"][$itm["flag"]][] = array("typeName" => $itm["typeName"], "typeID" => $itm["typeID"]);
 					}
 					if($itm["flagName"] == "Low Slots")
 					{
-                                                low:
-                                                if(isset($eftarray["low"][$itm["flag"]]))
-                                                {
-                                                        $itm["flag"] = $itm["flag"]+1;
-                                                        goto low;
-                                                }
+						low:
+						if(isset($eftarray["low"][$itm["flag"]]))
+						{
+							$itm["flag"] = $itm["flag"]+1;
+							goto low;
+						}
 						$eftarray["low"][$itm["flag"]][] = array("typeName" => $itm["typeName"], "typeID" => $itm["typeID"]);
 					}
 					if($itm["flagName"] == "Rigs")
 					{
-                                                rigs:
-                                                if(isset($eftarray["rig"][$itm["flag"]]))
-                                                {
-                                                        $itm["flag"] = $itm["flag"]+1;
-                                                        goto rigs;
-                                                }
+						rigs:
+						if(isset($eftarray["rig"][$itm["flag"]]))
+						{
+							$itm["flag"] = $itm["flag"]+1;
+							goto rigs;
+						}
 						$eftarray["rig"][$itm["flag"]][] = array("typeName" => $itm["typeName"], "typeID" => $itm["typeID"]);
 					}
 					if($itm["flagName"] == "SubSystems")
 					{
-                                                subs:
-                                                if(isset($eftarray["sub"][$itm["flag"]]))
-                                                {
-                                                        $itm["flag"] = $itm["flag"]+1;
-                                                        goto subs;
-                                                }
+						subs:
+						if(isset($eftarray["sub"][$itm["flag"]]))
+						{
+							$itm["flag"] = $itm["flag"]+1;
+							goto subs;
+						}
 						$eftarray["sub"][$itm["flag"]][] = array("typeName" => $itm["typeName"], "typeID" => $itm["typeID"]);
 					}
 					$i++;
