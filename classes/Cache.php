@@ -18,7 +18,6 @@
 
 class Cache
 {
-	// i just want to make sure....
 	function Cache()
 	{
 		trigger_error('The class "cache" may only be invoked statically.', E_USER_ERROR);
