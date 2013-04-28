@@ -126,7 +126,7 @@ class FileCache
 		try
 		{
 			unlink($this->cacheDir.$key);
-			return self::setData($key, $value+1);
+			return self::setData($key, $data+1);
 		}
 		catch (Exception $e)
 		{
@@ -148,7 +148,7 @@ class FileCache
 		try
 		{
 			unlink($this->cacheDir.$key);
-			return self::setData($key, $value-1);
+			return self::setData($key, $data-1);
 		}
 		catch (Exception $e)
 		{
