@@ -310,7 +310,7 @@ class Kills
 		}
 
 		// Store the generated mail in cache
-		Cache::set($id, $mail, 604800);
+		Cache::set($killID, $mail, 604800);
 		return $mail;
 	}
 }
