@@ -15,8 +15,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * General stuff for getting kills and manipulating them
+ */
 class Kills
 {
+	/**
+	 * Gets killmails
+	 * 
+	 * @param $parameters an array of parameters to fetch mails for
+	 * @param $allTime gets all mails from the beginning of time or not
+	 * @return array
+	 */
 	public static function getKills($parameters = array(), $allTime = true)
 	{
 		$tables = array();
@@ -59,6 +70,12 @@ class Kills
 		return $merged;
 	}
 
+	/**
+	 * Gets details for kills
+	 * 
+	 * @param $kills
+	 * @return array
+	 */
 	public static function getKillsDetails($kills)
 	{
 		$merged = array();
@@ -81,6 +98,14 @@ class Kills
 		return $merged;
 	}
 
+	/**
+	 * Merges killmail arrays
+	 * 
+	 * @param $array1
+	 * @param $type
+	 * @param $array2
+	 * @return array
+	 */
 	private static function killMerge($array1, $type, $array2)
 	{
 		foreach ($array2 as $element) {
@@ -92,6 +117,12 @@ class Kills
 		return $array1;
 	}
 
+	/**
+	 * Gets details for a kill
+	 * 
+	 * @param $killID the killID of the kill you want details for
+	 * @return array
+	 */
 	public static function getKillDetails($killID)
 	{
 		$victim = Db::queryRow("select * from zz_participants where killID = :killID and isVictim = 1", array(":killID" => $killID));
@@ -111,6 +142,16 @@ class Kills
 		return array("info" => $kill, "victim" => $victim, "involved" => $infoInvolved, "items" => $infoItems);
 	}
 
+	/**
+	 * Merges two kill arrays together
+	 * 
+	 * @param $array1
+	 * @param $array2
+	 * @param $maxSize
+	 * @param $key
+	 * @param $id
+	 * @return array
+	 */
 	public static function mergeKillArrays($array1, $array2, $maxSize, $key, $id)
 	{
 		$maxSize = max(0, $maxSize);
@@ -123,5 +164,153 @@ class Kills
 			$resultArray[$killID] = $kill;
 		}
 		return $resultArray;
+	}
+
+	/**
+	 * Returns an array of the kill
+	 * 
+	 * @param $killID the ID of the kill
+	 * @return array
+	 */
+	public static function getArray($killID)
+	{
+		$jsonRaw = Db::queryField("SELECT kill_json FROM zz_killmails WHERE killID = :killID", "kill_json", array(":killID" => $killID));
+		$decode = json_decode($jsonRaw, true);
+		$killarray = Info::addInfo($decode);
+		return $killarray;
+	}
+
+	/**
+	 * Returns json of the kill
+	 * 
+	 * @param $killID the ID of the kill
+	 * @return json
+	 */
+	public static function getJson($killID)
+	{
+		$jsonRaw = Db::queryField("SELECT kill_json FROM zz_killmails WHERE killID = :killID", "kill_json", array(":killID" => $killID));
+		$killarray = Info::addInfo(json_decode($jsonRaw, true));
+		return json_encode($killarray);
+	}
+
+	/**
+	 * Returns a raw mail, that it gets from the getArray function
+	 * 
+	 * @static
+	 * @param $killID the ID of the kill
+	 * @return text
+	 */
+	public static function getRawMail($killID)
+	{
+		// Check if the mail has already been generated, then return it from the cache..
+		$Cache = Cache::get($killID);
+		if($Cache) return $Cache;
+
+		$k = self::getArray($killID);
+
+		$mail = $k["killTime"] . "\n";
+		$mail .= "\n";
+		$mail .= "Victim: " . $k["victim"]["characterName"] . "\n";
+		$mail .= "Corp: " . $k["victim"]["corporationName"] . "\n";
+		if (!isset($k["victim"]["allianceName"]) || $k["victim"]["allianceName"] == "")
+			$k["victim"]["allianceName"] = "None";
+		$mail .= "Alliance: " . $k["victim"]["allianceName"] . "\n";
+		if (!isset($k["victim"]["factionName"]) || $k["victim"]["factionName"] == "")
+			$k["victim"]["factionName"] = "None";
+		$mail .= "Faction: " . $k["victim"]["factionName"] . "\n";
+		if (!isset($k["victim"]["shipName"]) || $k["victim"]["shipName"] == "")
+			$k["victim"]["shipName"] = "None";
+		$mail .= "Destroyed: " . $k["victim"]["shipName"] . "\n";
+		if (!isset($k["solarSystemName"]) || $k["solarSystemName"] == "")
+			$k["solarSystemName"] = "None";
+		$mail .= "System: " . $k["solarSystemName"] . "\n";
+		if (!isset($k["solarSystemSecurity"]) || $k["solarSystemSecurity"] == "")
+			$k["solarSystemSecurity"] = (int) 0;
+		$mail .= "Security: " . $k["solarSystemSecurity"] . "\n";
+		if (!isset($k["victim"]["damageTaken"]) || $k["victim"]["damageTaken"] == "")
+			$k["victim"]["damageTaken"] = (int) 0;
+		$mail .= "Damage Taken: " . $k["victim"]["damageTaken"] . "\n\n";
+		if(isset($k["attackers"]))
+		{
+			$mail .= "Involved parties:\n\n";
+			foreach ($k["attackers"] as $inv)
+			{
+				if ($inv["finalBlow"] == 1)
+					$mail .= "Name: " . $inv["characterName"] . " (laid the final blow)\n";
+				else if (strlen($inv["characterName"]))
+					$mail .= "Name: " . $inv["characterName"] . "\n";
+				if (strlen($inv["characterName"])) $mail .= "Security: " . $inv["securityStatus"] . "\n";
+				$mail .= "Corp: " . $inv["corporationName"] . "\n";
+				if (!isset($inv["allianceName"]) || $inv["allianceName"] == "")
+					$inv["allianceName"] = "None";
+				$mail .= "Alliance: " . $inv["allianceName"] . "\n";
+				if (!isset($inv["factionName"]) || $inv["factionName"] == "")
+					$inv["factionName"] = "None";
+				$mail .= "Faction: " . $inv["factionName"] . "\n";
+				if (!isset($inv["shipName"]) || $inv["shipName"] == "")
+					$inv["shipName"] = "None";
+				$mail .= "Ship: " . $inv["shipName"] . "\n";
+				if (!isset($inv["weaponName"]) || $inv["weaponName"] == "")
+					$inv["weaponName"] = $inv["shipName"];
+				$mail .= "Weapon: " . $inv["weaponName"] . "\n";
+				$mail .= "Damage Done: " . $inv["damageDone"] . "\n\n";
+			}
+		}
+		$mail .= "\n";
+		$dropped = array();
+		$destroyed = array();
+		if (isset($k["items"]))
+		{
+			foreach ($k["items"] as $itm)
+			{
+				if ($itm["qtyDropped"] > 0) {
+					$asdf = "";
+					if ($itm["qtyDropped"] > 1)
+						$asdf = $itm["typeName"] . ", Qty: " . $itm["qtyDropped"];
+					else
+						$asdf = $itm["typeName"];
+					if (isset($itm["flagName"])) {
+						if ($itm["flagName"] == "Cargo")
+							$asdf = $asdf . " (Cargo)";
+						elseif ($itm["flagName"] == "Drone Bay")
+							$asdf = $asdf . " (Drone Bay)";
+						elseif ($itm["singleton"] == 2)
+							$asdf = $asdf . " (Copy)";
+					}
+					$dropped[] = $asdf;
+				}
+				if ($itm["qtyDestroyed"] > 0) {
+					$asdf = "";
+					if ($itm["qtyDestroyed"] > 1)
+						$asdf = $itm["typeName"] . ", Qty: " . $itm["qtyDestroyed"];
+					else
+						$asdf = $itm["typeName"];
+					if (isset($itm["flagName"])) {
+						if ($itm["flagName"] == "Cargo")
+							$asdf = $asdf . " (Cargo)";
+						elseif ($itm["flagName"] == "Drone Bay")
+							$asdf = $asdf . " (Drone Bay)";
+						elseif ($itm["singleton"] == 2)
+							$asdf = $asdf . " (Copy)";
+					}
+					$destroyed[] = $asdf;
+				}
+			}
+		}
+		if ($destroyed) {
+			$mail .= "Destroyed items:\n\n";
+			foreach ($destroyed as $items)
+				$mail .= $items . "\n";
+		}
+		$mail .= "\n";
+		if ($dropped) {
+			$mail .= "Dropped items:\n\n";
+			foreach ($dropped as $items)
+				$mail .= $items . "\n";
+		}
+
+		// Store the generated mail in cache
+		Cache::set($id, $mail, 604800);
+		return $mail;
 	}
 }
