@@ -164,14 +164,14 @@ function usdeurgbp($totalprice)
     $usdval = $plex / $usd;
     $eurval = $plex / $eur;
     $gbpval = $plex / $gbp;
-    
+
     return array("usd" => $totalprice / $usdval, "eur" => $totalprice / $eurval, "gbp" => $totalprice / $gbpval);
 }
 
 function eftarray($md5, $items)
 {
-	$Cache = Cache::get($md5."eftarray");
-	if ($Cache) return $Cache;
+//	$Cache = Cache::get($md5."eftarray");
+//	if ($Cache) return $Cache;
 
 	// EFT / Fitting Wheel
 	$eftarray["high"] = array(); // high
@@ -191,16 +191,63 @@ function eftarray($md5, $items)
 		{
 			if($itm["fittable"]) // not ammo or whatever
 			{
-				if($itm["flagName"] == "High Slots")
-					$eftarray["high"][$itm["flag"]][] = array("typeName" => $itm["typeName"], "typeID" => $itm["typeID"]);
-				if($itm["flagName"] == "Mid Slots")
-					$eftarray["mid"][$itm["flag"]][] = array("typeName" => $itm["typeName"], "typeID" => $itm["typeID"]);
-				if($itm["flagName"] == "Low Slots")
-					$eftarray["low"][$itm["flag"]][] = array("typeName" => $itm["typeName"], "typeID" => $itm["typeID"]);
-				if($itm["flagName"] == "Rigs")
-					$eftarray["rig"][$itm["flag"]][] = array("typeName" => $itm["typeName"], "typeID" => $itm["typeID"]);
-				if($itm["flagName"] == "SubSystems")
-					$eftarray["sub"][$itm["flag"]][] = array("typeName" => $itm["typeName"], "typeID" => $itm["typeID"]);
+				$repeats = $itm["qtyDropped"] + $itm["qtyDestroyed"];
+				$i = 0;
+				while($i < $repeats)
+				{
+					if($itm["flagName"] == "High Slots")
+					{
+						high:
+						if(isset($eftarray["high"][$itm["flag"]]))
+						{
+							$itm["flag"] = $itm["flag"]+1;
+							goto high;
+						}
+						$eftarray["high"][$itm["flag"]][] = array("typeName" => $itm["typeName"], "typeID" => $itm["typeID"]);
+					}
+					if($itm["flagName"] == "Mid Slots")
+					{
+                                                mid:
+                                                if(isset($eftarray["mid"][$itm["flag"]]))
+                                                {
+                                                        $itm["flag"] = $itm["flag"]+1;
+                                                        goto mid;
+                                                }
+
+						$eftarray["mid"][$itm["flag"]][] = array("typeName" => $itm["typeName"], "typeID" => $itm["typeID"]);
+					}
+					if($itm["flagName"] == "Low Slots")
+					{
+                                                low:
+                                                if(isset($eftarray["low"][$itm["flag"]]))
+                                                {
+                                                        $itm["flag"] = $itm["flag"]+1;
+                                                        goto low;
+                                                }
+						$eftarray["low"][$itm["flag"]][] = array("typeName" => $itm["typeName"], "typeID" => $itm["typeID"]);
+					}
+					if($itm["flagName"] == "Rigs")
+					{
+                                                rigs:
+                                                if(isset($eftarray["rig"][$itm["flag"]]))
+                                                {
+                                                        $itm["flag"] = $itm["flag"]+1;
+                                                        goto rigs;
+                                                }
+						$eftarray["rig"][$itm["flag"]][] = array("typeName" => $itm["typeName"], "typeID" => $itm["typeID"]);
+					}
+					if($itm["flagName"] == "SubSystems")
+					{
+                                                subs:
+                                                if(isset($eftarray["sub"][$itm["flag"]]))
+                                                {
+                                                        $itm["flag"] = $itm["flag"]+1;
+                                                        goto subs;
+                                                }
+						$eftarray["sub"][$itm["flag"]][] = array("typeName" => $itm["typeName"], "typeID" => $itm["typeID"]);
+					}
+					$i++;
+				}
 			}
 			else
 			{
