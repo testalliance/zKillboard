@@ -102,9 +102,9 @@ function xmlOut($output)
 	{
 		//first send the totals
 		$xml .= '<rowset name="totals" key="type" columns="type,destroyed,lost">';
-			$xml .= '<row type="count" destroyed="' . $output['totals']['countDestroyed'] . '" lost="' . $output['totals']['countLost'] . '" />';
-			$xml .= '<row type="points" destroyed="' . $output['totals']['pointsDestroyed'] . '" lost="' . $output['totals']['pointsLost'] . '" />';
-			$xml .= '<row type="isk" destroyed="' . $output['totals']['iskDestroyed'] . '" lost="' . $output['totals']['iskLost'] . '" />';
+			$xml .= '<row type="count" destroyed="' . (int) $output['totals']['countDestroyed'] . '" lost="' . (int) $output['totals']['countLost'] . '" />';
+			$xml .= '<row type="points" destroyed="' . (int) $output['totals']['pointsDestroyed'] . '" lost="' . (int) $output['totals']['pointsLost'] . '" />';
+			$xml .= '<row type="isk" destroyed="' . (float) $output['totals']['iskDestroyed'] . '" lost="' . (float) $output['totals']['iskLost'] . '" />';
 		$xml .= '</rowset>';
 			
 		//and now the groups
@@ -112,7 +112,7 @@ function xmlOut($output)
 		
 		foreach($output['groups'] as $group_id => $group_details)
 		{
-			$xml .= '<row groupID="' . $group_id . '" countDestroyed="' . $group_details['countDestroyed'] . '" countLost="' . $group_details['countLost'] . '" pointsDestroyed="' . $group_details['pointsDestroyed'] . '" pointsLost="' . $group_details['pointsLost'] . '" iskDestroyed="' . $group_details['iskDestroyed'] . '" iskLost="' . $group_details['iskLost'] . '" />';
+			$xml .= '<row groupID="' . (int) $group_id . '" countDestroyed="' . (int) $group_details['countDestroyed'] . '" countLost="' . (int) $group_details['countLost'] . '" pointsDestroyed="' . (int) $group_details['pointsDestroyed'] . '" pointsLost="' . (int) $group_details['pointsLost'] . '" iskDestroyed="' . (float) $group_details['iskDestroyed'] . '" iskLost="' . (float) $group_details['iskLost'] . '" />';
 		}
 		
 		$xml .= '</rowset>';
