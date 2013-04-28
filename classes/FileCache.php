@@ -29,7 +29,6 @@ class FileCache
 	var $cacheDir = "cache/queryCache/";
 	var $cacheTime = 300;
 
-
 	function __construct()
 	{
 		if(!is_dir($this->cacheDir))

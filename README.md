@@ -25,7 +25,7 @@ see `LICENSE.md` file
 - PHP 5.3+
 - Memcached
 - Apache + mod_rewrite or Lighttpd
-- Memcached
+- Memcached (This can omitted if you can survive a lot of cache files being created)
 - Linux, Mac OS X or Windows
 - MariaDB 5.5+ / MySQL 5.5+ (MariaDB is a drop-in replacement for MySQL, which is faster and better)
 - Composer 
