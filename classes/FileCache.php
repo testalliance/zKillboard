@@ -196,4 +196,23 @@ class FileCache
 		$data = $f[1];
 		return array("age" => $age, "data" => $data);
 	}
+
+	/**
+	 * Cleans up old and unused query cache files
+	 */
+	function cleanUp()
+	{
+		$dir = opendir($this->cacheDir);
+		while($file = readdir($dir))
+		{
+			$data = self::getData($file);
+			$age = $data["age"];
+			$time = time();
+			if($age <= $time)
+			{
+				echo "unlinking $file\n";
+				unlink($this->cacheDir.$file);
+			}
+		}
+	}
 }

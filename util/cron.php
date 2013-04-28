@@ -574,6 +574,8 @@ function minutely() {
 	Storage::store("KillsLastHour", $killsLastHour);
 	Domains::deleteDomainsFromCloudflare();
 	Domains::registerDomainsWithCloudflare();
+	$fc = new FileCache;
+	$fc->cleanUp();
 }
 
 function hourly() {
