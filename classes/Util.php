@@ -224,7 +224,6 @@ class Util
 			}
 			$currentIndex++;
 		}
-		var_dump($parameters);
 		return $parameters;
 	}
 
