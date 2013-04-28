@@ -15,24 +15,39 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * Parser for raw killmails from ingame EVE.
+ */
+
 class Parser
 {
+
+	/**
+	 * Parses a raw killmail, and spits out a nice pretty array.
+	 * 
+	 * @static
+	 * @param $rawMail - the raw killmail
+	 * @param $userID - the ID of the user who posted the raw mail
+	 * @return array
+	 */
+
 	public static function parseRaw($rawMail, $userID)
 	{
 		$errors = array();
 		$mail = trim(str_replace("\r", "", $rawMail));
 
+		// Translate the killmail from whatever language it is to english.. ~CCP~
 		$mail = self::Translate($mail);
 
+		// If the site is in maintenance mode, the parser shouldn't even run..
 		if (Util::isMaintenanceMode()) {
 			$errors[] = "The site is currently in maintenance mode.  Manual posts are not accepted at the moment.";
 		}
 
+		// Fix a faction name that was previously set as an alliance
 		if (Bin::get("FixFaction", false)) {
 			$mail = str_ireplace("Alliance: Federation Navy", "Faction: Gallente Federation", $mail);
-			//$mail = str_ireplace("Alliance: Federation Navy", "Faction: Federation Navy", $mail);
-			//$mail = str_ireplace("Alliance: Federation Navy", "Faction: Federation Navy", $mail);
-			//$mail = str_ireplace("Alliance: Federation Navy", "Faction: Federation Navy", $mail);
 		}
 
 		// Fix unicode and random CCP localization problems.
@@ -45,6 +60,7 @@ class Parser
 		$timestamp = str_replace(".", "-", $timestamp);
 		$timestamp .= ":00";
 
+		// Make sure there is a time stamp
 		if (!$timestamp)
 			$errors[] = "No timestamp, probably not even a killmail";
 
@@ -57,6 +73,7 @@ class Parser
 			return array("error" => $errors);
 		}
 
+		// Initialize the main array that we will be inserting stuff to.
 		$killMail = array(
 			"killID" => 0,
 			"solarSystemID" => 0,
@@ -290,12 +307,7 @@ class Parser
 							default: $flag = 0;
 						}
 					}
-					/*if ($flagSlot === null) {
-					// Perhaps this is ammo, check for a launcher group
-					$launcherGroupID = Db::queryField("select coalesce(valueInt, valueFloat) groupID from ccp_dgmTypeAttributes where typeID = 31790 and attributeID = 137", "groupID", array(":typeID" => $typeID));
-					$flagSlot = Db::queryField("select distinct e.effectID effectID from ccp_invTypes i left join ccp_invGroups g on (i.groupID = g.groupID) left join ccp_dgmTypeEffects d on (d.typeID = i.typeID) left join ccp_dgmEffects e on (d.effectID = e.effectID) where g.groupID = 55 and e.effectID in (11, 12, 13, 2663, 3773)", "effectID", array(":groupID" => $launcherGroupID));
-					}*/
-					//if ($flagSlot === null) die("$typeID $value");
+
 					if ($flag == null) $flag = 5;
 					$item = self::createItem();
 					$item["typeID"] = $typeID;
@@ -314,13 +326,12 @@ class Parser
 		}
 		if ($currentAttacker != null) $killMail["attackers"][] = $currentAttacker;
 
-		//header("Content-Type: text/plain");
-		//print_r($killMail); die();
-		// Sanity Checks
-
+		// Check that stuff is actually sane, and not some made up shit..
 		// Victim must have a valid characterID and corporationID
+
 		if ($killMail["victim"]["shipTypeID"] == 0) $errors[] = "Invalid destroyed ship.";
-		else {
+		else 
+		{
 			$victimGroupID = Info::getGroupID($killMail["victim"]["shipTypeID"]);
 			$noCharGroups = array(
 					311, // Refining Arrays
@@ -360,6 +371,7 @@ class Parser
 					1106, // Customs Office Gantry        
 					1012, // IHUBS
 					);
+
 			// Allow POS's, POS modules, ihub's and poco's, TCU, SBU
 			if (in_array($victimGroupID, $noCharGroups))  {  } // noop() - do nothing
 			else if ($killMail["victim"]["characterName"] == "" || $killMail["victim"]["characterID"] == 0)
@@ -390,6 +402,7 @@ class Parser
 
 		// There can be only one final blow
 		$finalBlowCount = 0;
+
 		// All attackers must have a valid characterID and corporationID (unless NPC)
 		// check for and deny NPC only mails
 		// check for and deny friendly corp mails
@@ -408,8 +421,8 @@ class Parser
 		//if ($victimCorpOnly) $errors[] = "Corp friendly killmail...  sorry, can't post those!";
 		if ($finalBlowCount > 1) $errors[] = "Too many attackers have the final blow.";
 
-		// TODO Determine value of kill, if >5b complain
-		if ($killValue >= 5000000000 && Bin::get("Disallow5bKills", true)) {
+		// If the kill is worth more than 5b isk, time to throw errors!
+		if ($killValue > 5000000000 && Bin::get("Disallow5bKills", true)) {
 			$errors[] = "Kills worth more than 5 billion ISK require API verification.";
 		}
 
@@ -420,15 +433,13 @@ class Parser
 			return array("error" => $errors);
 		}
 
-		//header("Content-Type: text/plain");
-		//print_r($killMail); die();
-
 		// Insert ignore allows us to "pretend" to insert dupes
 		Db::execute("insert ignore into zz_manual_mails (hash, rawText) values (:hash, :rawText)", array(":hash" => $hash, ":rawText" => $rawMail));
 		// Look up the manualKillID from the hash (good for those dupe inserts)
 		$mKillID = Db::queryField("select mKillID from zz_manual_mails where hash = :hash order by mKillID desc limit 1", "mKillID", array(":hash" => $hash), 0);
 
-		$mKillID = -1 * $mKillID; // yes, manual mails have a negative numbers, cuz they're BAD
+		// yes, manual mails have a negative numbers, cuz they're BAD
+		$mKillID = -1 * $mKillID;
 
 		$killMail["killID"] = $mKillID;
 
@@ -448,6 +459,10 @@ class Parser
 
 	}
 
+	/**
+	 * Inititates the item array
+	 * @return array
+	 */
 	private static function createItem() {
 		return array(
 				"typeID" => 0,
@@ -458,6 +473,10 @@ class Parser
 				);
 	}
 
+	/**
+	 * Initiates the attacker array
+	 * @return array
+	 */
 	private static function createAttacker() {
 		return array(
 				"characterID" => 0,	
@@ -476,7 +495,11 @@ class Parser
 				);
 	}
 
-
+	/**
+	 * Translates a killmail
+	 * @param $mail the killmail that needs translation
+	 * @return text
+	 */
 	private static function Translate($mail)
 	{
 		// German!
