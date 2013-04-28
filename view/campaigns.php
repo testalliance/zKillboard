@@ -1,4 +1,5 @@
 <?php
+die("We haven't finished the campaign code yet - please come back later (and bring some beer)");
 
 switch($type)
 {

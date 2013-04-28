@@ -26,6 +26,7 @@ class irc_cleanapi implements ircCommand {
 	}
 
 	public function execute($nick, $uhost, $channel, $command, $parameters, $nickAccessLevel) {
+irc_error("|r|not today mufasa");
 		$removed = Db::execute("delete from zz_api where errorCode in (203, 220)");
 		$removed = number_format($removed, 0);
 		irc_out("APIs with errorCode 203 and 220 have been removed from the database.  Good riddance to |g|$removed|n| troublesome keys...");

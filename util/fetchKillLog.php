@@ -60,8 +60,10 @@ try {
 		Log::log("KeyID: $keyID ($charCorp) added $aff kill" . ($aff == 1 ? "" : "s"));
 	}
 } catch (Exception $ex) {
+	$errorCode = $ex->getCode();
+	Db::execute("update zz_api_characters set cachedUntil = date_add(now(), interval 1 hour), errorCode = :code where apiRowID = :id", array(":id" => $apiRowID, ":code" => $errorCode));
 	if ($ex->getCode() != 119 && $ex->getCode() != 120) 
 		Log::log($keyID . " " . $ex->getCode() . " " . $ex->getMessage());
-	handleApiException($keyID, $charID, $ex);
+	//handleApiException($keyID, $charID, $ex);
 	return;
 }

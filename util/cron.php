@@ -35,11 +35,11 @@ function handleApiException($keyID, $charID, $exception)
 	$cacheUntil = 0;
 	switch ($code) {
 		case 904:
-			$msg = "Error 904 detected using key $key";
+			$msg = "Error 904 detected using key $keyID";
 			Log::log($msg);
 			$msg = "|r|$msg";
-			Log::irc($msg);
-			Log::admin($msg);
+//			Log::irc($msg);
+//			Log::admin($msg);
 			break;
 		case 403:
 		case 502:

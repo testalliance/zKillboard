@@ -72,7 +72,7 @@ class Filters
 	{
 		global $subDomainRow;
 		$excludeSubdomain = @$parameters["excludeSubdomain"] == true;
-		Filters::addSubDomainToFilter($parameters, $excludeSubdomain);
+		//Filters::addSubDomainToFilter($parameters, $excludeSubdomain);
 
 		// zz_participants filters
 		$participants = "zz_participants p";
@@ -161,7 +161,7 @@ class Filters
 			$tables[] = $participants;
 			$whereClauses[] = "p.isVictim = '1'";
 		}
-		else if ($kills) { //|| sizeof($whereClauses)) { /* Removed this part, because when the whereClauses was set (which it is, if you add any sort of parameter) it'd default to only kills. Which was not expected behaviour.*/
+		else if ($kills) {
 			$tables[] = $participants;
 			$whereClauses[] = "p.isVictim = '0'";
 		}

@@ -57,7 +57,7 @@ if (!is_numeric($id))
 
 if ($id <= 0) $app->notFound();
 
-$parameters = Util::convertUriToParameters();
+$parameters = Util::convertUriToParameters($subDomainRow);
 @$page = max(1, $parameters["page"]);
 
 global $loadGroupShips; // Can't think of another way to do this just yet
