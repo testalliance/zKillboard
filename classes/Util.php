@@ -216,12 +216,15 @@ class Util
 					$value = (int) $value;
 					if ($value < 200) $parameters["limit"] = $value;
 					break;
+				case "xml":
+					$value = true;
 				default:
 					if (is_numeric($value) && $value < 0) throw new Exception("$value is not a valid entry for $key");
-					if ($key != "") $parameters[$key] = $value;
+					if ($key != "" && $value != "") $parameters[$key] = $value;
 			}
 			$currentIndex++;
 		}
+		var_dump($parameters);
 		return $parameters;
 	}
 
