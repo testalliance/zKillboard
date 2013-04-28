@@ -170,8 +170,8 @@ function usdeurgbp($totalprice)
 
 function eftarray($md5, $items)
 {
-	$memcached = Memcached::get($md5."eftarray");
-	if ($memcached) return $memcached;
+	$Cache = Cache::get($md5."eftarray");
+	if ($Cache) return $Cache;
 
 	// EFT / Fitting Wheel
 	$eftarray["high"] = array(); // high
@@ -226,14 +226,14 @@ function eftarray($md5, $items)
 			$eftarray[$key] = $value;
 		} else unset($eftarray[$key]);
 	}
-	Memcached::set($md5."eftarray", $eftarray);
+	Cache::set($md5."eftarray", $eftarray);
 	return $eftarray;
 }
 
 function combineditems($md5, $items)
 {
-	$memcached = Memcached::get($md5."combineditems");
-	if($memcached) return $memcached;
+	$Cache = Cache::get($md5."combineditems");
+	if($Cache) return $Cache;
 
 	// Create the new item array with combined items and whatnot
 	$itemList = array();
@@ -258,7 +258,7 @@ function combineditems($md5, $items)
 			}
 		}
 	}
-	Memcached::set($md5."combineditems", $itemList);
+	Cache::set($md5."combineditems", $itemList);
 	return $itemList;
 }
 
@@ -273,8 +273,8 @@ function buildItemKey($itm) {
 
 function involvedCorpsAndAllis($md5, $involved)
 {
-	$memcached = Memcached::get($md5."involvedCorpsAndAllis");
-	if($memcached) return $memcached;
+	$Cache = Cache::get($md5."involvedCorpsAndAllis");
+	if($Cache) return $Cache;
 
 	$involvedAlliCount = 0;
 	$involvedCorpCount = 0;
@@ -313,7 +313,7 @@ function involvedCorpsAndAllis($md5, $involved)
 		$invAll["$id"]["corporations"] = $corps;
 	}
 	if ($involvedCorpCount <= 1 && $involvedAlliCount <= 1) $invAll = array();
-	Memcached::set($md5."involvedCorpsAndAllis", $invAll);
+	Cache::set($md5."involvedCorpsAndAllis", $invAll);
 	return $invAll;
 }
 
@@ -323,12 +323,12 @@ function involvedSort($field1, $field2) {
 }
 
 function droppedIsk($md5, $items) {
-	$memcached = Memcached::get($md5."droppedisk");
-	if($memcached) return $memcached;
+	$Cache = Cache::get($md5."droppedisk");
+	if($Cache) return $Cache;
 
 	$droppedisk = 0;
 	foreach($items as $dropped) $droppedisk += $dropped["price"] * $dropped["qtyDropped"];
 
-	Memcached::set($md5."droppedisk", $droppedisk);
+	Cache::set($md5."droppedisk", $droppedisk);
 	return $droppedisk;
 }

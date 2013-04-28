@@ -35,8 +35,8 @@ class EPIC
 
 	public static function getMail($id)
 	{
-		$memcached = Memcached::get($id);
-		//if($memcached) return $memcached;
+		$Cache = Cache::get($id);
+		//if($Cache) return $Cache;
 
 		$k = self::getArray($id);
 		$kill = Kills::getKillDetails($id);
@@ -141,7 +141,7 @@ class EPIC
 			foreach ($dropped as $items)
 				$mail .= $items . "\n";
 		}
-		Memcached::set($id, $mail, 604800);
+		Cache::set($id, $mail, 604800);
 		return $mail;
 	}
 }

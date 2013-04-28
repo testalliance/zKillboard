@@ -130,7 +130,7 @@ class Db
 			if ($result !== FALSE) return $result;
 
 			// Second, check MemCache
-			$result = Memcached::get($key);
+			$result = Cache::get($key);
 			if ($result !== FALSE) return $result;
 		}
 
@@ -149,7 +149,7 @@ class Db
 
 		if ($cacheTime > 0) {
 			Bin::set($key, $result);
-			if (!Memcached::set($key, $result, min(3600, $cacheTime))) Log::log("Unable to properly store result in memcache");
+			if (!Cache::set($key, $result, min(3600, $cacheTime))) Log::log("Unable to properly store result in memcache");
 		}
 		if ($duration > 5000) Db::log($query, $params, $duration);
 

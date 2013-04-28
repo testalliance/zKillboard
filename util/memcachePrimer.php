@@ -33,6 +33,6 @@ function storeResult($result, $query, $paramName, $keyColumn, $valueColumn) {
         $params = array("$paramName" => $keyValue);
         $result = array(array("$valueColumn" => $valueValue));
         $key = Db::getKey($query, $params);
-        Memcached::set($key, $result, 3 * 3600);
+        Cache::set($key, $result, 3 * 3600);
     }
 }

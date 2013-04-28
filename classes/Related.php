@@ -23,7 +23,7 @@ class Related
 		if ($kills == null || !is_array($kills) || sizeof($kills) == 0) return array();
 
 		$key = "related:$key";
-		$mc = Memcached::get($key);
+		$mc = Cache::get($key);
 		//if ($mc) return $mc;
 
 		// Determine which entity got on the most killmails

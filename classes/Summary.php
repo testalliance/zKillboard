@@ -62,7 +62,7 @@
 		private static function getSummary($type, $column, &$data, $id, $parameters = array())
 		{
 			$key = "summary:$type:$column:$id:" . json_encode($parameters);
-			$mc = Memcached::get($key);
+			$mc = Cache::get($key);
 			if ($mc) return $mc;
 
 			global $subDomain;
@@ -121,7 +121,7 @@
 			$data["stats"] = $infoStats;
 			if ($rank != null && $recentRank != null) $rank["recentRank"] = $recentRank;
 			if ($rank != null) $data["ranks"] = $rank;
-			Memcached::set($key, $data, 300);
+			Cache::set($key, $data, 300);
 			return $data;
 		}
 
@@ -135,7 +135,7 @@
 			if ($kills == null || !is_array($kills) || sizeof($kills) == 0) return array();
 
 			$key = "related:$key";
-			$mc = Memcached::get($key);
+			$mc = Cache::get($key);
 			//if ($mc) return $mc;
 
 			$teamAKills = array();
@@ -192,7 +192,7 @@
 					$retValue["teamA"] = $temp;
 					}*/
 
-			Memcached::set($key, $retValue, 300);
+			Cache::set($key, $retValue, 300);
 			return $retValue;
 		}
 

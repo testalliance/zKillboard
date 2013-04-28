@@ -289,7 +289,7 @@ class Util
 			if (strpos($ip, $validScraper) !== false) $isValidScraper = true;
 		}
 		if ($isValidScraper == false) {
-			$session = Memcached::get("session_$ip");
+			$session = Cache::get("session_$ip");
 			if ($session == null) {
 				$session = array("accesses" => array());
 			}
@@ -299,7 +299,7 @@ class Util
 			}
 			$session["accesses"][] = time();
 			$session["last_access"] = time();
-			Memcached::set("session_$ip", $session, $timeLimit + $oldAccess);
+			Cache::set("session_$ip", $session, $timeLimit + $oldAccess);
 			if (sizeof($session["accesses"]) - $oldAccess >= 10 || sizeof($session["accesses"]) > $numAccesses ) {
 				Log::log("$ip has hit the scrape limit, adding them to the naughty list.");
 				throw new Exception("Hammering the API isn't very nice.  Please keep your requests $timeLimit seconds apart.  Thank you.");

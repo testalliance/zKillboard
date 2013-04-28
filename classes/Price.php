@@ -107,12 +107,12 @@ class Price
 		} else {
 			$eveCentralApi = "http://api.eve-central.com/api/marketstat?typeid=$typeID";
 		}
-		$result = Memcached::get($eveCentralApi);
+		$result = Cache::get($eveCentralApi);
 		if ($result === FALSE) {
 			try {
 				Util::getPheal();
 				$result = Pheal::request_http_curl($eveCentralApi, array());
-				Memcached::set($eveCentralApi, $result, 600);
+				Cache::set($eveCentralApi, $result, 600);
 			} catch (Exception $ex) {
 				return 0;
 			}
