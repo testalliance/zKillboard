@@ -778,14 +778,21 @@
 
 		public static function getSlotCounts($shipTypeID)
 		{
-			$result = Db::query("select attributeID, valueInt from ccp_dgmTypeAttributes where typeID = :typeID and attributeID in (12, 13, 14, 1137)",
+			$result = Db::query("select attributeID, valueInt, valueFloat from ccp_dgmTypeAttributes where typeID = :typeID and attributeID in (12, 13, 14, 1137)",
 													array(":typeID" => $shipTypeID), 86400);
 			$slotArray = array();
 			foreach ($result as $row) {
-				if ($row["attributeID"] == 12) $slotArray["lowSlotCount"] = $row["valueInt"];
-				else if ($row["attributeID"] == 13) $slotArray["midSlotCount"] = $row["valueInt"];
-				else if ($row["attributeID"] == 14) $slotArray["highSlotCount"] = $row["valueInt"];
-				else if ($row["attributeID"] == 1137) $slotArray["rigSlotCount"] = $row["valueInt"];
+				if($row["valueInt"] == NULL && $row["valueFloat"] != NULL)
+					$value = $row["valueFloat"];
+				elseif($row["valueInt"] != NULL && $row["valueFloat"] == NULL)
+					$value = $row["valueInt"];
+				else
+					$value = NULL;
+
+				if ($row["attributeID"] == 12) $slotArray["lowSlotCount"] = $value;
+				else if ($row["attributeID"] == 13) $slotArray["midSlotCount"] = $value;
+				else if ($row["attributeID"] == 14) $slotArray["highSlotCount"] = $value;
+				else if ($row["attributeID"] == 1137) $slotArray["rigSlotCount"] = $value;
 			}
 			return $slotArray;
 		}
