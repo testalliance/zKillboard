@@ -170,8 +170,8 @@ function usdeurgbp($totalprice)
 
 function eftarray($md5, $items)
 {
-//	$Cache = Cache::get($md5."eftarray");
-//	if ($Cache) return $Cache;
+	$Cache = Cache::get($md5."eftarray");
+	if ($Cache) return $Cache;
 
 	// EFT / Fitting Wheel
 	$eftarray["high"] = array(); // high
