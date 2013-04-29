@@ -22,7 +22,7 @@ class Primer
 	{
 		Db::execute("set session wait_timeout = 120");
 
-		self::storeResult(Db::query("select * from zz_characters", array(), 0), "select name from zz_characters where characterID = :id", ":id", "characterID", "name");
+		self::storeResult(Db::query("select c.* from zz_characters c left join zz_participants p on (c.characterID = p.characterID) where dttm > date_sub(now(), interval 5 day) group by characterID", array(), 0), "select name from zz_characters where characterID = :id", ":id", "characterID", "name");
 		self::storeResult(Db::query("select * from zz_corporations", array(), 0), "select name from zz_corporations where corporationID = :id", ":id", "corporationID", "name");
 		self::storeResult(Db::query("select * from zz_alliances", array(), 0), "select name from zz_alliances where allianceID = :id", ":id", "allianceID", "name");
 		self::storeResult(Db::query("select * from ccp_invTypes", array(), 0), "select typeName from invTypes where typeID = :typeID", ":typeID", "typeID", "typeName");
