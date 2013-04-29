@@ -23,12 +23,23 @@ see `LICENSE.md` file
 
 ## Dependencies
 - PHP 5.3+
-- Memcached
 - Apache + mod_rewrite or Lighttpd
-- Memcached (This can omitted if you can survive a lot of cache files being created)
 - Linux, Mac OS X or Windows
-- MariaDB 5.5+ / MySQL 5.5+ (MariaDB is a drop-in replacement for MySQL, which is faster and better)
-- Composer 
+- MariaDB 5.5+ (MySQL 5.5+ might work, but isn't strictly supported, since some tables are in the Aria format)
+- Composer
+- APC or Memcached isn't strictly required, but APC or Memcached is highly recommended
+
+## Lighttpd rewrite
+```
+	url.redirect = (
+		"/?a=kill_detail&kll_id=([0-9]+)" => "/evekilldetailintercept/$1/",
+		"/?a=kill_related&kll_id=([0-9]+)" => "/evekillrelatedintercept/$1/"
+	)
+	
+	url.rewrite-if-not-file = (
+		"(.*)" => "/index.php/$0"
+	)
+```
 
 ## Installation
 Installation is currently command line only on linux consoles. Other methods are currently not supported.
