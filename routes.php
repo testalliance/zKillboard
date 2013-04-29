@@ -211,8 +211,12 @@ $app->get("/evekillrelatedintercept/:id/", function($id) use ($app) {
 	include( "view/evekillrelatedintercept.php" );
 });
 
+$app->get("/primer/", function() use ($app) {
+    echo IP::get();
+    Primer::cachePrimer();
+});
+
 // The Overview stuff
 $app->get("/:input+/", function($input) use ($app) {
 	include("view/overview.php");
 });
-
