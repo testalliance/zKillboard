@@ -149,7 +149,7 @@ class Db
 
 		if ($cacheTime > 0) {
 			Bin::set($key, $result);
-			if (!Cache::set($key, $result, min(3600, $cacheTime))) Log::log("Unable to properly store result in memcache");
+			Cache::set($key, $result, min(3600, $cacheTime));
 		}
 		if ($duration > 5000) Db::log($query, $params, $duration);
 
