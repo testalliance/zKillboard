@@ -212,8 +212,9 @@ $app->get("/evekillrelatedintercept/:id/", function($id) use ($app) {
 });
 
 $app->get("/primer/", function() use ($app) {
-    echo IP::get();
-    Primer::cachePrimer();
+    set_time_limit(0);
+    if(IP::get() == "82.221.99.218")
+        Primer::cachePrimer();
 });
 
 // The Overview stuff
