@@ -62,7 +62,6 @@ $(document).ready(function() {
 });
 
 function updateKillsLastHour() {
-	return;
 	$("#lasthour").load("/killslasthour/");
 	setTimeout(updateKillsLastHour, 60000);
 }
