@@ -2,11 +2,9 @@
 zKillboard is a killboard created for EVE-Online, for use on EVE-KILL.net, but can also be used for single entities.
 
 ## Credits
-zKillboard is released under the GNU Affero General Public License, version 3. You can see the full license text in the `AGPL.d` file.
-
-zKillboard uses data and images from EVE-Online. CCPs license for these files and data is located in the `CCP.md` file.
-
-zKillboard uses various 3rd party libraries, which all carry their own licensing. Please refer to them for more info.
+zKillboard is released under the GNU Affero General Public License, version 3. The full license is available in the `AGPL.md` file.
+zKillboard also uses data and images from EVE-Online, which is covered by a seperate license from [CCP](http://www.ccpgames.com/en/home). You can see the full license in the `CCP.md` file.
+It also uses various 3rd party libraries, which all carry their own licensing. Please refer to them for more info.
 
 ## WARNING
 This is BETA, which means it is a work in progress.  It lacks documentation and is currently
@@ -31,15 +29,26 @@ see `LICENSE.md` file
 
 ## Lighttpd rewrite
 ```
-	url.redirect = (
-		"/?a=kill_detail&kll_id=([0-9]+)" => "/evekilldetailintercept/$1/",
-		"/?a=kill_related&kll_id=([0-9]+)" => "/evekillrelatedintercept/$1/"
-	)
-	
-	url.rewrite-if-not-file = (
-		"(.*)" => "/index.php/$0"
-	)
+url.redirect = (
+	"/?a=kill_detail&kll_id=([0-9]+)" => "/evekilldetailintercept/$1/",
+	"/?a=kill_related&kll_id=([0-9]+)" => "/evekillrelatedintercept/$1/"
+)
+
+url.rewrite-if-not-file = (
+	"(.*)" => "/index.php/$0"
+)
 ```
+
+## Apache rewrite
+Apache rewrite is handled by the .htaccess, located in the /public directory.
+
+## Recommended
+- PHP 5.3+
+- Linux
+- MariaDB 5.5+
+- Composer
+- APC
+- Twig PHP Plugin (Available for compiling after vendor stuff is downloaded. under vendor/twig/twig/ext/twig/)
 
 ## Installation
 Installation is currently command line only on linux consoles. Other methods are currently not supported.
