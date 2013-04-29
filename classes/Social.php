@@ -24,7 +24,7 @@ class Social
 		$timer = new Timer();
 		$locker = "Social:lastSocialTime";
 		$now = time();
-		$lastSocialTime = Storage::retrieve($locker, (time() - (12 * 3600)));
+		$lastSocialTime = Storage::retrieve($locker, (time() - (24 * 3600)));
 		$result = Db::query("select killID, unix_timestamp(insertTime) insertTime from zz_killmails where killID > 0 and processed = 1 and insertTime > from_unixtime(:last) order by insertTime", array(":last" => $lastSocialTime), 0);
 		foreach ($result as $row) {
 			$lastSocialTime = $row["insertTime"];
@@ -53,7 +53,8 @@ class Social
 		if ($count != 0) return;
 
 		// Get victim info
-		$victimInfo = Db::queryRow("select * from zz_participants where killID = :killID and isVictim = 1", array(":killID" => $killID));
+		$victimInfo = Db::queryRow("select * from zz_participants where killID = :killID and isVictim = 1 and dttm > date_sub(now(), interval 1 day)", array(":killID" => $killID));
+		if ($victimInfo == null) return;
 		$totalPrice = $victimInfo["total_price"];
 		$dttm = $victimInfo["dttm"];
 		$time = strtotime($dttm);
@@ -62,7 +63,6 @@ class Social
 			// Check the minimums, min. price and happened in last 12 hours
 			if ($totalPrice < $ircMin) return;
 		}
-		if ($time > (time() - (24*3600))) continue;
 
 		Info::addInfo($victimInfo);
 		$emizeko = Db::queryField("select count(1) count from zz_participants where characterID = 1389468720 and killID = $killID and isVictim = 0", "count");
@@ -86,11 +86,9 @@ class Social
 		$twit = "";
 		if ($totalPrice >= $twitMin) {
 			$message .= " #tweetfleet #eveonline";
-			$twit = Twit::sendMessage($message);
-			//print_r($twit);
-			//$twit = "https://twitter.com/eve_kill/status/$twit";
-			//Log::irc("Message was also tweeted: |g|$twit");
-			Log::irc("Message was also tweeted: |g|");
+			$return = Twit::sendMessage($message);
+			$twit = "https://twitter.com/eve_kill/status/" . $return->id;
+			Log::irc("Message was also tweeted: |g|$twit");
 		}
 	}
 }
