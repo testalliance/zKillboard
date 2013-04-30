@@ -179,7 +179,6 @@ $app->get("/chart/:chartID/", function($chartID) use ($app) {
 
 // Kills in the last hour
 $app->get("/killslasthour/", function() use ($app) {
-	die("-9,000,000");
     echo number_format(Storage::retrieve("KillsLastHour", null));
 });
 
