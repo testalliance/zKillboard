@@ -214,6 +214,12 @@ class Util
 					if (($value / 86400) > 7) throw new Exception("pastSeconds is limited to a max of 7 days");
 					$parameters[$key] = $value;
 					break;
+				case "startTime":
+				case "endTime":
+					$time = strtotime($value);
+					if($time < 0) throw new Exception("$value is not a valid time format");
+					$parameters[$key] = $value;
+					break;
 				case "limit":
 					$value = (int) $value;
 					if ($value < 200) $parameters["limit"] = $value;

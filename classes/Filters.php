@@ -114,13 +114,13 @@ class Filters
 			$time = $parameters["startTime"];
 			$unixTime = strtotime($time);
 			$tables[] = "zz_participants p";
-			$whereClauses[] = "p.dttm >= '" . date((int)$unixTime) . "'";
+			$whereClauses[] = "p.dttm >= '" . date("Y-m-d H:i:s", (int)$unixTime) . "'";
 		}
 		if (array_key_exists("endTime", $parameters)) {
 			$time = $parameters["endTime"];
 			$unixTime = strtotime($time);
 			$tables[] = "zz_participants p";
-			$whereClauses[] = "p.dttm <= '" . date((int)$unixTime) . "'";
+			$whereClauses[] = "p.dttm <= '" . date("Y-m-d H:i:s", (int)$unixTime) . "'";
 		}
 
 		if (array_key_exists("pastSeconds", $parameters)) {
