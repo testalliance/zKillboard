@@ -25,7 +25,7 @@ class Social
 		$locker = "Social:lastSocialTime";
 		$now = time();
 		$lastSocialTime = Storage::retrieve($locker, (time() - (24 * 3600)));
-		$result = Db::query("select killID, unix_timestamp(insertTime) insertTime from zz_killmails where killID > 0 and processed = 1 and insertTime > from_unixtime(:last) order by insertTime", array(":last" => $lastSocialTime), 0);
+		$result = Db::query("select killID, unix_timestamp(insertTime) insertTime from zz_killmails where killID > 0 and processed = 1 and insertTime >= from_unixtime(:last) order by insertTime", array(":last" => $lastSocialTime), 0);
 		foreach ($result as $row) {
 			$lastSocialTime = $row["insertTime"];
 			Social::beSocial($row["killID"]);
