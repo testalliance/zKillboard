@@ -182,9 +182,11 @@ class Util
 				case "factionID":
 				case "ship":
 				case "shipID":
+				case "shipTypeID":
 				case "group":
 				case "groupID":
 				case "system":
+				case "solarSystemID":
 				case "systemID":
 				case "region":
 				case "regionID":
