@@ -29,6 +29,8 @@ class irc_api implements ircCommand {
 		$keyIDs = array();
 		$entity = implode(" ", $parameters);
 		switch ($entity) {
+			case "status":
+			case "stats":
 			case "errors":
 				$codes = Db::query("select errorCode, count(*) count from zz_api group by 1 order by 1", array(), 0);
 				$output = "API base:";
@@ -38,7 +40,6 @@ class irc_api implements ircCommand {
 				$output = "API characters:";
 				foreach($codes as $row)	$output .= " |n|| |r|" . $row["errorCode"] . ": |g|" . $row["count"];
 				irc_out($output);
-			case "stats":
 				$log = Db::query("select substring(errorCode, 1, 3) error, count(*) count from zz_api_log where requestTime >= date_sub(now(), interval 1 hour) group by 1");
 				$sum = 0;
 				$errorSum = 0;
