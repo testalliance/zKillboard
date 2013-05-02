@@ -704,7 +704,6 @@ function updateCorporations() {
 					array(":id" => $id, ":name" => $name, ":ticker" => $ticker, ":memberCount" => $memberCount, ":ceoID" => $ceoID, ":dscr" => $dscr));
 
 		} catch (Exception $ex) {
-			print_r($ex);
 			Db::execute("update zz_corporations set lastUpdated = now() where corporationID = :id", array(":id" => $id));
 			if ($ex->getCode() != 503) Log::log("ERROR Validating Corp $id: " . $ex->getMessage());
 		}
