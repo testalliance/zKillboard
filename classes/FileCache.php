@@ -51,7 +51,7 @@ class FileCache extends AbstractCache
 			$data = json_decode($data["data"], true);
 			if($age <= $time)
 			{
-				unlink($this->cacheDir.$key);
+				@unlink($this->cacheDir.$key);
 				return false;	
 			}
 			return $data;
@@ -86,7 +86,7 @@ class FileCache extends AbstractCache
 	{
 		if(file_exists($this->cacheDir.$key))
 		{
-			unlink($this->cacheDir.$key);
+			@unlink($this->cacheDir.$key);
 			if(self::setData($key, $value, $timeout) !== false)
 				return true;
 		}
@@ -104,7 +104,7 @@ class FileCache extends AbstractCache
 	{
 		try
 		{
-			unlink($this->cacheDir.$key);
+			@unlink($this->cacheDir.$key);
 		}
 		catch (Exception $e)
 		{
@@ -126,7 +126,7 @@ class FileCache extends AbstractCache
 
 		try
 		{
-			unlink($this->cacheDir.$key);
+			@unlink($this->cacheDir.$key);
 			return self::setData($key, $data+$step);
 		}
 		catch (Exception $e)
@@ -148,7 +148,7 @@ class FileCache extends AbstractCache
 
 		try
 		{
-			unlink($this->cacheDir.$key);
+			@unlink($this->cacheDir.$key);
 			return self::setData($key, $data-$step);
 		}
 		catch (Exception $e)
@@ -216,8 +216,7 @@ class FileCache extends AbstractCache
 			$time = time();
 			if($age <= $time)
 			{
-				echo "unlinking $file\n";
-				unlink($this->cacheDir.$file);
+				@unlink($this->cacheDir.$file);
 			}
 		}
 	}
