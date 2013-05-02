@@ -198,8 +198,8 @@ class FileCache extends AbstractCache
 	{
 		$data = file_get_contents($this->cacheDir.$key);
 		$f = explode("%", $data);
-		$age = $f[0];
-		$data = $f[1];
+		$age = array_shift($f);
+		$data = implode($f);
 		return array("age" => $age, "data" => $data);
 	}
 
