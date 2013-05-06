@@ -15,7 +15,11 @@
     {% if imageSize > 64 %}
 	<img src="{{ image_ship }}{{ field.shipTypeID }}_{{imageSize}}.png" height="{{actualSize}}" width="{{actualSize}}" class="eveimage img-rounded" alt="{{field.shipName}}"/>
     {% else %}
-	<img src="{{ image_item }}{{ field.shipTypeID }}_{{imageSize}}.png" height="{{actualSize}}" width="{{actualSize}}" class="eveimage img-rounded" alt="{{field.shipName}}"/>
+	{% if isDelayed %}
+		<img src="#" data-src="{{ image_item }}{{ field.shipTypeID }}_{{imageSize}}.png" height="{{actualSize}}" width="{{actualSize}}" class="delayed eveimage img-rounded" alt="{{field.shipName}}"/>
+	{% else %}
+		<img src="{{ image_item }}{{ field.shipTypeID }}_{{imageSize}}.png" height="{{actualSize}}" width="{{actualSize}}" class="eveimage img-rounded" alt="{{field.shipName}}"/>
+	{% endif %}
     {% endif %}
     </a>
 {% endif %}

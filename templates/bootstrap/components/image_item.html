@@ -15,6 +15,10 @@
 {% else %}
 <a href="/item/{{typeID}}/" rel='tooltip' title='{{typeName}}'>
 {% endif %}
-	<img class="{{eveImage}}img-rounded" src="{{ image_item }}{{typeID}}_{{imageSize}}.png" width="{{actualSize}}" height="{{actualSize}}" alt="{{ typeName }}">
+	{% if isDelayed %}
+		<img class="{{eveImage}}img-rounded delayed" src="#" data-src="{{ image_item }}{{typeID}}_{{imageSize}}.png" width="{{actualSize}}" height="{{actualSize}}" alt="{{ typeName }}">
+	{% else %}
+		<img class="{{eveImage}}img-rounded" src="{{ image_item }}{{typeID}}_{{imageSize}}.png" width="{{actualSize}}" height="{{actualSize}}" alt="{{ typeName }}">
+	{% endif %}
 </a>
 {% endif %}
