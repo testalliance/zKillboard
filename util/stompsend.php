@@ -41,15 +41,16 @@ for ($i = 0; $i < 11; $i++) {
 		if(!empty($kill["kill_json"]))
 		{
 			if($kill["killID"] > 0)
+			{
 				$stomp->send($destinations, $kill["kill_json"]);
-
+			}
 			// Send out stuff for the live starmap
 			$data = json_decode($kill["kill_json"], true);
 			$json = json_encode(array("solarSystemID" => $data["solarSystemID"], "killID" => $data["killID"], "shipTypeID" => $data["victim"]["shipTypeID"], "killTime" => $data["killTime"]));
 			$stomp->send("/topic/starmap.systems.active", $json);
 		}
 	}
-	//if(sizeof($result) > 0) Log::log("Sent out " . sizeof($result) . " killmails via stomp (Including pings to the starmap) (Count includes manual mails, but only killIDs LARGER than 0 (api) is sent to all the stomp routes)");
+	if(sizeof($result) > 0) Log::log("Stomped " . sizeof($result) . " killmails");
 	sleep(5);
 }
 
