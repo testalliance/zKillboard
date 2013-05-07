@@ -4,4 +4,4 @@ vendor/
 /composer.phar
 /composer.lock
 *.sublime*
-lighttpd.conf
+.lighttpd.conf
