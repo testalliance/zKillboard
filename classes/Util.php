@@ -312,6 +312,7 @@ class Util
 				Log::log("$ip has hit the scrape limit, adding them to the naughty list.");
 				header("Retry-After: " . ($timeLimit + $oldAccess + 1));
 				header('HTTP/1.0 403 Forbidden');
+				die();
 			}
 		}
 	}
