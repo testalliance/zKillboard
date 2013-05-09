@@ -310,7 +310,8 @@ class Util
 			Cache::set("session_$ip", $session, $timeLimit + $oldAccess);
 			if (sizeof($session["accesses"]) - $oldAccess >= 10 || sizeof($session["accesses"]) > $numAccesses ) {
 				Log::log("$ip has hit the scrape limit, adding them to the naughty list.");
-				throw new Exception("Hammering the API isn't very nice.  Please keep your requests $timeLimit seconds apart.  Thank you.");
+				header("Retry-After: " . ($timeLimit + $oldAccess + 1));
+				header('HTTP/1.0 403 Forbidden');
 			}
 		}
 	}
