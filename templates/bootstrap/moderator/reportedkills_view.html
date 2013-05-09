@@ -1,3 +1,5 @@
+<strong><a href="/detail/{{ info.ticket.0.killID }}/" target="_blank">KillID: {{ info.ticket.0.killID }}</a></strong>
+<hr/>
 <table><tr><td><form name="statusform" method="post" action="/moderator/reportedkills/{{ id }}/">
 	{% if info.ticket.0.status != 0 %}
 	<input id="status" name="status" value="0" type="hidden">
