@@ -90,6 +90,6 @@ Till then, clone this repo, and install it like any other php module
 
 The stomp service is read only, and might very well be moved some place else, nothing is certain with this.
 So do not use the stomp service for anything super important, not yet!
-- Stomp server: tcp://82.221.99.197:61613
+- Stomp server: tcp://stomp.zkillboard.com:61613
 - Stomp user: guest
 - Stomp pass: guest
