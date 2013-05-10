@@ -31,7 +31,8 @@ foreach ($result as $row) {
 Db::execute("set session wait_timeout = 600");
 if (!Util::isMaintenanceMode()) {
 	Db::execute("replace into zz_storage values ('maintenance', 'true')");
-	Log::log("Maitenance mode engaged");
+	Log::log("Maintenance mode engaged");
+	Log::irc("|r|Engaging maintenance mode for full stat calculations...");
 	sleep(60); // Wait for processes to finish and cleanup
 }
 
@@ -51,11 +52,13 @@ try {
 }
 
 Db::execute("delete from zz_storage where locker = 'maintenance'");
+Log::irc("|g|Stat recalculations have completed, leaving Maintenance mode and now reverting to business as usual...");
 die();
 
 function recalc($type, $column, $calcKills = true) {
+	$now = time();
 	Log::log("Starting stat calculations for $type");
-	//echo "$type ";
+	Log::irc("Starting stat calculations for $type");
 
 	Db::execute("drop table if exists zz_stats_temporary");
 	Db::execute("
@@ -69,12 +72,10 @@ function recalc($type, $column, $calcKills = true) {
 				PRIMARY KEY (`killID`,`groupName`,`groupNum`,`groupID`)
 				) ENGINE=InnoDB");
 
-	//echo " losses ";
 	Db::execute("insert ignore into zz_stats_temporary select killID, '$type', $column, groupID, points, total_price from zz_participants where $column != 0 and isVictim = 1");
 	Db::execute("replace into zz_stats (type, typeID, groupID, lost, pointsLost, iskLost) select groupName, groupNum, groupID, count(killID), sum(points), sum(price) from zz_stats_temporary group by 1, 2, 3");
 
 	if ($calcKills) {
-		//echo " kills ";
 		Db::execute("truncate table zz_stats_temporary");
 		Db::execute("insert ignore into zz_stats_temporary select killID, '$type', $column, vGroupID, points, total_price from zz_participants where $column != 0 and isVictim = 0");
 		Db::execute("insert into zz_stats (type, typeID, groupID, destroyed, pointsDestroyed, iskDestroyed) (select groupName, groupNum, groupID, count(killID), sum(points), sum(price) from zz_stats_temporary group by 1, 2, 3) on duplicate key update destroyed = values(destroyed), pointsDestroyed = values(pointsDestroyed), iskDestroyed = values(iskDestroyed)");
@@ -82,6 +83,7 @@ function recalc($type, $column, $calcKills = true) {
 
 	Db::execute("drop table if exists zz_stats_temporary");
 
-	//echo "done!\n";
-	Log::log("Finished stat calculations for $type");
+	$delta = time() - $now;
+	Log::log("Finished stat calculations for $type (" . number_format($delta, 0) . " seconds)");
+	Log::irc("Finished stat calculations for |g|$type|n| (|g|" . number_format($delta, 0) . " seconds|n|)");
 }
