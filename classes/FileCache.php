@@ -43,7 +43,7 @@ class FileCache extends AbstractCache
 	 */
 	public function get($key)
 	{
-		if(file_exists($this->cacheDir.$key))
+		if(file_exists($this->cacheDir.sha1($key)))
 		{
 			$time = time();
 			$data = self::getData($key);
@@ -51,7 +51,7 @@ class FileCache extends AbstractCache
 			$data = json_decode($data["data"], true);
 			if($age <= $time)
 			{
-				@unlink($this->cacheDir.$key);
+				@unlink($this->cacheDir.sha1($key));
 				return false;	
 			}
 			return $data;
@@ -84,9 +84,9 @@ class FileCache extends AbstractCache
 	 */
 	public function replace($key, $value, $timeout)
 	{
-		if(file_exists($this->cacheDir.$key))
+		if(file_exists($this->cacheDir.sha1($key)))
 		{
-			@unlink($this->cacheDir.$key);
+			@unlink($this->cacheDir.sha1($key));
 			if(self::setData($key, $value, $timeout) !== false)
 				return true;
 		}
@@ -104,7 +104,7 @@ class FileCache extends AbstractCache
 	{
 		try
 		{
-			@unlink($this->cacheDir.$key);
+			@unlink($this->cacheDir.sha1($key));
 		}
 		catch (Exception $e)
 		{
@@ -126,7 +126,7 @@ class FileCache extends AbstractCache
 
 		try
 		{
-			@unlink($this->cacheDir.$key);
+			@unlink($this->cacheDir.sha1($key));
 			return self::setData($key, $data+$step);
 		}
 		catch (Exception $e)
@@ -148,7 +148,7 @@ class FileCache extends AbstractCache
 
 		try
 		{
-			@unlink($this->cacheDir.$key);
+			@unlink($this->cacheDir.sha1($key));
 			return self::setData($key, $data-$step);
 		}
 		catch (Exception $e)
@@ -157,9 +157,16 @@ class FileCache extends AbstractCache
 		}
 	}
 
+	/**
+	 * Flushes the cache
+	 */
 	public function flush()
 	{
-		return false; //TODO: Delete all files
+		$dir = opendir($this->cacheDir);
+		while($file = readdir($dir))
+		{
+			@unlink($this->cacheDir.$file);
+		}
 	}
 
 	/**
@@ -179,7 +186,7 @@ class FileCache extends AbstractCache
 		try
 		{
 			$data = $timeout."%".json_encode($value);
-			file_put_contents($this->cacheDir.$key, $data);
+			file_put_contents($this->cacheDir.sha1($key), $data);
 		}
 		catch (Exception $e)
 		{
@@ -196,7 +203,7 @@ class FileCache extends AbstractCache
 	 */
 	private function getData($key)
 	{
-		$data = file_get_contents($this->cacheDir.$key);
+		$data = file_get_contents($this->cacheDir.sha1($key));
 		$f = explode("%", $data);
 		$age = array_shift($f);
 		$data = implode($f);
