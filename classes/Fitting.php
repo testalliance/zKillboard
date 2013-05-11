@@ -99,7 +99,7 @@ class Fitting
     $fit="";
     $fit.= $ship.":";
     foreach($array as $item){
-      if (in_array($item["flagName"] ,$goodspots)){
+      if (isset($item["flagName"]) && in_array($item["flagName"] ,$goodspots)){
         $fit .= $item["typeID"].";".($item["qtyDropped"] + $item["qtyDestroyed"]).":";
       }
     }
