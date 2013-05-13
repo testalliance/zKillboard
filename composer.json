@@ -4,12 +4,12 @@
         "slim/extras": "*",
         "twig/twig": "*",
         "twig/extensions": "*",
-		"pheal/pheal": "*",
-		"phpmailer/phpmailer": "*",
-		"mobiledetect/mobiledetectlib": "*",
-		"realityking/pchart": "*",
-		"dg/twitter-php": "*",
-		"ircmaxell/password-compat": "*",
+        "pheal/pheal": "*",
+        "phpmailer/phpmailer": "*",
+        "mobiledetect/mobiledetectlib": "*",
+        "realityking/pchart": "*",
+        "dg/twitter-php": "*",
+        "ircmaxell/password-compat": "*",
         "fusesource/stomp-php": "*"
     },
     "minimum-stability": "dev"
