@@ -62,8 +62,18 @@ try {
 } catch (Exception $ex) {
 	$errorCode = $ex->getCode();
 	Db::execute("update zz_api_characters set cachedUntil = date_add(now(), interval 1 hour), errorCode = :code where apiRowID = :id", array(":id" => $apiRowID, ":code" => $errorCode));
-	if ($ex->getCode() != 119 && $ex->getCode() != 120) 
-		Log::log($keyID . " " . $ex->getCode() . " " . $ex->getMessage());
-	//handleApiException($keyID, $charID, $ex);
+	switch($errorCode) {
+		case 119:
+		case 120:
+			// Don't log it
+		break;	
+		case 222: // API has expired
+		case 221: // Invalid access, delete the toon from the char list until later re-verification
+		case 220: // Invalid Corporation Key. Key owner does not fullfill role requirements anymore.
+			Db::execute("delete from zz_api_characters where apiRowID = :id", array(":id" => $apiRowID));
+		break;
+		default:
+			Log::log($keyID . " " . $ex->getCode() . " " . $ex->getMessage());
+	}
 	return;
 }

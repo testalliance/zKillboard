@@ -75,7 +75,11 @@ function handleApiException($keyID, $charID, $exception)
 		case 209:
 			$demoteCharacter = true;
 			break;
-		case 222:
+		case 222: // account has expired
+			$clearAllCharacters = true;
+			$clearApiEntry = true;
+			$cacheUntil = time() + (7 * 24 * 3600); // Try again in a week
+			break;
 		case 403:
 		case 211: // Login denied by account status
 			// Remove characters, will revalidate with next doPopulate

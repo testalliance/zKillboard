@@ -171,7 +171,7 @@ class Api
 	 * @param $accessMask
 	 * @return bool
 	 */
-	private static function hasBits($accessMask)
+	public static function hasBits($accessMask)
 	{
 		return ((int)($accessMask & 256) > 0);
 	}
