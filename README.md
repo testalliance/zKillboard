@@ -73,23 +73,8 @@ If you install stomp, you may also want add the following to crontab.
 - * * * * * flock -w 63 /tmp/lock.stomp php5 /path/to/zKillboard/util/stomp.php
 
 ## Stomp
-Stomp requires a custom php module, which you have to install from the following git repo.
-https://github.com/ppetermann/pecl-tools-stomp
+The stomp service is read only. If you need to send data via it, come by IRC and have a chat with us.
 
-Reason is that the stomp library in pecl has a flaw, once that flaw is fixed (like it is in this repo) you can install from there.
-Till then, clone this repo, and install it like any other php module
-
-- git clone https://github.com/ppetermann/pecl-tools-stomp.git
-- cd pecl-tools-stomp
-- phpize
-- ./configure
-- make
-- make install
-- Create /etc/php5/conf.d/20-stomp.ini
-- Put `extension=stomp.so` into it
-
-The stomp service is read only, and might very well be moved some place else, nothing is certain with this.
-So do not use the stomp service for anything super important, not yet!
 - Stomp server: tcp://stomp.zkillboard.com:61613
 - Stomp user: guest
 - Stomp pass: guest

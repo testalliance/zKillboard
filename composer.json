@@ -9,7 +9,8 @@
 		"mobiledetect/mobiledetectlib": "*",
 		"realityking/pchart": "*",
 		"dg/twitter-php": "*",
-		"ircmaxell/password-compat": "*"
+		"ircmaxell/password-compat": "*",
+        "fusesource/stomp-php": "*"
     },
     "minimum-stability": "dev"
 }
