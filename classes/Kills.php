@@ -313,4 +313,12 @@ class Kills
 		Cache::set($killID, $mail, 604800);
 		return $mail;
 	}
+
+	public static function cleanDupe($mKillID, $killID)
+	{
+		Db::execute("update zz_killmails set processed = 2 where killID = :mKillID", array(":mKillID" => $mKillID));
+		Db::execute("update zz_manual_mails set killID = :killID where mKillID = :mKillID",
+				array(":killID" => $killID, ":mKillID" => (-1 * $mKillID)));
+		Stats::calcStats($mKillID, false); // remove manual version from stats
+	}
 }

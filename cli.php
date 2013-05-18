@@ -1,0 +1,89 @@
+#!/usr/bin/php5
+<?php
+/* zKillboard
+ * Copyright (C) 2012-2013 EVE-KILL Team and EVSCO.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+$cle = "cli" == php_sapi_name();
+if (!$cle) return; // Prevent web execution
+
+$base = dirname(__FILE__);
+
+require_once "$base/init.php";
+
+unset($argv[0]);
+$command = @$argv[1];
+unset($argv[1]);
+$params = array_values($argv);
+
+if($command == "bashList")
+	listCommands();
+
+try
+{
+	$fileName = "$base/cli/cli_$command.php";
+	if(!file_exists($fileName)) CLI::out("|r|Error running $command|n|. Please use list to show all commands, or help <command> to see information on how to use the command", true);
+
+	require_once $fileName;
+	$className = "cli_$command";
+	$class = new $className();
+
+	if(!is_a($class, "cliCommand")) CLI::out("|r| Module $command does not implement interface cliCommand", true);
+	$base = __DIR__;
+	$class->execute($params);
+}
+catch (Exception $ex)
+{
+	CLI::out("$command ended with error: " . $ex->getMessage(), true);
+}
+
+interface cliCommand {
+	public function getDescription();
+	public function getAvailMethods();
+	public function execute($parameters);
+}
+
+function listCommands()
+{
+	$commands = array();
+	$dir = __DIR__."/cli/";
+
+	if($handle = opendir($dir))
+	{
+		while(false !== ($entry = readdir($handle)))
+		{
+			if($entry != "." && $entry != ".." && $entry != "base.php" && $entry != "cli_methods.php")
+			{
+				$s1 = split("cli_", $entry);
+				$s2 = split(".php", $s1[1]);
+				if(sizeof($s2) == 2)
+				{
+					require_once "$dir/$entry";
+					$command = $s2[0];
+					$className = "cli_$command";
+					$class = new $className();;
+					if(is_a($class, "cliCommand"))
+					{
+						$commands[] = $command;
+					}
+				}
+			}
+		}
+		closedir($handle);
+	}
+	sort($commands);
+	CLI::out(implode(" ", $commands), true);
+}

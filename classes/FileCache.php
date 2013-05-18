@@ -218,12 +218,15 @@ class FileCache extends AbstractCache
 		$dir = opendir($this->cacheDir);
 		while($file = readdir($dir))
 		{
-			$data = self::getData($file);
-			$age = $data["age"];
-			$time = time();
-			if($age <= $time)
+			if($file != "." && $file != "..")
 			{
-				@unlink($this->cacheDir.$file);
+				$data = self::getData($file);
+				$age = $data["age"];
+				$time = time();
+				if($age <= $time)
+				{
+					@unlink($this->cacheDir.$file);
+				}
 			}
 		}
 	}

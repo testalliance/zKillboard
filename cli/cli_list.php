@@ -1,0 +1,62 @@
+<?php
+/* zKillboard
+ * Copyright (C) 2012-2013 EVE-KILL Team and EVSCO.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+class cli_list implements cliCommand
+{
+	public function getDescription()
+	{
+		return "Lists all the commands available via the CLI interface. Usage: |g|list";
+	}
+	
+	public function getAvailMethods()
+	{
+		return " "; // Space seperated list
+	}
+
+	public function execute($parameters)
+	{
+		$commands = array();
+		$dir = __DIR__;
+
+		if($handle = opendir($dir))
+		{
+			while(false !== ($entry = readdir($handle)))
+			{
+				if($entry != "." && $entry != ".." && $entry != "base.php" && $entry != "cli_methods.php")
+				{
+					$s1 = split("cli_", $entry);
+					$s2 = split(".php", $s1[1]);
+					if(sizeof($s2) == 2)
+					{
+						require_once "$dir/$entry";
+						$command = $s2[0];
+						$className = "cli_$command";
+						$class = new $className();;
+						if(is_a($class, "cliCommand"))
+						{
+							$commands[] = $command;
+						}
+					}
+				}
+			}
+			closedir($handle);
+		}
+		sort($commands);
+		CLI::out("|g|Commands available: |n|". implode(", ", $commands));
+	}
+}

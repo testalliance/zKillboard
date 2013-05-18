@@ -175,4 +175,203 @@ class Api
 	{
 		return ((int)($accessMask & 256) > 0);
 	}
+
+	/**
+	 * API exception handling
+	 * 
+	 * @static
+	 * @param $keyID
+	 * @param $charID
+	 * @param $exception
+	 * @return void
+	 */
+	public static function handleApiException($keyID, $charID, $exception)
+	{
+		$code = $exception->getCode();
+		$message = $exception->getMessage();
+		$clearCharacter = false;
+		$clearAllCharacters = false;
+		$clearApiEntry = false;
+		$updateCacheTime = false;
+		$demoteCharacter = false;
+		$cacheUntil = 0;
+		switch ($code) {
+			case 904:
+				$msg = "Error 904 detected using key $keyID";
+				Log::log($msg);
+				$msg = "|r|$msg";
+	//			Log::irc($msg);
+	//			Log::admin($msg);
+				break;
+			case 403:
+			case 502:
+			case 503: // Service Unavailable - try again later
+				$cacheUntil = time() + 300;
+				$updateCacheTime = true;
+				break;
+			case 119: // Kills exhausted: retry after [{0}]
+				$cacheUntil = $exception->cached_until;
+				$updateCacheTime = true;
+				break;
+			case 120: // Expected beforeKillID [{0}] but supplied [{1}]: kills previously loaded.
+				$cacheUntil = $exception->cached_until;
+				$updateCacheTime = true;
+				break;
+			case 221: // Demote toon, illegal page access
+				$clearAllCharacters = true;
+				$clearApiEntry = true;
+				break;
+			case 220:
+			case 200: // Current security level not high enough.
+				// Typically happens when a key isn't a full API Key
+				$clearAllCharacters = true;
+				$clearApiEntry = true;
+				//$code = 203; // Force it to go away, no point in keeping this key
+				break;
+			case 522:
+			case 201: // Character does not belong to account.
+				// Typically caused by a character transfer
+				$clearCharacter = true;
+				break;
+			case 207: // Not available for NPC corporations.
+			case 209:
+				$demoteCharacter = true;
+				break;
+			case 222:
+			case 403:
+			case 211: // Login denied by account status
+				// Remove characters, will revalidate with next doPopulate
+				$clearAllCharacters = true;
+				$clearApiEntry = true;
+				break;
+			case 202: // API key authentication failure.
+			case 203: // Authentication failure - API is no good and will never be good again
+			case 204: // Authentication failure.
+			case 205: // Authentication failure (final pass).
+			case 210: // Authentication failure.
+			case 521: // Invalid username and/or password passed to UserData.LoginWebUser().
+				$clearAllCharacters = true;
+				$clearApiEntry = true;
+				break;
+			case 500: // Internal Server Error (More CCP Issues)
+			case 520: // Unexpected failure accessing database. (More CCP issues)
+			case 404: // URL Not Found (CCP having issues...)
+			case 902: // Eve backend database temporarily disabled
+				$updateCacheTime = true;
+				$cacheUntil = time() + 3600; // Try again in an hour...
+				break;
+			case 0: // API Date could not be read / parsed, original exception (Something is wrong with the XML and it couldn't be parsed)
+			default: // try again in 5 minutes
+				Log::log("$keyID - Unhandled error - Code $code - $message");
+				//$updateCacheTime = true;
+				$clearApiEntry = true;
+				//$cacheUntil = time() + 300;
+		}
+
+		if ($demoteCharacter && $charID != 0) {
+			if (false === Db::execute("update zz_api_characters set isDirector = 'F' where characterID = :charID", array(":charID" => $charID), false)) {
+				$clearCharacter = true;
+			}
+		}
+
+		if ($clearCharacter && $charID != 0) {
+			Db::execute("delete from zz_api_characters where keyID = :keyID and characterID = :charID", array(":keyID" => $keyID, ":charID" => $charID));
+		}
+
+		if ($clearAllCharacters) {
+			Db::execute("delete from zz_api_characters where keyID = :keyID", array(":keyID" => $keyID));
+		}
+
+		if ($clearApiEntry) {
+			Db::execute("update zz_api set errorCode = :code where keyID = :keyID", array(":keyID" => $keyID, ":code" => $code));
+		}
+
+		if ($updateCacheTime && $cacheUntil != 0 && $charID != 0) {
+			Db::execute("update zz_api_characters set cachedUntil = :cacheUntil where characterID = :charID",
+					array(":cacheUntil" => $cacheUntil, ":charID" => $charID));
+		}
+		Db::execute("update zz_api_characters set errorCode = :code where keyID = :keyID and characterID = :charID", array(":keyID" => $keyID, ":charID" => $charID, ":code" => $code));
+	}
+
+	public static function fetchApis()
+	{
+		$fetchesPerSecond = 30;
+		$timer = new Timer();
+		$preFetched = array();
+
+		$maxTime = 60 * 1000;
+		while ($timer->stop() < $maxTime) {
+			Db::execute("delete from zz_api_characters where isDirector = ''");
+
+			$allChars = Db::query("select apiRowID, cachedUntil from zz_api_characters where errorCode != 120 and cachedUntil < date_sub(now(), interval 30 second) order by cachedUntil, keyID, characterID limit 1000", array(), 0);
+
+			$total = sizeof($allChars);
+			$corpsToSkip = array();
+			$iterationCount = 0;
+
+			if ($total == 0) sleep(1);
+			else foreach ($allChars as $char) {
+				if ($timer->stop() > $maxTime) return;
+
+				$apiRowID = $char["apiRowID"];
+				$cachedUntil = $char["cachedUntil"];
+
+				Db::execute("update zz_api_characters set cachedUntil = date_add(if(cachedUntil=0, now(), cachedUntil), interval 5 minute), lastChecked = now() where apiRowID = :id", array(":id" => $apiRowID));
+
+				$m = $iterationCount % $fetchesPerSecond;
+				$command = "flock -w 60 /tmp/locks/preFetch.$m zkillboard apiFetchKillLog $apiRowID";
+				$command = escapeshellcmd($command);
+				exec("$command >/dev/null 2>/dev/null &");
+
+				$iterationCount++;
+				if ($m == 0) { sleep(1); }
+			}
+		}
+	}
+
+	public static function doApiSummary()
+	{
+		$lastActualKills = Db::queryField("select contents count from zz_storage where locker = 'actualKills'", "count", array(), 0);
+		$actualKills = Db::queryField("select count(*) count from zz_killmails where processed = 1", "count", array(), 0);
+
+		$lastTotalKills = Db::queryField("select contents count from zz_storage where locker = 'totalKills'", "count", array(), 0);
+		$totalKills = Db::queryField("select count(*) count from zz_killmails", "count", array(), 0);
+
+		Db::execute("replace into zz_storage (locker, contents) values ('totalKills', $totalKills)");
+		Db::execute("replace into zz_storage (locker, contents) values ('actualKills', $actualKills)");
+		Db::execute("delete from zz_storage where locker like '%KillsProcessed'");
+
+		$actualDifference = number_format($actualKills - $lastActualKills, 0);
+		$totalDifference = number_format($totalKills - $lastTotalKills, 0);
+
+		Log::irc("|g|$actualDifference|n| mails processed | |g|$totalDifference|n| kills added");
+	}
+
+	public static function processRawApi($keyID, $charID, $killlog)
+	{
+		$count = 0;
+		$maxKillID = Db::queryField("select maxKillID from zz_api_characters where keyID = :keyID and characterID = :charID", "maxKillID",
+				array(":keyID" => $keyID, ":charID" => $charID), 0);
+		if ($maxKillID === null) $maxKillID = 0;
+		$insertedMaxKillID = $maxKillID;
+		foreach ($killlog->kills as $kill) {
+			$killID = $kill->killID;
+			//if ($killID < $maxKillID) continue;
+			$insertedMaxKillID = max($insertedMaxKillID, $killID);
+
+			$json = json_encode($kill->toArray());
+			$hash = Util::getKillHash(null, $kill);
+			$mKillID = Db::queryField("select killID from zz_killmails where killID < 0 and processed = 1 and hash = :hash", "killID", array(":hash" => $hash), 0);
+			if ($mKillID) Kills::cleanDupe($mKillID, $killID);
+			$added = Db::execute("insert ignore into zz_killmails (killID, hash, source, kill_json) values (:killID, :hash, :source, :json)",
+					array(":killID" => $killID, ":hash" => $hash, ":source" => "keyID:$keyID", ":json" => $json));
+			$count += $added;
+		}
+		if ($maxKillID != $insertedMaxKillID) {
+			Db::execute("insert into zz_api_characters (keyID, characterID, maxKillID) values (:keyID, :charID, :maxKillID)
+					on duplicate key update maxKillID = :maxKillID",
+					array(":keyID" => $keyID, ":charID" => $charID, "maxKillID" => $insertedMaxKillID));
+		}
+		return $count;
+	}
 }

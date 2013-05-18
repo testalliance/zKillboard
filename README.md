@@ -63,8 +63,15 @@ Installation is currently command line only on linux consoles. Other methods are
 8. Follow the instructions and fill in the prompts
 9. Setup stomp (Follow guide further down)
 10. Setup cronjobs
+11. Setup the CLI system.
 
-## Cronjobs
+## CLI System
+First thing you do, is `ln -s /path/to/zkb/cli.php /usr/bin/zkillboard`
+And then you install `bash-completion` which can be done with `apt-get install bash-completion`.
+Then you move `bash_complete_zkillboard` to `/etc/bash_completion.d/zkillboard`
+And restart your shell session, at which point you can do `zkillboard list` with tab completion, and use this new interface for CLI commands.
+
+## Cronjobs (To be deprecated)
 - * * * * * flock -w 63 /tmp/lock.parseKills php5 /path/to/zKillboard/util/doJob.php parseKills
 - * * * * * flock -w 63 /tmp/lock.doPopulateCharactersTable php5 /path/to/zKillboard/util/doJob.php doPopulateCharactersTable
 There are more cronjobs to setup, however these are the bare minimums.
