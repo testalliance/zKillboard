@@ -33,6 +33,7 @@ if($command == "bashList")
 try
 {
 	$fileName = "$base/cli/cli_$command.php";
+	if ($command == "") CLI::out("|r|You haven't issued a command to execute.|n| Please use list to show all commands, or help <command> to see information on how to use the command", true);
 	if(!file_exists($fileName)) CLI::out("|r|Error running $command|n|. Please use list to show all commands, or help <command> to see information on how to use the command", true);
 
 	require_once $fileName;
