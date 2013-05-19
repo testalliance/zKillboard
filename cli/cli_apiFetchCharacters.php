@@ -40,7 +40,7 @@ class cli_apiFetchCharacters implements cliCommand
 			$apiKeyInfo = $pheal->ApiKeyInfo();
 		} catch (Exception $ex) {
 			//Log::log("Error with $keyID: " . $ex->getCode() . " " . $ex->getMessage());
-			handleApiException($keyID, null, $ex);
+			Api::handleApiException($keyID, null, $ex);
 			return;
 		}
 
