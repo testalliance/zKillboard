@@ -73,22 +73,22 @@ Installation is currently command line only on linux consoles. Other methods are
 5. Issue `zkillboard list` and enjoy the zkillboard cli interface, with full tab completion
 
 ## Cronjobs
-* * * * * /var/killboard/zkillboard.com/cliLock.sh minutely all
-* * * * * /var/killboard/zkillboard.com/cliLock.sh apiFetch
-* * * * * /var/killboard/zkillboard.com/cliLock.sh parseKills
-* * * * * /var/killboard/zkillboard.com/cliLock.sh p120s
-* * * * * /var/killboard/zkillboard.com/cliLock.sh stompReceive
-* * * * * /var/killboard/zkillboard.com/cliLock.sh updateCharacters
-* * * * * /var/killboard/zkillboard.com/cliLock.sh updateCorporations
-* * * * * /var/killboard/zkillboard.com/cliLock.sh populateCharacters
-1 * * * * /var/killboard/zkillboard.com/cliLock.sh summary
-1 * * * * /var/killboard/zkillboard.com/cliLock.sh hourly
-1 * * * * /var/killboard/zkillboard.com/cliLock.sh feed fetch
-0 */6 * * * /var/killboard/zkillboard.com/cliLock.sh itemUpdate
-9 */8 * * * /var/killboard/zkillboard.com/cliLock.sh populateAlliances
-0 12 * * * /var/killboard/zkillboard.com/cliLock.sh priceUpdate
-0 16 * * * /var/killboard/zkillboard.com/cliLock.sh calculateAllTimeStatsAndRanks ranks
-0 20 * * * /var/killboard/zkillboard.com/cliLock.sh calculateRecentTimeStatsAndRanks stats
+- * * * * * /var/killboard/zkillboard.com/cliLock.sh minutely all
+- * * * * * /var/killboard/zkillboard.com/cliLock.sh apiFetch
+- * * * * * /var/killboard/zkillboard.com/cliLock.sh parseKills
+- * * * * * /var/killboard/zkillboard.com/cliLock.sh p120s
+- * * * * * /var/killboard/zkillboard.com/cliLock.sh stompReceive
+- * * * * * /var/killboard/zkillboard.com/cliLock.sh updateCharacters
+- * * * * * /var/killboard/zkillboard.com/cliLock.sh updateCorporations
+- * * * * * /var/killboard/zkillboard.com/cliLock.sh populateCharacters
+- 1 * * * * /var/killboard/zkillboard.com/cliLock.sh summary
+- 1 * * * * /var/killboard/zkillboard.com/cliLock.sh hourly
+- 1 * * * * /var/killboard/zkillboard.com/cliLock.sh feed fetch
+- 0 */6 * * * /var/killboard/zkillboard.com/cliLock.sh itemUpdate
+- 9 */8 * * * /var/killboard/zkillboard.com/cliLock.sh populateAlliances
+- 0 12 * * * /var/killboard/zkillboard.com/cliLock.sh priceUpdate
+- 0 16 * * * /var/killboard/zkillboard.com/cliLock.sh calculateAllTimeStatsAndRanks ranks
+- 0 20 * * * /var/killboard/zkillboard.com/cliLock.sh calculateRecentTimeStatsAndRanks stats
 
 All cronjobs can be launched manually with the cli interface.
 
