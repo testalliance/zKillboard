@@ -95,8 +95,11 @@ class cli_feed implements cliCommand
 
 			case "fetch":
 				CLI::out("|g|Initiating feed fetching|n|");
-				$page = 1;
+				$doSleep = false;
 				$feeds = Db::query("SELECT url, lastFetchTime FROM zz_feeds");
+				if(sizeof($feeds) > 1)
+					$doSleep = true;
+
 				foreach($feeds as $feed)
 				{
 					$url = $feed["url"];
@@ -126,6 +129,11 @@ class cli_feed implements cliCommand
 							break;
 
 						CLI::out("|g|Inserted $insertCount new kills from $url");
+						if($doSleep)
+						{
+							CLI::out("|g|Sleeping for 10 seconds before fetching another url.. (Otherwise we're hammering..");
+							sleep(10); // yes yes, 10 seconds of sleeping, what?! this is only here to stop hammering. Feel free to hammer tho by commenting this, but you'll just get banned..
+						}
 					}
 				}
 			break;
