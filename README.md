@@ -93,7 +93,7 @@ Installation is currently command line only on linux consoles. Other methods are
 All cronjobs can be launched manually with the cli interface.
 
 ## Feed (Experimental)
-The feed interface can be accessed by issuing zkillboard feed, all commands available can be found with help.
+The feed interface can be accessed by issuing `zkillboard feed`, all commands available can be found with help.
 
 ## Stomp
 The stomp service is read only. If you need to send data via it, come by IRC and have a chat with us.
