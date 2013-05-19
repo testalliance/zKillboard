@@ -698,7 +698,11 @@ class Parser
 				Stats::calcStats($killID, true);
 			}
 		}
-		if ($numKills > 0) Log::log("Processed $numKills kills");
+		if ($numKills > 0)
+		{
+			Log::log("Processed $numKills kills");
+			CLI::out("Processed |g|$numKills|n| kills");
+		}
 		self::removeTempTables();
 	}
 
