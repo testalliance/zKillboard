@@ -109,7 +109,7 @@ class cli_feed implements cliCommand
 					if($lastFetchTime <= $currentTime)
 					{
 						CLI::out("Fetching for |g|$url|n|");
-						$data = file_get_contents($url);
+						$data = self::fetchUrl($url);
 						$data = json_decode($data);
 						foreach($data as $kill)
 						{
@@ -128,7 +128,8 @@ class cli_feed implements cliCommand
 						if($insertCount <= 0)
 							break;
 
-						CLI::out("|g|Inserted $insertCount new kills from $url");
+						CLI::out("Inserted |g|$insertCount|n| new kills from |g|$url|n|");
+						Log::log("Inserted $insertCount new kills from $url");
 						if($doSleep)
 						{
 							CLI::out("|g|Sleeping for 10 seconds before fetching another url.. (Otherwise we're hammering..");
@@ -138,5 +139,27 @@ class cli_feed implements cliCommand
 				}
 			break;
 		}
+	}
+
+	private static function fetchUrl($url)
+	{
+		global $baseAddr;
+		$userAgent = "Feed Fetcher for $baseAddr";
+
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_USERAGENT, $userAgent);
+        curl_setopt($curl, CURLOPT_TIMEOUT, 30);
+        curl_setopt($curl, CURLOPT_POST, false);
+        curl_setopt($curl, CURLOPT_FORBID_REUSE, false);
+        curl_setopt($curl, CURLOPT_ENCODING, "");
+        $headers = array();
+        $headers[] = "Connection: keep-alive";
+        $headers[] = "Keep-Alive: timeout=10, max=1000";
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        $result = curl_exec($curl);
+
+        return $result;
 	}
 }
