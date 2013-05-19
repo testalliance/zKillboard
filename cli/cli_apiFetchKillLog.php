@@ -87,5 +87,6 @@ class cli_apiFetchKillLog implements cliCommand
 					Log::log($keyID . " " . $ex->getCode() . " " . $ex->getMessage());
 			}
 			return;
+		}
 	}
 }
