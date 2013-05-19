@@ -124,14 +124,14 @@
 					$rawInfo = file_get_contents("http://evewho.com/ek_corp.php?name=" . urlencode($name));
 					if ($rawInfo) {
 						$info = json_decode($rawInfo, true);
-						$id = $info["corporation_id"];
+						$id = (int) $info["corporation_id"];
 						$name = $info["name"];
 						Db::execute("insert ignore into zz_corporations (corporationID, name) values (:id, :name)",
 												array(":id" => $id, ":name" => $name));
 					}
 					if ($id == 0) {
 						// Wow.. EveWho failed, lets try the API then
-						/*$pheal = Util::getPheal();
+						$pheal = Util::getPheal();
 						$pheal->scope = "eve";
 						$charInfo = $pheal->CharacterID(array("names" => $name));
 						foreach ($charInfo->characters as $char) {
@@ -145,7 +145,7 @@
 								Db::execute("insert ignore into zz_corporations (corporationID, name) values (:id, :name)",
 														array(":id" => $id, ":name" => $name));
 							}
-						}*/
+						}
 					}
 				}
 				catch (Exception $ex) {
@@ -323,14 +323,14 @@
 					$rawInfo = file_get_contents("http://evewho.com/ek_pilot.php?name=" . urlencode($name));
 					if ($rawInfo != null) {
 						$info = json_decode($rawInfo, true);
-						$id = $info["character_id"];
+						$id = (int) $info["character_id"];
 						if ($id != 0) {
 							$name = $info["name"];
 							Db::execute("insert ignore into zz_characters (characterID, name) values (:id, :name)",
 													array(":id" => $id, ":name" => $name));
 						}
 						if ($id == 0) {
-							/*$pheal = Util::getPheal();
+							$pheal = Util::getPheal();
 							$pheal->scope = "eve";
 							$charInfo = $pheal->CharacterID(array("names" => $name));
 							foreach ($charInfo->characters as $char) {
@@ -343,7 +343,7 @@
 									Db::execute("insert ignore into zz_characters (characterID, name) values (:id, :name)",
 															array(":id" => $id, ":name" => $name));
 								}
-							}*/
+							}
 							if ($id == 0 && false) {
 								// Last ditch effort, try BattleClinic
 								$url = "http://eve.battleclinic.com/killboard/combat_record.php?type=player&name=" . urlencode($name);
