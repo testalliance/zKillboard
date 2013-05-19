@@ -24,10 +24,8 @@ $base = dirname(__FILE__);
 
 require_once "$base/init.php";
 
-unset($argv[0]);
-$command = @$argv[1];
-unset($argv[1]);
-$params = array_values($argv);
+array_shift($argv);
+$command = array_shift($argv);
 
 if($command == "bashList")
 	listCommands();
@@ -43,7 +41,7 @@ try
 
 	if(!is_a($class, "cliCommand")) CLI::out("|r| Module $command does not implement interface cliCommand", true);
 	$base = __DIR__;
-	$class->execute($params);
+	$class->execute($argv);
 }
 catch (Exception $ex)
 {
