@@ -37,6 +37,9 @@ $top[] = doMakeCommon("Top Characters - Last 3 Days", "characterID", Stats::getT
 $top[] = doMakeCommon("Top Corporations - Last 3 Days", "corporationID", Stats::getTopCorps($p));
 $top[] = doMakeCommon("Top Alliances - Last 3 Days", "allianceID", Stats::getTopAllis($p));
 
+$app->etag(md5(serialize($top)));
+$app->expires("+5 minutes");
+
 $app->render("index.html", array("topPods" => $topPods, "topIsk" => $topIsk, "topPoints" => $topPoints, "topKillers" => $top));
 
 function doMakeCommon($title, $field, $array) {

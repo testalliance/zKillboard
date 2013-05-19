@@ -144,6 +144,8 @@ $renderParams = array("pageName" => $pageName, "kills" => $kills, "losses" => $l
 		"mixed" => $mixedKills, "key" => $key, "id" => $id, "pageType" => $pageType, "solo" => $solo, "soloPages" => $soloPages,
 		"killPages" => $killPages, "lossPages" => $lossPages, "topLists" => $topLists, "corps" => $corpList, "corpStats" => $corpStats, "summaryTable" => $stats);
 
+$app->etag(md5(serialize($renderParams)));
+$app->expires("+5 minutes");
 $app->render("overview.html", $renderParams);
 
 
