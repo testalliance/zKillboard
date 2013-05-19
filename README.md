@@ -62,22 +62,40 @@ Installation is currently command line only on linux consoles. Other methods are
 7. Execute the installation script. `php5 install.php`
 8. Follow the instructions and fill in the prompts
 9. Setup stomp (Follow guide further down)
-10. Setup cronjobs
-11. Setup the CLI system.
+10. Setup the CLI system.
+11. Setup cronjobs
 
 ## CLI System
-First thing you do, is `ln -s /path/to/zkb/cli.php /usr/bin/zkillboard`
-And then you install `bash-completion` which can be done with `apt-get install bash-completion`.
-Then you move `bash_complete_zkillboard` to `/etc/bash_completion.d/zkillboard`
-And restart your shell session, at which point you can do `zkillboard list` with tab completion, and use this new interface for CLI commands.
+1. Symlink cli.php to /usr/bin/zkillboard `ln -s /path/to/zkb/cli.php /usr/bin/zkillboard`
+2. Install bash-completion. Under Debian this can be done like so `apt-get install bash-completion`
+3. Move `bash_complete_zkillboard` to `/etc/bash_completion.d/zkillboard`
+4. Restart your shell session
+5. Issue `zkillboard list` and enjoy the zkillboard cli interface, with full tab completion
 
-## Cronjobs (To be deprecated)
-- * * * * * flock -w 63 /tmp/lock.parseKills php5 /path/to/zKillboard/util/doJob.php parseKills
-- * * * * * flock -w 63 /tmp/lock.doPopulateCharactersTable php5 /path/to/zKillboard/util/doJob.php doPopulateCharactersTable
-There are more cronjobs to setup, however these are the bare minimums.
+## Cronjobs
+* * * * * /var/killboard/zkillboard.com/cliLock.sh minutely all
+* * * * * /var/killboard/zkillboard.com/cliLock.sh apiFetch
+* * * * * /var/killboard/zkillboard.com/cliLock.sh parseKills
+* * * * * /var/killboard/zkillboard.com/cliLock.sh p120s
+* * * * * /var/killboard/zkillboard.com/cliLock.sh stompReceive
+* * * * * /var/killboard/zkillboard.com/cliLock.sh updateCharacters
+* * * * * /var/killboard/zkillboard.com/cliLock.sh updateCorporations
+* * * * * /var/killboard/zkillboard.com/cliLock.sh populateCharacters
+1 * * * * /var/killboard/zkillboard.com/cliLock.sh summary
+1 * * * * /var/killboard/zkillboard.com/cliLock.sh hourly
+1 * * * * /var/killboard/zkillboard.com/cliLock.sh feed fetch
+0 */6 * * * /var/killboard/zkillboard.com/cliLock.sh itemUpdate
+9 */8 * * * /var/killboard/zkillboard.com/cliLock.sh populateAlliances
+0 12 * * * /var/killboard/zkillboard.com/cliLock.sh priceUpdate
+0 16 * * * /var/killboard/zkillboard.com/cliLock.sh calculateAllTimeStatsAndRanks ranks
+0 20 * * * /var/killboard/zkillboard.com/cliLock.sh calculateRecentTimeStatsAndRanks stats
 
-If you install stomp, you may also want add the following to crontab.
-- * * * * * flock -w 63 /tmp/lock.stomp php5 /path/to/zKillboard/util/stomp.php
+All cronjobs can be launched manually with the cli interface.
+
+## Feed (Experimental)
+The feed interface can be accessed by issuing zkillboard feed, all commands available can be found with help.
+
+
 
 ## Stomp
 The stomp service is read only. If you need to send data via it, come by IRC and have a chat with us.
