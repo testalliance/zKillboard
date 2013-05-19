@@ -21,61 +21,73 @@ class Stats
 
 	public static function getTopPilots($parameters = array(), $allTime = false)
 	{
+		$parameters["cacheTime"] = 3600;
 		return Stats::getTop("characterID", $parameters, $allTime);
 	}
 
 	public static function getTopPointsPilot($parameters = array(), $allTime = false)
 	{
+		$parameters["cacheTime"] = 3600;
 		return Stats::getTopPoints("characterID", $parameters, $allTime);
 	}
 
 	public static function getTopCorps($parameters = array(), $allTime = false)
 	{
+		$parameters["cacheTime"] = 3600;
 		return Stats::getTop("corporationID", $parameters, $allTime);
 	}
 
 	public static function getTopPointsCorp($parameters = array(), $allTime = false)
 	{
+		$parameters["cacheTime"] = 3600;
 		return Stats::getTopPoints("corporationID", $parameters, $allTime);
 	}
 
 	public static function getTopAllis($parameters = array(), $allTime = false)
 	{
+		$parameters["cacheTime"] = 3600;
 		return Stats::getTop("allianceID", $parameters, $allTime);
 	}
 
 	public static function getTopFactions($parameters = array(), $allTime = false)
 	{
+		$parameters["cacheTime"] = 3600;
 		return Stats::getTop("factionID", $parameters, $allTime);
 	}
 
 	public static function getTopPointsAlli($parameters = array(), $allTime = false)
 	{
+		$parameters["cacheTime"] = 3600;
 		return Stats::getTopPoints("allianceID", $parameters, $allTime);
 	}
 
 	public static function getTopShips($parameters = array(), $allTime = false)
 	{
+		$parameters["cacheTime"] = 3600;
 		return Stats::getTop("shipTypeID", $parameters, $allTime);
 	}
 
 	public static function getTopGroups($parameters = array(), $allTime = false)
 	{
+		$parameters["cacheTime"] = 3600;
 		return Stats::getTop("groupID", $parameters, $allTime);
 	}
 
 	public static function getTopWeapons($parameters = array(), $allTime = false)
 	{
+		$parameters["cacheTime"] = 3600;
 		return Stats::getTop("weaponTypeID", $parameters, $allTime);
 	}
 
 	public static function getTopSystems($parameters = array(), $allTime = false)
 	{
+		$parameters["cacheTime"] = 3600;
 		return Stats::getTop("solarSystemID", $parameters, $allTime);
 	}
 
 	public static function getTopRegions($parameters = array(), $allTime = false)
 	{
+		$parameters["cacheTime"] = 3600;
 		return Stats::getTop("regionID", $parameters, $allTime);
 	}
 
