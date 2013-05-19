@@ -28,10 +28,12 @@ class CLI
 			"|n|" => "0" //Neutral
 			);
 
+		$message .= "|n|";
 		foreach($colors as $color => $value)
 			$message = str_replace($color, "\033[".$value."m", $message);
 
-		echo $message.PHP_EOL;
+		if (posix_isatty(STDOUT)) echo $message.PHP_EOL;
+		else Log::log($message);
 		if($die) die();
 	}
 
