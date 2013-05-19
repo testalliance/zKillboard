@@ -109,6 +109,8 @@ class Db
 		throw new Exception($errorInfo[0] . " - " . $errorInfo[1] . " - " . $errorInfo[2]);
 	}
 
+	private static $horribleQueryMutexArray = array();
+
 	/**
 	 * @static
 	 * @param string $query The query to be executed.
@@ -122,8 +124,15 @@ class Db
 		if (strpos($query, ";") !== false) throw new Exception("Semicolons are not allowed in queries.  Use parameters instead.");
 
 		// cacheTime of 0 or less means skip all caches and just do the query
+		$key = Db::getKey($query, $params);
+		// Horrible but temporary mutex solution to ensure a single version of a
+		// query is being executed once, and only once at a given moment
+		// yes , this is perfect, atm I don't care -- Squizz
+		// (karbowiak made me do it)
+		// TODO implement this properly
+		while (array_key_exists($key, self::$horribleQueryMutexArray)) sleep(100);
+
 		if ($cacheTime > 0) {
-			$key = Db::getKey($query, $params);
 
 			// First, check our local storage bin
 			$result = Bin::get($key, FALSE);
@@ -134,26 +143,35 @@ class Db
 			if ($result !== FALSE) return $result;
 		}
 
-		Db::$queryCount++;
+		self::$horribleQueryMutexArray[$key] = true;
+		
+		try {
+			Db::$queryCount++;
 
-		// OK, hit up the database, but let's time it too
-		$timer = new Timer();
-		$pdo = Db::getPDO();
-		$stmt = $pdo->prepare($query);
-		$stmt->execute($params);
-		if ($stmt->errorCode() != 0) Db::processError($stmt, $query, $params);
+			// OK, hit up the database, but let's time it too
+			$timer = new Timer();
+			$pdo = Db::getPDO();
+			$stmt = $pdo->prepare($query);
+			$stmt->execute($params);
+			if ($stmt->errorCode() != 0) Db::processError($stmt, $query, $params);
 
-		$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-		$stmt->closeCursor();
-		$duration = $timer->stop();
+			$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+			$stmt->closeCursor();
+			$duration = $timer->stop();
 
-		if ($cacheTime > 0) {
-			Bin::set($key, $result);
-			Cache::set($key, $result, min(3600, $cacheTime));
+			if ($cacheTime > 0) {
+				Bin::set($key, $result);
+				Cache::set($key, $result, min(3600, $cacheTime));
+			}
+			if ($duration > 5000) Db::log($query, $params, $duration);
+
+			unset(self::$horribleQueryMutexArray[$key]);
+			return $result;
+		} catch (Exception $ex) {
+			unset(self::$horribleQueryMutexArray[$key]);
+			throw $ex;
+
 		}
-		if ($duration > 5000) Db::log($query, $params, $duration);
-
-		return $result;
 	}
 
 	/**
