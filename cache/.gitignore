@@ -1,2 +1,3 @@
 templates/*
 queryCache/*
+locks/*

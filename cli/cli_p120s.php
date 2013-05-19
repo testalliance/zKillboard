@@ -60,7 +60,7 @@ class cli_p120s implements cliCommand
 							continue;
 						}
 						$cachedUntil = $result->cached_until;
-						$new = processRawApi($keyID, $charID, $result);
+						$new = Api::processRawApi($keyID, $charID, $result);
 						if ($new) Log::log("(120) $keyID - $new kills");
 
 						$file = "/var/killboard/zkb_killlogs/{$keyID}_{$charID}_0.xml";

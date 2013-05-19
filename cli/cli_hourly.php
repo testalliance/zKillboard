@@ -20,41 +20,20 @@ class cli_hourly implements cliCommand
 {
 	public function getDescription()
 	{
-		return "Tasks that needs to run every hour. |g|Usage: hourly <task>";
+		return "Tasks that needs to run every hour. |g|Usage: hourly";
 	}
 
 	public function getAvailMethods()
 	{
-		return "apiPercentage apiLogClean manualMailAPIVerificationCleanup all"; // Space seperated list
+		return "";
 	}
 
 	public function execute($parameters)
 	{
-		if (sizeof($parameters) == 0 || $parameters[0] == "") CLI::out("Usage: |g|help <command>|n| To see a list of commands, use: |g|list", true);
-		$command = $parameters[0];
-
-		switch($command)
-		{
-			case "all";
-				self::apiPercentage();
-				Db::execute("delete from zz_api_log where requestTime < date_sub(now(), interval 36 hour)");
-				Db::execute("update zz_killmails set kill_json = '' where processed = 2 and killID < 0 and kill_json != ''");
-				Db::execute("update zz_manual_mails set rawText = '' where killID > 0 and rawText != ''");
-			break;
-
-			case "apiPercentage";
-				self::apiPercentage();
-			break;
-
-			case "apiLogClean";
-				Db::execute("delete from zz_api_log where requestTime < date_sub(now(), interval 36 hour)");
-			break;
-
-			case "manualMailAPIVerificationCleanup";
-				Db::execute("update zz_killmails set kill_json = '' where processed = 2 and killID < 0 and kill_json != ''");
-				Db::execute("update zz_manual_mails set rawText = '' where killID > 0 and rawText != ''");
-			break;
-		}
+		self::apiPercentage();
+		Db::execute("delete from zz_api_log where requestTime < date_sub(now(), interval 36 hour)");
+		Db::execute("update zz_killmails set kill_json = '' where processed = 2 and killID < 0 and kill_json != ''");
+		Db::execute("update zz_manual_mails set rawText = '' where killID > 0 and rawText != ''");
 	}
 
 	private static function apiPercentage()

@@ -31,11 +31,10 @@ class cli_apiFetchKillLog implements cliCommand
 	public function execute($parameters)
 	{
 		@$apiRowID = $parameters[0];
-		@$apiRowID= $argv[1];
 
 		$apiRow = Db::queryRow("select * from zz_api_characters where apiRowID = :id", array(":id" => $apiRowID), 0);
 
-		if (!$apiRow) die("No apiRowID");
+		if (!$apiRow) CLI::out("|r|No such apiRowID: $apiRowID", true);
 
 		$keyID = $apiRow["keyID"];
 		$vCode = Db::queryField("select vCode from zz_api where keyID = :keyID", "vCode", array(":keyID" => $keyID));
@@ -64,7 +63,7 @@ class cli_apiFetchKillLog implements cliCommand
 			@unlink($file);
 			error_log($pheal->xml . "\n", 3, $file);
 
-			$aff = processRawApi($keyID, $charID, $result);
+			$aff = Api::processRawApi($keyID, $charID, $result);
 			if ($aff > 0) {
 				$keyID = "$keyID";
 				while (strlen($keyID) < 8) $keyID = " " . $keyID;
