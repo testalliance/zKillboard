@@ -17,4 +17,4 @@ mkdir -p $locks 2>/dev/null
 lockFile=$locks/$1.lock
 
 # Execute!
-flock -w 63 $lockFile php5 $base/cli.php $*
+flock -w 63 $lockFile php $base/cli.php $*
