@@ -26,14 +26,14 @@ function exception_error_handler($errno, $errstr, $errfile, $errline ) {
 set_error_handler("exception_error_handler");
 
 if (file_exists("$base/../config.php")) {
-	out("Your config.php is already setup, if you want to reinstall please delete it.", true);
+	out("|r|Your config.php is already setup, if you want to reinstall please delete it.", true);
 }
 
 out("We will prompt you with a few questions.  If at any time you are unsure and want to
-back out of the installation hit CTRL+C.
+back out of the installation hit |g|CTRL+C.|n|
 
-Questions will always have a default answer specified in []'s.  Example:
-What is 1+1? [2]
+|g|Questions will always have a default answer specified in []'s.  Example:
+What is 1+1? [2]|n|
 
 Hitting enter will let you select the default answer.
 
@@ -51,7 +51,7 @@ $settings["dbhost"] = prompt("Database server?", "localhost");
 $settings["memcache"] = "";
 $settings["memcacheport"] = "";
 
-$memc = prompt("Do you have memcached installed?", "yes");
+$memc = prompt("|g|Do you have memcached installed?|n|", "yes");
 if($memc == "yes")
 {
 	$settings["memcache"] = prompt("Memcache server?", "localhost");
@@ -59,18 +59,18 @@ if($memc == "yes")
 }
 
 // Pheal cache
-out("It is highly recommended you find a good location other than the default for these files.");
+out("|g|It is highly recommended you find a good location other than the default for these files.|n|");
 $settings["phealcachelocation"] = prompt("Where do you want to store Pheal's cache files?", "/tmp/");
 
 // Server addr
-out("What is the address of your server? e.g. zkillboard.com");
+out("What is the address of your server? |g|e.g. zkillboard.com|n|");
 $settings["baseaddr"] = prompt("Domain name?", "zkillboard.com");
 
 // Log
 $settings["logfile"] = prompt("Log file location?", "/var/log/zkb.log");
 
 // Image server
-out("Image and API server defaults to the zKillboard proxies, you can however use CCPs servers if you want: https://api.eveonline.com and https://image.eveonline.com");
+out("Image and API server defaults to the zKillboard proxies, you can however use CCPs servers if you want: |g|https://api.eveonline.com and https://image.eveonline.com|n|");
 $settings["apiserver"] = prompt("API Server?", "https://api.zkillboard.com/");
 $settings["imageserver"] = prompt("Image Server?", "https://image.zkillboard.com/");
 
@@ -89,18 +89,17 @@ foreach($settings as $key=>$value) {
 
 // Save the file and then attempt to load and initialize from that file
 $configLocation = "$base/../config.php";
-if (file_put_contents($configLocation, $configFile) === false) out("Unable to write configuration file at $configLocation", true);
-
-require_once "$base/../init.php";
+if (file_put_contents($configLocation, $configFile) === false) out("|r|Unable to write configuration file at $configLocation", true);
 
 try {
-	out("Config file written, now attempting to initialize settings");
+	out("|g|Config file written, now attempting to initialize settings");
+	require_once "$base/../init.php";
 	$one = Db::queryField("select 1 one from dual", "one", array(), 1);
 	if ($one != "1")
 		throw new Exception("We were able to connect but the database did not return the expected '1' for: select 1 one from dual;");
-	out("Success! Database initialized.");
+	out("|g|Success! Database initialized.");
 } catch (Exception $ex) {
-	out("Error! Removing configuration file.");
+	out("|r|Error! Removing configuration file.");
 	unlink($configLocation);
 	throw $ex;
 }
@@ -110,29 +109,29 @@ try {
 	file_put_contents("/etc/bash_completion.d/zkillboard", file_get_contents("$base/bash_complete_zkillboard"));
 	exec("chmod +x $base/../cli.php");
 } catch (Exception $ex) {
-	out("Error! Couldn't move the bash_complete file into /etc/bash_completion.d/, please do this after the installer is done.");
+	out("|r|Error! Couldn't move the bash_complete file into /etc/bash_completion.d/, please do this after the installer is done.");
 }
 
 // Now install the db structure
 try {
 	$sqlFiles = scandir("$base/sql");
 	foreach($sqlFiles as $file) {
-		if (Util::endsWith($file, ".sql")) {
-			$table = str_replace(".sql", "", $file);
-			out("Adding table $table ... ");
+		if (Util::endsWith($file, ".sql.gz")) {
+			$table = str_replace(".sql.gz", "", $file);
+			out("Adding table |g|$table|n| ... ");
 			$sqlFile = "$base/sql/$file";
 			loadFile($sqlFile);
-			out("done");
+			out("|g|done");
 		}
 	}
 } catch (Exception $ex) {
-	out("Error! Removing configuration file.");
+	out("|r|Error! Removing configuration file.");
 	unlink($configLocation);
 	throw $ex;
 }
 
 // Launch the EDK transfer crap
-if(strtolower(prompt("Do you want to migrate kills from an existing EDK installation? (experimental)", "y/N")) == "y")
+if(strtolower(prompt("|g|Do you want to migrate kills from an existing EDK installation? |r|(experimental)|n|", "y/N")) == "y")
 {
 	$edkPath = prompt("Root path of your edk installation?");
 	if($edkPath)
@@ -171,14 +170,44 @@ function loadFile($file) {
 	fclose($handle);
 }
 
-function prompt($prompt, $default = "") {
-  echo "$prompt [$default] ";
-  $answer = trim(fgets(STDIN));
-  if (strlen($answer) == 0) return $default;
-  return $answer;
+function out($message, $die = false, $newline = true)
+{
+	$colors = array(
+		"|w|" => "1;37", //White
+		"|b|" => "0;34", //Blue
+		"|g|" => "0;32", //Green
+		"|r|" => "0;31", //Red
+		"|n|" => "0" //Neutral
+		);
+
+	foreach($colors as $color => $value)
+		$message = str_replace($color, "\033[".$value."m", $message);
+
+	if($newline)
+		echo $message.PHP_EOL;
+	else
+		echo $message;
+	if($die) die();
 }
 
-function out($text, $die = false) {
-  echo "$text\n";
-  if ($die) die();
+function prompt($prompt, $default = "") {
+	out("$prompt [$default] ", false, false);
+	$answer = trim(fgets(STDIN));
+	if (strlen($answer) == 0) return $default;
+	return $answer;
+}
+
+// Password prompter kindly borrowed from http://stackoverflow.com/questions/187736/command-line-password-prompt-in-php
+function prompt_silent($prompt = "Enter Password:") {
+	$command = "/usr/bin/env bash -c 'echo OK'";
+	if (rtrim(shell_exec($command)) !== 'OK') {
+		trigger_error("Can't invoke bash");
+		return;
+	}
+	$command = "/usr/bin/env bash -c 'read -s -p \""
+		. addslashes($prompt)
+		. "\" mypassword && echo \$mypassword'";
+	$password = rtrim(shell_exec($command));
+	echo "\n";
+	return $password;
 }
