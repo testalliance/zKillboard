@@ -37,7 +37,7 @@ class cli_populateCharacters implements cliCommand
 
 	public function execute($parameters)
 	{
-		self::populatCharacters();
+		self::populateCharacters();
 	}
 
 	private static function populatCharacters()
