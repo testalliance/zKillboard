@@ -42,7 +42,6 @@ class cli_updateCharacters implements cliCommand
 
 	private static function updateCharacters()
 	{
-		CLI::out("|g|Updating characters");
 		$minute = (int) date("i");
 		if ($minute == 0) {
 			Db::execute("insert ignore into zz_characters (characterID) select ceoID from zz_corporations");
@@ -65,7 +64,7 @@ class cli_updateCharacters implements cliCommand
 				$name = $charInfo->characterName;
 				$corpID = $charInfo->corporationID;
 				$alliID = $charInfo->allianceID;
-				CLI::out("|g|$name|n| $id $corpID $alliID");
+				//CLI::out("|g|$name|n| $id $corpID $alliID");
 				if ($name != "") Db::execute("update zz_characters set name = :name, corporationID = :corpID, allianceID = :alliID where characterID = :id", array(":id" => $id, ":name" => $name, ":corpID" => $corpID, ":alliID" => $alliID));
 			}
 			catch (Exception $ex)
