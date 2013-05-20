@@ -77,6 +77,7 @@ class cli_apiFetchKillLog implements cliCommand
 				case 120:
 					// Don't log it
 				break;	
+				case 201: // Character does not belong to account.
 				case 222: // API has expired
 				case 221: // Invalid access, delete the toon from the char list until later re-verification
 				case 220: // Invalid Corporation Key. Key owner does not fullfill role requirements anymore.
