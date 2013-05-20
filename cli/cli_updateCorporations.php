@@ -42,7 +42,6 @@ class cli_updateCorporations implements cliCommand
 
 	private static function updateCorporations()
 	{
-		CLI::out("|g|Updating corporations");
 		Db::execute("delete from zz_corporations where corporationID = 0");
 		Db::execute("insert ignore into zz_corporations (corporationID) select executorCorpID from zz_alliances where executorCorpID > 0");
 		$result = Db::query("select corporationID, name, memberCount, ticker from zz_corporations where (memberCount is null or memberCount > 0 or lastUpdated = 0)  and corporationID >= 1000001 order by lastUpdated limit 100", array(), 0);
@@ -62,7 +61,7 @@ class cli_updateCorporations implements cliCommand
 				$ceoID = $corpInfo->ceoID;
 				if ($ceoID == 1) $ceoID = 0;
 				$dscr = $corpInfo->description;
-				CLI::out("|g|$id|n| $name");
+				//CLI::out("|g|$id|n| $name");
 				if ($name != "") Db::execute("update zz_corporations set name = :name, ticker = :ticker, memberCount = :memberCount, ceoID = :ceoID, description = :dscr, lastUpdated = now() where corporationID = :id",
 						array(":id" => $id, ":name" => $name, ":ticker" => $ticker, ":memberCount" => $memberCount, ":ceoID" => $ceoID, ":dscr" => $dscr));
 

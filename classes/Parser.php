@@ -701,7 +701,6 @@ class Parser
 		if ($numKills > 0)
 		{
 			Log::log("Processed $numKills kills");
-			CLI::out("Processed |g|$numKills|n| kills");
 		}
 		self::removeTempTables();
 	}

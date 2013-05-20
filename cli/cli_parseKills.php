@@ -37,7 +37,6 @@ class cli_parseKills implements cliCommand
 
 	public function execute($parameters)
 	{
-		CLI::out("|g|Parsing killmails");
 		Parser::parseKills();
 	}
 }
