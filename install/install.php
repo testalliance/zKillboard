@@ -143,7 +143,7 @@ if(strtolower(CLI::prompt("|g|Do you want to migrate kills from an existing EDK 
 		else
 			$cmd = "php ";
 
-		$cmd .= escapeshellarg("edk_to_zkb.php") . " ";
+		$cmd .= escapeshellarg('$base/edkConversion.php') . " ";
 		$cmd .= escapeshellarg($edkPath) . " ";
 		$cmd .= escapeshellarg($settings["dbhost"]) . " ";
 		$cmd .= escapeshellarg($settings["dbuser"]) . " ";
