@@ -40,7 +40,7 @@ class cli_populateCharacters implements cliCommand
 		self::populateCharacters();
 	}
 
-	private static function populatCharacters()
+	private static function populateCharacters()
 	{
 		CLI::out("This is a semi-persistent script.");
 		$timer = new Timer();
