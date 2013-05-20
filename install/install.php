@@ -16,77 +16,100 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+$base = dirname(__FILE__);
+require_once "$base/../init.php";
+
 function exception_error_handler($errno, $errstr, $errfile, $errline ) {
     throw new ErrorException($errstr, $errno, 0, $errfile, $errline);
 }
+
 // Force all warnings into errors
 set_error_handler("exception_error_handler");
 
-$base = dirname(__FILE__);
-
 if (file_exists("$base/../config.php")) {
-	die("Your config.php is already setup, if you want to reinstall please delete it.");
+	CLI::out("|r|Your config.php is already setup, if you want to reinstall please delete it.", true);
 }
 
-echo "
-We will prompt you with a few questions.  If at any time you are unsure and want to
-back out of the installation hit CTRL+C.
+CLI::out("We will prompt you with a few questions.  If at any time you are unsure and want to
+back out of the installation hit |g|CTRL+C.|n|
 
-Questions will always have a default answer specified in []'s.  Example:
-What is 1+1? [2] 
+|g|Questions will always have a default answer specified in []'s.  Example:
+What is 1+1? [2]|n|
 
 Hitting enter will let you select the default answer.
 
-Some database questions:
-";
+Some database questions:");
 
 $settings = array();
-$settings["dbuser"] = prompt("Database username?", "zkillboard");
-$settings["dbpassword"] = prompt("Database password?", "zkillboard");
-$settings["dbname"] = prompt("Database name?", "zkillboard");
-$settings["dbhost"] = prompt("Database server?", "localhost");
 
-echo "\nSome memcache questions:\n";
-$settings["memcache"] = prompt("Memcache server?", "localhost");
-$settings["memcacheport"] = prompt("Memcache port?", "11211");
+// Database
+$settings["dbuser"] = CLI::prompt("Database username?", "zkillboard");
+$settings["dbpassword"] = CLI::prompt("Database password?", "zkillboard");
+$settings["dbname"] = CLI::prompt("Database name?", "zkillboard");
+$settings["dbhost"] = CLI::prompt("Database server?", "localhost");
 
-echo "\nPheal.  It is highly recommended you find a good location other than the default for these files.\n";
-$settings["phealcachelocation"] = prompt("Where do you want to store Pheal's cache files?", "/tmp/");
+// Memcache
+$settings["memcache"] = "";
+$settings["memcacheport"] = "";
 
-echo "\nAnd now what is the address of your server?  Just use the domain name!  e.g. zkillboard.com\n";
-$settings["baseaddr"] = prompt("Domain name?", "zkillboard.com");
+$memc = CLI::prompt("|g|Do you have memcached installed?|n|", "yes");
+if($memc == "yes")
+{
+	$settings["memcache"] = CLI::prompt("Memcache server?", "localhost");
+	$settings["memcacheport"] = CLI::prompt("Memcache port?", "11211");
+}
 
-$settings["logfile"] = prompt("Log file location?", "/var/log/zkb.log");
+// Pheal cache
+CLI::out("|g|It is highly recommended you find a good location other than the default for these files.|n|");
+$settings["phealcachelocation"] = CLI::prompt("Where do you want to store Pheal's cache files?", "/tmp/");
 
-echo "\nImage and API server defaults to the zKillboard proxies, you can however use CCPs servers if you want\n https://api.eveonline.com and https://image.eveonline.com\n";
-$settings["apiserver"] = prompt("API Server?", "https://api.zkillboard.com/");
-$settings["imageserver"] = prompt("Image Server?", "https://image.zkillboard.com/");
+// Server addr
+CLI::out("What is the address of your server? |g|e.g. zkillboard.com|n|");
+$settings["baseaddr"] = CLI::prompt("Domain name?", "zkillboard.com");
 
-echo "\nA secret key is needed for your cookies to be encrypted.\n";
-$settings["cookiesecret"] = prompt("Secret key for cookies?", "MY_SECRET");
+// Log
+$settings["logfile"] = CLI::prompt("Log file location?", "/var/log/zkb.log");
 
+// Image server
+CLI::out("Image and API server defaults to the zKillboard proxies, you can however use CCPs servers if you want: |g|https://api.eveonline.com and https://image.eveonline.com|n|");
+$settings["apiserver"] = CLI::prompt("API Server?", "https://api.zkillboard.com/");
+$settings["imageserver"] = CLI::prompt("Image Server?", "https://image.zkillboard.com/");
+
+// Secret key for cookies
+CLI::out("A secret key is needed for your cookies to be encrypted.");
+$cookiesecret = CLI::prompt("Secret key for cookies?", uniqid(time()));
+$settings["cookiesecret"] = sha1($cookiesecret);
+
+// Get default config
 $configFile = file_get_contents("$base/config.new.php");
 
+// Create the new config
 foreach($settings as $key=>$value) {
 	$configFile = str_replace("%$key%", $value, $configFile);
 }
 
 // Save the file and then attempt to load and initialize from that file
 $configLocation = "$base/../config.php";
-if (file_put_contents($configLocation, $configFile) === false) die("Unable to write configuration file at $configLocation\n");
+if (file_put_contents($configLocation, $configFile) === false) CLI::out("|r|Unable to write configuration file at $configLocation", true);
 
 try {
-	echo "Config file written, now attempting to initialize settings\n";
-	require_once "$base/../init.php";
-	echo "Settings initialized, now attempting to connect to the database and memcached\n";
+	CLI::out("|g|Config file written, now attempting to initialize settings");
 	$one = Db::queryField("select 1 one from dual", "one", array(), 1);
-	if ($one != "1") throw new Exception("We were able to connect but the database did not return the expected '1' for: select 1 one from dual;");
-	
-	echo "\n\nSuccess!\n\n";
+	if ($one != "1")
+		throw new Exception("We were able to connect but the database did not return the expected '1' for: select 1 one from dual;");
+	CLI::out("|g|Success! Database initialized.");
 } catch (Exception $ex) {
-	echo "\n\nError!  Removing configuration file.\n";
+	CLI::out("|r|Error! Removing configuration file.");
 	unlink($configLocation);
 	throw $ex;
+}
+
+// Move bash_complete_zkillboard to the bash_complete folder
+try {
+	file_put_contents("/etc/bash_completion.d/zkillboard", file_get_contents("$base/bash_complete_zkillboard"));
+	exec("chmod +x $base/../cli.php");
+} catch (Exception $ex) {
+	CLI::out("|r|Error! Couldn't move the bash_complete file into /etc/bash_completion.d/, please do this after the installer is done.");
 }
 
 // Now install the db structure
@@ -95,21 +118,22 @@ try {
 	foreach($sqlFiles as $file) {
 		if (Util::endsWith($file, ".sql.gz")) {
 			$table = str_replace(".sql.gz", "", $file);
-			echo "Adding table $table ... ";
+			CLI::out("Adding table |g|$table|n| ... ");
 			$sqlFile = "$base/sql/$file";
 			loadFile($sqlFile);
-			echo "done\n";
+			CLI::out("|g|done");
 		}
 	}
 } catch (Exception $ex) {
-	echo "\n\nError!  Removing configuration file.\n";
+	CLI::out("|r|Error! Removing configuration file.");
 	unlink($configLocation);
 	throw $ex;
 }
 
-if(strtolower(prompt("Do you want to migrate kills from an existing EDK installation? (experimental)", "y/N")) == "y")
+// Launch the EDK transfer crap
+if(strtolower(CLI::prompt("|g|Do you want to migrate kills from an existing EDK installation? |r|(experimental)|n|", "y/N")) == "y")
 {
-	$edkPath = prompt("Root path of your edk installation?");
+	$edkPath = CLI::prompt("Root path of your edk installation?");
 	if($edkPath)
 	{
 		$cmd = "";
@@ -119,7 +143,7 @@ if(strtolower(prompt("Do you want to migrate kills from an existing EDK installa
 		else
 			$cmd = "php ";
 
-		$cmd .= escapeshellarg("$base/../util/edk_to_zkb.php") . " ";
+		$cmd .= escapeshellarg("edk_to_zkb.php") . " ";
 		$cmd .= escapeshellarg($edkPath) . " ";
 		$cmd .= escapeshellarg($settings["dbhost"]) . " ";
 		$cmd .= escapeshellarg($settings["dbuser"]) . " ";
@@ -144,28 +168,4 @@ function loadFile($file) {
 		}
 	}
 	fclose($handle);
-}
-
-
-function prompt($prompt, $default = "") {
-	echo "$prompt [$default] ";
-	$answer = trim(fgets(STDIN));
-	if (strlen($answer) == 0) return $default;
-	return $answer;
-}
-
-
-// Password prompter kindly borrowed from http://stackoverflow.com/questions/187736/command-line-password-prompt-in-php
-function prompt_silent($prompt = "Enter Password:") {
-	$command = "/usr/bin/env bash -c 'echo OK'";
-	if (rtrim(shell_exec($command)) !== 'OK') {
-		trigger_error("Can't invoke bash");
-		return;
-	}
-	$command = "/usr/bin/env bash -c 'read -s -p \""
-		. addslashes($prompt)
-		. "\" mypassword && echo \$mypassword'";
-	$password = rtrim(shell_exec($command));
-	echo "\n";
-	return $password;
 }
