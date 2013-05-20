@@ -17,7 +17,6 @@
  */
 
 $base = dirname(__FILE__);
-require_once "$base/../init.php";
 
 function exception_error_handler($errno, $errstr, $errfile, $errline ) {
     throw new ErrorException($errstr, $errno, 0, $errfile, $errline);
@@ -27,14 +26,14 @@ function exception_error_handler($errno, $errstr, $errfile, $errline ) {
 set_error_handler("exception_error_handler");
 
 if (file_exists("$base/../config.php")) {
-	CLI::out("|r|Your config.php is already setup, if you want to reinstall please delete it.", true);
+	out("Your config.php is already setup, if you want to reinstall please delete it.", true);
 }
 
-CLI::out("We will prompt you with a few questions.  If at any time you are unsure and want to
-back out of the installation hit |g|CTRL+C.|n|
+out("We will prompt you with a few questions.  If at any time you are unsure and want to
+back out of the installation hit CTRL+C.
 
-|g|Questions will always have a default answer specified in []'s.  Example:
-What is 1+1? [2]|n|
+Questions will always have a default answer specified in []'s.  Example:
+What is 1+1? [2]
 
 Hitting enter will let you select the default answer.
 
@@ -43,41 +42,41 @@ Some database questions:");
 $settings = array();
 
 // Database
-$settings["dbuser"] = CLI::prompt("Database username?", "zkillboard");
-$settings["dbpassword"] = CLI::prompt("Database password?", "zkillboard");
-$settings["dbname"] = CLI::prompt("Database name?", "zkillboard");
-$settings["dbhost"] = CLI::prompt("Database server?", "localhost");
+$settings["dbuser"] = prompt("Database username?", "zkillboard");
+$settings["dbpassword"] = prompt("Database password?", "zkillboard");
+$settings["dbname"] = prompt("Database name?", "zkillboard");
+$settings["dbhost"] = prompt("Database server?", "localhost");
 
 // Memcache
 $settings["memcache"] = "";
 $settings["memcacheport"] = "";
 
-$memc = CLI::prompt("|g|Do you have memcached installed?|n|", "yes");
+$memc = prompt("Do you have memcached installed?", "yes");
 if($memc == "yes")
 {
-	$settings["memcache"] = CLI::prompt("Memcache server?", "localhost");
-	$settings["memcacheport"] = CLI::prompt("Memcache port?", "11211");
+	$settings["memcache"] = prompt("Memcache server?", "localhost");
+	$settings["memcacheport"] = prompt("Memcache port?", "11211");
 }
 
 // Pheal cache
-CLI::out("|g|It is highly recommended you find a good location other than the default for these files.|n|");
-$settings["phealcachelocation"] = CLI::prompt("Where do you want to store Pheal's cache files?", "/tmp/");
+out("It is highly recommended you find a good location other than the default for these files.");
+$settings["phealcachelocation"] = prompt("Where do you want to store Pheal's cache files?", "/tmp/");
 
 // Server addr
-CLI::out("What is the address of your server? |g|e.g. zkillboard.com|n|");
-$settings["baseaddr"] = CLI::prompt("Domain name?", "zkillboard.com");
+out("What is the address of your server? e.g. zkillboard.com");
+$settings["baseaddr"] = prompt("Domain name?", "zkillboard.com");
 
 // Log
-$settings["logfile"] = CLI::prompt("Log file location?", "/var/log/zkb.log");
+$settings["logfile"] = prompt("Log file location?", "/var/log/zkb.log");
 
 // Image server
-CLI::out("Image and API server defaults to the zKillboard proxies, you can however use CCPs servers if you want: |g|https://api.eveonline.com and https://image.eveonline.com|n|");
-$settings["apiserver"] = CLI::prompt("API Server?", "https://api.zkillboard.com/");
-$settings["imageserver"] = CLI::prompt("Image Server?", "https://image.zkillboard.com/");
+out("Image and API server defaults to the zKillboard proxies, you can however use CCPs servers if you want: https://api.eveonline.com and https://image.eveonline.com");
+$settings["apiserver"] = prompt("API Server?", "https://api.zkillboard.com/");
+$settings["imageserver"] = prompt("Image Server?", "https://image.zkillboard.com/");
 
 // Secret key for cookies
-CLI::out("A secret key is needed for your cookies to be encrypted.");
-$cookiesecret = CLI::prompt("Secret key for cookies?", uniqid(time()));
+out("A secret key is needed for your cookies to be encrypted.");
+$cookiesecret = prompt("Secret key for cookies?", uniqid(time()));
 $settings["cookiesecret"] = sha1($cookiesecret);
 
 // Get default config
@@ -90,16 +89,18 @@ foreach($settings as $key=>$value) {
 
 // Save the file and then attempt to load and initialize from that file
 $configLocation = "$base/../config.php";
-if (file_put_contents($configLocation, $configFile) === false) CLI::out("|r|Unable to write configuration file at $configLocation", true);
+if (file_put_contents($configLocation, $configFile) === false) out("Unable to write configuration file at $configLocation", true);
+
+require_once "$base/../init.php";
 
 try {
-	CLI::out("|g|Config file written, now attempting to initialize settings");
+	out("Config file written, now attempting to initialize settings");
 	$one = Db::queryField("select 1 one from dual", "one", array(), 1);
 	if ($one != "1")
 		throw new Exception("We were able to connect but the database did not return the expected '1' for: select 1 one from dual;");
-	CLI::out("|g|Success! Database initialized.");
+	out("Success! Database initialized.");
 } catch (Exception $ex) {
-	CLI::out("|r|Error! Removing configuration file.");
+	out("Error! Removing configuration file.");
 	unlink($configLocation);
 	throw $ex;
 }
@@ -109,31 +110,31 @@ try {
 	file_put_contents("/etc/bash_completion.d/zkillboard", file_get_contents("$base/bash_complete_zkillboard"));
 	exec("chmod +x $base/../cli.php");
 } catch (Exception $ex) {
-	CLI::out("|r|Error! Couldn't move the bash_complete file into /etc/bash_completion.d/, please do this after the installer is done.");
+	out("Error! Couldn't move the bash_complete file into /etc/bash_completion.d/, please do this after the installer is done.");
 }
 
 // Now install the db structure
 try {
 	$sqlFiles = scandir("$base/sql");
 	foreach($sqlFiles as $file) {
-		if (Util::endsWith($file, ".sql.gz")) {
-			$table = str_replace(".sql.gz", "", $file);
-			CLI::out("Adding table |g|$table|n| ... ");
+		if (Util::endsWith($file, ".sql")) {
+			$table = str_replace(".sql", "", $file);
+			out("Adding table $table ... ");
 			$sqlFile = "$base/sql/$file";
 			loadFile($sqlFile);
-			CLI::out("|g|done");
+			out("done");
 		}
 	}
 } catch (Exception $ex) {
-	CLI::out("|r|Error! Removing configuration file.");
+	out("Error! Removing configuration file.");
 	unlink($configLocation);
 	throw $ex;
 }
 
 // Launch the EDK transfer crap
-if(strtolower(CLI::prompt("|g|Do you want to migrate kills from an existing EDK installation? |r|(experimental)|n|", "y/N")) == "y")
+if(strtolower(prompt("Do you want to migrate kills from an existing EDK installation? (experimental)", "y/N")) == "y")
 {
-	$edkPath = CLI::prompt("Root path of your edk installation?");
+	$edkPath = prompt("Root path of your edk installation?");
 	if($edkPath)
 	{
 		$cmd = "";
@@ -168,4 +169,16 @@ function loadFile($file) {
 		}
 	}
 	fclose($handle);
+}
+
+function prompt($prompt, $default = "") {
+  echo "$prompt [$default] ";
+  $answer = trim(fgets(STDIN));
+  if (strlen($answer) == 0) return $default;
+  return $answer;
+}
+
+function out($text, $die = false) {
+  echo "$text\n";
+  if ($die) die();
 }
