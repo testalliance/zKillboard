@@ -20,7 +20,7 @@ class cli_feed implements cliCommand
 {
 	public function getDescription()
 	{
-		return "Manages the external feeds. You can add, remove, list and fetch. |w|Beware, this is a persistent method. It's run and forget!.|n| |g|Usage: feed <method>";
+		return "Manages the external feeds. You can add, remove, list and fetch. |w|Beware, this is a persistent method. It's run and forget!.|n| |g|Usage: feed <method>\n|n|You can do a fetch all by issuing |g|feed fetch all|n|  Be patient, this could take awhile!";
 	}
 
 	public function getAvailMethods()
@@ -102,10 +102,11 @@ class cli_feed implements cliCommand
 
 			case "fetch":
 				CLI::out("|g|Initiating feed fetching|n|");
-				$doSleep = false;
+
+        $fetchAll = isset($parameters[1]) && $parameters[1] == "all";
+
 				$feeds = Db::query("SELECT url, lastFetchTime FROM zz_feeds");
-				if(sizeof($feeds) > 1)
-					$doSleep = true;
+        $totalCount = 0;
 
 				foreach($feeds as $feed)
 				{
@@ -113,60 +114,65 @@ class cli_feed implements cliCommand
 					$lastFetchTime = strtotime($feed["lastFetchTime"])+3600;
 					$currentTime = time();
 					$insertCount = 0;
-					if($lastFetchTime <= $currentTime)
+					if($lastFetchTime <= $currentTime || true)
 					{
 						CLI::out("Fetching for |g|$url|n|");
-						$data = self::fetchUrl($url);
-						$data = json_decode($data);
-						foreach($data as $kill)
-						{
-							if(isset($kill->_stringValue))
-								unset($kill->_stringValue);
+            $page = 1;
+            do {
+              if ($fetchAll) echo "Page: $page\n";
+              $data = self::fetchUrl($url . ($fetchAll ? "/page/$page/" : ""));
+              $data = json_decode($data);
+              $insertCount = 0;
+              if (sizeof($data)) foreach($data as $kill)
+              {
+                if(isset($kill->_stringValue))
+                  unset($kill->_stringValue);
 
-							$hash = Util::getKillHash(null, $kill);
-							$json = json_encode($kill);
-							$killID = $kill->killID;
-							$source = "zKB Feed Fetch";
+                $hash = Util::getKillHash(null, $kill);
+                $json = json_encode($kill);
+                $killID = $kill->killID;
+                $source = "zKB Feed Fetch";
 
-							$insertCount += Db::execute("INSERT IGNORE INTO zz_killmails (killID, hash, source, kill_json) VALUES (:killID, :hash, :source, :kill_json)", array(":killID" => $killID, ":hash" => $hash, ":source" => $source, ":kill_json" => $json));
-							Db::execute("UPDATE zz_feeds SET lastFetchTime = :time WHERE url = :url", array(":time" => date("Y-m-d H:i:s"), ":url" => $url));
-						}
+                $insertCount += Db::execute("INSERT IGNORE INTO zz_killmails (killID, hash, source, kill_json) VALUES (:killID, :hash, :source, :kill_json)", array(":killID" => $killID, ":hash" => $hash, ":source" => $source, ":kill_json" => $json));
+                Db::execute("UPDATE zz_feeds SET lastFetchTime = :time WHERE url = :url", array(":time" => date("Y-m-d H:i:s"), ":url" => $url));
+              }
 
-						if($insertCount <= 0)
-							break;
+              $totalCount += $insertCount;
+              CLI::out("Inserted |g|$insertCount|n| new kills from |g|$url|n|" . ($fetchAll ? " Page $page " : ""));
+              Log::log("Inserted $insertCount new kills from $url");
+              if(sizeof($feeds) > 1 || $page > 1)
+              {
+                CLI::out("|g|Pausing...|n|");
+                sleep(10); // yes yes, 10 seconds of sleeping, what?! this is only here to stop hammering. Feel free to hammer tho by commenting this, but you'll just get banned..
+              }
+              $page++;
+            } while (($fetchAll == true && sizeof($data) > 0));
+          }
+        }
+        CLI::out("Inserted a total of |g|" . number_format($totalCount, 0) . "|n| kills.");
+        break;
+    }
+  }
 
-						CLI::out("Inserted |g|$insertCount|n| new kills from |g|$url|n|");
-						Log::log("Inserted $insertCount new kills from $url");
-						if($doSleep)
-						{
-							CLI::out("|g|Sleeping for 10 seconds before fetching another url.. (Otherwise we're hammering..");
-							sleep(10); // yes yes, 10 seconds of sleeping, what?! this is only here to stop hammering. Feel free to hammer tho by commenting this, but you'll just get banned..
-						}
-					}
-				}
-			break;
-		}
-	}
+  private static function fetchUrl($url)
+  {
+    global $baseAddr;
+    $userAgent = "Feed Fetcher for $baseAddr";
 
-	private static function fetchUrl($url)
-	{
-		global $baseAddr;
-		$userAgent = "Feed Fetcher for $baseAddr";
+    $curl = curl_init();
+    curl_setopt($curl, CURLOPT_USERAGENT, $userAgent);
+    curl_setopt($curl, CURLOPT_TIMEOUT, 30);
+    curl_setopt($curl, CURLOPT_POST, false);
+    curl_setopt($curl, CURLOPT_FORBID_REUSE, false);
+    curl_setopt($curl, CURLOPT_ENCODING, "");
+    $headers = array();
+    $headers[] = "Connection: keep-alive";
+    $headers[] = "Keep-Alive: timeout=10, max=1000";
+    curl_setopt($curl, CURLOPT_URL, $url);
+    curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+    $result = curl_exec($curl);
 
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_USERAGENT, $userAgent);
-        curl_setopt($curl, CURLOPT_TIMEOUT, 30);
-        curl_setopt($curl, CURLOPT_POST, false);
-        curl_setopt($curl, CURLOPT_FORBID_REUSE, false);
-        curl_setopt($curl, CURLOPT_ENCODING, "");
-        $headers = array();
-        $headers[] = "Connection: keep-alive";
-        $headers[] = "Keep-Alive: timeout=10, max=1000";
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        $result = curl_exec($curl);
-
-        return $result;
-	}
+    return $result;
+  }
 }
