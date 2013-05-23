@@ -102,60 +102,61 @@ class cli_feedzKB implements cliCommand
 			break;
 
 			case "fetch":
-				CLI::out("|g|Initiating feed fetching|n|");
 				$fetchAll = isset($parameters[1]) && $parameters[1] == "all";
 
-				$feeds = Db::query("SELECT url, lastFetchTime FROM zz_feeds");
+        if ($fetchAll) $feeds = Db::query("SELECT id, url, lastFetchTime FROM zz_feeds order by id");
+				else $feeds = Db::query("SELECT id, url, lastFetchTime FROM zz_feeds where lastFetchTime < date_sub(now(), interval 1 hour) order by id");
 				$totalCount = 0;
 
 				foreach($feeds as $feed)
 				{
 					$url = $feed["url"];
-					$lastFetchTime = strtotime($feed["lastFetchTime"])+3600;
-					$currentTime = time();
-					$insertCount = 0;
-					if($lastFetchTime <= $currentTime || true)
-					{
-						CLI::out("Fetching for |g|$url|n|");
-						$page = 1;
-						do
-						{
-							if ($fetchAll) echo "Page: $page\n";
-							$data = self::fetchUrl($url . ($fetchAll ? "/page/$page/" : ""));
-							$data = json_decode($data);
-							$insertCount = 0;
-							if (sizeof($data)) foreach($data as $kill)
-							{
-								if(isset($kill->_stringValue))
-									unset($kill->_stringValue);
 
-								$hash = Util::getKillHash(null, $kill);
-								$json = json_encode($kill);
-								$killID = $kill->killID;
-								$source = "zKB Feed Fetch";
+          $insertCount = 0;
+          CLI::out("Fetching for |g|$url|n|");
+          $page = 1;
+          do
+          {
+            $fetchedData = self::fetchUrl($url . ($fetchAll ? "page/$page/" : ""));
+            if ($fetchedData == "") {
+              CLI::out("|r|Remote server returned invalid response, lets wait 2 minutes for them to get their act together...|n|");
+              sleep(120);
+              continue;
+            }
+            $data = json_decode($fetchedData);
+            $insertCount = 0;
+            if (sizeof($data) == 0) { print_r($data);  }
+            foreach($data as $kill)
+            {
+              if(isset($kill->_stringValue))
+                unset($kill->_stringValue);
 
-								$insertCount += Db::execute("INSERT IGNORE INTO zz_killmails (killID, hash, source, kill_json) VALUES (:killID, :hash, :source, :kill_json)",
-									array(":killID" => $killID, ":hash" => $hash, ":source" => $source, ":kill_json" => $json));
-								Db::execute("UPDATE zz_feeds SET lastFetchTime = :time WHERE url = :url", array(":time" => date("Y-m-d H:i:s"), ":url" => $url));
-							}
+              $hash = Util::getKillHash(null, $kill);
+              $json = json_encode($kill);
+              $killID = $kill->killID;
+              $source = "zKB Feed Fetch";
 
-							$totalCount += $insertCount;
-							CLI::out("Inserted |g|$insertCount|n| new kills from |g|$url|n|" . ($fetchAll ? " Page $page " : ""));
-							Log::log("Inserted $insertCount new kills from $url");
+              $insertCount += Db::execute("INSERT IGNORE INTO zz_killmails (killID, hash, source, kill_json) VALUES (:killID, :hash, :source, :kill_json)",
+                  array(":killID" => $killID, ":hash" => $hash, ":source" => $source, ":kill_json" => $json));
+            }
+            Db::execute("UPDATE zz_feeds SET lastFetchTime = now() WHERE url = :url", array(":url" => $url));
 
-							if(sizeof($feeds) > 1 || $page > 1)
-							{
-								CLI::out("|g|Pausing...|n|");
-								sleep(10); // yes yes, 10 seconds of sleeping, what?! this is only here to stop hammering. Feel free to hammer tho by commenting this, but you'll just get banned..
-							}
-							$page++;
-						} while (($fetchAll == true && sizeof($data) > 0));
-					}
-				}
-				CLI::out("Inserted a total of |g|" . number_format($totalCount, 0) . "|n| kills.");
-			break;
-		}
-	}
+            $totalCount += $insertCount;
+            CLI::out("Inserted |g|$insertCount|n|/|g|" . sizeof($data) . "|n| kills...");
+            Log::log("Inserted $insertCount new kills from $url");
+
+            if(sizeof($feeds) > 1 || $page > 1)
+            {
+              CLI::out("Pausing...");
+              sleep(10); // yes yes, 10 seconds of sleeping, what?! this is only here to stop hammering. Feel free to hammer tho by commenting this, but you'll just get banned..
+            }
+            $page++;
+          } while (($fetchAll == true && sizeof($data) > 0));
+        }
+        if ($totalCount > 0) CLI::out("Inserted a total of |g|" . number_format($totalCount, 0) . "|n| kills.");
+        break;
+    }
+  }
 
   private static function fetchUrl($url)
   {
