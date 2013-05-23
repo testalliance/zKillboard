@@ -104,79 +104,89 @@ class cli_feedzKB implements cliCommand
 			case "fetch":
 				$fetchAll = isset($parameters[1]) && $parameters[1] == "all";
 
-        if ($fetchAll) $feeds = Db::query("SELECT id, url, lastFetchTime FROM zz_feeds order by id");
-				else $feeds = Db::query("SELECT id, url, lastFetchTime FROM zz_feeds where lastFetchTime < date_sub(now(), interval 1 hour) order by id");
+				if ($fetchAll)
+					$feeds = Db::query("SELECT id, url, lastFetchTime FROM zz_feeds order by id");
+				else
+					$feeds = Db::query("SELECT id, url, lastFetchTime FROM zz_feeds where lastFetchTime < date_sub(now(), interval 1 hour) order by id");
+
 				$totalCount = 0;
 
 				foreach($feeds as $feed)
 				{
 					$url = $feed["url"];
 
-          $insertCount = 0;
-          CLI::out("Fetching for |g|$url|n|");
-          $page = 1;
-          do
-          {
-            $fetchedData = self::fetchUrl($url . ($fetchAll ? "page/$page/" : ""));
-            if ($fetchedData == "") {
-              CLI::out("|r|Remote server returned invalid response, lets wait 2 minutes for them to get their act together...|n|");
-              sleep(120);
-              continue;
-            }
-            $data = json_decode($fetchedData);
-            $insertCount = 0;
-            if (sizeof($data) == 0) { print_r($data);  }
-            foreach($data as $kill)
-            {
-              if(isset($kill->_stringValue))
-                unset($kill->_stringValue);
+					$insertCount = 0;
+					CLI::out("Fetching for |g|$url|n|");
+					$page = 1;
 
-              $hash = Util::getKillHash(null, $kill);
-              $json = json_encode($kill);
-              $killID = $kill->killID;
-              $source = "zKB Feed Fetch";
+					do
+					{
+						$fetchedData = self::fetchUrl($url . ($fetchAll ? "page/$page/" : ""));
+						if ($fetchedData == "") {
+							CLI::out("|r|Remote server returned invalid response, lets wait 2 minutes for them to get their act together...|n|");
+							sleep(120);
+							continue;
+						}
 
-              $insertCount += Db::execute("INSERT IGNORE INTO zz_killmails (killID, hash, source, kill_json) VALUES (:killID, :hash, :source, :kill_json)",
-                  array(":killID" => $killID, ":hash" => $hash, ":source" => $source, ":kill_json" => $json));
-            }
-            Db::execute("UPDATE zz_feeds SET lastFetchTime = now() WHERE url = :url", array(":url" => $url));
+						$data = json_decode($fetchedData);
+						$insertCount = 0;
+						if (sizeof($data) == 0)
+							print_r($data);
 
-            $totalCount += $insertCount;
-            CLI::out("Inserted |g|$insertCount|n|/|g|" . sizeof($data) . "|n| kills...");
-            Log::log("Inserted $insertCount new kills from $url");
+						foreach($data as $kill)
+						{
+							if(isset($kill->_stringValue))
+								unset($kill->_stringValue);
 
-            if(sizeof($feeds) > 1 || $page > 1)
-            {
-              CLI::out("Pausing...");
-              sleep(10); // yes yes, 10 seconds of sleeping, what?! this is only here to stop hammering. Feel free to hammer tho by commenting this, but you'll just get banned..
-            }
-            $page++;
-          } while (($fetchAll == true && sizeof($data) > 0));
-        }
-        if ($totalCount > 0) CLI::out("Inserted a total of |g|" . number_format($totalCount, 0) . "|n| kills.");
-        break;
-    }
-  }
+							$hash = Util::getKillHash(null, $kill);
+							$json = json_encode($kill);
+							$killID = $kill->killID;
+							$source = "zKB Feed Fetch";
 
-  private static function fetchUrl($url)
-  {
-    global $baseAddr;
-    $userAgent = "Feed Fetcher for $baseAddr";
+							$insertCount += Db::execute("INSERT IGNORE INTO zz_killmails (killID, hash, source, kill_json) VALUES (:killID, :hash, :source, :kill_json)",
+								array(":killID" => $killID, ":hash" => $hash, ":source" => $source, ":kill_json" => $json));
+						}
 
-    $curl = curl_init();
-    curl_setopt($curl, CURLOPT_USERAGENT, $userAgent);
-    curl_setopt($curl, CURLOPT_TIMEOUT, 30);
-    curl_setopt($curl, CURLOPT_POST, false);
-    curl_setopt($curl, CURLOPT_FORBID_REUSE, false);
-    curl_setopt($curl, CURLOPT_ENCODING, "");
-    $headers = array();
-    $headers[] = "Connection: keep-alive";
-    $headers[] = "Keep-Alive: timeout=10, max=1000";
-    curl_setopt($curl, CURLOPT_URL, $url);
-    curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-    $result = curl_exec($curl);
+						Db::execute("UPDATE zz_feeds SET lastFetchTime = now() WHERE url = :url", array(":url" => $url));
 
-    return $result;
-  }
+						$totalCount += $insertCount;
+						CLI::out("Inserted |g|$insertCount|n|/|g|" . sizeof($data) . "|n| kills...");
+						Log::log("Inserted $insertCount new kills from $url");
+
+						if(sizeof($feeds) > 1 || $page > 1)
+						{
+							CLI::out("Pausing...");
+							sleep(10); // yes yes, 10 seconds of sleeping, what?! this is only here to stop hammering. Feel free to hammer tho by commenting this, but you'll just get banned..
+						}
+						$page++;
+					} while (($fetchAll == true && sizeof($data) > 0));
+				}
+
+				if ($totalCount > 0)
+					CLI::out("Inserted a total of |g|" . number_format($totalCount, 0) . "|n| kills.");
+			break;
+		}
+	}
+
+	private static function fetchUrl($url)
+	{
+		$baseAddr;
+		$userAgent = "Feed Fetcher for $baseAddr";
+
+		$curl = curl_init();
+		curl_setopt($curl, CURLOPT_USERAGENT, $userAgent);
+		curl_setopt($curl, CURLOPT_TIMEOUT, 30);
+		curl_setopt($curl, CURLOPT_POST, false);
+		curl_setopt($curl, CURLOPT_FORBID_REUSE, false);
+		curl_setopt($curl, CURLOPT_ENCODING, "");
+		$headers = array();
+		$headers[] = "Connection: keep-alive";
+		$headers[] = "Keep-Alive: timeout=10, max=1000";
+		curl_setopt($curl, CURLOPT_URL, $url);
+		curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+		$result = curl_exec($curl);
+
+		return $result;
+	}
 }
