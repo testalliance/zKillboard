@@ -100,7 +100,9 @@ zKillboard comes with a script that automates the cron execution.
 It keeps track of when each job has been run and how frequently it needs to be executed.
 Just run it every minute via cron or a similar system:
 
-- * * * * * /var/killboard/zkillboard.com/cron.php >/whatever/log/you/like.txt 2>&1
+```
+* * * * * /var/killboard/zkillboard.com/cron.php >/whatever/log/you/like.txt 2>&1
+```
 
 If you're not happy with the default timeouts, or want to disable/enable some jobs entirely, you can use the cron.overrides file.
 The cron.overrides file has to be placed into the zKB root dir, next to the cron.php script. It's a simpel json file, with the following format:
@@ -127,23 +129,24 @@ For example the following would disable stompReceive entirely, and increase the 
 ```
 
 If you don't want to use the automated cron script, you can run each command manualy in your crontab:
-
-- * * * * * /var/killboard/zkillboard.com/cliLock.sh minutely all
-- * * * * * /var/killboard/zkillboard.com/cliLock.sh apiFetch
-- * * * * * /var/killboard/zkillboard.com/cliLock.sh parseKills
-- * * * * * /var/killboard/zkillboard.com/cliLock.sh p120s
-- * * * * * /var/killboard/zkillboard.com/cliLock.sh stompReceive
-- * * * * * /var/killboard/zkillboard.com/cliLock.sh updateCharacters
-- * * * * * /var/killboard/zkillboard.com/cliLock.sh updateCorporations
-- * * * * * /var/killboard/zkillboard.com/cliLock.sh populateCharacters
-- 1 * * * * /var/killboard/zkillboard.com/cliLock.sh summary
-- 1 * * * * /var/killboard/zkillboard.com/cliLock.sh hourly
-- 1 * * * * /var/killboard/zkillboard.com/cliLock.sh feed fetch
-- 0 */6 * * * /var/killboard/zkillboard.com/cliLock.sh itemUpdate
-- 9 */8 * * * /var/killboard/zkillboard.com/cliLock.sh populateAlliances
-- 0 12 * * * /var/killboard/zkillboard.com/cliLock.sh priceUpdate
-- 0 16 * * * /var/killboard/zkillboard.com/cliLock.sh calculateAllTimeStatsAndRanks ranks
-- 0 20 * * * /var/killboard/zkillboard.com/cliLock.sh calculateRecentTimeStatsAndRanks stats
+```
+* * * * * /var/killboard/zkillboard.com/cliLock.sh minutely all
+* * * * * /var/killboard/zkillboard.com/cliLock.sh apiFetch
+* * * * * /var/killboard/zkillboard.com/cliLock.sh parseKills
+* * * * * /var/killboard/zkillboard.com/cliLock.sh p120s
+* * * * * /var/killboard/zkillboard.com/cliLock.sh stompReceive
+* * * * * /var/killboard/zkillboard.com/cliLock.sh updateCharacters
+* * * * * /var/killboard/zkillboard.com/cliLock.sh updateCorporations
+* * * * * /var/killboard/zkillboard.com/cliLock.sh populateCharacters
+1 * * * * /var/killboard/zkillboard.com/cliLock.sh summary
+1 * * * * /var/killboard/zkillboard.com/cliLock.sh hourly
+1 * * * * /var/killboard/zkillboard.com/cliLock.sh feed fetch
+0 */6 * * * /var/killboard/zkillboard.com/cliLock.sh itemUpdate
+9 */8 * * * /var/killboard/zkillboard.com/cliLock.sh populateAlliances
+0 12 * * * /var/killboard/zkillboard.com/cliLock.sh priceUpdate
+0 16 * * * /var/killboard/zkillboard.com/cliLock.sh calculateAllTimeStatsAndRanks ranks
+0 20 * * * /var/killboard/zkillboard.com/cliLock.sh calculateRecentTimeStatsAndRanks stats
+```
 
 All cronjobs can be launched manually with the cli interface.
 
