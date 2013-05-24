@@ -170,7 +170,7 @@ class cli_feedzKB implements cliCommand
 
 	private static function fetchUrl($url)
 	{
-		$baseAddr;
+		global $baseAddr;
 		$userAgent = "Feed Fetcher for $baseAddr";
 
 		$curl = curl_init();
