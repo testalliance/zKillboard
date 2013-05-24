@@ -40,7 +40,7 @@ Apache rewrite is handled by the .htaccess, located in the /public directory.
         ServerAlias yourdomain.tld
 
         DocumentRoot /path/to/zkb_install/public/
-        <Directory /path/to/zkb_install/public>
+        <Directory /path/to/zkb_install/public/>
                 Options FollowSymLinks MultiViews
         </Directory>
 </VirtualHost>
