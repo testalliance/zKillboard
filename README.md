@@ -26,8 +26,27 @@ see `LICENSE.md` file
 - MariaDB 5.5+ (MySQL 5.5+ might work, but isn't strictly supported, since some tables are in the Aria format)
 - Composer
 - APC or Memcached isn't strictly required, but APC or Memcached is highly recommended
+- cURL and it's php library, php5-curl
 
-## Lighttpd rewrite
+## Path
+Always use the /public/ dir in your httpd, many things are located in said directory that are needed for the page to work.
+
+## Apache rewrite
+Apache rewrite is handled by the .htaccess, located in the /public directory.
+
+## Apache Config
+```
+<VirtualHost *:80>
+        ServerAlias yourdomain.tld
+
+        DocumentRoot /path/to/zkb_install/public/
+        <Directory /path/to/zkb_install/public>
+                Options FollowSymLinks MultiViews
+        </Directory>
+</VirtualHost>
+```
+
+## Lighttpd config (Including redirect/rewrite rules)
 ```
 url.redirect = (
 	"/?a=kill_detail&kll_id=([0-9]+)" => "/evekilldetailintercept/$1/",
@@ -37,10 +56,13 @@ url.redirect = (
 url.rewrite-if-not-file = (
 	"(.*)" => "/index.php/$0"
 )
+server.document-root = "/path/to/zkb_install/public/"
 ```
 
-## Apache rewrite
-Apache rewrite is handled by the .htaccess, located in the /public directory.
+## Other webservers
+Other webservers are supported, aslong as they can run PHP, they should work.
+But other webservers have other ways to write rewrites, so from our side of things, they are unsupported.
+Feel free to issue pull requests to amend this.
 
 ## Recommended
 - PHP 5.3+
@@ -49,6 +71,7 @@ Apache rewrite is handled by the .htaccess, located in the /public directory.
 - Composer
 - APC
 - Twig PHP Plugin (Available for compiling after vendor stuff is downloaded. under vendor/twig/twig/ext/twig/)
+- cURL and it's php plugin, php5-curl
 
 ## Installation
 Installation is currently command line only on linux consoles. Other methods are currently not supported.
@@ -73,7 +96,6 @@ Installation is currently command line only on linux consoles. Other methods are
 5. Issue `zkillboard list` and enjoy the zkillboard cli interface, with full tab completion
 
 ## Cronjobs
-
 zKillboard comes with a script that automates the cron execution.
 It keeps track of when each job has been run and how frequently it needs to be executed.
 Just run it every minute via cron or a similar system:
@@ -92,7 +114,6 @@ The cron.overrides file has to be placed into the zKB root dir, next to the cron
 ```
 
 For example the following would disable stompReceive entirely, and increase the timeout for apiFetch and parseKills to 5 minutes:
-
 ```json
 {
     "stompReceive":{},
