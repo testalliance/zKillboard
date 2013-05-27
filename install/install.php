@@ -116,8 +116,8 @@ try {
 try {
 	$sqlFiles = scandir("$base/sql");
 	foreach($sqlFiles as $file) {
-		if (Util::endsWith($file, ".sql.gz")) {
-			$table = str_replace(".sql.gz", "", $file);
+		if (Util::endsWith($file, ".sql")) {
+			$table = str_replace(".sql", "", $file);
 			out("Adding table |g|$table|n| ... ");
 			$sqlFile = "$base/sql/$file";
 			loadFile($sqlFile);
