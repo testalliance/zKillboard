@@ -33,27 +33,11 @@ $p["pastSeconds"] = 3 * 86400;
 $p["kills"] = true;
 
 $top = array();
-$top[] = doMakeCommon("Top Characters - Last 3 Days", "characterID", Stats::getTopPilots($p));
-$top[] = doMakeCommon("Top Corporations - Last 3 Days", "corporationID", Stats::getTopCorps($p));
-$top[] = doMakeCommon("Top Alliances - Last 3 Days", "allianceID", Stats::getTopAllis($p));
+$top[] = json_decode(Storage::retrieve("Top3dayChars"), true);
+$top[] = json_decode(Storage::retrieve("Top3dayCorps"), true);
+$top[] = json_decode(Storage::retrieve("Top3dayAlli"), true);
 
 $app->etag(md5(serialize($top)));
 $app->expires("+5 minutes");
 
 $app->render("index.html", array("topPods" => $topPods, "topIsk" => $topIsk, "topPoints" => $topPoints, "topKillers" => $top));
-
-function doMakeCommon($title, $field, $array) {
-    $retArray = array();
-    $retArray["type"] = str_replace("ID", "", $field);
-    $retArray["title"] = $title;
-    $retArray["values"] = array();
-    foreach($array as $row) {
-        $data = $row;
-        $data["id"] = $row[$field];
-        $data["name"] = $row[$retArray["type"] . "Name"];
-        $data["kills"] = $row["kills"];
-        $retArray["values"][] = $data;
-    }
-    return $retArray;
-}
-
