@@ -75,11 +75,11 @@ function runCron($command, $interval, $args)
     $dateFormat = "D M j G:i:s T Y";
     if($curTime - $lastRun < $interval)
     {
-        echo "Cron $cronName last run at ".date($dateFormat, $lastRun)."\n";
+		// No need to say we're not running...
         return;
     }
 
-    echo "Cron $cronName running at ".date($dateFormat, $curTime)."\n";
+    Log::log("Cron $cronName running at ".date($dateFormat, $curTime));
 
     Storage::store($locker, $curTime);
 
