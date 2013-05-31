@@ -190,7 +190,7 @@ class Stats
 	{
 		$modifier = $adding ? 1 : -1;
 
-		$victim = Db::queryRow("select * from zz_participants where isVictim = 1 and killID = :killID", array(":killID" => $killID));
+		$victim = Db::queryRow("select * from zz_participants where isVictim != 0 and killID = :killID", array(":killID" => $killID));
 		$chars = Db::query("select distinct characterID from zz_participants where isVictim = 0 and killID = :killID", array(":killID" => $killID));
 		$corps = Db::query("select distinct corporationID from zz_participants where isVictim = 0 and killID = :killID", array(":killID" => $killID));
 		$allis = Db::query("select distinct allianceID from zz_participants where isVictim = 0 and killID = :killID", array(":killID" => $killID));
