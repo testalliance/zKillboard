@@ -7,6 +7,7 @@
 {% block content %}
 <div class="row">
 <div class="span6 pull-left">
+{% set shipNameLength = 11 %}
 {% set topTitle = 'Most Valuable Kills - Last 3 Days' %}
 {% set topSet = topIsk %}
 {% include 'components/big_top_list.html' %}
@@ -19,6 +20,7 @@
 {% set topSet = topPoints %}
 {% set showPoints = true %}
 {% include 'components/big_top_list.html' %}
+{% set shipNameLength = 30 %}
 </div>
 
 <div class="span6 pull-left">
