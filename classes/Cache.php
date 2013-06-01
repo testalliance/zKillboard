@@ -35,13 +35,13 @@ class Cache
 
 		if ($cache == null)
 		{
-			if(extension_loaded("Memcache"))
-			{
-				$cache = new MemcacheCache();
-			}
-			else if(extension_loaded("Memcached"))
+			if(extension_loaded("Memcached"))
 			{
 				$cache = new MemcachedCache();
+			}
+			else if(extension_loaded("Memcache"))
+			{
+				$cache = new MemcacheCache();
 			}
 			else
 			{
