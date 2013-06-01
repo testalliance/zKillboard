@@ -51,7 +51,7 @@ class cli_hourly implements cliCommand
 		Storage::store("Top3dayChars", json_encode(Info::doMakeCommon("Top Characters - Last 3 Days", "characterID", Stats::getTopPilots($p))));
 		Storage::store("Top3dayCorps", json_encode(Info::doMakeCommon("Top Corporations - Last 3 Days", "corporationID", Stats::getTopCorps($p))));
 		Storage::store("Top3dayAlli", json_encode(Info::doMakeCommon("Top Alliances - Last 3 Days", "allianceID", Stats::getTopAllis($p))));
-
+		Primer::cachePrimer();
 	}
 
 	private static function apiPercentage()

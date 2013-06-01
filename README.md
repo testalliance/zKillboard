@@ -25,7 +25,7 @@ see `LICENSE.md` file
 - Linux, Mac OS X or Windows
 - MariaDB 5.5+ (MySQL 5.5+ might work, but isn't strictly supported, since some tables are in the Aria format)
 - Composer
-- APC or Memcached isn't strictly required, but APC or Memcached is highly recommended
+- Memcached isn't strictly required, but is highly recommended
 - cURL and it's php library, php5-curl
 
 ## Path
@@ -69,7 +69,7 @@ Feel free to issue pull requests to amend this.
 - Linux
 - MariaDB 5.5+
 - Composer
-- APC
+- Memcached
 - Twig PHP Plugin (Available for compiling after vendor stuff is downloaded. under vendor/twig/twig/ext/twig/)
 - cURL and it's php plugin, php5-curl
 

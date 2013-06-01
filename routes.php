@@ -210,12 +210,6 @@ $app->get("/evekillrelatedintercept/:id/", function($id) use ($app) {
 	include( "view/evekillrelatedintercept.php" );
 });
 
-$app->get("/primer/", function() use ($app) {
-    set_time_limit(0);
-    if(IP::get() == "82.221.99.218")
-        Primer::cachePrimer();
-});
-
 // The Overview stuff
 $app->get("/:input+/", function($input) use ($app) {
 	include("view/overview.php");

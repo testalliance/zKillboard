@@ -43,10 +43,6 @@ class Cache
 			{
 				$cache = new MemcachedCache();
 			}
-			else if(extension_loaded("apc"))
-			{
-				$cache = new ApcCache();
-			}
 			else
 			{
 				$cache = new FileCache();
