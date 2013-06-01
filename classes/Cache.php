@@ -35,17 +35,17 @@ class Cache
 
 		if ($cache == null)
 		{
-			if(extension_loaded("apc"))
-			{
-				$cache = new ApcCache();
-			}
-			else if(extension_loaded("Memcache"))
+			if(extension_loaded("Memcache"))
 			{
 				$cache = new MemcacheCache();
 			}
 			else if(extension_loaded("Memcached"))
 			{
 				$cache = new MemcachedCache();
+			}
+			else if(extension_loaded("apc"))
+			{
+				$cache = new ApcCache();
 			}
 			else
 			{
