@@ -43,7 +43,7 @@ class cli_stompSend implements cliCommand
 			try
 			{
 				$result = Db::query("SELECT killID, insertTime, kill_json FROM zz_killmails WHERE insertTime > :lastFetch ORDER BY killID", array(":lastFetch" => $lastFetch), 0);
-				$lastFetch = time();
+				$lastFetch = date("Y-m-d H:i:s");
 				Storage::store($stompKey, $lastFetch);
 				foreach($result as $kill)
 				{
