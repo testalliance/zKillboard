@@ -154,6 +154,10 @@ All cronjobs can be launched manually with the cli interface.
 The feed interface can be accessed by issuing `zkillboard feed`, all commands available can be found with help.
 
 ## Stomp
+Stomp uses the STOMP PHP plugin which you can get via git.
+Here is a quick one liner: `cd /tmp/ && git clone git://github.com/php/pecl-tools-stomp.git && cd pecl-tools-stomp && phpize && make && make install`
+After that you make a `20-stomp.ini` in `/etc/php5/conf.d/` and add `extension=stomp.so` to it, and save. And restart your php stuff.
+
 The stomp service is read only. If you need to send data via it, come by IRC and have a chat with us.
 
 - Stomp server: tcp://stomp.zkillboard.com:61613
