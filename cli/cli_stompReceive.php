@@ -25,7 +25,7 @@ class cli_stompReceive implements cliCommand
 
 	public function getAvailMethods()
 	{
-		return ""; // Space seperated list
+		return "register_dsub fetch"; // Space seperated list
 	}
 
 	public function getCronInfo()
@@ -37,56 +37,74 @@ class cli_stompReceive implements cliCommand
 
 	public function execute($parameters)
 	{
-		$logging = false;
-		if(in_array("log", $parameters))
-			$logging = true;
-
-		global $stompServer, $stompUser, $stompPassword, $baseAddr;
-		$stomp = new FuseSource\Stomp\Stomp($stompServer);
-		$stomp->connect($stompUser, $stompPassword);
-		$destination = "/topic/kills";
-		$kills = $stomp->subscribe($destination);
-
-		Log::log("StompRecieve started");
-		while(true)
+		if (sizeof($parameters) == 0 || $parameters[0] == "") CLI::out("Usage: |g|help <command>|n| To see a list of commands, use: |g|list", true);
+		$command = $parameters[0];
+		switch($command)
 		{
-			$frame = $stomp->readFrame();
-			if($frame != NULL)
-			{
-				$killdata = json_decode($frame->body, true);
-				if(!empty($killdata))
+			case "register_dsub":
+				global $stompServer, $stompUser, $stompPassword, $baseAddr;
+				$stomp = new Stomp($stompServer, $stompUser, $stompPassword);
+				$destination = "/topic/kills";
+				$stomp->subscribe($destination, array("id" => "zkb-".$baseAddr, "persistent" => "true", "ack" => "client"));
+				unset($stomp);
+			break;
+
+			case "fetch":
+				global $stompServer, $stompUser, $stompPassword, $baseAddr;
+				$stomp = new Stomp($stompServer, $stompUser, $stompPassword);
+				$stomp->setReadTimeout(10);
+				$destination = "/dsub/zkb-".$baseAddr;
+				$stomp->subscribe($destination);
+
+				Log::log("StompRecieve started");
+				while(true)
 				{
-					$killID = $killdata["killID"];
-					$count = Db::queryField("SELECT count(1) AS count FROM zz_killmails WHERE killID = :killID LIMIT 1", "count", array(":killID" => $killID), 0);
-					if($count == 0)
+					try
 					{
-						if($killID > 0)
+						$frame = $stomp->readFrame();
+						if($frame != NULL)
 						{
-							$hash = Util::getKillHash(null, json_decode($frame->body));
-							Db::execute("INSERT IGNORE INTO zz_killmails (killID, hash, source, kill_json) values (:killID, :hash, :source, :json)",
-								array("killID" => $killID, ":hash" => $hash, ":source" => "stompQueue", ":json" => json_encode($killdata)));
-							if($logging)
-								Log::log($frame->headers["message-id"]."::$killID saved");
-							$stomp->ack($frame);
-							continue;
-						}
-						else
-						{
-							if($logging)
-								Log::log($frame->headers["message-id"].":: killID is negative");
-							$stomp->ack($frame);
-							continue;
+							$killdata = json_decode($frame->body, true);
+							if(!empty($killdata))
+							{
+								$killID = $killdata["killID"];
+								$count = Db::queryField("SELECT count(1) AS count FROM zz_killmails WHERE killID = :killID LIMIT 1", "count", array(":killID" => $killID), 0);
+								if($count == 0)
+								{
+									if($killID > 0)
+									{
+										$hash = Util::getKillHash(null, json_decode($frame->body));
+										Db::execute("INSERT IGNORE INTO zz_killmails (killID, hash, source, kill_json) values (:killID, :hash, :source, :json)",
+											array("killID" => $killID, ":hash" => $hash, ":source" => "stompQueue", ":json" => json_encode($killdata)));
+										$stomp->ack($frame);
+										continue;
+									}
+									else
+									{
+										$stomp->ack($frame);
+										continue;
+									}
+								}
+								else
+								{
+									$stomp->ack($frame);
+									continue;
+								}
+							}
 						}
 					}
-					else
+					catch (Exception $e)
 					{
-						if($logging)
-							Log::log($frame->headers["message-id"]."::$killID exists");
-						$stomp->ack($frame);
-						continue;
+						Log::log("There was an error with stomp: ". $e->getMessage());
+						Log::log("Retrying connection.");
+						sleep(5);
+
+						unset($stomp);
+						$stomp = new Stomp($stompServer, $stompUser, $stompPassword);
+						$stomp->subscribe($destination);
 					}
 				}
-			}
+			break;
 		}
 	}
 }

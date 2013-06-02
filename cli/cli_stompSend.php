@@ -31,37 +31,47 @@ class cli_stompSend implements cliCommand
 	public function execute($parameters)
 	{
 		global $stompServer, $stompUser, $stompPassword;
-		$stomp = new FuseSource\Stomp\Stomp($stompServer);
-		$stomp->connect($stompUser, $stompPassword);
-		$stomp->setReadTimeout(1);
+		$stomp = new Stomp($stompServer, $stompUser, $stompPassword);
 
 		$stompKey = "StompSend::lastFetch";
 		$lastFetch = time() - (12 * 3600);
 
 		$lastFetch = Storage::retrieve($stompKey, $lastFetch);
+		Log::log("stompSend started");
 		while (true)
 		{
-			$result = Db::query("SELECT killID, unix_timestamp(insertTime) AS insertTime, kill_json FROM zz_killmails WHERE insertTime > from_unixtime(:lastFetch) ORDER BY killID", array(":lastFetch" => $lastFetch), 0);
-			$lastFetch = time();
-			Storage::store($stompKey, $lastFetch);
-			foreach($result as $kill)
+			try
 			{
-				$lastFetch = max($lastFetch, $kill["insertTime"]);
-				if(!empty($kill["kill_json"]))
+				$result = Db::query("SELECT killID, unix_timestamp(insertTime) AS insertTime, kill_json FROM zz_killmails WHERE insertTime > from_unixtime(:lastFetch) ORDER BY killID", array(":lastFetch" => $lastFetch), 0);
+				$lastFetch = time();
+				Storage::store($stompKey, $lastFetch);
+				foreach($result as $kill)
 				{
-					$stomp->begin($kill["killID"]);
-					if($kill["killID"] > 0)
-						$stomp->send(join(",", self::Destinations($kill["kill_json"])), $kill["kill_json"], array("transaction" => $kill["killID"]));
-					
-					$data = json_decode($kill["kill_json"], true);
-					$json = json_encode(array("solarSystemID" => $data["solarSystemID"], "killID" => $data["killID"], "shipTypeID" => $data["victim"]["shipTypeID"], "killTime" => $data["killTime"]));
-					$stomp->send("/topic/starmap.systems.active", $json, array("transaction" => $kill["killID"]));
-					$stomp->commit($kill["killID"]);
+					$lastFetch = max($lastFetch, $kill["insertTime"]);
+					if(!empty($kill["kill_json"]))
+					{
+						$stomp->begin($kill["killID"]);
+						if($kill["killID"] > 0)
+							$stomp->send(join(",", self::Destinations($kill["kill_json"])), $kill["kill_json"], array("transaction" => $kill["killID"]));
+						
+						$data = json_decode($kill["kill_json"], true);
+						$json = json_encode(array("solarSystemID" => $data["solarSystemID"], "killID" => $data["killID"], "shipTypeID" => $data["victim"]["shipTypeID"], "killTime" => $data["killTime"]));
+						$stomp->send("/topic/starmap.systems.active", $json, array("transaction" => $kill["killID"]));
+						$stomp->commit($kill["killID"]);
+					}
 				}
+				if(sizeof($result) > 0)
+					Log::log("Stomped " . sizeof($result) . " killmails");
+				sleep(5);
 			}
-			if(sizeof($result) > 0)
-				Log::log("Stomped " . sizeof($result) . " killmails");
-			sleep(5);
+			catch (Exception $e)
+			{
+				Log::log("There was an error: ". $e->getMessage());
+				Log::log("Retrying connection.");
+				sleep(5);
+				unset($stomp);
+				$stomp = new Stomp($stompServer, $stompUser, $stompPassword);
+			}
 		}
 	}
 
@@ -71,7 +81,6 @@ class cli_stompSend implements cliCommand
 		$destinations = array();
 
 		$destinations[] = "/topic/kills";
-		$destinations[] = "/queue/kills";
 		$destinations[] = "/topic/location.solarsystem.".$kill["solarSystemID"];
 
 		// victim
