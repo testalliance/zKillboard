@@ -82,6 +82,11 @@ class Log
 		}
 		return $msg;
 	}
+
+	public static function firePHP($msg)
+	{
+		ChromePhp::log($msg);
+	}
 }
 
 /*

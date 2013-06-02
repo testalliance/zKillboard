@@ -10,7 +10,8 @@
         "realityking/pchart": "*",
         "dg/twitter-php": "*",
         "ircmaxell/password-compat": "*",
-        "fusesource/stomp-php": "*"
+        "fusesource/stomp-php": "*",
+        "ccampbell/chromephp": "*"
     },
     "minimum-stability": "dev"
 }
