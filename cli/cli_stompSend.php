@@ -34,7 +34,7 @@ class cli_stompSend implements cliCommand
 		$stomp = new Stomp($stompServer, $stompUser, $stompPassword);
 
 		$stompKey = "StompSend::lastFetch";
-		$lastFetch = time() - (12 * 3600);
+		$lastFetch = date("Y-m-d H:i:s", time() - (12 * 3600));
 
 		$lastFetch = Storage::retrieve($stompKey, $lastFetch);
 		Log::log("stompSend started");
@@ -42,7 +42,7 @@ class cli_stompSend implements cliCommand
 		{
 			try
 			{
-				$result = Db::query("SELECT killID, unix_timestamp(insertTime) AS insertTime, kill_json FROM zz_killmails WHERE insertTime > from_unixtime(:lastFetch) ORDER BY killID", array(":lastFetch" => $lastFetch), 0);
+				$result = Db::query("SELECT killID, insertTime, kill_json FROM zz_killmails WHERE insertTime > :lastFetch ORDER BY killID", array(":lastFetch" => $lastFetch), 0);
 				$lastFetch = time();
 				Storage::store($stompKey, $lastFetch);
 				foreach($result as $kill)
