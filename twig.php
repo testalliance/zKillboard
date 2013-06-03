@@ -47,7 +47,10 @@ $twig->addGlobal("fullsiteurl", $fullAddr);
 $twig->addGlobal("requesturi", $_SERVER["REQUEST_URI"]);
 $twig->addGlobal("topad", Adsense::top());
 $twig->addGlobal("bottomad", Adsense::bottom());
-$twig->addGlobal("mobilead", Adsense::mobile());
+$twig->addGlobal("mobiletopad", Adsense::mobileTop());
+$twig->addGlobal("mobilebottomad", Adsense::mobileBottom());
+$twig->addGlobal("igbtopad", Adsense::igbTop());
+$twig->addGlobal("igbbottomad", Adsense::igbBottom());
 
 $detect = new Mobile_Detect();
 $twig->addGlobal("isMobile", ($detect->isMobile() ? true : false));

@@ -44,15 +44,67 @@ class Adsense
 		return $html;
 	}
 	
-	public static function mobile()
+	public static function mobileTop()
 	{
 		$html = '<script type="text/javascript"><!--
 		google_ad_client = "ca-pub-8111276931546791";
-		/* eve-kill */
-		google_ad_slot = "3776014371";
+		/* zkb mobile top */
+		google_ad_slot = "9932221977";
+		google_ad_width = 320;
+		google_ad_height = 50;
+		//-->
+		</script>
+		<script type="text/javascript"
+		src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+		</script>';
+		return $html;
+	}
+
+	public static function mobileBottom()
+	{
+		$html = '<script type="text/javascript"><!--
+		google_ad_client = "ca-pub-8111276931546791";
+		/* zkb mobile bottom */
+		google_ad_slot = "2408955178";
+		google_ad_width = 320;
+		google_ad_height = 50;
+		//-->
+		</script>
+		<script type="text/javascript"
+		src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+		</script>';
+		return $html;
+	}
+
+	public static function igbTop()
+	{
+		$html = '<script type="text/javascript"><!--
+		google_ad_client = "ca-pub-8111276931546791";
+		/* zkb top text */
+		google_ad_slot = "5502022370";
 		google_ad_width = 728;
 		google_ad_height = 90;
+		//-->
 		</script>
-		<script type="text/javascript" src="//pagead2.googlesyndication.com/pagead/show_ads.js"></script>';
+		<script type="text/javascript"
+		src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+		</script>';
+		return $html;
+	}
+
+	public static function igbBottom()
+	{
+		$html = '<script type="text/javascript"><!--
+		google_ad_client = "ca-pub-8111276931546791";
+		/* zkb bottom text */
+		google_ad_slot = "6978755572";
+		google_ad_width = 728;
+		google_ad_height = 90;
+		//-->
+		</script>
+		<script type="text/javascript"
+		src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+		</script>';
+		return $html;
 	}
 }
