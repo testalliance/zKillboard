@@ -59,7 +59,7 @@ class Db
 		$dsn = "mysql:dbname=$dbName;host=$dbHost";
 
 		try {
-			$pdo = new PDO($dsn, $dbUser, $dbPassword, array(PDO::ATTR_PERSISTENT => false));
+			$pdo = new PDO($dsn, $dbUser, $dbPassword, array(PDO::ATTR_PERSISTENT => true));
 			//$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		} catch (Exception $ex) {
 			Log::log("Unable to connect to database: " . $ex->getMessage());

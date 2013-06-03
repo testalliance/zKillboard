@@ -22,7 +22,7 @@ class cli_stompSend implements cliCommand
 	{
 		return "Sends out data via STOMP. |w|Beware, this is a persistent script. It's run and forget!.|n| Usage: |g|stompSend";
 	}
-	
+
 	public function getAvailMethods()
 	{
 		return ""; // Space seperated list
@@ -35,8 +35,8 @@ class cli_stompSend implements cliCommand
 
 		$stompKey = "StompSend::lastFetch";
 		$lastFetch = date("Y-m-d H:i:s", time() - (12 * 3600));
-
 		$lastFetch = Storage::retrieve($stompKey, $lastFetch);
+
 		Log::log("stompSend started");
 		while (true)
 		{
@@ -51,14 +51,18 @@ class cli_stompSend implements cliCommand
 						$stomp->begin($kill["killID"]);
 						if($kill["killID"] > 0)
 							$stomp->send(join(",", self::Destinations($kill["kill_json"])), $kill["kill_json"], array("transaction" => $kill["killID"]));
-						
+
 						$data = json_decode($kill["kill_json"], true);
 						$json = json_encode(array("solarSystemID" => $data["solarSystemID"], "killID" => $data["killID"], "shipTypeID" => $data["victim"]["shipTypeID"], "killTime" => $data["killTime"]));
 						$stomp->send("/topic/starmap.systems.active", $json, array("transaction" => $kill["killID"]));
 						$stomp->commit($kill["killID"]);
 					}
 				}
+<<<<<<< HEAD
 				
+=======
+
+>>>>>>> 76fd13e466f6afd15af129d3d077bcb466e4b5f4
 				Storage::store($stompKey, $lastFetch);
 
 				if(sizeof($result) > 0)
