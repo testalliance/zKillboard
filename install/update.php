@@ -21,8 +21,7 @@ try {
         }   
     }   
 } catch (Exception $ex) {
-    out("|r|Error! Removing configuration file.");
-    unlink($configLocation);
+    out("|r|Error!|n|");
     throw $ex;
 }
 
