@@ -6,7 +6,7 @@ DROP TABLE IF EXISTS `ccp_invFlags`;
 
 CREATE TABLE `ccp_invFlags` (
 
-  `flagID` smallint(5) NOT NULL,
+  `flagID` smallint(6) NOT NULL,
 
   `flagName` varchar(200) DEFAULT NULL,
 
@@ -16,7 +16,7 @@ CREATE TABLE `ccp_invFlags` (
 
   PRIMARY KEY (`flagID`)
 
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPRESSED;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
 
