@@ -58,11 +58,6 @@ class cli_stompSend implements cliCommand
 						$stomp->commit($kill["killID"]);
 					}
 				}
-<<<<<<< HEAD
-				
-=======
-
->>>>>>> 76fd13e466f6afd15af129d3d077bcb466e4b5f4
 				Storage::store($stompKey, $lastFetch);
 
 				if(sizeof($result) > 0)
