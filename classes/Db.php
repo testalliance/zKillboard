@@ -54,17 +54,7 @@ class Db
 	{
 		global $dbUser, $dbPassword, $dbName, $dbHost, $pdo;
 
-		if (isset($pdo)) {
-			// Test the connection
-			try {
-				$stmt = $pdo->prepare("select now()");
-                        	$stmt->execute(array());
-				$stmt->closeCursor();
-				return $pdo;
-			} catch (Exception $ex) {
-				unset($pdo);
-			}
-		}
+		if (isset($pdo)) return $pdo;
 
 		$dsn = "mysql:dbname=$dbName;host=$dbHost";
 
