@@ -54,13 +54,23 @@ class Db
 	{
 		global $dbUser, $dbPassword, $dbName, $dbHost, $pdo;
 
-		if (isset($pdo)) return $pdo;
+		if (isset($pdo)) {
+			// Test the connection
+			try {
+				$stmt = $pdo->prepare("select now()");
+                        	$stmt->execute(array());
+				$stmt->closeCursor();
+				return $pdo;
+			} catch (Exception $ex) {
+				unset($pdo);
+			}
+		}
 
 		$dsn = "mysql:dbname=$dbName;host=$dbHost";
 
 		try {
 			$pdo = new PDO($dsn, $dbUser, $dbPassword, array(PDO::ATTR_PERSISTENT => true));
-			//$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		} catch (Exception $ex) {
 			Log::log("Unable to connect to database: " . $ex->getMessage());
 			throw $ex;
