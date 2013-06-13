@@ -41,7 +41,10 @@ Apache rewrite is handled by the .htaccess, located in the /public directory.
 
         DocumentRoot /path/to/zkb_install/public/
         <Directory /path/to/zkb_install/public/>
-                Options FollowSymLinks MultiViews
+	        Options FollowSymLinks MultiViews
+	        AllowOverride All
+	        Order allow,deny
+	        Allow from all
         </Directory>
 </VirtualHost>
 ```
