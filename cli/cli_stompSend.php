@@ -38,11 +38,12 @@ class cli_stompSend implements cliCommand
 		$lastFetch = Storage::retrieve($stompKey, $lastFetch);
 
 		Log::log("stompSend started");
-		while (true)
+		$timer = new Timer();
+		while ($timer->stop() < 65000)
 		{
 			try
 			{
-				$result = Db::query("SELECT killID, insertTime, kill_json FROM zz_killmails WHERE insertTime > :lastFetch ORDER BY killID", array(":lastFetch" => $lastFetch), 0);
+				$result = Db::query("SELECT killID, insertTime, kill_json FROM zz_killmails WHERE killID > 0 and insertTime >= :lastFetch ORDER BY killID limit 1000", array(":lastFetch" => $lastFetch), 0);
 				foreach($result as $kill)
 				{
 					$lastFetch = max($lastFetch, $kill["insertTime"]);
