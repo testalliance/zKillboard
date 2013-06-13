@@ -96,7 +96,7 @@ $soloPages = ceil($soloCount / $limit);
 $solo = Kills::mergeKillArrays($soloKills, array(), $limit, $columnName, $id);
 
 $topLists = array();
-if ($pageType == "top") {
+if ($pageType == "top" && false) {
 	$topParameters = $parameters; // array("limit" => 10, "kills" => true, "$columnName" => $id);
 	$topParameters["limit"] = 10;
 	if (!array_key_exists("kills", $topParameters) && !array_key_exists("losses", $topParameters)) $topParameters["kills"] = true;
