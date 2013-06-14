@@ -30,7 +30,22 @@ class Password
 		return "Updated password";
 	}
 
-	public static function checkPassword($plainTextPassword, $storedPassword)
+	public static function checkPassword($plainTextPassword, $storedPassword = NULL)
+	{
+		if($plainTextPassword && $storedPassword)
+			return self::pwCheck($plainTextPassword, $storedPassword);
+		else
+		{
+			$userID = user::getUserID();
+			if($userID)
+			{
+				$storedPw = Db::queryField("SELECT password FROM zz_users WHERE id = :userID", "password", array(":userID" => $userID), 0);
+				return self::pwCheck($plainTextPassword, $storedPw);
+			}
+		}
+	}
+
+	private static function pwCheck($plainTextPassword, $storedPassword)
 	{
 		if (!password_verify($plainTextPassword, $storedPassword))
 			return false;

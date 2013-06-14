@@ -171,10 +171,9 @@ if($_POST)
 	// Password
 	if($orgpw && $password && $password2)
 	{
-		$storedPw = Db::queryField("SELECT password FROM zz_users WHERE id = :userID", "password", array(":userID" => $userID));
 		if($password != $password2)
 			$error = "Passwords don't match, try again";
-		elseif(Password::checkPassword($orgpw, $storedPw) == true)
+		elseif(Password::checkPassword($orgpw) == true)
 		{
 			Password::updatePassword($password);
 			$error = "Password updated";
