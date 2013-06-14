@@ -31,7 +31,7 @@ class cli_fixGroupIDs implements cliCommand
 	public function execute($parameters)
 	{
 		// Fix unknown group ID's
-		$result = Db::query("select distinct killID from zz_participants where groupID != vGroupID and isVictim = 1");
+		$result = Db::query("select distinct killID from zz_participants where groupID != vGroupID and isVictim = 1 limit 1", array(), 0);
 		foreach ($result as $row) {
 			$killID = $row["killID"];
 			$shipTypeID = Db::queryField("select shipTypeID from zz_participants where killID = $killID and isVictim = 1", "shipTypeID");
@@ -40,6 +40,6 @@ class cli_fixGroupIDs implements cliCommand
 			echo "Updating $killID to $groupID\n";
 			Db::execute("update zz_participants set vGroupID = $groupID where killID = $killID");
 		}
-		CLI::out("done!", true);
+		CLI::out(sizeof($result) . " done!", true);
 	}
 }
