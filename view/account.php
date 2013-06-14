@@ -46,7 +46,7 @@ if($_POST)
 	$entity = "";
 	$entitytype = "";
 	$ddcombine = "";
-  $ddmonthyear = ""; 
+	$ddmonthyear = ""; 
     $deleteentityid = "";
     $deleteentitytype = "";
     $entitymetadata = "";
@@ -171,9 +171,10 @@ if($_POST)
 	// Password
 	if($orgpw && $password && $password2)
 	{
+		$storedPw = Db::queryField("SELECT password FROM zz_users WHERE id = :userID", "password", array(":userID" => $userID));
 		if($password != $password2)
 			$error = "Passwords don't match, try again";
-		elseif(Password::checkPassword($orgpw) == true)
+		elseif(Password::checkPassword($orgpw, $storedPw) == true)
 		{
 			Password::updatePassword($password);
 			$error = "Password updated";
