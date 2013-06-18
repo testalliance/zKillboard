@@ -18,7 +18,7 @@
         <div class="navbar-inner">
             <ul class="nav pull-left">
                 <li class="{{ isActive('overview', pageview) }}"><a href="/detail/{{ killdata.info.killID }}/overview/">Overview</a></li>
-                <li class="{{ isActive('involved', pageview) }} hidden-phone"><a href="/detail/{{ killdata.info.killID }}/involved/">Involved Pilots ({{ killdata.info.number_involved }})</a></li>
+                <li class="visible-desktop {{ isActive('involved', pageview) }} hidden-phone"><a href="/detail/{{ killdata.info.killID }}/involved/">Involved Pilots ({{ killdata.info.number_involved }})</a></li>
 				<li class="{{ isActive('shiptypes', pageview) }} hidden-phone hidden-tablet"><a href="/detail/{{ killdata.info.killID }}/shiptypes/">Ship Types ({{ extra.involvedshipscount }})</a></li>
                 <li class="{{ isActive('comments', pageview) }}"><a href="/detail/{{ killdata.info.killID }}/comments/">Comments ({{ extra.comments.count }})</a></li>
             </ul>
@@ -29,9 +29,9 @@
         {% if eveigb == true %}
         <li><a data-toggle="modal" onclick="CCPEVE.showFitting('{{ extra.dnatext}}');"= href="#">DNA</a></li>
         {%else%}
-				<li><a data-toggle="modal" data-target="#DNA" href="#">DNA</a></li>
+				<li class="visible-desktop"><a data-toggle="modal" data-target="#DNA" href="#">DNA</a></li>
 				{% endif %}
-        <li><a data-toggle="modal" data-target="#EFT" href="#">EFT</a></li>
+        <li class="visible-desktop"><a data-toggle="modal" data-target="#EFT" href="#">EFT</a></li>
 				<li><a data-toggle="modal" data-target="#rawMail" href="#">Killmail</a></li>
 				<li class="hidden-desktop"><a href="/detail/{{ killdata.info.killID }}/shiptypes/">Ship Types ({{ extra.involvedshipscount }})</a></li>
 				<li><a href="/related/{{ killdata.info.solarSystemID }}/{{ extra.relatedtime }}/">Related Kills</a></li>
