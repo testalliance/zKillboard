@@ -18,7 +18,7 @@
 
 class irc_trace implements ircCommand {
 	public function getRequiredAccessLevel() {
-		return 0;
+		return 1;
 	}
 
 	public function getDescription() {
