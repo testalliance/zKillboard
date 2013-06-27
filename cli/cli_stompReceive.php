@@ -39,6 +39,7 @@ class cli_stompReceive implements cliCommand
 	{
 		if (sizeof($parameters) == 0 || $parameters[0] == "") CLI::out("Usage: |g|help <command>|n| To see a list of commands, use: |g|list", true);
 		$command = $parameters[0];
+
 		switch($command)
 		{
 			case "register_dsub":
@@ -46,10 +47,14 @@ class cli_stompReceive implements cliCommand
 				$stomp = new Stomp($stompServer, $stompUser, $stompPassword);
 				$destination = "/topic/kills";
 				$stomp->subscribe($destination, array("id" => "zkb-".$baseAddr, "persistent" => "true", "ack" => "client"));
+				Storage::store("dsubRegistered", "zkb-".$baseAddr);
 				unset($stomp);
 			break;
 
 			case "fetch":
+				if(!Storage::retrieve("dsubRegistered"))
+					CLI::out("Please run register_dsub first", true);
+
 				global $stompServer, $stompUser, $stompPassword, $baseAddr;
 				$stomp = new Stomp($stompServer, $stompUser, $stompPassword);
 				$stomp->setReadTimeout(10);
@@ -57,33 +62,27 @@ class cli_stompReceive implements cliCommand
 				$stomp->subscribe($destination);
 
 				Log::log("StompRecieve started");
+				CLI::out("StompRecieve started");
 				while(true)
 				{
-					try
+					$frame = $stomp->readFrame();
+					if(!empty($frame))
 					{
-						$frame = $stomp->readFrame();
-						if($frame != NULL)
+						$killdata = json_decode($frame->body, true);
+						if(!empty($killdata))
 						{
-							$killdata = json_decode($frame->body, true);
-							if(!empty($killdata))
+							$killID = $killdata["killID"];
+							$count = Db::queryField("SELECT count(1) AS count FROM zz_killmails WHERE killID = :killID LIMIT 1", "count", array(":killID" => $killID), 0);
+							if($count == 0)
 							{
-								$killID = $killdata["killID"];
-								$count = Db::queryField("SELECT count(1) AS count FROM zz_killmails WHERE killID = :killID LIMIT 1", "count", array(":killID" => $killID), 0);
-								if($count == 0)
+								if($killID > 0)
 								{
-									if($killID > 0)
-									{
-										$hash = Util::getKillHash(null, json_decode($frame->body));
-										Db::execute("INSERT IGNORE INTO zz_killmails (killID, hash, source, kill_json) values (:killID, :hash, :source, :json)",
-											array("killID" => $killID, ":hash" => $hash, ":source" => "stompQueue", ":json" => json_encode($killdata)));
-										$stomp->ack($frame);
-										continue;
-									}
-									else
-									{
-										$stomp->ack($frame);
-										continue;
-									}
+									CLI::out("|g|Kill posted: ".$killID);
+									$hash = Util::getKillHash(null, json_decode($frame->body));
+									Db::execute("INSERT IGNORE INTO zz_killmails (killID, hash, source, kill_json) values (:killID, :hash, :source, :json)",
+										array("killID" => $killID, ":hash" => $hash, ":source" => "stompQueue", ":json" => json_encode($killdata)));
+									$stomp->ack($frame);
+									continue;
 								}
 								else
 								{
@@ -91,17 +90,12 @@ class cli_stompReceive implements cliCommand
 									continue;
 								}
 							}
+							else
+							{
+								$stomp->ack($frame);
+								continue;
+							}
 						}
-					}
-					catch (Exception $e)
-					{
-						Log::log("There was an error with stomp: ". $e->getMessage());
-						Log::log("Retrying connection.");
-						sleep(5);
-
-						unset($stomp);
-						$stomp = new Stomp($stompServer, $stompUser, $stompPassword);
-						$stomp->subscribe($destination);
 					}
 				}
 			break;
