@@ -33,6 +33,8 @@ class cli_apiFetchKillLog implements cliCommand
 		@$apiRowID = $parameters[0];
 
 		$apiRow = Db::queryRow("select * from zz_api_characters where apiRowID = :id", array(":id" => $apiRowID), 0);
+		$maxKillID = $apiRow["maxKillID"];
+		$beforeKillID = 0;
 
 		if (!$apiRow) CLI::out("|r|No such apiRowID: $apiRowID", true);
 
@@ -44,31 +46,44 @@ class cli_apiFetchKillLog implements cliCommand
 		if ($keyID == "" || $vCode == "") die("no keyID or vCode");
 
 		try {
-			$pheal = Util::getPheal($keyID, $vCode);
-			$charCorp = ($isDirector == "T" ? 'corp' : 'char');
-			$pheal->scope = $charCorp;
-			$result = null;
+			do {
+				$pheal = Util::getPheal($keyID, $vCode);
+				$charCorp = ($isDirector == "T" ? 'corp' : 'char');
+				$pheal->scope = $charCorp;
+				$result = null;
 
-			// Update last checked
-			Db::execute("update zz_api_characters set errorCode = 0, lastChecked = now() where apiRowID = :id", array(":id" => $apiRowID));
+				// Update last checked
+				Db::execute("update zz_api_characters set errorCode = 0, lastChecked = now() where apiRowID = :id", array(":id" => $apiRowID));
 
-			if ($isDirector == "T") $result = $pheal->KillLog();
-			else $result = $pheal->KillLog(array('characterID' => $charID));
+				$params = array();
+				if ($isDirector != "T") $params['characterID'] = $charID;
 
-			$cachedUntil = $result->cached_until;
-			if ($cachedUntil == "") $cachedUntil = 0;
-			Db::execute("update zz_api_characters set cachedUntil = if(:cachedUntil = 0, date_add(now(), interval 1 hour), :cachedUntil), errorCode = '0' where apiRowID = :id", array(":id" => $apiRowID, ":cachedUntil" => $cachedUntil));
+				if ($beforeKillID > 0) $params['beforeKillID'] = $beforeKillID;
 
-			$file = "/var/killboard/zkb_killlogs/{$keyID}_{$charID}_0.xml";
-			@unlink($file);
-			error_log($pheal->xml . "\n", 3, $file);
+				if ($isDirector == "T") $result = $pheal->KillMails($params);
+				else $result = $pheal->KillMails($params);
 
-			$aff = Api::processRawApi($keyID, $charID, $result);
-			if ($aff > 0) {
-				$keyID = "$keyID";
-				while (strlen($keyID) < 8) $keyID = " " . $keyID;
-				Log::log("KeyID: $keyID ($charCorp) added $aff kill" . ($aff == 1 ? "" : "s"));
-			}
+				$cachedUntil = $result->cached_until;
+				if ($cachedUntil == "") $cachedUntil = 0;
+				Db::execute("update zz_api_characters set cachedUntil = if(:cachedUntil = 0, date_add(now(), interval 1 hour), :cachedUntil), errorCode = '0' where apiRowID = :id", array(":id" => $apiRowID, ":cachedUntil" => $cachedUntil));
+
+				$file = "/var/killboard/zkb_killlogs/{$keyID}_{$charID}_$beforeKillID.xml";
+				@unlink($file);
+				error_log($pheal->xml . "\n", 3, $file);
+
+				$aff = Api::processRawApi($keyID, $charID, $result);
+				if ($aff > 0) {
+					$keyID = "$keyID";
+					while (strlen($keyID) < 8) $keyID = " " . $keyID;
+					Log::log("KeyID: $keyID ($charCorp) added $aff kill" . ($aff == 1 ? "" : "s"));
+				}
+				$beforeKillID = 0;
+				foreach ($result->kills as $kill) {
+					$killID = $kill->killID;
+					if ($beforeKillID == 0) $beforeKillID = $killID;
+					else $beforeKillID = min($beforeKillID, $killID);
+				}
+			} while ($aff > 25 || ($beforeKillID > 0 && $maxKillID == 0));
 		} catch (Exception $ex) {
 			$errorCode = $ex->getCode();
 			Db::execute("update zz_api_characters set cachedUntil = date_add(now(), interval 1 hour), errorCode = :code where apiRowID = :id", array(":id" => $apiRowID, ":code" => $errorCode));
@@ -76,13 +91,13 @@ class cli_apiFetchKillLog implements cliCommand
 				case 119:
 				case 120:
 					// Don't log it
-				break;	
+					break;	
 				case 201: // Character does not belong to account.
 				case 222: // API has expired
 				case 221: // Invalid access, delete the toon from the char list until later re-verification
 				case 220: // Invalid Corporation Key. Key owner does not fullfill role requirements anymore.
 					Db::execute("delete from zz_api_characters where apiRowID = :id", array(":id" => $apiRowID));
-				break;
+					break;
 				default:
 					Log::log($keyID . " " . $ex->getCode() . " " . $ex->getMessage());
 			}
