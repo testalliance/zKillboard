@@ -42,7 +42,7 @@ if($_POST)
                 global $baseAddr;
                 $subject = "It seems you might have forgotten your password, so here is a link, that'll allow you to reset it: $baseAddr/changepassword/$hash";
                 $header = "Password change for $email";
-                Db::query("UPDATE zz_users SET change_hash = :hash, change_expiration = :expires WHERE email = :email", array(":hash" => $hash, ":expires" => $date, ":email" => $email));
+                Db::execute("UPDATE zz_users SET change_hash = :hash, change_expiration = :expires WHERE email = :email", array(":hash" => $hash, ":expires" => $date, ":email" => $email));
                 Email::send($email, $header, $subject);
                 $message = "Sending password change email to: $email";
                 $messagetype = "success";

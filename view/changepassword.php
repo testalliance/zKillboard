@@ -38,8 +38,8 @@ if($_POST)
     elseif($password == $password2)
     {
         $password = Password::genPassword($password);
-        Db::query("UPDATE zz_users SET password = :password WHERE change_hash = :hash", array(":password" => $password, ":hash" => $hash));
-        Db::query("UPDATE zz_users SET change_hash = NULL, change_expiration = NULL WHERE change_hash = :hash", array(":hash" => $hash));
+        Db::execute("UPDATE zz_users SET password = :password WHERE change_hash = :hash", array(":password" => $password, ":hash" => $hash));
+        Db::execute("UPDATE zz_users SET change_hash = NULL, change_expiration = NULL WHERE change_hash = :hash", array(":hash" => $hash));
         $message = "Password updated, click login, and login with your new password";
         $messagetype = "success";
     }
