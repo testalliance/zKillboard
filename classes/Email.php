@@ -35,10 +35,12 @@ class Email
 		$mail->Body = $body;
 		$mail->AddAddress($email);
 		if (!$mail->Send()) {
+			Log::log("Error sending email to $email: " . $mail->ErrorInfo);
 			echo "Mail error: " . $mail->ErrorInfo;
 		}
 		else
 		{
+			Log::log("Email sent to $email with subject '$subject'");
 			return "Success";
 		}
 	}
