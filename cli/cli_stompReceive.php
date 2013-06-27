@@ -65,7 +65,7 @@ class cli_stompReceive implements cliCommand
 				CLI::out("StompRecieve started");
 
 				$timer = new Timer();
-				while($timer->stop() < 65000)
+				while($timer->stop() < 599000)
 				{
 					$frame = $stomp->readFrame();
 					if(!empty($frame))
