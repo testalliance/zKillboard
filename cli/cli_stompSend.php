@@ -39,42 +39,34 @@ class cli_stompSend implements cliCommand
 
 		Log::log("stompSend started");
 		$timer = new Timer();
-		while ($timer->stop() < 65000)
+		while ($timer->stop() < 599000)
 		{
-			try
+			$result = Db::query("SELECT killID, insertTime, kill_json FROM zz_killmails WHERE killID > 0 and insertTime >= :lastFetch ORDER BY killID limit 1000", array(":lastFetch" => $lastFetch), 0);
+			foreach($result as $kill)
 			{
-				$result = Db::query("SELECT killID, insertTime, kill_json FROM zz_killmails WHERE killID > 0 and insertTime >= :lastFetch ORDER BY killID limit 1000", array(":lastFetch" => $lastFetch), 0);
-				foreach($result as $kill)
+				$lastFetch = max($lastFetch, $kill["insertTime"]);
+				if(!empty($kill["kill_json"]))
 				{
-					$lastFetch = max($lastFetch, $kill["insertTime"]);
-					if(!empty($kill["kill_json"]))
+					if($kill["killID"] > 0)
 					{
-						if($kill["killID"] > 0)
-							$stomp->send(join(",", self::Destinations($kill["kill_json"])), $kill["kill_json"]);
-
-						$data = json_decode($kill["kill_json"], true);
-						$json = json_encode(array("solarSystemID" => $data["solarSystemID"], "killID" => $data["killID"], "shipTypeID" => $data["victim"]["shipTypeID"], "killTime" => $data["killTime"]));
-						$stomp->send("/topic/starmap.systems.active", $json);
+						$killID = $kill["killID"];
+						CLI::out("|g|Sending $killID as API verified");
+						$stomp->send(join(",", self::Destinations($kill["kill_json"])), $kill["kill_json"]);
 					}
-				}
-				Storage::store($stompKey, $lastFetch);
 
+					$data = json_decode($kill["kill_json"], true);
+					$json = json_encode(array("solarSystemID" => $data["solarSystemID"], "killID" => $data["killID"], "shipTypeID" => $data["victim"]["shipTypeID"], "killTime" => $data["killTime"]));
+					$stomp->send("/topic/starmap.systems.active", $json);
+				}
+			}
+			Storage::store($stompKey, $lastFetch);
 				if(sizeof($result) > 0)
-					Log::log("Stomped " . sizeof($result) . " killmails");
-				sleep(5);
-			}
-			catch (Exception $e)
-			{
-				Log::log("There was an error: ". $e->getMessage());
-				Log::log("Retrying connection.");
-				sleep(5);
-				unset($stomp);
-				$stomp = new Stomp($stompServer, $stompUser, $stompPassword);
-			}
+				Log::log("Stomped " . sizeof($result) . " killmails");
+			sleep(5);
 		}
 	}
 
-	function Destinations($kill)
+	private function Destinations($kill)
 	{
 		$kill = json_decode($kill, true);
 		$destinations = array();
