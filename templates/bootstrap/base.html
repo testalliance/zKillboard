@@ -78,6 +78,19 @@
 {% if 'now'|date('m') == 12 %}
         <script type="text/javascript" src="//{{ siteurl }}/js/snowstorm.js"></script> <!-- Snowstorm yo! -->
 {% endif %}
+        <script type="text/javascript">
+           jQuery.ajaxSetup({cache: true});
+           jQuery.getScript("https://static.jappix.com/php/get.php?l=en&t=js&g=mini.xml", function() {
+              DEVELOPER = "on";
+              var jappix_autoconnect = true;
+              HOST_MAIN = "jabber.eve-kill.net"
+              HOST_BOSH_MINI = "http://jabber.eve-kill.net:5280/http-bind/";
+              MINI_GROUPCHATS = ["esc@talk.eve-kill.net"];
+              MINI_ANIMATE = true;
+              MINI_NICKNAME = "{{ sessionusername }}"
+              launchMini(jappix_autoconnect, false, "jabber.eve-kill.net", "{{ sessionusername }}", "{{ sessionboshauth }}");
+           });
+        </script>
 {% block script %}
 {% endblock %}
     </body>
