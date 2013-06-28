@@ -78,6 +78,7 @@
 {% if 'now'|date('m') == 12 %}
         <script type="text/javascript" src="//{{ siteurl }}/js/snowstorm.js"></script> <!-- Snowstorm yo! -->
 {% endif %}
+{% if sessionusername %}
         <script type="text/javascript">
            jQuery.ajaxSetup({cache: true});
            jQuery.getScript("https://static.jappix.com/php/get.php?l=en&t=js&g=mini.xml", function() {
@@ -91,6 +92,7 @@
               launchMini(jappix_autoconnect, false, "jabber.eve-kill.net", "{{ sessionusername }}", "{{ sessionboshauth }}");
            });
         </script>
+{% endif %}
 {% block script %}
 {% endblock %}
     </body>
