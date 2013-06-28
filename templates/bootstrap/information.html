@@ -11,6 +11,7 @@
             <li class="{{ isActive('statistics', pageview) }}"><a href="/information/statistics/">Statistics</a></li>
             <li class="{{ isActive('points', pageview) }}"><a href="/information/points/">Points</a></li>
             <li class="{{ isActive('api', pageview) }}"><a href="/information/api/">API</a></li>
+            <li class="{{ isActive('jabber', pageview) }}"><a href="/information/jabber/">Jabber</a></li>
             <li class="{{ isActive('contact', pageview) }}"><a href="/information/contact/">Contact</a></li>
             <li class="{{ isActive('faq', pageview) }}"><a href="/information/faq/">F.A.Q.</a></li>
             <li class="{{ isActive('tos', pageview) }}"><a href="/information/tos/">T.O.S.</a></li>
@@ -68,6 +69,11 @@
 <h3>API</h3>
 <pre class="prettyprint">
 {% include 'information/api.html' %}
+</pre>
+{% elseif pageview == "jabber" %}
+<h3>Jabber</h3>
+<pre class="prettyprint">
+{% include 'information/jabber.html' %}
 </pre>
 {% elseif pageview == "license" %}
 {% include 'information/license.html' %}
