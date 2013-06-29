@@ -19,7 +19,7 @@
 				<li class="{{ isActive('tracker', key) }}"><a href="/account/tracker/">Tracker</a></li>
                 <li class="{{ isActive('subdomains', key) }}"><a href="/account/subdomains/">SubDomains</a></li>
 				<li class="{{ isActive('killdetail', key) }}"><a href="/account/killdetail/">Kill Detail Setup</a></li>
-				<li class="{{ isActive('comments', key) }}"><a href="/account/comments/">Comments Setup</a></li>
+				<li class="{{ isActive('comms', key) }}"><a href="/account/comms/">Comms Setup</a></li>
 				<li class="{{ isActive('wallet', key) }}"><a href="/account/wallet/">Wallet</a></li>
 				<li class="{{ isActive('extpagesetup', key) }}"><a href="/account/extpagesetup/">Ext Page Setup</a></li>
 			</ul>
@@ -42,8 +42,8 @@
         {% include "account/subdomains.html" %}
 	{% elseif key == 'killdetail' %}
 		{% include "account/killdetail.html" %}
-	{% elseif key == 'comments' %}
-		{% include "account/comments.html" %}
+	{% elseif key == 'comms' %}
+		{% include "account/comms.html" %}
 	{% elseif key == 'feeds' %}
 		{% include "account/feeds.html" %}
 	{% elseif key == 'wallet' %}

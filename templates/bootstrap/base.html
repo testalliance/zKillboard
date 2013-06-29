@@ -88,7 +88,8 @@
               HOST_BOSH_MINI = "http://jabber.eve-kill.net:5280/http-bind/";
               MINI_GROUPCHATS = ["esc@talk.eve-kill.net"];
               MINI_ANIMATE = true;
-              MINI_NICKNAME = "{{ sessionusername }}"
+              {% if defaultOogCommsCharacterName %}MINI_NICKNAME = "{{ defaultOogCommsCharacterName }}"{% else %}MINI_NICKNAME = "{{ sessionusername }}"{% endif %}
+
               launchMini(jappix_autoconnect, false, "jabber.eve-kill.net", "{{ sessionusername }}", "{{ sessionboshauth }}");
            });
         </script>

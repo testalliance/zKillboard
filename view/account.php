@@ -55,6 +55,7 @@ if($_POST)
     $subdomain = "";
     $domainname = "";
     $deletedomainid = "";
+    $defaultoogcommscharacter = "";
 
     if(isset($_POST["deletedomainid"]))
     	$deletedomainid = $_POST["deletedomainid"];
@@ -88,6 +89,8 @@ if($_POST)
 		$password2 = $_POST["password2"];
 	if(isset($_POST["defaultcommentcharacter"]))
 		$defaultcommentcharacter = $_POST["defaultcommentcharacter"];
+	if(isset($_POST["defaultoogcommscharacter"]))
+		$defaultoogcommscharacter = $_POST["defaultoogcommscharacter"];
 	if(isset($_POST["timeago"]))
 		$timeago = $_POST["timeago"];
 	if(isset($_POST["addentitybox"]))
@@ -183,8 +186,11 @@ if($_POST)
 	}
 
 	// Default comment character
-	if($defaultcommentcharacter > 0) 
+	if($defaultcommentcharacter > 0 || $defaultcommentcharacter == 0) 
 		UserConfig::set("defaultCommentCharacter", $defaultcommentcharacter);
+
+	if($defaultoogcommscharacter > 0)
+		UserConfig::set("defaultOogCommsCharacter", $defaultoogcommscharacter);
 
 	if($timeago)
 		UserConfig::set("timeago", $timeago);
@@ -237,6 +243,7 @@ $data["apiChars"] = Api::getCharacters($userID);
 $charKeys = Api::getCharacterKeys($userID);
 $charKeys = Info::addInfo($charKeys);
 $data["apiCharKeys"] = $charKeys;
+$data["jabberChars"] = Api::getCharacters($userID);
 $data["cmtChars"] = Api::getCharacters($userID);
 $data["cmtChars"][] = array("characterID" => 0, "characterName" => "Anonymous");
 $data["userInfo"] = User::getUserInfo();
