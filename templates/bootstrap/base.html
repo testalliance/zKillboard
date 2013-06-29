@@ -84,13 +84,18 @@
            jQuery.getScript("https://static.jappix.com/php/get.php?l=en&t=js&g=mini.xml", function() {
               DEVELOPER = "off";
               var jappix_autoconnect = true;
-              HOST_MAIN = "jabber.eve-kill.net"
+              HOST_MAIN = "eve-kill.net"
               HOST_BOSH_MINI = "http://jabber.eve-kill.net:5280/http-bind/";
               MINI_GROUPCHATS = ["esc@talk.eve-kill.net"];
               MINI_ANIMATE = true;
+<<<<<<< HEAD
               {% if defaultOogCommsCharacterName %}MINI_NICKNAME = "{{ defaultOogCommsCharacterName }}"{% else %}MINI_NICKNAME = "{{ sessionusername }}"{% endif %}
 
               launchMini(jappix_autoconnect, false, "jabber.eve-kill.net", "{{ sessionusername }}", "{{ sessionboshauth }}");
+=======
+              MINI_NICKNAME = "{{ sessionusername }}"
+              launchMini(jappix_autoconnect, false, "eve-kill.net", "{{ sessionusername }}", "{{ sessionboshauth }}");
+>>>>>>> 1724c9f884ccf4b82d7b7648aa152537fddac1b2
            });
         </script>
 {% endif %}
