@@ -53,11 +53,9 @@ if($_POST && !User::isRevoked())
 		}
 	}
 
-	if ($comment && $characterID) {
-		$message = Comments::addComment($comment, $characterID, $pageID);
-	}
-	else
-		$message = "You didn't write anything in the comment field, try again";
+	if ($comment && $characterID)
+		Comments::addComment($comment, $characterID, $pageID);
+
 	
 }
 
