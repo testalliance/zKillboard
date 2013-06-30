@@ -26,15 +26,38 @@
 				{% if killdata.info.killID < 0 %}
 				<li><a data-toggle="modal" data-target="#report" href="#">Report ({{ extra.reports }})</a></li>
 				{% endif %}
-        {% if eveigb == true %}
-        <li><a data-toggle="modal" onclick="CCPEVE.showFitting('{{ extra.dnatext}}');"= href="#">DNA</a></li>
-        {%else%}
-				<li class="visible-desktop"><a data-toggle="modal" data-target="#DNA" href="#">DNA</a></li>
-				{% endif %}
-        <li class="visible-desktop"><a data-toggle="modal" data-target="#EFT" href="#">EFT</a></li>
-				<li><a data-toggle="modal" data-target="#rawMail" href="#">Killmail</a></li>
-				<li class="hidden-desktop"><a href="/detail/{{ killdata.info.killID }}/shiptypes/">Ship Types ({{ extra.involvedshipscount }})</a></li>
-				<li><a href="/related/{{ killdata.info.solarSystemID }}/{{ extra.relatedtime }}/">Related Kills</a></li>
+				<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">External <i class="icon-chevron-down"></i></a>
+					<ul class="dropdown-menu">
+						<li class="nav-header">O.smium</li>
+	        			<li><a href="http://o.smium.org/loadout/dna/{{ extra.dnatext}}" target="_blank">{{ killdata.victim.shipName }} Fit</a></li>
+	        			<li class="nav-header">DOTLAN</li>
+	        			<li><a href="http://evemaps.dotlan.net/system/{{ killdata.info.solarSystemName|url_encode }}" target="_blank">{{ killdata.info.solarSystemName }}</a></li>
+	        			<li><a href="http://evemaps.dotlan.net/region/{{ killdata.info.regionName|url_encode }}" target="_blank">{{ killdata.info.regionName }}</a></li>
+	        			<li class="nav-header">Wormhol.es</li>
+	        			<li><a href="http://wormhol.es/{{ killdata.info.solarSystemName|url_encode }}" target="_blank">{{ killdata.info.solarSystemName }}</a></li>
+	        			<li class="nav-header">EVEGate</li>
+	        			<li><a href="https://gate.eveonline.com/Profile/{{ killdata.victim.characterName }}" target="_blank">{{ killdata.victim.characterName }}</a></li>
+	        			<li><a href="https://gate.eveonline.com/Profile/{{ finalBlow.characterName }}" target="_blank">{{ finalBlow.characterName }}</a></li>
+	        			<li><a href="https://gate.eveonline.com/Profile/{{ topDamage.characterName }}" target="_blank">{{ topDamage.characterName }}</a></li>
+	        			<li class="nav-header">EVEWho Char Info</li>
+	        			<li><a href="http://evewho.com/pilot/{{ killdata.victim.characterName|url_encode }}" target="_blank">{{ killdata.victim.characterName }}</a></li>
+	        			<li><a href="http://evewho.com/pilot/{{ finalBlow.characterName|url_encode }}" target="_blank">{{ finalBlow.characterName }}</a></li>
+	        			<li><a href="http://evewho.com/pilot/{{ topDamage.characterName|url_encode }}" target="_blank">{{ topDamage.characterName }}</a></li>
+
+					</ul>
+				</li>
+
+				<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Data <i class="icon-chevron-down"></i></a>
+					<ul class="dropdown-menu">
+		        		{% if eveigb == true %}
+		        			<li><a data-toggle="modal" onclick="CCPEVE.showFitting('{{ extra.dnatext}}');" href="#">DNA</a></li>
+		        		{% else %}
+							<li class="visible-desktop"><a data-toggle="modal" data-target="#DNA" href="#">DNA</a></li>
+						{% endif %}
+		        		<li class="visible-desktop"><a data-toggle="modal" data-target="#EFT" href="#">EFT</a></li>
+						<li><a data-toggle="modal" data-target="#rawMail" href="#">Killmail</a></li>
+					</ul>
+				</li>
 				<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Social <i class="icon-chevron-down"></i></a>
 					<ul class="dropdown-menu">
 						<li><a href="https://www.facebook.com/sharer/sharer.php?u={{url}}" target="_blank"><img src="/img/social/fb_1.png"> Facebook</a></li>
@@ -43,6 +66,8 @@
 						<li><a href="http://www.reddit.com/submit?url={{url}}&title={{ pageTitle|url_encode }}" target="_blank"><img src="/img/social/reddit.png"> Reddit</a></li>
 					</ul>
 				</li>
+				<li class="hidden-desktop"><a href="/detail/{{ killdata.info.killID }}/shiptypes/">Ship Types ({{ extra.involvedshipscount }})</a></li>
+				<li><a href="/related/{{ killdata.info.solarSystemID }}/{{ extra.relatedtime }}/">Related</a></li>
             </ul>
         </div>
     </div>
