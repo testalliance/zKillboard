@@ -55,15 +55,15 @@ class cli_commsGroups implements cliCommand
 					$characterName = Info::getCharName($characterID);
 					$corporationName = Info::getCorpName($entity["corporationID"]);
 
-					$groupsArray[$corporationName] = "$username@$jabberServer=$characterName";
+					$groupsArray[$corporationName][] = "$username@$jabberServer=$characterName";
 					$allianceID = Db::queryField("SELECT allianceID FROM zz_corporations WHERE corporationID = :corpID", "allianceID", array(":corpID" => $entity["corporationID"]));
 					$allianceName = NULL;
 					if(!empty($allianceID))
 					{
 						$allianceName = Info::getAlliName($allianceID);
-						$groupsArray[$allianceName] = "$username@$jabberServer=$characterName";
+						$groupsArray[$allianceName][] = "$username@$jabberServer=$characterName";
 					}
-					$groupsArray["Public"] = "$username@$jabberServer=$characterName";
+					$groupsArray["Public"][] = "$username@$jabberServer=$characterName";
 				}
 			}
 		}
@@ -72,9 +72,14 @@ class cli_commsGroups implements cliCommand
 		foreach($groupsArray as $entity => $user)
 		{
 			$text .= "\n[$entity]\n";
-			$text .= "$user\n";
+			foreach($user as $user)
+				$text .= "$user\n";
 		}
 
 		file_put_contents($groups, $text);
+		exec("prosodycmd 'module:reload(\"groups\")'");
+		exec("prosodycmd 'module:reload(\"roster\")'");
+		exec("prosodycmd 'module:reload(\"presence\")'");
+		exec("prosodycmd 'config:reload()'");
 	}
 }
