@@ -110,7 +110,7 @@ class cli_feedEDK implements cliCommand
 					CLI::out("|r|ID needs to be an int..|n|");
 				else
 				{
-					$url = Db::queryField("SELECT url FROM zz_feeds WHERE id = :id", "url", array(":id" => $id));
+					$url = Db::queryField("SELECT url FROM zz_feeds WHERE id = :id AND edkStyle = 1", "url", array(":id" => $id));
 					if(is_null($url))
 						CLI::out("|r|Feed is already removed.", true);
 					CLI::out("Removing feed: |g|$url");
@@ -119,7 +119,7 @@ class cli_feedEDK implements cliCommand
 			break;
 
 			case "list":
-				$list = Db::query("SELECT * FROM zz_feeds");
+				$list = Db::query("SELECT * FROM zz_feeds WHERE edkStyle = 1");
 				foreach($list as $url)
 					CLI::out($url["id"]."::|g|".$url["url"]);
 			break;
