@@ -50,30 +50,66 @@ class cli_feedzKB implements cliCommand
 				}
 				else
 				{
-					$validTypes = array("characterID", "corporationID", "allianceID", "factionID", "shipTypeID", "groupID", "solarSystemID", "regionID");
 					CLI::out("|g|You are now adding a feed with the quick feed creator(TM), if you already have a feed you want to add, use add <feed> instead.|n|");
 					$addr = CLI::prompt("Start of address. |g|Ex: zkillboard.com|n|", "zkillboard.com");
+
+					retryCall:
+					$validTypes = array("characterID", "corporationID", "allianceID", "factionID", "shipTypeID", "groupID", "solarSystemID", "regionID");
 					CLI::out("|g|Valid Calls:|n| ". implode(", ", $validTypes));
 					$type = CLI::prompt("Type of call. |g|(Refer to the above list)|n|");
 					if(!in_array($type, $validTypes))
-						$type = CLI::prompt("|r|Error with the type of call, please retry|n|");
+					{
+						CLI::out("|r|Error with the type of call, please retry|n|");
+						goto retryCall;
+					}
+
 					$id = (int) CLI::prompt("|g|ID|n| of entity you wish to fetch for.");
+
+					retryApiOnly:
 					CLI::out("|g|Valid Calls:|n| yes, no");
-					$apiOnly = (bool) CLI::prompt("API Only? |g|(1 = yes, 0 = no)|n|", "1");
-					$combined = (bool) CLI::prompt("Combined kills and losses? |g|(1 = yes, 0 = no)|n|", "1");
-					if(!$combined)
-						$kills = (bool) CLI::prompt("Kills or Losses only? |g|(1 = kills, 0 = losses)|n|", "1");
+					$apiOnly = CLI::prompt("API Only?", "yes");
+					if($apiOnly != "yes" && $apiOnly != "no")
+					{
+						CLI::out("|r|Error, call type is not supported. Please retry|n|");
+						goto retryApiOnly;
+					}
+
+					retryCombined:
+					CLI::out("|g|Valid Calls:|n| yes, no");
+					$combined = CLI::prompt("Combined kills and losses?", "yes");
+					if($combined != "yes" && $combined != "no")
+					{
+						CLI::out("|r|Error, call type is not supported. Please retry|n|");
+						goto retryCombined;
+					}				
+					if($combined == "no")
+					{
+						retryKills:
+						CLI::out("|g|Valid Calls:|n| kills, losses");
+						$kills = CLI::prompt("Kills or Losses only?", "kills");
+						if($kills != "kills" && $kills != "losses")
+						{
+							CLI::out("|r|Error, call type is not supported. Please retry|n|");
+							goto retryKills;
+						}
+					}
 
 					$url = "http://".$addr."/api/";
-					if(!$combined)
+					if($combined == "no")
 						$url .= ($kills ? "kills" : "losses")."/";
-					if($apiOnly)
+					if($apiOnly == "yes")
 						$url .= "api-only/";
 					$url .= $type."/";
 					$url .= $id."/";
 				}
-				CLI::out("Now inserting |g|$url|n| to the database.");
-				Db::execute("INSERT INTO zz_feeds (url) VALUES (:url)", array(":url" => $url));
+
+				if(filter_var($url, FILTER_VALIDATE_URL))
+				{
+					CLI::out("Now inserting |g|$url|n| to the database.");
+					Db::execute("INSERT INTO zz_feeds (url) VALUES (:url)", array(":url" => $url));
+				}
+				else
+					CLI::out("|r|Invalid URL, please try again|n| - $url", true);
 			break;
 
 			case "remove":
@@ -87,7 +123,7 @@ class cli_feedzKB implements cliCommand
 					CLI::out("|r|ID needs to be an int..|n|");
 				else
 				{
-					$url = Db::queryField("SELECT url FROM zz_feeds WHERE id = :id", "url", array(":id" => $id));
+					$url = Db::queryField("SELECT url FROM zz_feeds WHERE id = :id AND edkStyle = 0", "url", array(":id" => $id));
 					if(is_null($url))
 						CLI::out("|r|Feed is already removed.", true);
 					CLI::out("Removing feed: |g|$url");
@@ -96,7 +132,7 @@ class cli_feedzKB implements cliCommand
 			break;
 
 			case "list":
-				$list = Db::query("SELECT * FROM zz_feeds");
+				$list = Db::query("SELECT * FROM zz_feeds WHERE edkStyle = 0");
 				foreach($list as $url)
 					CLI::out($url["id"]."::|g|".$url["url"]);
 			break;
@@ -105,10 +141,10 @@ class cli_feedzKB implements cliCommand
 				$fetchAll = isset($parameters[1]) && $parameters[1] == "all";
 
 				if ($fetchAll)
-					$feeds = Db::query("SELECT id, url, lastFetchTime FROM zz_feeds order by id");
+					$feeds = Db::query("SELECT id, url, lastFetchTime FROM zz_feeds WHERE edkStyle = '0' order by id");
 				else
-					$feeds = Db::query("SELECT id, url, lastFetchTime FROM zz_feeds where lastFetchTime < date_sub(now(), interval 1 hour) order by id");
-
+					$feeds = Db::query("SELECT id, url, lastFetchTime FROM zz_feeds where edkStyle = '0' AND lastFetchTime < date_sub(now(), interval 1 hour) order by id");
+				var_dump($feeds); die();
 				$totalCount = 0;
 
 				foreach($feeds as $feed)
