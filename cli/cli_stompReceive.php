@@ -31,7 +31,7 @@ class cli_stompReceive implements cliCommand
 	public function getCronInfo()
 	{
 		return array(
-			10 => "fetch"
+			600 => "fetch"
 		);
 	}
 
