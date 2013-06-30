@@ -38,7 +38,7 @@ if($_POST && !User::isRevoked())
 		$comment = $_POST["comment"];
 	if(isset($_POST["characterID"]))
 		$characterID = $_POST["characterID"];
-		
+	
 	if (isset($report))
 	{
 		if($id < 0)
@@ -52,7 +52,8 @@ if($_POST && !User::isRevoked())
 			$app->redirect("/detail/$id/");
 		}
 	}
-	elseif (isset($comment) && isset($characterID)) {
+
+	if ($comment && $characterID) {
 		$message = Comments::addComment($comment, $characterID, $pageID);
 	}
 	else
@@ -137,8 +138,8 @@ $extra["reports"] = Db::queryField("SELECT count(*) as cnt FROM zz_tickets WHERE
 $extra["slotCounts"] = Info::getSlotCounts($killdata["victim"]["shipTypeID"]);
 
 $url = "https://". $_SERVER["SERVER_NAME"] ."/detail/$id/";
-$app->etag(md5($id.Comments::getPageCommentCount($pageID)));
-$app->expires("+5 minutes");
+//$app->etag(md5($id.Comments::getPageCommentCount($pageID)));
+//$app->expires("+5 minutes");
 $app->render("detail.html", array("pageview" => $pageview, "killdata" => $killdata, "extra" => $extra, "message" => $message, "flags" => Info::$effectToSlot, "topDamage" => $topDamage, "finalBlow" => $finalBlow, "url" => $url));
 
 function involvedships($array)
