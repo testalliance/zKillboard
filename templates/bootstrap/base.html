@@ -89,7 +89,8 @@
               MINI_GROUPCHATS = ["esc@talk.eve-kill.net"];
               MINI_ANIMATE = true;
               {% if defaultOogCommsCharacterName %}MINI_NICKNAME = "{{ defaultOogCommsCharacterName }}"{% else %}MINI_NICKNAME = "{{ sessionusername }}"{% endif %}
-              launchMini(jappix_autoconnect, false, "jabber.eve-kill.net", "{{ sessionusername }}", "{{ sessionboshauth }}");
+
+              launchMini(jappix_autoconnect, false, "eve-kill.net", "{{ sessionusername }}", "{{ sessionboshauth }}");
            });
         </script>
 {% endif %}
