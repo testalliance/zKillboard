@@ -31,7 +31,7 @@ class cli_stompReceive implements cliCommand
 	public function getCronInfo()
 	{
 		return array(
-			60 => ""
+			60 => "fetch"
 		);
 	}
 
@@ -53,8 +53,10 @@ class cli_stompReceive implements cliCommand
 
 			case "fetch":
 				if(!Storage::retrieve("dsubRegistered"))
+				{
 					CLI::out("Please run register_dsub first", true);
-
+					Log::log("Please run register_dsub first");
+				}
 				global $stompServer, $stompUser, $stompPassword, $baseAddr;
 				$stomp = new Stomp($stompServer, $stompUser, $stompPassword);
 				$stomp->setReadTimeout(10);
