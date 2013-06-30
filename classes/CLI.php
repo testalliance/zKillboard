@@ -36,6 +36,17 @@ class CLI
 	}
 
 	public static function prompt($prompt, $default = "") {
+		$colors = array(
+			"|w|" => "1;37", //White
+			"|b|" => "0;34", //Blue
+			"|g|" => "0;32", //Green
+			"|r|" => "0;31", //Red
+			"|n|" => "0" //Neutral
+			);
+
+		foreach($colors as $color => $value)
+			$prompt = str_replace($color, "\033[".$value."m", $prompt);
+
 		echo "$prompt [$default] ";
 		$answer = trim(fgets(STDIN));
 		if (strlen($answer) == 0) return $default;
