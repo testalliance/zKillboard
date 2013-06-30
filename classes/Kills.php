@@ -200,13 +200,16 @@ class Kills
 	 * @param $killID the ID of the kill
 	 * @return text
 	 */
-	public static function getRawMail($killID)
+	public static function getRawMail($killID, $array = array())
 	{
 		// Check if the mail has already been generated, then return it from the cache..
 		$Cache = Cache::get($killID);
 		if($Cache) return $Cache;
 
-		$k = self::getArray($killID);
+		if(!$array)
+			$k = self::getArray($killID);
+		else
+			$k = $array;
 
 		$mail = $k["killTime"] . "\n";
 		$mail .= "\n";

@@ -43,12 +43,60 @@ class cli_feedEDK implements cliCommand
 		switch($command)
 		{
 			case "add":
-				$url = $parameters[1];
+				if(isset($parameters[1]))
+					$url = $parameters[1];
+				else
+				{
+					$validTypes = array("pilot", "corp", "alliance");
+					CLI::out("|g|You are now adding a feed with the quick feed creator(TM), if you already have a feed you want to add, use add <feed> instead.|n|");
+					retryekid:
+					$ekid = CLI::prompt("Do you have the EVE-KILL ID for the entity you want to add?", "yes");
+					if($ekid != "yes" && $ekid != "no")
+					{
+						CLI::out("|r|Error, call type is not supported. Please retry|n|");
+						goto retryekid;
+					}
+					if($ekid == "no")
+						$validTypes = array("pilotname", "corpname", "alliancename");
+
+					retryCall:
+					CLI::out("|g|Valid calls:|n| ". implode(", ", $validTypes));
+					$type = CLI::prompt("Type of call. |g|(Refer to the above list)|n|");
+					if(!in_array($type, $validTypes))
+					{
+						CLI::out("|r|Error, call type is not supported. Please retry|n|");
+						goto retryCall;
+					}
+
+					if($ekid == "yes")
+						$nameID = CLI::prompt("ID of entity you wish to add");
+					else
+					{
+						$nameID = urlencode(CLI::prompt("Name of the entity you with to add"));
+					}
+					retryApi:
+					$all = CLI::prompt("All Kills?", "yes");
+					if($all != "yes" && $all != "no")
+					{
+						CLI::out("|r|Error, call type is not supported. Please retry|n|");
+						goto retryApi;
+					}
+					$apiOnly = null;
+					if($all == "yes")
+						$apiOnly = "&allkills";
+
+					$domain = CLI::prompt("Enter URL of the killboard you're fetching from. |g|Ex. eve-kill.net|n|", "eve-kill.net");
+
+					$url = "http://$domain/?a=idfeed&$type=$nameID$apiOnly";
+				}
+
 				if(filter_var($url, FILTER_VALIDATE_URL))
 				{
 					Db::execute("INSERT INTO zz_feeds (url, edkStyle) VALUES (:url, 1)", array(":url" => $url));
 					CLI::out("Now inserting |g|$url|n| to the database.", true);
 				}
+				else
+					CLI::out("|r|Invalid URL, please try again|n|", true);
 			break;
 
 			case "remove":
@@ -104,7 +152,7 @@ class cli_feedEDK implements cliCommand
 							$xml = new SimpleXMLElement($data);
 							$result = new PhealResult($xml);
 							$insertCount = self::processAPI($result);
-							//Db::execute("UPDATE zz_feeds SET lastFetchTime = :time WHERE url = :url", array(":time" => date("Y-m-d H:i:s"), ":url" => $url));
+							Db::execute("UPDATE zz_feeds SET lastFetchTime = :time WHERE url = :url", array(":time" => date("Y-m-d H:i:s"), ":url" => $url));
 							if($insertCount > 0)
 							{
 								CLI::out("Inserted |g|$insertCount|n| new kills from |g|$url|n|");
@@ -156,30 +204,46 @@ class cli_feedEDK implements cliCommand
 	{
 		$count = 0;
 
-		foreach ($data->kills as $kill) {
-			unset($kill->killInternalID);
-			unset($kill->hash);
-			unset($kill->trust);
-
-			var_dump($kill); die();
-			if($kill->killInternalID)
+		foreach ($data->kills as $kill)
+		{
+			if($kill->killID > 0)
 			{
-				die($kill->killInternalID);
-				$killID = $kill->killID * -1;
+				$killID = $kill->killID;
 			}
 			else
-				$killID = $kill->killID;
-
+			{
+				$killID = $kill->killInternalID * -1;
+			}
 			if($killID == 0)
 				continue;
 
-			$json = json_encode($kill->toArray());
+			$killArray = $kill->toArray();
+			// Remove all the unwanted crud that EDK sets
+			unset($killArray["killInternalID"]);
+			unset($killArray["hash"]);
+			unset($killArray["trust"]);
+
+			// If the killID is below zero, we'll just replace the killID in the array with the minus one..
+			if($killID < 0)
+				$killArray["killID"] = $killID;
+
+			$json = json_encode($killArray);
 			$hash = Util::getKillHash(null, $kill);
+			$source = "EDK Feed Fetch";
+
 			$mKillID = Db::queryField("select killID from zz_killmails where killID < 0 and processed = 1 and hash = :hash", "killID", array(":hash" => $hash), 0);
 			if ($mKillID) Kills::cleanDupe($mKillID, $killID);
 
+			// If the killID is negative at this point, we need to create a raw mail, and use that to insert it into the zz_manual_mails table, so we can get a manual mail id
+			if($killID < 0)
+			{
+				$rawText = Kills::getRawMail(null, Info::addInfo($killArray));
+				Db::execute("INSERT IGNORE INTO zz_manual_mails (hash, rawText) VALUES (:hash, :rawText)", array(":hash" => $hash, ":rawText" => $rawText));
+				$killID = Db::queryField("SELECT mKillID FROM zz_manual_mails WHERE hash = :hash ORDER BY mKillID DESC LIMIT 1", array(":hash" => $hash), 0);
+			}
+
 			$added = Db::execute("insert ignore into zz_killmails (killID, hash, source, kill_json) values (:killID, :hash, :source, :json)",
-					array(":killID" => $killID, ":hash" => $hash, ":source" => $keyID, ":json" => $json));
+					array(":killID" => $killID, ":hash" => $hash, ":source" => $source, ":json" => $json));
 			$count += $added;
 		}
 
