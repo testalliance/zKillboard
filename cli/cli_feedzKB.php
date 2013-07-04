@@ -144,30 +144,47 @@ class cli_feedzKB implements cliCommand
 					$feeds = Db::query("SELECT id, url, lastFetchTime FROM zz_feeds WHERE edkStyle = '0' order by id");
 				else
 					$feeds = Db::query("SELECT id, url, lastFetchTime FROM zz_feeds where edkStyle = '0' AND lastFetchTime < date_sub(now(), interval 1 hour) order by id");
-				var_dump($feeds); die();
+
 				$totalCount = 0;
 
 				foreach($feeds as $feed)
 				{
 					$url = $feed["url"];
-
 					$insertCount = 0;
 					CLI::out("Fetching for |g|$url|n|");
 					$page = 1;
+					$retryCount = 0;
 
 					do
 					{
+						retry:
 						$fetchedData = self::fetchUrl($url . ($fetchAll ? "page/$page/" : ""));
-						if ($fetchedData == "") {
-							CLI::out("|r|Remote server returned invalid response, lets wait 2 minutes for them to get their act together...|n|");
-							sleep(120);
+						if ($fetchedData == "")
+						{
+							CLI::out("|r|Remote server returned an invalid response, moving along after 15 seconds...|n|");
+							sleep(15);
 							continue;
 						}
 
 						$data = json_decode($fetchedData);
 						$insertCount = 0;
 						if (sizeof($data) == 0)
-							print_r($data);
+						{
+							CLI::out("|r|Remote server returned no data, lets wait 15 seconds...|n|");
+							sleep(15);
+							if($retryCount > 0)
+							{
+								$retryCount = 0;
+								CLI::out("Moving along...");
+								continue;
+							}
+							else
+							{
+								$retryCount = 1;
+								CLI::out("Retrying...");
+								goto retry;
+							}
+						}
 
 						foreach($data as $kill)
 						{
@@ -189,10 +206,10 @@ class cli_feedzKB implements cliCommand
 						CLI::out("Inserted |g|$insertCount|n|/|g|" . sizeof($data) . "|n| kills...");
 						Log::log("Inserted $insertCount new kills from $url");
 
-						if(sizeof($feeds) > 1 || $page > 1)
+						if(sizeof($feeds) > 1 || $page >= 1)
 						{
-							CLI::out("Pausing...");
-							sleep(10); // yes yes, 10 seconds of sleeping, what?! this is only here to stop hammering. Feel free to hammer tho by commenting this, but you'll just get banned..
+							CLI::out("|g|Pausing|n| for 15 seconds...");
+							sleep(15);
 						}
 						$page++;
 					} while (($fetchAll == true && sizeof($data) > 0));
