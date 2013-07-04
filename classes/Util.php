@@ -304,17 +304,10 @@ class Util
 			if ($session == null)
 				$session = array("accesses" => array());
 
-			$oldAccess = 0;
 			foreach($session["accesses"] as $key => $access)
 			{
-				if ($access < (time() - $timeLimit))
-					unset($session["accesses"][$key]);
-			}
-
-			foreach($session["accesses"] as $access)
-			{
-				// if the last session wasn't atlast $timeBetweenAccess appart, throw error
 				if($access >= (time() - $timeBetweenAccess))
+				{
 					if(stristr($_SERVER["REQUEST_URI"], "xml"))
 					{
 						$date = date("Y-m-d H:i:s");
@@ -338,11 +331,13 @@ class Util
 					header("Retry-After: " . (time() - $timeBetweenAccess));
 					header("HTTP/1.0 403 Forbidden");
 					die();
+				}
 			}
 
 			$session["accesses"][] = time();
 			$session["last_access"] = time();
 			Cache::set("session_$ip", $session, $timeLimit);
+
 			if (sizeof($session["accesses"]) > $numAccesses ) {
 				Log::log("$ip has hit the scrape limit, adding them to the naughty list.");
 				header("Content-type: application/json; charset=utf-8");
