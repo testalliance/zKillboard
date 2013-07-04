@@ -284,14 +284,11 @@ class Util
 
 	public static function scrapeCheck()
 	{
-		global $app, $apiTimeBetweenAccess;
+		global $app, $apiTimeBetweenAccess, $apiWhiteList;
 
 		$ip = IP::get();
-		$validScrapers = array(
-				"85.88.24.82", // DOTLAN
-		);
 		$isValidScraper = false;
-		foreach ($validScrapers as $validScraper)
+		foreach ($apiWhiteList as $validScraper)
 			if (strpos($ip, $validScraper) !== false)
 				$isValidScraper = true;
 
