@@ -287,29 +287,66 @@ class Util
 		global $app;
 		$timeLimit = 60; // Number of seconds allowed between requests
 		$numAccesses = 10; // Number of accesses before hammer is thrown
+		$timeBetweenAccess = $timeLimit / $numAccesses;
 
 		$ip = IP::get();
 		$validScrapers = array(
 				"85.88.24.82", // DOTLAN
-				);
+		);
 		$isValidScraper = false;
-		foreach ($validScrapers as $validScraper) {
-			if (strpos($ip, $validScraper) !== false) $isValidScraper = true;
-		}
+		foreach ($validScrapers as $validScraper)
+			if (strpos($ip, $validScraper) !== false)
+				$isValidScraper = true;
+
 		if ($isValidScraper == false) {
 			$session = Cache::get("session_$ip");
-			if ($session == null) {
+
+			if ($session == null)
 				$session = array("accesses" => array());
-			}
+
 			$oldAccess = 0;
-			foreach($session["accesses"] as $access) {
-				if ($access < (time() - $timeLimit)) $oldAccess++;
+			foreach($session["accesses"] as $key => $access)
+			{
+				if ($access < (time() - $timeLimit))
+					unset($session["accesses"][$key]);
 			}
+
+			foreach($session["accesses"] as $access)
+			{
+				// if the last session wasn't atlast $timeBetweenAccess appart, throw error
+				if($access >= (time() - $timeBetweenAccess))
+					if(stristr($_SERVER["REQUEST_URI"], "xml"))
+					{
+						$date = date("Y-m-d H:i:s");
+						$cachedUntil = date("Y-m-d H:i:s", time() - $timeBetweenAccess);
+						$xml = '<?xml version="1.0" encoding="UTF-8"?>';
+						$xml .= '<eveapi version="2" zkbapi="1">';
+						$xml .= "<currentTime>$date</currentTime>";
+						$xml .= "<result>";
+						$xml .= "<error>You have requested data too fast, please keep atleast $timeBetweenAccess seconds between access..</error>";
+						$xml .= "</result>";
+						$xml .= "<cachedUntil>$cachedUntil</cachedUntil>";
+						$xml .= "</eveapi>";
+						header("Content-type: text/xml; charset=utf-8");
+						echo $xml;
+					}
+					else
+					{
+						header("Content-type: application/json; charset=utf-8");
+						echo json_encode(array("Error" => "You have requested data too fast, please keep atleast $timeBetweenAccess seconds between access.."));
+					}
+					header("Retry-After: " . (time() - $timeBetweenAccess));
+					header("HTTP/1.0 403 Forbidden");
+					die();
+			}
+
 			$session["accesses"][] = time();
 			$session["last_access"] = time();
-			Cache::set("session_$ip", $session, $timeLimit + $oldAccess);
-			if (sizeof($session["accesses"]) - $oldAccess >= 10 || sizeof($session["accesses"]) > $numAccesses ) {
+			Cache::set("session_$ip", $session, $timeLimit);
+			if (sizeof($session["accesses"]) > $numAccesses ) {
 				Log::log("$ip has hit the scrape limit, adding them to the naughty list.");
+				header("Content-type: application/json; charset=utf-8");
+				echo json_encode(array("Error" => "You have requested data too many times, too fast.. You have been blocked for a short period of time."));
 				header("Retry-After: " . ($timeLimit + $oldAccess + 1));
 				header('HTTP/1.0 403 Forbidden');
 				die();
