@@ -284,10 +284,7 @@ class Util
 
 	public static function scrapeCheck()
 	{
-		global $app;
-		$timeLimit = 60; // Number of seconds allowed between requests
-		$numAccesses = 10; // Number of accesses before hammer is thrown
-		$timeBetweenAccess = $timeLimit / $numAccesses;
+		global $app, $apiTimeBetweenAccess;
 
 		$ip = IP::get();
 		$validScrapers = array(
@@ -302,17 +299,17 @@ class Util
 			$session = array("access" => null);
 			$session = Cache::get("session_$ip");
 
-			if($session["access"] >= (time() - $timeBetweenAccess))
+			if($session["access"] >= (time() - $apiTimeBetweenAccess))
 			{
 				if(stristr($_SERVER["REQUEST_URI"], "xml"))
 				{
 					$date = date("Y-m-d H:i:s");
-					$cachedUntil = date("Y-m-d H:i:s", time() - $timeBetweenAccess);
+					$cachedUntil = date("Y-m-d H:i:s", time() - $apiTimeBetweenAccess);
 					$xml = '<?xml version="1.0" encoding="UTF-8"?>';
 					$xml .= '<eveapi version="2" zkbapi="1">';
 					$xml .= "<currentTime>$date</currentTime>";
 					$xml .= "<result>";
-					$xml .= "<error>You have requested data too fast, please keep atleast $timeBetweenAccess seconds between access..</error>";
+					$xml .= "<error>You have requested data too fast, please keep atleast $apiTimeBetweenAccess seconds between access..</error>";
 					$xml .= "</result>";
 					$xml .= "<cachedUntil>$cachedUntil</cachedUntil>";
 					$xml .= "</eveapi>";
@@ -322,9 +319,9 @@ class Util
 				else
 				{
 					header("Content-type: application/json; charset=utf-8");
-					echo json_encode(array("Error" => "You have requested data too fast, please keep atleast $timeBetweenAccess seconds between access.."));
+					echo json_encode(array("Error" => "You have requested data too fast, please keep atleast $apiTimeBetweenAccess seconds between access.."));
 				}
-				header("Retry-After: " . (time() - $timeBetweenAccess));
+				header("Retry-After: " . (time() - $apiTimeBetweenAccess));
 				header("HTTP/1.0 403 Forbidden");
 				die();
 			}
