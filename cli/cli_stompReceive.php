@@ -20,7 +20,7 @@ class cli_stompReceive implements cliCommand
 {
 	public function getDescription()
 	{
-		return "Receives data from the STOMP server. |w|Beware, this is a persistent script. It's run and forget!.|n| Usage: |g|stompRecieve";
+		return "Receives data from the STOMP server. |w|Beware, this is a persistent script. It's run and forget!.|n| Usage: |g|stompReceive";
 	}
 
 	public function getAvailMethods()
@@ -63,8 +63,8 @@ class cli_stompReceive implements cliCommand
 				$destination = "/dsub/zkb-".$baseAddr;
 				$stomp->subscribe($destination);
 
-				Log::log("StompRecieve started");
-				CLI::out("StompRecieve started");
+				Log::log("StompReceive started");
+				CLI::out("StompReceive started");
 
 				$timer = new Timer();
 				while($timer->stop() < 599000)
