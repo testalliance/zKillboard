@@ -41,26 +41,27 @@ class cli_stompSend implements cliCommand
 		$timer = new Timer();
 		while ($timer->stop() < 599000)
 		{
+			$time = $timer->stop();
 			$result = Db::query("SELECT killID, insertTime, kill_json FROM zz_killmails WHERE insertTime > :lastFetch ORDER BY killID limit 1000", array(":lastFetch" => $lastFetch), 0);
+			$stomp->begin($time);
 			foreach($result as $kill)
 			{
 				$lastFetch = max($lastFetch, $kill["insertTime"]);
 				if(!empty($kill["kill_json"]))
 				{
-					$stomp->begin($kill["killID"]);
 					if($kill["killID"] > 0)
 					{
 						$killID = $kill["killID"];
 						CLI::out("|g|Sending $killID as API verified");
-						$stomp->send(join(",", self::Destinations($kill["kill_json"])), $kill["kill_json"]);
+						$stomp->send(join(",", self::Destinations($kill["kill_json"])), $kill["kill_json"], array("transaction" => $time));
 					}
 
 					$data = json_decode($kill["kill_json"], true);
 					$json = json_encode(array("solarSystemID" => $data["solarSystemID"], "killID" => $data["killID"], "shipTypeID" => $data["victim"]["shipTypeID"], "killTime" => $data["killTime"]));
-					$stomp->send("/topic/starmap.systems.active", $json, array("transaction" => $kill["killID"]));
-					$stomp->commit($kill["killID"]);
+					$stomp->send("/topic/starmap.systems.active", $json, array("transaction" => $time));
 				}
 			}
+			$stomp->commit($time);
 			Storage::store($stompKey, $lastFetch);
 				if(sizeof($result) > 0)
 				Log::log("Stomped " . sizeof($result) . " killmails");
