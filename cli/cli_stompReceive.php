@@ -101,6 +101,8 @@ class cli_stompReceive implements cliCommand
 							}
 						}
 					}
+					// Keep the DB alive
+					Db::execute("SELECT 1");
 				}
 			break;
 		}
