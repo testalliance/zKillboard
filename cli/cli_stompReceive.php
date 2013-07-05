@@ -90,12 +90,14 @@ class cli_stompReceive implements cliCommand
 								}
 								else
 								{
+									CLI::out("|r|Kill skipped");
 									$stomp->ack($frame);
 									continue;
 								}
 							}
 							else
 							{
+								CLI::out("|r|Already posted");
 								$stomp->ack($frame);
 								continue;
 							}
