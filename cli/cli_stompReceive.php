@@ -85,20 +85,20 @@ class cli_stompReceive implements cliCommand
 									$hash = Util::getKillHash(null, json_decode($frame->body));
 									Db::execute("INSERT IGNORE INTO zz_killmails (killID, hash, source, kill_json) values (:killID, :hash, :source, :json)",
 										array("killID" => $killID, ":hash" => $hash, ":source" => "stompQueue", ":json" => json_encode($killdata)));
-									$stomp->ack($frame);
+									$stomp->ack($frame->headers["message-id"]);
 									continue;
 								}
 								else
 								{
 									CLI::out("|r|Kill skipped");
-									$stomp->ack($frame);
+									$stomp->ack($frame->headers["message-id"]);
 									continue;
 								}
 							}
 							else
 							{
 								CLI::out("|r|Already posted");
-								$stomp->ack($frame);
+								$stomp->ack($frame->headers["message-id"]);
 								continue;
 							}
 						}
