@@ -299,10 +299,10 @@ class Util
 
 			if($session["access"] >= (time() - $apiTimeBetweenAccess))
 			{
+				$date = date("Y-m-d H:i:s");
+				$cachedUntil = date("Y-m-d H:i:s", time() + $apiTimeBetweenAccess);
 				if(stristr($_SERVER["REQUEST_URI"], "xml"))
 				{
-					$date = date("Y-m-d H:i:s");
-					$cachedUntil = date("Y-m-d H:i:s", time() - $apiTimeBetweenAccess);
 					$xml = '<?xml version="1.0" encoding="UTF-8"?>';
 					$xml .= '<eveapi version="2" zkbapi="1">';
 					$xml .= "<currentTime>$date</currentTime>";
@@ -319,7 +319,7 @@ class Util
 					header("Content-type: application/json; charset=utf-8");
 					echo json_encode(array("Error" => "You have requested data too fast, please keep atleast $apiTimeBetweenAccess seconds between access.."));
 				}
-				header("Retry-After: " . (time() - $apiTimeBetweenAccess));
+				header("Retry-After: " . $cachedUntil);
 				header("HTTP/1.0 403 Forbidden");
 				die();
 			}

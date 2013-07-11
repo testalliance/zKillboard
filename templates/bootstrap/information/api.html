@@ -9,6 +9,7 @@ Usage is provided under the following rules:
 
 Also you should keep these things in mind:
 - Remember to look at the X-Time-Between-Req header, it lists how many seconds you have to wait between requests.
+- If you get an Error 403, look at the Retry-After header, for when you can do another request.
 - All IDs used with the API are CCP IDs.
 - The API will maximum deliver 200 mails back at a time.
 - If the /limit/ modifier is used then /page/ will be unavailable.
