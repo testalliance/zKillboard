@@ -292,7 +292,8 @@ class Util
 			if (strpos($ip, $validScraper) !== false)
 				$isValidScraper = true;
 
-		if ($isValidScraper == false) {
+		if(!$isValidScraper)
+		{
 			$session = array("access" => null);
 			$session = Cache::get("session_$ip");
 
@@ -326,6 +327,7 @@ class Util
 			$session["access"] = time();
 			Cache::set("session_$ip", $session);
 		}
+		header("X-Time-Between-Req: ".$apiTimeBetweenAccess);
 	}
 
 	public static function isValidCallback($subject)
