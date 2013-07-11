@@ -296,40 +296,40 @@ class Util
 		{
 			$session = array("access" => null);
 			$session = Cache::get("session_$ip");
+			$date = date("Y-m-d H:i:s");
+			$cachedUntil = date("Y-m-d H:i:s", time() + $apiTimeBetweenAccess);
+			header("X-Time-Between-Req: ".$apiTimeBetweenAccess);
 
 			if($session["access"] >= (time() - $apiTimeBetweenAccess))
 			{
-				$date = date("Y-m-d H:i:s");
-				$cachedUntil = date("Y-m-d H:i:s", time() + $apiTimeBetweenAccess);
 				if(stristr($_SERVER["REQUEST_URI"], "xml"))
 				{
-					$xml = '<?xml version="1.0" encoding="UTF-8"?>';
-					$xml .= '<eveapi version="2" zkbapi="1">';
-					$xml .= "<currentTime>$date</currentTime>";
-					$xml .= "<result>";
-					$xml .= "<error>You have requested data too fast, please keep atleast $apiTimeBetweenAccess seconds between access..</error>";
-					$xml .= "</result>";
-					$xml .= "<cachedUntil>$cachedUntil</cachedUntil>";
-					$xml .= "</eveapi>";
-					$app->contentType("text/xml; charset=utf-8");
-					echo $xml;
+					$data = '<?xml version="1.0" encoding="UTF-8"?>';
+					$data .= '<eveapi version="2" zkbapi="1">';
+					$data .= "<currentTime>$date</currentTime>";
+					$data .= "<result>";
+					$data .= "<error>You have requested data too fast, please keep atleast $apiTimeBetweenAccess seconds between access..</error>";
+					$data .= "</result>";
+					$data .= "<cachedUntil>$cachedUntil</cachedUntil>";
+					$data .= "</eveapi>";
+					header("Content-type: text/xml; charset=utf-8");
 				}
 				else
 				{
-					$app->contentType("application/json; charset=utf-8");
-					echo json_encode(array("Error" => "You have requested data too fast, please keep atleast $apiTimeBetweenAccess seconds between access.."));
+					header("Content-type: application/json; charset=utf-8");
+					$data = json_encode(array("Error" => "You have requested data too fast, please keep atleast $apiTimeBetweenAccess seconds between access.."));
 				}
-				header("Retry-After: " . $cachedUntil);
+				header("Retry-After: " . $cachedUntil . " GMT");
 				header("HTTP/1.1 403 Forbidden");
-				$app->etag(md5(serialize($return)));
-				$app->expires("+".$apiTimeBetweenAccess." seconds");
+				header("Etag: ".(md5(serialize($data))));
+				header("+".$apiTimeBetweenAccess." seconds");
+				echo $data;
 				die();
 			}
 
 			$session["access"] = time();
 			Cache::set("session_$ip", $session);
 		}
-		header("X-Time-Between-Req: ".$apiTimeBetweenAccess);
 	}
 
 	public static function isValidCallback($subject)
