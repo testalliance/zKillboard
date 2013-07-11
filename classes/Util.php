@@ -311,16 +311,18 @@ class Util
 					$xml .= "</result>";
 					$xml .= "<cachedUntil>$cachedUntil</cachedUntil>";
 					$xml .= "</eveapi>";
-					header("Content-type: text/xml; charset=utf-8");
+					$app->contentType("text/xml; charset=utf-8");
 					echo $xml;
 				}
 				else
 				{
-					header("Content-type: application/json; charset=utf-8");
+					$app->contentType("application/json; charset=utf-8");
 					echo json_encode(array("Error" => "You have requested data too fast, please keep atleast $apiTimeBetweenAccess seconds between access.."));
 				}
 				header("Retry-After: " . $cachedUntil);
-				header("HTTP/1.0 403 Forbidden");
+				header("HTTP/1.1 403 Forbidden");
+				$app->etag(md5(serialize($return)));
+				$app->expires("+".$apiTimeBetweenAccess." seconds");
 				die();
 			}
 
