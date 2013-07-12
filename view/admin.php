@@ -152,7 +152,6 @@ elseif($req == "susers" )
     }else{
       $api =  Api::getKeys($id);    
       $info["api"]=$api;
-      print_r($info);
     }
   }else{
   $app->redirect("/admin/users/");
