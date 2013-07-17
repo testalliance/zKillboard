@@ -299,6 +299,8 @@ class Api
 
 	public static function fetchApis()
 	{
+		global $baseDir;
+
 		$fetchesPerSecond = 30;
 		$timer = new Timer();
 		$preFetched = array();
@@ -323,7 +325,7 @@ class Api
 				Db::execute("update zz_api_characters set cachedUntil = date_add(if(cachedUntil=0, now(), cachedUntil), interval 5 minute), lastChecked = now() where apiRowID = :id", array(":id" => $apiRowID));
 
 				$m = $iterationCount % $fetchesPerSecond;
-				$command = "flock -w 60 /tmp/locks/preFetch.$m zkillboard apiFetchKillLog $apiRowID";
+				$command = "flock -w 60 $baseDir/cache/locks/preFetch.$m zkillboard apiFetchKillLog $apiRowID";
 				$command = escapeshellcmd($command);
 				exec("$command >/dev/null 2>/dev/null &");
 
