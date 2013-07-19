@@ -37,7 +37,7 @@ class Cache
 		{
 			if(extension_loaded("apcu"))
 			{
-				$cache = new Apcu();
+				$cache = new ApcCache();
 			}
 			else if(extension_loaded("Memcached"))
 			{
