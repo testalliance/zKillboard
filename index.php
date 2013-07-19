@@ -19,10 +19,6 @@
 // Load modules + database stuff (and the config)
 require( "init.php" );
 
-// Redirect if https
-if(isset($_SERVER["HTTP_X_FORWARDED_PROTO"]) && $_SERVER["HTTP_X_FORWARDED_PROTO"] == "https")
-	header("Location: $fullAddr");
-
 // initiate the timer!
 $timer = new Timer();
 
