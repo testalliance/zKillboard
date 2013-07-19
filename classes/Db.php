@@ -70,7 +70,7 @@ class Db
 			throw $ex;
 		}
 		Db::execute("rollback");
-		Db::execute("set session wait_timeout = 30");
+		Db::execute("set session wait_timeout = 60");
 		Db::$queryCount = 0;
 		return $pdo;
 	}
