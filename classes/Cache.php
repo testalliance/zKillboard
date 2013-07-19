@@ -35,7 +35,11 @@ class Cache
 
 		if ($cache == null)
 		{
-			if(extension_loaded("Memcached"))
+			if(extension_loaded("apcu"))
+			{
+				$cache = new Apcu();
+			}
+			else if(extension_loaded("Memcached"))
 			{
 				$cache = new MemcachedCache();
 			}
