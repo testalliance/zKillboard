@@ -96,7 +96,8 @@ $soloPages = ceil($soloCount / $limit);
 $solo = Kills::mergeKillArrays($soloKills, array(), $limit, $columnName, $id);
 
 $topLists = array();
-if ($pageType == "top" && false) {
+$bannedArray = array("system", "region", "group", "ship");
+if ($pageType == "top" && !in_array($key, $bannedArray)) {
 	$topParameters = $parameters; // array("limit" => 10, "kills" => true, "$columnName" => $id);
 	$topParameters["limit"] = 10;
 	if (!array_key_exists("kills", $topParameters) && !array_key_exists("losses", $topParameters)) $topParameters["kills"] = true;
@@ -144,8 +145,8 @@ $renderParams = array("pageName" => $pageName, "kills" => $kills, "losses" => $l
 		"mixed" => $mixedKills, "key" => $key, "id" => $id, "pageType" => $pageType, "solo" => $solo, "soloPages" => $soloPages,
 		"killPages" => $killPages, "lossPages" => $lossPages, "topLists" => $topLists, "corps" => $corpList, "corpStats" => $corpStats, "summaryTable" => $stats);
 
-$app->etag(md5(serialize($renderParams)));
-$app->expires("+5 minutes");
+//$app->etag(md5(serialize($renderParams)));
+//$app->expires("+5 minutes");
 $app->render("overview.html", $renderParams);
 
 
