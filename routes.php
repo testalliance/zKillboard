@@ -168,6 +168,10 @@ $app->get("/api/stats/:flags+/", function($flags) use ($app) {
     include( "view/apistats.php" );
 });
 
+$app->get("/api/dna(/:flags+)/", function($flags = null) use ($app) {
+    include( "view/apidna.php" );
+});
+
 $app->get("/api/:input+", function($input) use ($app) {
     include( "view/api.php" );
 });
