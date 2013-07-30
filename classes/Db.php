@@ -21,6 +21,7 @@ class Db
 	function __destruct()
 	{
 		global $pdo;
+		$pdo = null;
 		unset($pdo);
 	}
 
@@ -61,7 +62,7 @@ class Db
 		try {
 			$pdo = new PDO($dsn, $dbUser, $dbPassword,
 				array(
-					PDO::ATTR_PERSISTENT => true,
+					//PDO::ATTR_PERSISTENT => true,
 					PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
 				)
 			);
@@ -70,7 +71,7 @@ class Db
 			throw $ex;
 		}
 		Db::execute("rollback");
-		Db::execute("set session wait_timeout = 60");
+		Db::execute("set session wait_timeout = 10");
 		Db::$queryCount = 0;
 		return $pdo;
 	}
