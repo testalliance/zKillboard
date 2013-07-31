@@ -54,8 +54,7 @@ class cli_populateCharacters implements cliCommand
 			$keyIDs = Db::query("select distinct keyID from zz_api where errorCode not in (203, 220) and lastValidation < date_sub(now(), interval 2 hour)
 					order by lastValidation, dateAdded desc limit 100", array(), 0);
 
-			if (sizeof($keyIDs) == 0) sleep(1);
-			else foreach($keyIDs as $row) {
+			foreach($keyIDs as $row) {
 				$keyID = $row["keyID"];
 				$m = $iterationCount % $fetchesPerSecond;
 				Db::execute("update zz_api set lastValidation = date_add(lastValidation, interval 5 minute) where keyID = :keyID", array(":keyID" => $keyID));
@@ -65,6 +64,7 @@ class cli_populateCharacters implements cliCommand
 				$iterationCount++;
 				if ($iterationCount % $fetchesPerSecond == 0) sleep(1);
 			}
+			sleep(1);
 		}
 	}
 }
