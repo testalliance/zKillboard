@@ -58,7 +58,7 @@ class cli_apiFetchCharacters implements cliCommand
 				$corporationID = $character->corporationID;
 
 				$isDirector = $apiKeyInfo->key->type == "Corporation";
-				if ($isDirector) $directorCount++;
+				//if ($isDirector) $directorCount++;
 				$m = Db::execute("insert ignore into zz_api_characters (keyID, characterID, corporationID, isDirector, cachedUntil)
 						values (:keyID, :characterID, :corporationID, :isDirector, 0) on duplicate key update corporationID = :corporationID, isDirector = :isDirector",
 						array(":keyID" => $keyID,
