@@ -96,6 +96,7 @@ class cli_apiFetchKillLog implements cliCommand
 				case 222: // API has expired
 				case 221: // Invalid access, delete the toon from the char list until later re-verification
 				case 220: // Invalid Corporation Key. Key owner does not fullfill role requirements anymore.
+				case 403: // New error code for invalid API
 					Db::execute("delete from zz_api_characters where apiRowID = :id", array(":id" => $apiRowID));
 					break;
 				default:
