@@ -1,6 +1,6 @@
 {
     "require": {
-        "slim/slim": "*",
+        "slim/slim": "2.2.0",
         "slim/extras": "*",
         "twig/twig": "*",
         "twig/extensions": "*",
