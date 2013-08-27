@@ -38,7 +38,7 @@ class cli_apiFetchKillLog implements cliCommand
 
 		if (!$apiRow) CLI::out("|r|No such apiRowID: $apiRowID", true);
 
-		$keyID = $apiRow["keyID"];
+		$keyID = trim($apiRow["keyID"]);
 		$vCode = Db::queryField("select vCode from zz_api where keyID = :keyID", "vCode", array(":keyID" => $keyID));
 		$isDirector = $apiRow["isDirector"];
 		$charID = $apiRow["characterID"];
@@ -69,7 +69,6 @@ class cli_apiFetchKillLog implements cliCommand
 
 				$file = "/var/killboard/zkb_killlogs/{$keyID}_{$charID}_$beforeKillID.xml";
 				@unlink($file);
-				error_log($pheal->xml . "\n", 3, $file);
 
 				$aff = Api::processRawApi($keyID, $charID, $result);
 				if ($aff > 0) {
@@ -82,6 +81,9 @@ class cli_apiFetchKillLog implements cliCommand
 					$killID = $kill->killID;
 					if ($beforeKillID == 0) $beforeKillID = $killID;
 					else $beforeKillID = min($beforeKillID, $killID);
+				}
+				if ($aff > 0) {
+					error_log($pheal->xml, 3, $file);
 				}
 			} while ($aff > 25 || ($beforeKillID > 0 && $maxKillID == 0));
 		} catch (Exception $ex) {
