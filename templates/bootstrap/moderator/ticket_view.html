@@ -23,7 +23,10 @@
 		<tbody>
 			{% for data in info.replies %}
 			<tr>
-				<td><strong>{{ data.name }} {% if data.moderator %}<span class="label label-info pull-right">Moderator</span>{% endif %}</strong></td>
+				<td>
+					<strong>{{ data.name }} {% if data.moderator %}<span class="label label-info pull-right">Moderator</span>{% endif %}</strong>
+					<br/>{{data.datePosted}}
+				</td>
 				<td>{{ data.reply|raw }}</td>
 			</tr>
 			{% endfor %}
