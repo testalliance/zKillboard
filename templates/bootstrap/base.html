@@ -81,6 +81,7 @@
 {% if sessionusername and isMobile == false and isTablet == false %}
         <script type="text/javascript">
         $(document).ready(function(){
+return;
                jQuery.ajaxSetup({cache: true});
                jQuery.getScript("https://static.jappix.com/php/get.php?l=en&t=js&g=mini.xml", function() {
                   DEVELOPER = "off";
