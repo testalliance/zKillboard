@@ -21,40 +21,43 @@
  */
 class Moderator
 {
-  /**
-   * Gets the User info
-   *
-   * @static
-   * @param $userID the userid of the user to query
-   * @return The array with the userinfo in it 
-   */
-  public static function getUserInfo($userID){
-    $info = Db::query("SELECT * FROM zz_users WHERE id = :id", array(":id" => $userID),0); // should this be star
-    return $info;
-  }
-  /**
-   * Unrevokes the users access 
-   *
-   * @static
-   * @param $userID the userid to change
-   */
-  public static function setUnRevoked($userID){
-  Db::execute("UPDATE zz_users SET revoked = :access WHERE id = :id", array(":id" => $userID, ":access" => 0));
-  }
-  /**
-   * Revokes the users acces
-   *
-   * @static
-   * @param $userID the userid to change
-   * @param $reason the reason why the access was revoked
-   */
-  public static function setRevoked($userID,$reason){
-    Db::execute("UPDATE zz_users SET revoked = :access WHERE id = :id", array(":id" => $userID, ":access" => 1));
-    Db::execute("UPDATE zz_users SET revoked_reason = :reason WHERE id = :id", array(":id" => $userID, ":reason" => $reason));
-  }
-  public static function getUsers(){
-  $users = Db::query("SELECT * FROM zz_users order by username", array(), 0); 
-  return $users;
-  }
+	/**
+	 * Gets the User info
+	 *
+	 * @static
+	 * @param $userID the userid of the user to query
+	 * @return The array with the userinfo in it 
+	 */
+	public static function getUserInfo($userID){
+		$info = Db::query("SELECT * FROM zz_users WHERE id = :id", array(":id" => $userID),0); // should this be star
+		return $info;
+	}
+
+	/**
+	 * Unrevokes the users access 
+	 *
+	 * @static
+	 * @param $userID the userid to change
+	 */
+	public static function setUnRevoked($userID){
+		Db::execute("UPDATE zz_users SET revoked = :access WHERE id = :id", array(":id" => $userID, ":access" => 0));
+	}
+
+	/**
+	 * Revokes the users acces
+	 *
+	 * @static
+	 * @param $userID the userid to change
+	 * @param $reason the reason why the access was revoked
+	 */
+	public static function setRevoked($userID,$reason){
+		Db::execute("UPDATE zz_users SET revoked = :access WHERE id = :id", array(":id" => $userID, ":access" => 1));
+		Db::execute("UPDATE zz_users SET revoked_reason = :reason WHERE id = :id", array(":id" => $userID, ":reason" => $reason));
+	}
+
+	public static function getUsers(){
+		$users = Db::query("SELECT * FROM zz_users order by username", array(), 0); 
+		return $users;
+	}
 
 }
