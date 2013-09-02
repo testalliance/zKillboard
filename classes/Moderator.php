@@ -29,6 +29,7 @@ class Moderator
 	 * @return The array with the userinfo in it 
 	 */
 	public static function getUserInfo($userID){
+		if (!User::isModerator()) throw new Exception("Invalid Access!");
 		$info = Db::query("SELECT * FROM zz_users WHERE id = :id", array(":id" => $userID),0); // should this be star
 		return $info;
 	}
@@ -40,6 +41,7 @@ class Moderator
 	 * @param $userID the userid to change
 	 */
 	public static function setUnRevoked($userID){
+		if (!User::isModerator()) throw new Exception("Invalid Access!");
 		Db::execute("UPDATE zz_users SET revoked = :access WHERE id = :id", array(":id" => $userID, ":access" => 0));
 	}
 
@@ -51,12 +53,14 @@ class Moderator
 	 * @param $reason the reason why the access was revoked
 	 */
 	public static function setRevoked($userID,$reason){
+		if (!User::isModerator()) throw new Exception("Invalid Access!");
 		Db::execute("UPDATE zz_users SET revoked = :access WHERE id = :id", array(":id" => $userID, ":access" => 1));
 		Db::execute("UPDATE zz_users SET revoked_reason = :reason WHERE id = :id", array(":id" => $userID, ":reason" => $reason));
 	}
 
 	public static function getUsers(){
-		$users = Db::query("SELECT * FROM zz_users order by username", array(), 0); 
+		if (!User::isModerator()) throw new Exception("Invalid Access!");
+		$users = Db::query("SELECT * FROM zz_users order by `id`", array(), 0); 
 		return $users;
 	}
 
