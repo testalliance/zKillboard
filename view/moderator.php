@@ -61,6 +61,7 @@ if($_POST)
 	if(isset($status))
 	{
 		Db::execute("UPDATE zz_tickets SET status = :status WHERE id = :id", array(":status" => $status, ":id" => $id));
+		if ($status == 0) $app->redirect("..");
 	}
 	if(isset($reply))
 	{
