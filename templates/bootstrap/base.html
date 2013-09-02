@@ -78,7 +78,7 @@
 {% if 'now'|date('m') == 12 %}
         <script type="text/javascript" src="//{{ siteurl }}/js/snowstorm.js"></script> <!-- Snowstorm yo! -->
 {% endif %}
-{% if sessionusername %}
+{% if sessionusername and isMobile == false and isTablet == false %}
         <script type="text/javascript">
         $(document).ready(function(){
                jQuery.ajaxSetup({cache: true});
