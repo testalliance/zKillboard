@@ -31,7 +31,7 @@ class cli_calculateRecentStatsAndRanks implements cliCommand
 	public function getCronInfo()
 	{
 		return array(
-			86400 => "stats"
+			86400 => "all"
 		);
 	}
 
@@ -43,8 +43,8 @@ class cli_calculateRecentStatsAndRanks implements cliCommand
 		switch($command)
 		{
 			case "all":
-				self::ranks();
 				self::stats();
+				self::ranks();
 			break;
 
 			case "ranks":
@@ -133,12 +133,17 @@ class cli_calculateRecentStatsAndRanks implements cliCommand
 		}
 
 		// Fix unknown group ID's
+		echo "Updating groups...\n";
 		$result = Db::query("select distinct shipTypeID, i.groupID from zz_participants p left join ccp_invTypes i on (shipTypeID = i.typeID) where shipTypeID = i.typeID and p.groupID = 0 and shipTypeID != 0");
 		foreach ($result as $row) {
 			$shipTypeID = $row["shipTypeID"];
 			$groupID = $row["groupID"];
+			if ($groupID == null) $groupID = 0;
+			if ($groupID == 0) continue;
+			echo "Updating $shipTypeID to $groupID\n";
 			Db::execute("update zz_participants set groupID = $groupID where groupID = 0 and shipTypeID = $shipTypeID");
 		}
+		echo "Finished updating groups...\n";
 
 		Db::execute("create table if not exists zz_stats_recent like zz_stats");
 		Db::execute("truncate zz_stats_recent");
@@ -157,8 +162,6 @@ class cli_calculateRecentStatsAndRanks implements cliCommand
 		}
 
 		Db::execute("delete from zz_storage where locker = 'maintenance'");
-		die();
-
 	}
 
 	private static function recalc($type, $column, $calcKills = true)
@@ -181,13 +184,13 @@ class cli_calculateRecentStatsAndRanks implements cliCommand
 			$exclude = "$column != 0";
 
 			echo " losses ";
-			Db::execute("insert ignore into zz_stats_temporary select killID, '$type', $column, groupID, points, total_price from zz_participants where $exclude and isVictim = 1 and unix_timestamp(dttm) > (unix_timestamp() - 7776000)");
+			Db::execute("insert ignore into zz_stats_temporary select killID, '$type', $column, groupID, points, total_price from zz_participants where $exclude and isVictim = 1 and dttm > date_sub(now(), interval 90 day)");
 			Db::execute("insert into zz_stats_recent (type, typeID, groupID, lost, pointsLost, iskLost) select groupName, groupNum, groupID, count(killID), sum(points), sum(price) from zz_stats_temporary group by 1, 2, 3");
 
 			if ($calcKills) {
 				echo " kills ";
 				Db::execute("truncate table zz_stats_temporary");
-				Db::execute("insert ignore into zz_stats_temporary select killID, '$type', $column, vGroupID, points, total_price from zz_participants where $exclude and isVictim = 0 and unix_timestamp(dttm) > (unix_timestamp() - 7776000)");
+				Db::execute("insert ignore into zz_stats_temporary select killID, '$type', $column, vGroupID, points, total_price from zz_participants where $exclude and isVictim = 0 and dttm > date_sub(now(), interval 90 day)");
 				Db::execute("insert into zz_stats_recent (type, typeID, groupID, destroyed, pointsDestroyed, iskDestroyed) (select groupName, groupNum, groupID, count(killID), sum(points), sum(price) from zz_stats_temporary group by 1, 2, 3) on duplicate key update destroyed = values(destroyed), pointsDestroyed = values(pointsDestroyed), iskDestroyed = values(iskDestroyed)");
 			}
 
