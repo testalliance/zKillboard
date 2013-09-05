@@ -79,12 +79,12 @@ class cli_itemUpdate implements cliCommand
 				$id = $row["typeID"];
 				$currentName = trim(Db::queryField("select typeName from ccp_invTypes where typeID = :typeID", "typeName", array(":typeID" => $id), 0));
 				$name = trim($row["typeName"]);
-				if ($currentName === $name) continue;
+				if ($currentName === $name && $currentName != "Unknown Type") continue;
 				if (strlen($name) == 0) {
 					continue;  // CCP removed an item and cleared the name, we'll keep the name around though
 				}
 				Db::execute("update ccp_invTypes set typeName = :name where typeID = :id", array(":name" => $name, ":id" => $id));
-				if ($currentName != "" && $curretName != "Unknown Type") {
+				if ($currentName != "" && $name != "Unknown Type") {
 					Log::log("$count/$size $id $currentName -> $name");
 					if (Util::startsWith($currentName, "TypeID")) Log::irc("New item: $name (typeID: $id)");
 					else Log::irc("Item renamed: '$currentName' -> '$name'");
