@@ -84,7 +84,7 @@ class cli_itemUpdate implements cliCommand
 					continue;  // CCP removed an item and cleared the name, we'll keep the name around though
 				}
 				Db::execute("update ccp_invTypes set typeName = :name where typeID = :id", array(":name" => $name, ":id" => $id));
-				if ($currentName != "") {
+				if ($currentName != "" && $curretName != "Unknown Type") {
 					Log::log("$count/$size $id $currentName -> $name");
 					if (Util::startsWith($currentName, "TypeID")) Log::irc("New item: $name (typeID: $id)");
 					else Log::irc("Item renamed: '$currentName' -> '$name'");
