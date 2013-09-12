@@ -18,5 +18,5 @@ CREATE TABLE `zz_api_characters` (
   KEY `corporationID` (`corporationID`),
   KEY `isDirector` (`isDirector`),
   KEY `cachedUntil` (`cachedUntil`)
-) ENGINE=InnoDB AUTO_INCREMENT=29453529 DEFAULT CHARSET=latin1 ROW_FORMAT=COMPRESSED;
+) ENGINE=InnoDB AUTO_INCREMENT=61781918 DEFAULT CHARSET=latin1 ROW_FORMAT=COMPRESSED;
 

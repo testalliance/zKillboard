@@ -8,5 +8,5 @@ CREATE TABLE `zz_feeds` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
   KEY `edkStyle` (`edkStyle`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 

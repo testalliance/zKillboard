@@ -52,7 +52,10 @@ CREATE TABLE `zz_participants` (
   KEY `allianceID_6` (`allianceID`,`dttm`),
   KEY `isVictim_3` (`isVictim`,`dttm`),
   KEY `allianceID_4` (`allianceID`,`isVictim`,`dttm`),
-  KEY `shipTypeID_4` (`shipTypeID`,`isVictim`,`dttm`)
+  KEY `shipTypeID_4` (`shipTypeID`,`isVictim`,`dttm`),
+  KEY `solarSystemID_2` (`solarSystemID`,`isVictim`),
+  KEY `vGroupID_2` (`vGroupID`,`isVictim`,`dttm`),
+  KEY `solarSystemID_3` (`solarSystemID`,`isVictim`,`dttm`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPRESSED
 /*!50100 PARTITION BY RANGE (year(dttm))
 (PARTITION y2007 VALUES LESS THAN (2008) ENGINE = InnoDB,

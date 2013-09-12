@@ -14,5 +14,5 @@ CREATE TABLE `zz_comments` (
   KEY `killID` (`pageID`),
   KEY `pageID` (`pageID`),
   FULLTEXT KEY `theComment` (`theComment`)
-) ENGINE=MyIsam AUTO_INCREMENT=111 DEFAULT CHARSET=latin1  ;
+) ENGINE=MyIsam AUTO_INCREMENT=146 DEFAULT CHARSET=latin1  ;
 
