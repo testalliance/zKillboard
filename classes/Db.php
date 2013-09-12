@@ -22,7 +22,6 @@ class Db
 	{
 		global $pdo;
 		$pdo = null;
-		unset($pdo);
 	}
 
 	/**
@@ -55,14 +54,14 @@ class Db
 	{
 		global $dbUser, $dbPassword, $dbName, $dbHost, $pdo;
 
-		if (isset($pdo)) return $pdo;
+		if (isset($pdo) && $pdo != null) return $pdo;
 
 		$dsn = "mysql:dbname=$dbName;host=$dbHost";
 
 		try {
 			$pdo = new PDO($dsn, $dbUser, $dbPassword,
 				array(
-					//PDO::ATTR_PERSISTENT => true,
+					PDO::ATTR_PERSISTENT => false,
 					PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
 				)
 			);
@@ -170,9 +169,12 @@ class Db
 			}
 			if ($duration > 5000) Db::log($query, $params, $duration);
 
+			//$pdo = null;
+
 			unset(self::$horribleQueryMutexArray[$key]);
 			return $result;
 		} catch (Exception $ex) {
+			$pdo = null;
 			unset(self::$horribleQueryMutexArray[$key]);
 			throw $ex;
 
