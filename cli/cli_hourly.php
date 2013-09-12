@@ -51,6 +51,11 @@ class cli_hourly implements cliCommand
 		Storage::store("Top3dayChars", json_encode(Info::doMakeCommon("Top Characters - Last 3 Days", "characterID", Stats::getTopPilots($p))));
 		Storage::store("Top3dayCorps", json_encode(Info::doMakeCommon("Top Corporations - Last 3 Days", "corporationID", Stats::getTopCorps($p))));
 		Storage::store("Top3dayAlli", json_encode(Info::doMakeCommon("Top Alliances - Last 3 Days", "allianceID", Stats::getTopAllis($p))));
+		Storage::store("TopIsk", json_encode(Stats::getTopIsk(array("pastSeconds" => (3*86400), "limit" => 5))));
+		Storage::store("TopPods", json_encode(Stats::getTopIsk(array("shipTypeID" => 670, "pastSeconds" => (3*86400), "limit" => 5))));
+		Storage::store("TopPoints", json_encode(Stats::getTopPoints("killID", array("losses" => true, "pastSeconds" => (3*86400), "limit" => 5))));
+
+
 		Primer::cachePrimer();
 	}
 

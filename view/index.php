@@ -22,9 +22,9 @@ if ($subDomainRow) {
 	return;
 }
 
-$topIsk = Stats::getTopIsk(array("pastSeconds" => (3*86400), "limit" => 5));
-$topPods = Stats::getTopIsk(array("shipTypeID" => 670, "pastSeconds" => (3*86400), "limit" => 5));
-$topPointList = Stats::getTopPoints("killID", array("losses" => true, "pastSeconds" => (3*86400), "limit" => 5));
+$topIsk = json_decode(Storage::retrieve("TopIsk"), true);
+$topPods = json_decode(Storage::retrieve("TopPods"), true);
+$topPointList = json_decode(Storage::retrieve("TopPoints"), true);
 $topPoints = Kills::getKillsDetails($topPointList);
 
 $p = array();
