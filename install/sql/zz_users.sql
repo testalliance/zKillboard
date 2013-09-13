@@ -7,7 +7,6 @@ CREATE TABLE `zz_users` (
   `admin` tinyint(1) NOT NULL,
   `password` varchar(64) NOT NULL,
   `autoLoginHash` varchar(256) NOT NULL,
-  `boshAuth` varchar(64) NOT NULL,
   `email` varchar(128) DEFAULT NULL,
   `dateCreated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `revoked` smallint(1) NOT NULL DEFAULT '0',
@@ -19,5 +18,5 @@ CREATE TABLE `zz_users` (
   UNIQUE KEY `email` (`email`),
   KEY `login_index` (`username`,`password`),
   KEY `revoked` (`revoked`)
-) ENGINE=InnoDB AUTO_INCREMENT=6989 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPRESSED;
+) ENGINE=InnoDB AUTO_INCREMENT=6997 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPRESSED;
 
