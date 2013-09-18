@@ -80,6 +80,9 @@ $consumerSecret = "";
 $accessToken = "";
 $accessTokenSecret = "";
 
+// Show Ads? Disabled by default
+$showAds = false;
+
 // Slim config
 // to enable log, add "log.writer" => call after "log.enabled" => true, - you might have to load it in index after init has run and do $config["log.writer"] = call;
 $config = array(

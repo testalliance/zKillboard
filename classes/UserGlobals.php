@@ -25,6 +25,8 @@ class UserGlobals extends Twig_Extension
 
 	public function getGlobals()
 	{
+		global $showAds;
+
 		$result = array();
 		if (isset($_SESSION["loggedin"])) {
 			$u = User::getUserInfo();
@@ -54,6 +56,7 @@ class UserGlobals extends Twig_Extension
 		  $this->addGlobal($result, "sessionddmonthyear",UserConfig::get("ddmonthyear"));
     }
 		$this->addGlobal($result, "killsLastHour", Storage::retrieve("KillsLastHour", 0));
+		$this->addGlobal($result, "showAds", $showAds);
 		return $result;
 	}
 
