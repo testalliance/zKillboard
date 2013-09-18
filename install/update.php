@@ -3,6 +3,7 @@
 $base = dirname(__FILE__);
 require_once "$base/../init.php";
 
+Db::execute("SET SESSION wait_timeout = 120000000");
 out("|g|Starting maintenance mode...|n|");
 Db::execute("replace into zz_storage values ('maintenance', 'true')");
 out("|b|Waiting 60 seconds for all executing scripts to stop...|n|");
@@ -53,8 +54,14 @@ function loadFile($file, $table) {
     fclose($handle);
   if (Db::queryRow("SHOW TABLES LIKE 'old_$table'")!= null){ // Check again to see if the old_table is there
 	  if (!Util::startsWith($table, "ccp_")) {
-		  Db::execute("insert into $table select * from old_$table");
+			try {
+		  Db::execute("insert ignore into $table select * from old_$table");
 		  Db::execute("drop table old_$table");
+			} catch (Exception $ex) {
+				Db::execute("drop table $table");
+				Db::execute("alter table old_$table rename $table");
+				throw $ex;
+			}
 	  }
   }
 }
