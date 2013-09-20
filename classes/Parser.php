@@ -620,6 +620,7 @@ class Parser
 
 		$maxTime = 65 * 1000 ;
 
+		Db::execute("set session wait_timeout = 120000");
 		Db::execute("create table if not exists zz_items_temporary select * from zz_items where 1 = 0");
 		Db::execute("create table if not exists zz_participants_temporary select * from zz_participants where 1 = 0");
 
@@ -843,9 +844,9 @@ class Parser
 
 		Db::execute("
 				insert into zz_items_temporary
-				(killID, typeID, flag, qtyDropped, qtyDestroyed, insertOrder, price, singleton, year, week, inContainer)
+				(killID, typeID, flag, qtyDropped, qtyDestroyed, insertOrder, price, singleton, inContainer)
 				values
-				(:killID, :typeID, :flag, :qtyDropped, :qtyDestroyed, :insertOrder, :price, :singleton, :year, :week, :inContainer)",
+				(:killID, :typeID, :flag, :qtyDropped, :qtyDestroyed, :insertOrder, :price, :singleton, :inContainer)",
 				(array(
 					   ":killID" => $killID,
 					   ":typeID" => $item->typeID,
@@ -855,8 +856,6 @@ class Parser
 					   ":insertOrder" => $itemInsertOrder,
 					   ":price" => $price,
 					   ":singleton" => $item->singleton,
-					   ":year" => $year,
-					   ":week" => $week,
 					   ":inContainer" => ($isCargo ? 1 : 0),
 					  )));
 
