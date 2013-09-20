@@ -57,6 +57,8 @@ class cli_hourly implements cliCommand
 
 
 		Primer::cachePrimer();
+		$fileCache = new FileCache();
+		$fileCache::cleanup();
 	}
 
 	private static function apiPercentage()
