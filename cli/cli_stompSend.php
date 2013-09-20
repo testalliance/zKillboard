@@ -53,9 +53,9 @@ class cli_stompSend implements cliCommand
 					{
 						$killID = $kill["killID"];
 						CLI::out("|g|Sending $killID as API verified");
-                        foreach (self::Destinations($kill["kill_json"]) as $destination) {
-                            $stomp->send($destination, $kill["kill_json"]);
-                        }
+						foreach (self::Destinations($kill["kill_json"]) as $destination) {
+							$stomp->send($destination, $kill["kill_json"]);
+						}
 					}
 
 					$data = json_decode($kill["kill_json"], true);
