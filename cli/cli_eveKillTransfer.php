@@ -56,7 +56,7 @@ class cli_eveKillTransfer implements cliCommand
 				continue;
 			}
 
-			$id = Parser::parseRaw($killmail, "EveKill");
+			$id = @Parser::parseRaw($killmail, "EveKill");
 
 			if (isset($id["success"]) && $id["success"] < 0 ) {
 				$mKillID = -1 * $id["success"];

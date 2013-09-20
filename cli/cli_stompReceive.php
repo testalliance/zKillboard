@@ -54,6 +54,7 @@ class cli_stompReceive implements cliCommand
             */
 
 			case "fetch":
+				Db::execute("set session wait_timeout = 600");
 				/*if(!Storage::retrieve("dsubRegistered"))
 				{
 					CLI::out("Please run register_dsub first", true);
@@ -66,7 +67,6 @@ class cli_stompReceive implements cliCommand
 				$stomp->subscribe($destination, array("id" => "zkb-".$baseAddr, "persistent" => "true", "ack" => "client"));
 
 				Log::log("StompReceive started");
-				CLI::out("StompReceive started");
 
 				$timer = new Timer();
 				while($timer->stop() < 599000)
@@ -83,7 +83,7 @@ class cli_stompReceive implements cliCommand
 							{
 								if($killID > 0)
 								{
-									CLI::out("|g|Kill posted: ".$killID);
+									Log::log("Stomp: Kill posted: ".$killID);
 									$hash = Util::getKillHash(null, json_decode($frame->body));
 									Db::execute("INSERT IGNORE INTO zz_killmails (killID, hash, source, kill_json) values (:killID, :hash, :source, :json)",
 										array("killID" => $killID, ":hash" => $hash, ":source" => "stompQueue", ":json" => json_encode($killdata)));
@@ -92,14 +92,14 @@ class cli_stompReceive implements cliCommand
 								}
 								else
 								{
-									CLI::out("|r|Kill skipped");
+									//Log::log("|r|Kill skipped");
 									$stomp->ack($frame->headers["message-id"]);
 									continue;
 								}
 							}
 							else
 							{
-								CLI::out("|r|Already posted");
+								//CLI::out("|r|Already posted");
 								$stomp->ack($frame->headers["message-id"]);
 								continue;
 							}
