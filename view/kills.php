@@ -18,6 +18,7 @@
 
 $limit = 50;
 $killPages = 10;
+if ($page > 10) $page = 10;
 
 switch($type)
 {
