@@ -70,8 +70,10 @@ global $loadGroupShips; // Can't think of another way to do this just yet
 $loadGroupShips = $key == "group";
 
 $limit = 50;
+$maxpage = 10; // Max number of pages to use
 $parameters["limit"] = $limit;
-
+if($page > $maxpage) $page =$maxpage;// Same idea as kills force a max of 10 pages
+$parameters["page"] = $page;
 $detail = call_user_func($map[$key]["details"], $id, $parameters);
 $totalKills = isset($detail["shipsDestroyed"]) ? $detail["shipsDestroyed"] : 0;
 $totalLosses = isset($detail["shipsLost"]) ? $detail["shipsLost"] : 0;
@@ -79,9 +81,9 @@ $pageName = isset($detail[$map[$key]["column"] . "Name"]) ? $detail[$map[$key]["
 $columnName = $map[$key]["column"] . "ID";
 $mixedKills = $pageType == "overview" && $map[$key]["mixed"] && UserConfig::get("mixKillsWithLosses", true);
 
-$killPages = ceil($totalKills / $limit);
-$lossPages = ceil($totalLosses / $limit);
-$combinedPages = ceil(($totalKills + $totalLosses)/$limit);
+$killPages = min (ceil($totalKills / $limit),$maxpage);
+$lossPages = min (ceil($totalLosses / $limit),$maxpage);
+$combinedPages = min(ceil(($totalKills + $totalLosses)/$limit),$maxpage);
 
 if ($mixedKills) $page = min($combinedPages,$page);
 else if ($page == "kills") $page = min($killPages, $page);
