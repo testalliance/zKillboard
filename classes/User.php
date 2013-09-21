@@ -63,6 +63,7 @@ class User
 	{
 		global $cookie_name, $cookie_time, $app;
 		$sessionCookie = $app->getEncryptedCookie($cookie_name);
+
 		if (!empty($sessionCookie)) {
 			$cookie = explode("/", $sessionCookie);
 			$username = $cookie[0];
@@ -88,8 +89,7 @@ class User
 			$id = Db::query("SELECT id, username, email, dateCreated, admin, moderator, revoked FROM zz_users WHERE username = :username", array(":username" => $_SESSION["loggedin"]), 1);
 			return @array("id" => $id[0]["id"], "username" => $id[0]["username"], "admin" => $id[0]["admin"], "moderator" => $id[0]["moderator"], "email" => $id[0]["email"], "revoked" => $id[0]["revoked"], "dateCreated" => $id[0]["dateCreated"]);
 		}
-		else
-			return null;
+		return null;
 	}
 
 	public static function getUserID()

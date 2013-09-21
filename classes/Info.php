@@ -114,6 +114,12 @@ class Info
 				array(":typeID" => $typeID), 30);
 	}
 
+	/**
+	 * Retrieves the name of a corporation ID
+	 * 
+	 * @param $name
+	 * @return int The corporationID of a corporation
+	 */
 	public static function getCorpId($name)
 	{
 		$id = Db::queryField("select corporationID from zz_corporations where name = :name order by memberCount desc limit 1", "corporationID",
