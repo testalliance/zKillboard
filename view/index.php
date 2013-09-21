@@ -22,10 +22,13 @@ if ($subDomainRow) {
 	return;
 }
 
+$topPoints = array();
 $topIsk = json_decode(Storage::retrieve("TopIsk"), true);
 $topPods = json_decode(Storage::retrieve("TopPods"), true);
 $topPointList = json_decode(Storage::retrieve("TopPoints"), true);
-$topPoints = Kills::getKillsDetails($topPointList);
+
+if(is_array($topPointList))
+	$topPoints = Kills::getKillsDetails($topPointList);
 
 $p = array();
 $p["limit"] = 5;
