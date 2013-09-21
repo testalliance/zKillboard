@@ -35,7 +35,7 @@ class Cache
 
 		if ($cache == null)
 		{
-			if(extension_loaded("apcu"))
+			if(extension_loaded("apcu") || extension_loaded("apc"))
 			{
 				$cache = new ApcCache();
 			}
