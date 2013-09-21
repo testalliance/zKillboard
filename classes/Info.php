@@ -114,11 +114,12 @@ class Info
 				array(":typeID" => $typeID), 30);
 	}
 
-	public static function getCorpId($name, $fetchIfNotFound = false)
+	public static function getCorpId($name)
 	{
 		$id = Db::queryField("select corporationID from zz_corporations where name = :name order by memberCount desc limit 1", "corporationID",
 				array(":name" => $name), 30);
-		if ($id == null && $fetchIfNotFound) {
+
+		if ($id == null) {
 			try {
 				// Try EveWho...
 				$rawInfo = file_get_contents("http://evewho.com/ek_corp.php?name=" . urlencode($name));
@@ -280,19 +281,17 @@ class Info
 	}
 
 	/**
-	 * Attempt to find the name of a corporation in the corporations table.	If not found the
-	 * and $fetchIfNotFound is true, it will then attempt to pull the name via an API lookup.
+	 * Attempt to find the name of a corporation in the corporations table.	If not found then attempt to pull the name via an API lookup.
 	 *
 	 * @static
 	 * @param	$id
-	 * @param bool $fetchIfNotFound
 	 * @return string The name of the corp if found, null otherwise.
 	 */
-	public static function getCorpName($id, $fetchIfNotFound = false)
+	public static function getCorpName($id)
 	{
 		$name = Db::queryField("select name from zz_corporations where corporationID = :id", "name",
 				array(":id" => $id), 30);
-		if ($name != null || $fetchIfNotFound == false) return $name;
+		if ($name != null) return $name;
 
 		$pheal = Util::getPheal();
 		$pheal->scope = "corp";
@@ -312,12 +311,12 @@ class Info
 				array(":name" => $name), 30);
 	}
 
-	public static function getCharId($name, $fetchIfNotFound = false)
+	public static function getCharId($name)
 	{
 		if (Bin::get("s:$name", null) != null) return Bin::get("s:$name", null);
 		$id = (int)Db::queryField("select characterID from zz_characters where name = :name order by corporationID desc", "characterID",
 				array(":name" => $name), 30);
-		if ($id == 0 && $fetchIfNotFound) {
+		if ($id == 0) {
 			try {
 				// Try EveWho...
 				$rawInfo = file_get_contents("http://evewho.com/ek_pilot.php?name=" . urlencode($name));
@@ -381,18 +380,16 @@ class Info
 	}
 
 	/**
-	 * Attempt to find the name of a character in the characters table.	If not found the
-	 * and $fetchIfNotFound is true, it will then attempt to pull the name via an API lookup.
+	 * Attempt to find the name of a character in the characters table.	If not found then attempt to pull the name via an API lookup.
 	 *
 	 * @static
 	 * @param	$id
-	 * @param bool $fetchIfNotFound
 	 * @return string The name of the corp if found, null otherwise.
 	 */
-	public static function getCharName($id, $fetchIfNotFound = false)
+	public static function getCharName($id)
 	{
 		$name = Db::queryField("select name from zz_characters where characterID = :id", "name", array(":id" => $id), 30);
-		if ($name != null || $fetchIfNotFound == false) return $name;
+		if ($name != null) return $name;
 		if ($id < 39999999) return ""; // Don't try to look up invalid characterID's
 
 		$pheal = Util::getPheal();
