@@ -121,31 +121,19 @@ class Info
 
 		if ($id == null) {
 			try {
-				// Try EveWho...
-				$rawInfo = file_get_contents("http://evewho.com/ek_corp.php?name=" . urlencode($name));
-				if ($rawInfo) {
-					$info = json_decode($rawInfo, true);
-					$id = (int) $info["corporation_id"];
-					$name = $info["name"];
-					Db::execute("insert ignore into zz_corporations (corporationID, name) values (:id, :name)",
-							array(":id" => $id, ":name" => $name));
-				}
-				if ($id == 0) {
-					// Wow.. EveWho failed, lets try the API then
-					$pheal = Util::getPheal();
-					$pheal->scope = "eve";
-					$charInfo = $pheal->CharacterID(array("names" => $name));
-					foreach ($charInfo->characters as $char) {
-						$id = (int)$char->characterID;
-						if ($id != 0) {
-							// Verify that this is indeed a character
-							$pheal->scope = "corp";
-							$corpInfo = $pheal->CorporationSheet(array("corporationid" => $id));
-							$name = $charInfo->corporationName;
-							// If not a corporation an error would have been thrown and caught by the catch
-							Db::execute("insert ignore into zz_corporations (corporationID, name) values (:id, :name)",
-									array(":id" => $id, ":name" => $name));
-						}
+				$pheal = Util::getPheal();
+				$pheal->scope = "eve";
+				$charInfo = $pheal->CharacterID(array("names" => $name));
+				foreach ($charInfo->characters as $char) {
+					$id = (int)$char->characterID;
+					if ($id != 0) {
+						// Verify that this is indeed a character
+						$pheal->scope = "corp";
+						$corpInfo = $pheal->CorporationSheet(array("corporationid" => $id));
+						$name = $charInfo->corporationName;
+						// If not a corporation an error would have been thrown and caught by the catch
+						Db::execute("insert ignore into zz_corporations (corporationID, name) values (:id, :name)",
+								array(":id" => $id, ":name" => $name));
 					}
 				}
 			}
@@ -164,11 +152,12 @@ class Info
 	{
 		$corpList = Db::query("select * from zz_corporations where allianceID = :alliID order by name",
 				array(":alliID" => $allianceID));
+
 		$retList = array();
 		foreach ($corpList as $corp) {
-			$count = Db::queryField("select count(1) count from zz_api_characters where isDirector = 'T' and corporationID = :corpID",
-					"count", array(":corpID" => $corp["corporationID"]));
+			$count = Db::queryField("select count(1) count from zz_api_characters where isDirector = 'T' and corporationID = :corpID", "count", array(":corpID" => $corp["corporationID"]));
 			$corp["apiVerified"] = $count > 0 ? 1 : 0;
+
 			if ($count) {
 				$errors = Db::query("select errorCode from zz_api_characters where isDirector = 'T' and corporationID = :corpID",
 						array(":corpID" => $corp["corporationID"]));
@@ -237,13 +226,20 @@ class Info
 
 	public static function getFactionId($name)
 	{
-		return Db::queryField("select factionID from zz_factions where name = :name", "factionID",
-				array(":name" => $name), 30);
+		$factions = array("Caldari State" => 500001, "Minmatar Republic" => 500002, "Amarr Empire" => 500003, "Gallente Federation" => 500004);
+
+		if(isset($factions[$name]))
+			return $factions[$name];
+		return false;
 	}
 
 	public static function getFactionName($id)
 	{
-		return Db::queryField("select name from zz_factions where factionID = :id", "name", array(":id" => $id), 30);
+		$factions = array(500001 => "Caldari State", 500002 => "Minmatar Republic", 500003 => "Amarr Empire", 500004 => "Gallente Federation");
+
+		if(isset($factions[$id]))
+			return $factions[$id];
+		return false;
 	}
 
 	public static function getRegionName($id)
@@ -318,51 +314,20 @@ class Info
 				array(":name" => $name), 30);
 		if ($id == 0) {
 			try {
-				// Try EveWho...
-				$rawInfo = file_get_contents("http://evewho.com/ek_pilot.php?name=" . urlencode($name));
-				if ($rawInfo != null) {
-					$info = json_decode($rawInfo, true);
-					$id = (int) $info["character_id"];
-					if ($id != 0) {
-						$name = $info["name"];
-						Db::execute("insert ignore into zz_characters (characterID, name) values (:id, :name)",
-								array(":id" => $id, ":name" => $name));
-					}
-					if ($id == 0) {
-						$pheal = Util::getPheal();
-						$pheal->scope = "eve";
-						$charInfo = $pheal->CharacterID(array("names" => $name));
-						foreach ($charInfo->characters as $char) {
-							$id = $char->characterID;
-							if ($id != 0) {
-								// Verify that this is indeed a character
-								$charInfo = $pheal->CharacterInfo(array("characterid" => $id));
-								// If not a character an error would have been thrown and caught by the catch
-								$name = $charInfo->characterName;
-								Db::execute("insert ignore into zz_characters (characterID, name) values (:id, :name)",
-										array(":id" => $id, ":name" => $name));
-							}
-						}
-						if ($id == 0 && false) {
-							// Last ditch effort, try BattleClinic
-							$url = "http://eve.battleclinic.com/killboard/combat_record.php?type=player&name=" . urlencode($name);
-							$contents = file_get_contents($url);
-							$exploded = explode("\n", $contents);
-							foreach ($exploded as $line) {
-								if (strpos($line, "/Character/") !== false && strpos($line, "_128") !== false) {
-									$s1 = explode("/Character/", $line);
-									$s2 = explode("_128", $s1[1]);
-									$id = (int)$s2[0];
-									if ($id != 0) {
-										$name = $info["name"];
-										Db::execute("insert ignore into zz_characters (characterID, name) values (:id, :name)",
-												array(":id" => $id, ":name" => $name));
-									}
-								}
-							}
+					$pheal = Util::getPheal();
+					$pheal->scope = "eve";
+					$charInfo = $pheal->CharacterID(array("names" => $name));
+					foreach ($charInfo->characters as $char) {
+						$id = $char->characterID;
+						if ($id != 0) {
+							// Verify that this is indeed a character
+							$charInfo = $pheal->CharacterInfo(array("characterid" => $id));
+							// If not a character an error would have been thrown and caught by the catch
+							$name = $charInfo->characterName;
+							Db::execute("insert ignore into zz_characters (characterID, name) values (:id, :name)",
+									array(":id" => $id, ":name" => $name));
 						}
 					}
-				}
 			}
 			catch (Exception $ex) {
 				$id = 0;
