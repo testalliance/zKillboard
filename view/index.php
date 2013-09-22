@@ -40,4 +40,4 @@ $top[] = json_decode(Storage::retrieve("Top3dayChars"), true);
 $top[] = json_decode(Storage::retrieve("Top3dayCorps"), true);
 $top[] = json_decode(Storage::retrieve("Top3dayAlli"), true);
 
-$app->render("index.html", array("topPods" => $topPods, "topIsk" => $topIsk, "topPoints" => $topPoints, "topKillers" => $top));R
+$app->render("index.html", array("topPods" => $topPods, "topIsk" => $topIsk, "topPoints" => $topPoints, "topKillers" => $top));
