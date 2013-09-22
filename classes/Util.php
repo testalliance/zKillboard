@@ -295,31 +295,28 @@ class Util
 
 	public static function scrapeCheck()
 	{
-		global $app, $apiTimeBetweenAccess, $apiWhiteList;
+		global $app, $apiBinAttempts, $apiTimeBetweenAccess, $apiWhiteList;
 
 		$ip = IP::get();
-		$isValidScraper = false;
-		foreach ($apiWhiteList as $validScraper)
-			if (strpos($ip, $validScraper) !== false)
-				$isValidScraper = true;
-
-		if(!$isValidScraper)
+		if(!in_array($ip, $apiWhiteList))
 		{
-			$session = array("access" => null);
-			$session = Cache::get("session_$ip");
-			$date = date("Y-m-d H:i:s");
-			$cachedUntil = date("Y-m-d H:i:s", time() + $apiTimeBetweenAccess);
-			header("X-Time-Between-Req: ".$apiTimeBetweenAccess);
+			// Make a pool with the IP as an MD5
+			// Store a count in memcached with the md5 as hash
+			// Count it up, if it hits 10, he need to wait atleast X seconds before he can request again
+			$md5 = md5($ip);
+			$bin = Cache::get($md5);
 
-			if($session["access"] >= (time() - $apiTimeBetweenAccess))
+			if(count($bin) >= $apiBinAttempts)
 			{
+				$date = date("Y-m-d H:i:s");
+				$cachedUntil = date("Y-m-d H:i:s", time() + $apiTimeBetweenAccess);
 				if(stristr($_SERVER["REQUEST_URI"], "xml"))
 				{
 					$data = '<?xml version="1.0" encoding="UTF-8"?>';
 					$data .= '<eveapi version="2" zkbapi="1">';
 					$data .= "<currentTime>$date</currentTime>";
 					$data .= "<result>";
-					$data .= "<error>You have requested data too fast, please keep atleast $apiTimeBetweenAccess seconds between access..</error>";
+					$data .= "<error>You have requested data too fast, please wait $apiTimeBetweenAccess seconds..</error>";
 					$data .= "</result>";
 					$data .= "<cachedUntil>$cachedUntil</cachedUntil>";
 					$data .= "</eveapi>";
@@ -328,7 +325,7 @@ class Util
 				else
 				{
 					header("Content-type: application/json; charset=utf-8");
-					$data = json_encode(array("Error" => "You have requested data too fast, please keep atleast $apiTimeBetweenAccess seconds between access.."));
+					$data = json_encode(array("Error" => "You have requested data too fast, please wait $apiTimeBetweenAccess seconds..", "cachedUntil" => $cachedUntil));
 				}
 				header("Retry-After: " . $cachedUntil . " GMT");
 				header("HTTP/1.1 403 Forbidden");
@@ -338,8 +335,8 @@ class Util
 				die();
 			}
 
-			$session["access"] = time();
-			Cache::set("session_$ip", $session);
+			$bin[] = time();
+			Cache::set($md5, $bin, $apiTimeBetweenAccess);
 		}
 	}
 
