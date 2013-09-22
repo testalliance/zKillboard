@@ -52,7 +52,8 @@ class Db
 		try {
 			$pdo = new PDO($dsn, $dbUser, $dbPassword,
 				array(
-					PDO::ATTR_PERSISTENT => true,
+					PDO::ATTR_TIMEOUT => 10,
+					PDO::ATTR_PERSISTENT => false, // zkillboard.com overwhelms the database with connections
 					PDO::ATTR_EMULATE_PREPARES => false,
 					PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
 					PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
@@ -60,9 +61,10 @@ class Db
 			);
 		} catch (Exception $ex) {
 			Log::log("Unable to connect to database: " . $ex->getMessage());
-			throw $ex;
+			echo $ex->getMessage();
+			die();
 		}
-		
+
 		return $pdo;
 	}
 
