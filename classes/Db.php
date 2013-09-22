@@ -18,12 +18,6 @@
 
 class Db
 {
-	function __destruct()
-	{
-		global $pdo;
-		$pdo = null;
-	}
-
 	/**
 	 * @var int Stores the number of Query executions and inserts
 	 */
@@ -37,11 +31,10 @@ class Db
 	 */
 	public static function getKey($query, $parameters)
 	{
-		$key = $query;
 		foreach ($parameters as $k => $v) {
-			$key .= "|$k|$v";
+			$query .= "|$k|$v";
 		}
-		return "Db:" . md5($key);
+		return "Db:" . md5($query);
 	}
 
 	/**
@@ -52,16 +45,16 @@ class Db
 	 */
 	protected static function getPDO()
 	{
-		global $dbUser, $dbPassword, $dbName, $dbHost, $pdo;
-
-		if (isset($pdo) && $pdo != null) return $pdo;
+		global $dbUser, $dbPassword, $dbName, $dbHost;
 
 		$dsn = "mysql:dbname=$dbName;host=$dbHost";
 
 		try {
 			$pdo = new PDO($dsn, $dbUser, $dbPassword,
 				array(
-					PDO::ATTR_PERSISTENT => false,
+					PDO::ATTR_PERSISTENT => true,
+					PDO::ATTR_EMULATE_PREPARES => false,
+					PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
 					PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
 				)
 			);
@@ -69,9 +62,7 @@ class Db
 			Log::log("Unable to connect to database: " . $ex->getMessage());
 			throw $ex;
 		}
-		Db::execute("rollback");
-		Db::execute("set session wait_timeout = 10");
-		Db::$queryCount = 0;
+		
 		return $pdo;
 	}
 
@@ -109,7 +100,7 @@ class Db
 	{
 		$errorCode = $statement->errorCode();
 		$errorInfo = $statement->errorInfo();
-		Db::log("$errorCode - " . $errorInfo[2] . "\n$query", $parameters);
+		self::log("$errorCode - " . $errorInfo[2] . "\n$query", $parameters);
 		throw new Exception($errorInfo[0] . " - " . $errorInfo[1] . " - " . $errorInfo[2]);
 	}
 
@@ -128,12 +119,14 @@ class Db
 		if (strpos($query, ";") !== false) throw new Exception("Semicolons are not allowed in queries.  Use parameters instead.");
 
 		// cacheTime of 0 or less means skip all caches and just do the query
-		$key = Db::getKey($query, $params);
+		$key = self::getKey($query, $params);
 		// Horrible but temporary mutex solution to ensure a single version of a
 		// query is being executed once, and only once at a given moment
 		// yes , this is perfect, atm I don't care -- Squizz
 		// (karbowiak made me do it)
 		// TODO implement this properly
+		// 
+		// the mysql functions GET_LOCK / IS_FREE_LOCK and RELEASE_LOCK could replace the mutex solution we're using here?
 		while (array_key_exists($key, self::$horribleQueryMutexArray)) sleep(100);
 
 		if ($cacheTime > 0) {
@@ -150,14 +143,14 @@ class Db
 		self::$horribleQueryMutexArray[$key] = true;
 		
 		try {
-			Db::$queryCount++;
+			self::$queryCount++;
 
 			// OK, hit up the database, but let's time it too
 			$timer = new Timer();
-			$pdo = Db::getPDO();
+			$pdo = self::getPDO();
 			$stmt = $pdo->prepare($query);
 			$stmt->execute($params);
-			if ($stmt->errorCode() != 0) Db::processError($stmt, $query, $params);
+			if ($stmt->errorCode() != 0) self::processError($stmt, $query, $params);
 
 			$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 			$stmt->closeCursor();
@@ -167,15 +160,16 @@ class Db
 				Bin::set($key, $result);
 				Cache::set($key, $result, min(3600, $cacheTime));
 			}
-			if ($duration > 5000) Db::log($query, $params, $duration);
+			if ($duration > 5000) self::log($query, $params, $duration);
 
-			//$pdo = null;
-
+			$pdo = null;
 			unset(self::$horribleQueryMutexArray[$key]);
+
 			return $result;
 		} catch (Exception $ex) {
 			$pdo = null;
 			unset(self::$horribleQueryMutexArray[$key]);
+
 			throw $ex;
 
 		}
@@ -190,8 +184,9 @@ class Db
 	 */
 	public static function queryRow($query, $parameters = array(), $cacheTime = 30)
 	{
-		$result = Db::query($query, $parameters, $cacheTime);
+		$result = self::query($query, $parameters, $cacheTime);
 		if (sizeof($result) >= 1) return $result[0];
+
 		return null;
 	}
 
@@ -205,9 +200,10 @@ class Db
 	 */
 	public static function queryField($query, $field, $parameters = array(), $cacheTime = 30)
 	{
-		$result = Db::query($query, $parameters, $cacheTime);
+		$result = self::query($query, $parameters, $cacheTime);
 		if (sizeof($result) == 0) return null;
 		$resultRow = $result[0];
+
 		return $resultRow[$field];
 	}
 
@@ -228,20 +224,22 @@ class Db
 		if (strpos($query, ";") !== false) throw new Exception("Semicolons are not allowed in queries.  Use parameters instead.");
 
 		$timer = new Timer();
-		Db::$queryCount++;
-		$pdo = Db::getPDO();
+		self::$queryCount++;
+		$pdo = self::getPDO();
 		$statement = $pdo->prepare($query);
 		$statement->execute($parameters);
 
 		if ($statement->errorCode() != 0) {
-			if ($reportErrors) Db::processError($statement, $query, $parameters);
+			if ($reportErrors) self::processError($statement, $query, $parameters);
 			return FALSE;
 		}
 		$duration = $timer->stop();
-		if ($duration > 5000) Db::log($query, $parameters, $duration);
+		if ($duration > 5000) self::log($query, $parameters, $duration);
 
 		$rowCount = $statement->rowCount();
 		$statement->closeCursor();
+
+		$pdo = null;
 		return $rowCount;
 	}
 
@@ -253,6 +251,6 @@ class Db
 	 */
 	public static function getQueryCount()
 	{
-		return Db::$queryCount;
+		return self::$queryCount;
 	}
 }
