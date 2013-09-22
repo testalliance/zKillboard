@@ -43,7 +43,6 @@ class cli_stompSend implements cliCommand
 		{
 			$time = $timer->stop();
 			$result = Db::query("SELECT killID, insertTime, kill_json FROM zz_killmails WHERE insertTime > :lastFetch ORDER BY killID limit 1000", array(":lastFetch" => $lastFetch), 0);
-			//$stomp->begin($time);
 			foreach($result as $kill)
 			{
 				$lastFetch = max($lastFetch, $kill["insertTime"]);
@@ -63,7 +62,6 @@ class cli_stompSend implements cliCommand
 					$stomp->send("/topic/starmap.systems.active", $json);
 				}
 			}
-			//$stomp->commit($time);
 			Storage::store($stompKey, $lastFetch);
 				if(sizeof($result) > 0)
 				Log::log("Stomped " . sizeof($result) . " killmails");
