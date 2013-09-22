@@ -52,9 +52,8 @@ class Db
 		try {
 			$pdo = new PDO($dsn, $dbUser, $dbPassword,
 				array(
-					PDO::ATTR_TIMEOUT => 10,
-					PDO::ATTR_PERSISTENT => false, // zkillboard.com overwhelms the database with connections
-					PDO::ATTR_EMULATE_PREPARES => false,
+					PDO::ATTR_PERSISTENT => true,
+					PDO::ATTR_EMULATE_PREPARES => true,
 					PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
 					PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
 				)
