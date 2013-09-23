@@ -301,8 +301,8 @@ class Util
 		if(!in_array($ip, $apiWhiteList))
 		{
 			// Make a pool with the IP as an MD5
-			// Store a count in memcached with the md5 as hash
-			// Count it up, if it hits 10, he need to wait atleast X seconds before he can request again
+			// Store a count in the cache with the md5 as hash
+			// Count it up, if it hits $apiBinAttempts, he need to wait atleast $apiTimeBetweenAccess seconds before another request can be made.
 			$md5 = md5($ip);
 			$bin = Cache::get($md5);
 
