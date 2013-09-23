@@ -23,6 +23,21 @@ class Db
 	 */
 	protected static $queryCount = 0;
 
+	private $pdo = null;
+
+	protected static $instance = null;
+
+	private static function getInstance() {
+		if (Db::$instance == null) Db::$instance = new Db();
+		return Db::$instance;
+	}
+
+	function __destruct()
+	{
+		$this->pdo = null;
+	}
+
+
 	/**
 	 * @static
 	 * @param string $query The query.
@@ -47,24 +62,25 @@ class Db
 	{
 		global $dbUser, $dbPassword, $dbName, $dbHost;
 
+		if (Db::getInstance()->pdo != null) return Db::getInstance()->pdo;
+
 		$dsn = "mysql:dbname=$dbName;host=$dbHost";
 
 		try {
-			$pdo = new PDO($dsn, $dbUser, $dbPassword,
-				array(
-					PDO::ATTR_PERSISTENT => true,
-					PDO::ATTR_EMULATE_PREPARES => true,
-					PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
-					PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-				)
-			);
+			Db::getInstance()->pdo = new PDO($dsn, $dbUser, $dbPassword,
+					array(
+						PDO::ATTR_PERSISTENT => true,
+						PDO::ATTR_EMULATE_PREPARES => true,
+						PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
+						PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+						)
+					);
 		} catch (Exception $ex) {
 			Log::log("Unable to connect to database: " . $ex->getMessage());
 			echo $ex->getMessage();
 			die();
 		}
-
-		return $pdo;
+		return Db::getInstance()->pdo;
 	}
 
 	/**
@@ -142,7 +158,7 @@ class Db
 		}
 
 		self::$horribleQueryMutexArray[$key] = true;
-		
+
 		try {
 			self::$queryCount++;
 
@@ -163,12 +179,10 @@ class Db
 			}
 			if ($duration > 5000) self::log($query, $params, $duration);
 
-			$pdo = null;
 			unset(self::$horribleQueryMutexArray[$key]);
 
 			return $result;
 		} catch (Exception $ex) {
-			$pdo = null;
 			unset(self::$horribleQueryMutexArray[$key]);
 
 			throw $ex;
@@ -240,7 +254,6 @@ class Db
 		$rowCount = $statement->rowCount();
 		$statement->closeCursor();
 
-		$pdo = null;
 		return $rowCount;
 	}
 
