@@ -52,11 +52,9 @@ $cookie_time = (3600 * 24 * 30); // 30 days
 $cookie_secret = "%cookiesecret%";
 
 // API
-$apiTimeBetweenAccess = 6; // 6 seconds between each request
-$apiWhiteList = array(
-	"85.88.24.82", // DOTLAN
-	"82.221.99.219", // zKillboard
-);
+$apiBinAttempts = 10; // 10 seconds of bin alive time
+$apiTimeBetweenAccess = 10; // 6 seconds between each bin of requests
+$apiWhiteList = array();
 
 // Stomp
 $stompServer = "";

@@ -23,7 +23,6 @@ class User
 		$hash = Password::genPassword($password);
 		if ($autoLogin) {
 			$val = $username."/".hash("sha256", $username.$hash.time());
-			$bosh = md5($username.$hash.time());
 			Db::execute("UPDATE zz_users SET autoLoginHash = :autoLoginHash WHERE username = :username", array(":username" => $username, ":autoLoginHash" => $val));
 			$app->setEncryptedCookie($cookie_name, $val, time() + $cookie_time, "/", $baseAddr);
 		}
@@ -35,7 +34,6 @@ class User
 	{
 		global $cookie_name, $cookie_time, $baseAddr, $app;
 		$val = $username."/".hash("sha256", $username.$hash.time());
-		$bosh = md5($username.$hash.time());
 		Db::execute("UPDATE zz_users SET autoLoginHash = :autoLoginHash WHERE username = :username", array(":username" => $username, ":autoLoginHash" => $val));
 		$app->setEncryptedCookie($cookie_name, $val, time() + $cookie_time, "/", $baseAddr);
 		$_SESSION["loggedin"] = $username;
@@ -65,6 +63,7 @@ class User
 	{
 		global $cookie_name, $cookie_time, $app;
 		$sessionCookie = $app->getEncryptedCookie($cookie_name);
+
 		if (!empty($sessionCookie)) {
 			$cookie = explode("/", $sessionCookie);
 			$username = $cookie[0];
@@ -90,8 +89,7 @@ class User
 			$id = Db::query("SELECT id, username, email, dateCreated, admin, moderator, revoked FROM zz_users WHERE username = :username", array(":username" => $_SESSION["loggedin"]), 1);
 			return @array("id" => $id[0]["id"], "username" => $id[0]["username"], "admin" => $id[0]["admin"], "moderator" => $id[0]["moderator"], "email" => $id[0]["email"], "revoked" => $id[0]["revoked"], "dateCreated" => $id[0]["dateCreated"]);
 		}
-		else
-			return null;
+		return null;
 	}
 
 	public static function getUserID()

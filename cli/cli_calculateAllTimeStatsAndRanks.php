@@ -129,6 +129,7 @@ class cli_calculateAllTimeStatsAndRanks implements cliCommand
 		foreach ($result as $row) {
 			$shipTypeID = $row["shipTypeID"];
 			$groupID = $row["groupID"];
+			if($groupID == 0) continue;
 			Log::log("Updating $shipTypeID to group $groupID");
 			$affected = Db::execute("update zz_participants set groupID = $groupID where groupID = 0 and shipTypeID = $shipTypeID");
 		}

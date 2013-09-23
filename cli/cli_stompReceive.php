@@ -25,90 +25,58 @@ class cli_stompReceive implements cliCommand
 
 	public function getAvailMethods()
 	{
-		return "register_dsub fetch"; // Space seperated list
+		return ""; // Space seperated list
 	}
 
 	public function getCronInfo()
 	{
-		return array(
-			600 => "fetch"
-		);
+		return array();
 	}
 
 	public function execute($parameters)
 	{
-		if (sizeof($parameters) == 0 || $parameters[0] == "") CLI::out("Usage: |g|help <command>|n| To see a list of commands, use: |g|list", true);
-		$command = $parameters[0];
+		global $stompServer, $stompUser, $stompPassword, $baseAddr;
+		$stomp = new Stomp($stompServer, $stompUser, $stompPassword);
+		$stomp->setReadTimeout(10);
+		$destination = "/topic/kills";
+		$stomp->subscribe($destination, array("id" => "zkb-".$baseAddr, "persistent" => "true", "ack" => "client"));
 
-		switch($command)
+		Log::log("StompReceive started");
+
+		$timer = new Timer();
+		while($timer->stop() < 599000)
 		{
-            /*
-			case "register_dsub":
-				global $stompServer, $stompUser, $stompPassword, $baseAddr;
-				$stomp = new Stomp($stompServer, $stompUser, $stompPassword);
-				$destination = "/topic/kills";
-				$stomp->subscribe($destination, array("id" => "zkb-".$baseAddr, "persistent" => "true", "ack" => "client"));
-				Storage::store("dsubRegistered", "zkb-".$baseAddr);
-				unset($stomp);
-			break;
-            */
-
-			case "fetch":
-				Db::execute("set session wait_timeout = 600");
-				/*if(!Storage::retrieve("dsubRegistered"))
+			$frame = $stomp->readFrame();
+			if(!empty($frame))
+			{
+				$killdata = json_decode($frame->body, true);
+				if(!empty($killdata))
 				{
-					CLI::out("Please run register_dsub first", true);
-					Log::log("Please run register_dsub first");
-				}*/
-				global $stompServer, $stompUser, $stompPassword, $baseAddr;
-				$stomp = new Stomp($stompServer, $stompUser, $stompPassword);
-				$stomp->setReadTimeout(10);
-				$destination = "/topic/kills";
-				$stomp->subscribe($destination, array("id" => "zkb-".$baseAddr, "persistent" => "true", "ack" => "client"));
-
-				Log::log("StompReceive started");
-
-				$timer = new Timer();
-				while($timer->stop() < 599000)
-				{
-					$frame = $stomp->readFrame();
-					if(!empty($frame))
+					$killID = $killdata["killID"];
+					$count = Db::queryField("SELECT count(1) AS count FROM zz_killmails WHERE killID = :killID LIMIT 1", "count", array(":killID" => $killID), 0);
+					if($count == 0)
 					{
-						$killdata = json_decode($frame->body, true);
-						if(!empty($killdata))
+						if($killID > 0)
 						{
-							$killID = $killdata["killID"];
-							$count = Db::queryField("SELECT count(1) AS count FROM zz_killmails WHERE killID = :killID LIMIT 1", "count", array(":killID" => $killID), 0);
-							if($count == 0)
-							{
-								if($killID > 0)
-								{
-									Log::log("Stomp: Kill posted: ".$killID);
-									$hash = Util::getKillHash(null, json_decode($frame->body));
-									Db::execute("INSERT IGNORE INTO zz_killmails (killID, hash, source, kill_json) values (:killID, :hash, :source, :json)",
-										array("killID" => $killID, ":hash" => $hash, ":source" => "stompQueue", ":json" => json_encode($killdata)));
-									$stomp->ack($frame->headers["message-id"]);
-									continue;
-								}
-								else
-								{
-									//Log::log("|r|Kill skipped");
-									$stomp->ack($frame->headers["message-id"]);
-									continue;
-								}
-							}
-							else
-							{
-								//CLI::out("|r|Already posted");
-								$stomp->ack($frame->headers["message-id"]);
-								continue;
-							}
+							$hash = Util::getKillHash(null, json_decode($frame->body));
+							Db::execute("INSERT IGNORE INTO zz_killmails (killID, hash, source, kill_json) values (:killID, :hash, :source, :json)",
+								array("killID" => $killID, ":hash" => $hash, ":source" => "stompQueue", ":json" => json_encode($killdata)));
+							$stomp->ack($frame->headers["message-id"]);
+							continue;
+						}
+						else
+						{
+							$stomp->ack($frame->headers["message-id"]);
+							continue;
 						}
 					}
-					// Keep the DB alive
-					Db::execute("SELECT 1");
+					else
+					{
+						$stomp->ack($frame->headers["message-id"]);
+						continue;
+					}
 				}
-			break;
+			}
 		}
 	}
 }

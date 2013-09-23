@@ -22,10 +22,13 @@ if ($subDomainRow) {
 	return;
 }
 
+$topPoints = array();
 $topIsk = json_decode(Storage::retrieve("TopIsk"), true);
 $topPods = json_decode(Storage::retrieve("TopPods"), true);
 $topPointList = json_decode(Storage::retrieve("TopPoints"), true);
-$topPoints = Kills::getKillsDetails($topPointList);
+
+if(is_array($topPointList))
+	$topPoints = Kills::getKillsDetails($topPointList);
 
 $p = array();
 $p["limit"] = 5;
@@ -36,8 +39,5 @@ $top = array();
 $top[] = json_decode(Storage::retrieve("Top3dayChars"), true);
 $top[] = json_decode(Storage::retrieve("Top3dayCorps"), true);
 $top[] = json_decode(Storage::retrieve("Top3dayAlli"), true);
-
-$app->etag(md5(serialize($top)));
-$app->expires("+5 minutes");
 
 $app->render("index.html", array("topPods" => $topPods, "topIsk" => $topIsk, "topPoints" => $topPoints, "topKillers" => $top));

@@ -34,8 +34,8 @@ $cachepath = "cache/templates/" . ($viewtheme ? $viewtheme : "bootstrap");
 );
 
 $twig = $app->view()->getEnvironment();
-// Twig globals
 
+// Twig globals
 $twig->addGlobal("image_character", $imageServer."Character/");
 $twig->addGlobal("image_corporation", $imageServer."Corporation/");
 $twig->addGlobal("image_alliance", $imageServer."Alliance/");
