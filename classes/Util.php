@@ -303,10 +303,10 @@ class Util
 			// Make a pool with the IP as an MD5
 			// Store a count in the cache with the md5 as hash
 			// Count it up, if it hits $apiBinAttempts, he need to wait atleast $apiTimeBetweenAccess seconds before another request can be made.
-			$md5 = md5($ip);
+			$md5 = md5("IP:$ip");
 			$bin = Cache::get($md5);
 
-			if(count($bin) >= $apiBinAttempts)
+			if($bin != null && count($bin) >= $apiBinAttempts)
 			{
 				$date = date("Y-m-d H:i:s");
 				$cachedUntil = date("Y-m-d H:i:s", time() + $apiTimeBetweenAccess);
