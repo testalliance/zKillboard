@@ -43,8 +43,8 @@ class cli_calculateAllTimeStatsAndRanks implements cliCommand
 		switch($command)
 		{
 			case "all":
-				self::ranks();
 				self::stats();
+				self::ranks();
 			break;
 
 			case "ranks":
