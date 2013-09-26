@@ -43,8 +43,8 @@ class cli_calculateAllTimeStatsAndRanks implements cliCommand
 		switch($command)
 		{
 			case "all":
-				self::ranks();
 				self::stats();
+				self::ranks();
 			break;
 
 			case "ranks":
@@ -159,7 +159,6 @@ class cli_calculateAllTimeStatsAndRanks implements cliCommand
 
 		Db::execute("delete from zz_storage where locker = 'maintenance'");
 		Log::irc("|g|Stat recalculations have completed, leaving Maintenance mode and now reverting to business as usual...");
-		die();
 	}
 
 	private static function recalc($type, $column, $calcKills = true)

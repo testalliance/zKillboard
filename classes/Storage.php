@@ -20,6 +20,7 @@ class Storage
 {
 	public static function retrieve($locker, $default = null)
 	{
+		if (!isset($locker) || $locker === null) return $default;
 		$contents = Db::queryField("select contents from zz_storage where locker = :locker", "contents", array(":locker" => $locker), 1);
 		if ($contents === null) return $default;
 		return $contents;
