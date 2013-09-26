@@ -230,6 +230,18 @@ class Info
 				array(":id" => $id), 30);
 	}
 
+	public static function getFactionTicker($ticker) //The function name obv. isn't right, since it'll return an id and name
+	{
+		$data = array(
+			"caldari"	=> array("factionID" => "500001", "name" => "Caldari State"), 
+			"minmatar"	=> array("factionID" => "500002", "name" => "Minmatar Republic"), 
+			"amarr"		=> array("factionID" => "500003", "name" => "Amarr Empire"), 
+			"gallente"	=> array("factionID" => "500004", "name" => "Gallente Federation")
+			);
+
+		return $data[$ticker];
+	}
+
 	public static function getFactionId($name)
 	{
 		$factions = array("Caldari State" => 500001, "Minmatar Republic" => 500002, "Amarr Empire" => 500003, "Gallente Federation" => 500004);
