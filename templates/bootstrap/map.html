@@ -13,7 +13,8 @@
 {% block script %}
 	{{ parent() -}}
 	<script type="text/javascript" src="//{{ siteurl }}/js/three.min.js"></script>
-	<script type="text/javascript" src="//{{ siteurl }}/js/stomple.js"></script>
+	<script type="text/javascript" src="http://cdn.sockjs.org/sockjs-0.3.min.js"></script>
+	<script type="text/javascript" src="/js/stomp.js"></script>
 	<script id="vertexshader" type="x-shader/x-vertex">
 		attribute float size;
 		attribute vec3 ca;

@@ -59,12 +59,17 @@ function init() {
 	$.getJSON('/js/starmap-ships.json', function(data) { ships = data; });	
 	
 	//setup the stomple connection - yay websockets = we should get this from the config setting
-	var client = Stomple.create_client({
-		url : "ws://stomp.zkillboard.com:61623/",
-		destination : "/topic/starmap.systems.active",
-		login : "guest",
-		passcode : "guest"
-	});
+	var ws = new SockJS("http://stomp.zkillboard.com:15674/stomp");
+	var client = Stomp.over(ws);
+
+    var on_connect = function() {
+        console.log('connected');
+    };
+    var on_error =  function() {
+        console.log('error');
+    };
+
+	client.connect('guest', 'guest', on_connect, on_error, '/topic/starmap.systems.active');
 
 	//connect and handle any incoming messages
 	client.subscribe({handler : function(msg) {
