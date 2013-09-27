@@ -196,6 +196,9 @@ class Util
 						if ($key == "systemID") $key = "solarSystemID";
 						else if ($key == "shipID") $key = "shipTypeID";
 						$exploded = explode(",", $value);
+						foreach($exploded as $aValue) {
+							if ($aValue != (int) $aValue || ((int) $aValue) == 0) throw new Exception("Invalid ID passed: $aValue");
+						}
 						if (sizeof($exploded) > 10) throw new Exception("Too many IDs! Max: 10");
 						$parameters[$key] = $exploded;
 					}
