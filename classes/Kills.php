@@ -200,11 +200,11 @@ class Kills
 	 * @param $killID the ID of the kill
 	 * @return text
 	 */
-	public static function getRawMail($killID, $array = array())
+	public static function getRawMail($killID, $array = array(), $edk = true)
 	{
 		// Check if the mail has already been generated, then return it from the cache..
-		$Cache = Cache::get($killID);
-		if($Cache) return $Cache;
+		//$Cache = Cache::get($killID);
+		//if($Cache) return $Cache;
 
 		if(!$array)
 			$k = self::getArray($killID);
@@ -262,44 +262,51 @@ class Kills
 		$mail .= "\n";
 		$dropped = array();
 		$destroyed = array();
-		if (isset($k["items"]))
+		if(isset($k["items"]))
 		{
-			foreach ($k["items"] as $itm)
+			foreach($k["items"] as $itm)
 			{
-				if ($itm["qtyDropped"] > 0) {
-					$asdf = "";
-					if ($itm["qtyDropped"] > 1)
-						$asdf = $itm["typeName"] . ", Qty: " . $itm["qtyDropped"];
-					else
-						$asdf = $itm["typeName"];
-					if (isset($itm["flagName"])) {
-						if ($itm["flagName"] == "Cargo")
-							$asdf = $asdf . " (Cargo)";
-						elseif ($itm["flagName"] == "Drone Bay")
-							$asdf = $asdf . " (Drone Bay)";
-						elseif ($itm["singleton"] == 2)
-							$asdf = $asdf . " (Copy)";
-					}
-					$dropped[] = $asdf;
+				// create the flag!
+				$copy = null;
+				if($itm["singleton"] == 2)
+					$copy = " (Copy)";
+
+				$edkValidFlags = array("Cargo", "Drone Bay");
+				if($edk && !in_array($itm["flagName"], $edkValidFlags))
+					$flagName = null;
+				else
+					$flagName = " (". $itm["flagName"] . ")";
+
+
+				if($itm["qtyDropped"]) // go to dropped list
+				{
+					$line = $itm["typeName"] . ", Qty: " . $itm["qtyDropped"] . $flagName . ($copy ? $copy : null);
+					$dropped[] = $line;
 				}
-				if ($itm["qtyDestroyed"] > 0) {
-					$asdf = "";
-					if ($itm["qtyDestroyed"] > 1)
-						$asdf = $itm["typeName"] . ", Qty: " . $itm["qtyDestroyed"];
-					else
-						$asdf = $itm["typeName"];
-					if (isset($itm["flagName"])) {
-						if ($itm["flagName"] == "Cargo")
-							$asdf = $asdf . " (Cargo)";
-						elseif ($itm["flagName"] == "Drone Bay")
-							$asdf = $asdf . " (Drone Bay)";
-						elseif ($itm["singleton"] == 2)
-							$asdf = $asdf . " (Copy)";
-					}
-					$destroyed[] = $asdf;
+
+				if($itm["qtyDestroyed"]) // go to destroyed list
+				{
+					$line = $itm["typeName"] . ", Qty: " . $itm["qtyDestroyed"] . $flagName . ($copy ? $copy : null);
+					$destroyed[] = $line;
 				}
+
+				if(isset($itm["items"]))
+					foreach($itm["items"] as $key => $sub)
+					{
+						if($sub["qtyDropped"]) // go to dropped list
+						{
+							$line = ($edk ? null: "-- ")  . $sub["typeName"] . ", Qty: " . $sub["qtyDropped"] . $flagName . ($copy ? $copy : null);
+							$dropped[] = $line;
+						}
+						if($sub["qtyDestroyed"]) // go to destroyed list
+						{
+							$line = ($edk ? null : "-- ") . $sub["typeName"] . ", Qty: " . $sub["qtyDestroyed"] . $flagName . ($copy ? $copy : null);
+							$destroyed[] = $line;
+						}
+					}
 			}
 		}
+
 		if ($destroyed) {
 			$mail .= "Destroyed items:\n\n";
 			foreach ($destroyed as $items)
@@ -311,7 +318,6 @@ class Kills
 			foreach ($dropped as $items)
 				$mail .= $items . "\n";
 		}
-
 		// Store the generated mail in cache
 		Cache::set($killID, $mail, 604800);
 		return $mail;

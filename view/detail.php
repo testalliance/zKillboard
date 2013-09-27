@@ -131,7 +131,8 @@ $extra["destroyedprice"] = usdeurgbp($extra["lostisk"]);
 $extra["droppedprice"] = usdeurgbp($extra["droppedisk"]);
 $extra["efttext"] = Fitting::EFT($extra["fittingwheel"]);
 $extra["dnatext"] = Fitting::DNA($killdata["items"],$killdata["info"]["shipTypeID"]);
-$extra["rawmail"] = Kills::getRawMail($id);
+$extra["edkrawmail"] = Kills::getRawMail($id);
+$extra["zkbrawmail"] = Kills::getRawMail($id, array(), false);
 $extra["reports"] = Db::queryField("SELECT count(*) as cnt FROM zz_tickets WHERE killID = :killid", "cnt", array(":killid" => $id), 0);
 $extra["slotCounts"] = Info::getSlotCounts($killdata["victim"]["shipTypeID"]);
 
