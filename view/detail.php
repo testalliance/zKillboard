@@ -29,13 +29,10 @@ $email = $info["email"];
 
 if($_POST && !User::isRevoked())
 {
-	$comment = "";
 	$characterID = "";
 	$report = "";
 	if(isset($_POST["report"]))
 		$report = $_POST["report"];
-	if(isset($_POST["comment"]))
-		$comment = $_POST["comment"];
 	if(isset($_POST["characterID"]))
 		$characterID = $_POST["characterID"];
 	
@@ -52,10 +49,6 @@ if($_POST && !User::isRevoked())
 			$app->redirect("/detail/$id/");
 		}
 	}
-
-	if ($comment && $characterID)
-		Comments::addComment($comment, $characterID, $pageID);
-
 	
 }
 
@@ -74,6 +67,20 @@ if ($id < 0) {
 		die();
 	}
 }
+
+// Find the old killID or EVE-KILL ID
+$checkID = $id;
+if($checkID < 0)
+        $checkID = -1 * $checkID;
+$okID = Db::queryRow("SELECT mKillID, killID, eveKillID FROM zz_manual_mails WHERE (mKillID = :mKillID OR killID = :killID)", array(":mKillID" => $checkID, ":killID" => $checkID));
+if($okID["eveKillID"])
+        $commentID = $okID["eveKillID"];
+elseif($okID["mKillID"])
+        $commentID = $okID["mKillID"];
+elseif($okID["killID"])
+        $commentID = $okID["killID"];
+else
+        $commentID = $id;
 
 // Create the details on this kill
 $killdata = Kills::getKillDetails($id);
@@ -132,6 +139,7 @@ $extra["edkrawmail"] = Kills::getRawMail($id);
 $extra["zkbrawmail"] = Kills::getRawMail($id, array(), false);
 $extra["reports"] = Db::queryField("SELECT count(*) as cnt FROM zz_tickets WHERE killID = :killid", "cnt", array(":killid" => $id), 0);
 $extra["slotCounts"] = Info::getSlotCounts($killdata["victim"]["shipTypeID"]);
+$extra["commentID"] = $commentID;
 
 $url = "https://". $_SERVER["SERVER_NAME"] ."/detail/$id/";
 $app->render("detail.html", array("pageview" => $pageview, "killdata" => $killdata, "extra" => $extra, "message" => $message, "flags" => Info::$effectToSlot, "topDamage" => $topDamage, "finalBlow" => $finalBlow, "url" => $url));
