@@ -20,7 +20,7 @@
                 <li class="{{ isActive('overview', pageview) }}"><a href="/detail/{{ killdata.info.killID }}/overview/">Overview</a></li>
                 <li class="visible-desktop {{ isActive('involved', pageview) }} hidden-phone"><a href="/detail/{{ killdata.info.killID }}/involved/">Involved Pilots ({{ killdata.info.number_involved }})</a></li>
 				<li class="{{ isActive('shiptypes', pageview) }} hidden-phone hidden-tablet"><a href="/detail/{{ killdata.info.killID }}/shiptypes/">Ship Types ({{ extra.involvedshipscount }})</a></li>
-                <li class="{{ isActive('comments', pageview) }}"><a href="/detail/{{ killdata.info.killID }}/comments/#disqus_thread">Comments</a></li>
+                <li class="{{ isActive('comments', pageview) }}"><a href="/detail/{{ killdata.info.killID }}/comments/#disqus_thread" data-disqus-identifier="{{ extra.commentID }}">Comments</a></li>
             </ul>
             <ul class="nav pull-right hidden-phone">
 				{% if killdata.info.killID < 0 %}
