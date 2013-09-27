@@ -119,9 +119,6 @@ if($pageview == "comments")
 
 $extra["droppedisk"] = droppedIsk(md5($id), $killdata["items"]);
 $extra["lostisk"] = $killdata["info"]["total_price"] - $extra["droppedisk"];
-$comments = Comments::getPageComments($pageID);
-$extra["comments"] = Info::addInfo($comments);
-$extra["comments"]["count"] = Comments::getPageCommentCount($pageID);
 $extra["relatedtime"] = date("YmdH00", strtotime($killdata["info"]["killTime"]));
 $extra["fittingwheel"] = eftarray(md5($id), $killdata["items"]);
 $extra["involvedships"] = involvedships($killdata["involved"]);
@@ -137,8 +134,6 @@ $extra["reports"] = Db::queryField("SELECT count(*) as cnt FROM zz_tickets WHERE
 $extra["slotCounts"] = Info::getSlotCounts($killdata["victim"]["shipTypeID"]);
 
 $url = "https://". $_SERVER["SERVER_NAME"] ."/detail/$id/";
-$app->etag(md5($id.Comments::getPageCommentCount($pageID)));
-$app->expires("+5 minutes");
 $app->render("detail.html", array("pageview" => $pageview, "killdata" => $killdata, "extra" => $extra, "message" => $message, "flags" => Info::$effectToSlot, "topDamage" => $topDamage, "finalBlow" => $finalBlow, "url" => $url));
 
 function involvedships($array)

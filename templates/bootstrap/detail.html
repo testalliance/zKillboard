@@ -20,7 +20,7 @@
                 <li class="{{ isActive('overview', pageview) }}"><a href="/detail/{{ killdata.info.killID }}/overview/">Overview</a></li>
                 <li class="visible-desktop {{ isActive('involved', pageview) }} hidden-phone"><a href="/detail/{{ killdata.info.killID }}/involved/">Involved Pilots ({{ killdata.info.number_involved }})</a></li>
 				<li class="{{ isActive('shiptypes', pageview) }} hidden-phone hidden-tablet"><a href="/detail/{{ killdata.info.killID }}/shiptypes/">Ship Types ({{ extra.involvedshipscount }})</a></li>
-                <li class="{{ isActive('comments', pageview) }}"><a href="/detail/{{ killdata.info.killID }}/comments/">Comments ({{ extra.comments.count }})</a></li>
+                <li class="{{ isActive('comments', pageview) }}"><a href="/detail/{{ killdata.info.killID }}/comments/#disqus_thread">Comments</a></li>
             </ul>
             <ul class="nav pull-right hidden-phone">
 				{% if killdata.info.killID < 0 %}
@@ -139,44 +139,6 @@
 		</tbody>
 	</table>
 {% elseif pageview == "comments" %}
-<!--{% if sessionusername %}
-<div class="pull-right span4" style="margin: 5px;">
-	<form class="well" name="cmt" id="cmt" accept-charset="UTF-8" action="/detail/{{ killdata.info.killID }}/comments/" method="POST">
-		<div>
-			<textarea style="width: 96%;" id="comment" name="comment" required placeholder="Type in your comment" rows="5"></textarea>
-			<select name="characterID">
-				{% for data in extra.cmtChars %}
-				{% set selected = "" %}
-				{% if data.characterID == defaultCommentCharacter %}{% set selected = "selected" %}{% endif %}
-				<option value="{{ data.characterID }}" {{ selected }}>{{ data.characterName }}</option>
-				{% endfor %}
-			</select>
-		</div>
-		<button type="submit" class="btn btn-info">Post New Message</button>
-	</form>
-</div>
-{% endif %}
-<div class="span8 pull-left" style="margin: 5px;">
-	{% set imageSize = 64 %}
-	{% for cmt in extra.comments %}
-	{% if cmt.theComment %}
-	{% if cmt.characterID == "0" %}{% set characterName = "Anonymous" %}{% else %}{% set characterName = cmt.characterName %}{% endif %}
-	<div class="span8 pull-left">
-		<div class="span1" style="margin: 5px;">
-			{% set field = cmt %}
-			{% include 'components/image_char.html' %}
-			<p>{{ characterName }}</p>
-		</div>
-		<div class="span7 pull-right" style="margin: 5px;">
-			<blockquote>
-				<p>{{ cmt.theComment }}</p>
-				<small>{{ cmt.datePosted }}</small>
-			</blockquote>
-		</div>
-	</div>
-	{% endif %}
-	{% endfor %}
-</div>-->
     <div id="disqus_thread"></div>
     <script type="text/javascript">
         /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
@@ -191,7 +153,6 @@
     </script>
     <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
     <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-    
 {% endif %}
 
 <!-- modal -->

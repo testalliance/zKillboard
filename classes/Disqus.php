@@ -44,7 +44,7 @@ class Disqus
 		$js .= "\n";
 		$js .= "		this.sso = {\n";
 		$js .= "			name: 'zKillboard',\n";
-		$js .= "			button: 'http://zkillboard.com/images/disqusbutton.gif',\n";
+		$js .= "			button: 'http://zkillboard.com/img/disqus_button.png',\n";
 		$js .= "			icon: 'http://zkillboard.com/favicon.ico',\n";
 		$js .= "			url: 'http://zkillboard.com/login/',\n";
 		$js .= "			logout: 'http://zkillboard.com/logout',\n";
