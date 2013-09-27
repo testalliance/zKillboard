@@ -203,8 +203,8 @@ class Kills
 	public static function getRawMail($killID, $array = array(), $edk = true)
 	{
 		// Check if the mail has already been generated, then return it from the cache..
-		//$Cache = Cache::get($killID);
-		//if($Cache) return $Cache;
+		$Cache = Cache::get($killID);
+		if($Cache) return $Cache;
 
 		if(!$array)
 			$k = self::getArray($killID);
