@@ -254,13 +254,21 @@ class Parser
 					$value = $line;
 					$flag = null;
 					$qty = 1;
-					$flags = array("(Cargo)" => 5, "(Drone Bay)" => 87, "(Implant)" => 89);
-					foreach($flags as $flagType=>$flagID) {
+
+					// ADD ALL THE FLAGS!!!!!!!!!!!
+					//$flags = array("(Cargo)" => 5, "(Drone Bay)" => 87, "(Implant)" => 89);
+					$dbFlags = Db::query("SELECT flagText, flagID FROM ccp_invFlags", array(), 3600);
+					$flags = array();
+					foreach($dbFlags as $f)
+						$flags["(".$f["flagText"].")"] = (int) $f["flagID"];
+
+					foreach($flags as $flagType => $flagID) {
 						if (strpos($value, $flagType) !== false) {
 							$flag = $flagID;
 							$value = trim(str_replace($flagType, "", $value));
 						} 
 					}
+
 					$isBlueprintCopy = false;
 					$bpc = "(Copy)";
 					if (Util::endsWith($value, $bpc)) {
@@ -279,7 +287,10 @@ class Parser
 						$value = $qtyEx[0] . str_replace("$qty", "", $qtyEx[1]);
 					}
 					$typeID = Info::getItemID($value);
-					if ($typeID == 0) {$errors[] = "Unknown Item: $value"; continue;}
+					if ($typeID == 0) { 
+						$errors[] = "Unknown Item: $value"; 
+						continue;
+					}
 					if ($flag === null) {
 						// Ok, we need to figure out which slot this is in...
 						$flagSlot = Db::queryField("select e.effectID effectID from ccp_invTypes i left join ccp_dgmTypeEffects d on (d.typeID = i.typeID) left join ccp_dgmEffects e on (d.effectID = e.effectID) where i.typeID = :typeID", "effectID", array(":typeID" => $typeID));
@@ -324,6 +335,7 @@ class Parser
 					$killValue += ($qty * Price::getItemPrice($typeID));
 			}
 		}
+
 		if ($currentAttacker != null) $killMail["attackers"][] = $currentAttacker;
 
 		// Check that stuff is actually sane, and not some made up shit..

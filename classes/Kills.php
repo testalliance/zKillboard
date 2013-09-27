@@ -206,8 +206,15 @@ class Kills
 		if($edk)
 			$cacheName = $killID."EDK";
 		// Check if the mail has already been generated, then return it from the cache..
-		$Cache = Cache::get($cacheName);
-		if($Cache) return $Cache;
+		//$Cache = Cache::get($cacheName);
+		//if($Cache) return $Cache;
+
+		// ADD ALL THE FLAGS!!!!!!!!!!!
+		//$flags = array("(Cargo)" => 5, "(Drone Bay)" => 87, "(Implant)" => 89);
+		$dbFlags = Db::query("SELECT flagText, flagID FROM ccp_invFlags", array(), 3600);
+		$flags = array();
+		foreach($dbFlags as $f)
+			$flags[(int) $f["flagID"]] = $f["flagText"];
 
 		if(!$array)
 			$k = self::getArray($killID);
@@ -269,6 +276,9 @@ class Kills
 		{
 			foreach($k["items"] as $itm)
 			{
+				// Take the flags we get from $itemToSlot and replace it with the proper flag from the database
+				$itm["flagName"] = $flags[$itm["flag"]];
+
 				// create the flag!
 				$copy = null;
 				if($itm["singleton"] == 2)
