@@ -100,6 +100,11 @@ $app->map("/search(/:search)/", function($search = NULL) use ($app) {
 })->via("GET", "POST");
 
 // Login stuff
+$app->map("/dlogin/", function() use ($app) {
+    global $cookie_name, $cookie_time;
+    include( "view/dlogin.php" );
+})->via("GET", "POST");
+
 $app->map("/login/", function() use ($app) {
     global $cookie_name, $cookie_time;
     include( "view/login.php" );

@@ -44,10 +44,10 @@ class Disqus
 		$js .= "\n";
 		$js .= "		this.sso = {\n";
 		$js .= "			name: 'zKillboard',\n";
-		$js .= "			button: 'http://zkillboard.com/img/disqus_button.png',\n";
-		$js .= "			icon: 'http://zkillboard.com/favicon.ico',\n";
-		$js .= "			url: 'http://zkillboard.com/login/',\n";
-		$js .= "			logout: 'http://zkillboard.com/logout',\n";
+		$js .= "			button: 'https://zkillboard.com/img/disqus_button.png',\n";
+		$js .= "			icon: 'https://zkillboard.com/favicon.ico',\n";
+		$js .= "			url: 'https://zkillboard.com/dlogin/',\n";
+		$js .= "			logout: 'https://zkillboard.com/logout',\n";
 		$js .= "			width: '800',\n";
 		$js .= "			height: '400'\n";
 		$js .= "		};\n";
