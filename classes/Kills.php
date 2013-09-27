@@ -295,12 +295,12 @@ class Kills
 					{
 						if($sub["qtyDropped"]) // go to dropped list
 						{
-							$line = ($edk ? null: "-- ")  . $sub["typeName"] . ", Qty: " . $sub["qtyDropped"] . $flagName . ($copy ? $copy : null);
+							$line = $sub["typeName"] . ", Qty: " . $sub["qtyDropped"] . $flagName . ($copy ? $copy : null) . " (In Container)";
 							$dropped[] = $line;
 						}
 						if($sub["qtyDestroyed"]) // go to destroyed list
 						{
-							$line = ($edk ? null : "-- ") . $sub["typeName"] . ", Qty: " . $sub["qtyDestroyed"] . $flagName . ($copy ? $copy : null);
+							$line = $sub["typeName"] . ", Qty: " . $sub["qtyDestroyed"] . $flagName . ($copy ? $copy : null) . " (In Container)";
 							$destroyed[] = $line;
 						}
 					}
