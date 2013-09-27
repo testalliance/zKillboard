@@ -205,9 +205,10 @@ class Kills
 		$cacheName = $killID;
 		if($edk)
 			$cacheName = $killID."EDK";
+
 		// Check if the mail has already been generated, then return it from the cache..
-		//$Cache = Cache::get($cacheName);
-		//if($Cache) return $Cache;
+		$Cache = Cache::get($cacheName);
+		if($Cache) return $Cache;
 
 		// ADD ALL THE FLAGS!!!!!!!!!!!
 		//$flags = array("(Cargo)" => 5, "(Drone Bay)" => 87, "(Implant)" => 89);
