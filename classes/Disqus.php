@@ -48,8 +48,8 @@ class Disqus
 		$js .= "			icon: 'https://zkillboard.com/favicon.ico',\n";
 		$js .= "			url: 'https://zkillboard.com/dlogin/',\n";
 		$js .= "			logout: 'https://zkillboard.com/logout',\n";
-		$js .= "			width: '800',\n";
-		$js .= "			height: '400'\n";
+		$js .= "			width: '300',\n";
+		$js .= "			height: '232'\n";
 		$js .= "		};\n";
 		$js .= "	};";
 
