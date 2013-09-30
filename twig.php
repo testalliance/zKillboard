@@ -51,6 +51,7 @@ $twig->addGlobal("mobiletopad", Adsense::mobileTop());
 $twig->addGlobal("mobilebottomad", Adsense::mobileBottom());
 $twig->addGlobal("igbtopad", Adsense::igbTop());
 $twig->addGlobal("igbbottomad", Adsense::igbBottom());
+$twig->addGlobal("disqusShortName", $disqusShortName);
 $twig->addglobal("disqus", Disqus::init());
 
 $detect = new Mobile_Detect();

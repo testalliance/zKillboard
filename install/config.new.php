@@ -65,6 +65,11 @@ $stompPassword = "";
 $cfUser = "";
 $cfKey = "";
 
+// Disqus
+$disqusShortName = "";
+$disqusSecretKey = "";
+$disqusPublicKey = "";
+
 // Email stuff
 $emailsmtp = "";
 $emailusername = "";
