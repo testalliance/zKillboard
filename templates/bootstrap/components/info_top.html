@@ -28,22 +28,16 @@
 				<td itemprop="name">{% include 'components/text_char.html' %}</td>
             </tr>
             {% endif %}
-            {% if detail.ceoID and detail.ceoName %}
-            <tr>
-                <th class="span2">CEO:</th>
-				<td itemprop="ceo">{% include 'components/text_char.html' %}</td>
-            </tr>
-            {% endif %}
-            {% if detail.executorCorpID and detail.executorCorpName %}
-            <tr>
-                <th class="span2">Executor:</th>
-				<td itemprop="executor">{% include 'components/text_corp.html' %}</td>
-            </tr>
-            {% endif %}
             {% if detail.corporationID %}
             <tr>
                 <th class="span2">Corporation:</th>
 				<td itemprop="corporation">{% include 'components/text_corp.html' %}</td>
+            </tr>
+            {% endif %}
+            {% if detail.ceoID and detail.ceoName %}
+            <tr>
+                <th class="span2">CEO:</th>
+				<td itemprop="ceo">{% include 'components/text_char.html' %}</td>
             </tr>
             {% endif %}
             {% if detail.allianceName %}
@@ -51,6 +45,12 @@
                     <th class="span2">Alliance:</th>
 					<td itemprop="alliance">{% include 'components/text_alli.html' %}</td>
                 </tr>
+            {% endif %}
+            {% if detail.executorCorpID and detail.executorCorpName %}
+            <tr>
+                <th class="span2">Executor:</th>
+				<td itemprop="executor">{% include 'components/text_corp.html' %}</td>
+            </tr>
             {% endif %}
             {% if detail.factionName %}
                 <tr>
