@@ -57,13 +57,13 @@
 					<td itemprop="faction">{% include 'components/text_faction.html' %}</td>
                 </tr>
             {% endif %}
-            {% if detail.shipName and key != 'ship' %}
+            {% if detail.shipName %}
                 <tr>
                   <th class="span2">Ship:</th>
                   <td itemprop="ship"><a href="/item/{{ detail.shipTypeID}}/">{{ detail.shipName }}</a></td>
                 </tr>
             {% endif %}
-            {% if detail.groupName and key != 'group' %}
+            {% if detail.groupName %}
                 <tr>
                   <th class="span2">Class:</th>
                   <td itemprop="class"><a href="/group/{{ detail.groupID }}/">{{ detail.groupName }}</a></td>
