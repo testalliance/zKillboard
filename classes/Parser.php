@@ -566,6 +566,7 @@ class Parser
 					': Unbekannt' => ': None',
 					'(Dronenhangar)' => '(Drone Bay)',
 					'(Drohnenhangar)' => '(Drone Bay)',
+					'(Drohnenbucht)' => '(Drone Bay)',
 					'Mond:' => 'Moon:',
 					'Kapsel' => 'Capsule',
 					'Menge:' => 'Qty:'
