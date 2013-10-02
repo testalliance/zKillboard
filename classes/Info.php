@@ -239,7 +239,8 @@ class Info
 			"gallente"	=> array("factionID" => "500004", "name" => "Gallente Federation")
 			);
 
-		return $data[$ticker];
+		if (isset($data[$ticker])) return $data[$ticker];
+		return null;
 	}
 
 	public static function getFactionId($name)
