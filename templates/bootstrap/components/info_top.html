@@ -8,8 +8,7 @@
 {% if detail.cticker %}{% set ticker = ' [' ~ detail.cticker ~ ']' %}{% endif %}
 
 {% if key != '' %}
-{% set field = detail %}
-<h2><small>{{ firstUpper(key) }}:</small> {{ name }} <font style='font-size: 60%'>{{ ticker }}</font></h2>
+	{% set field = detail %}
 {% else %}
 <h2><small>Overview for</small> {{ name }}</h2>
 {% endif %}
