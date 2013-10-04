@@ -6,3 +6,4 @@ vendor/
 *.sublime*
 .lighttpd.conf
 cron.overrides
+public/apc-nrp.php
