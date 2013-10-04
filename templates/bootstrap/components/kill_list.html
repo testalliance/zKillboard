@@ -1,25 +1,27 @@
-<div class="pull-left"><h4>{{ killListTitle }}</h4></div>
-{% if killList|length == 0 %}
-<div class="well">
-<hr/>
-<em>Nothing to display here...</em>
-</div>
+{% if isEmbedded == true %}
+{% set headingType = 'h3' %}
 {% else %}
+{% set headingType = 'h2' %}
+{% endif %}
+{% if killList|length == 0 %}
+<{{ headingType }}>{{ killListTitle }}</{{ headingType }}>
+<div class="alert">Nothing to display here...</div>
+{% else %}
+<{{ headingType }} class="pull-left">{{ killListTitle }}</{{ headingType }}>
 {% include 'components/pager.html' %}
 {% set CurrentYear = '' %}
 {% set CurrentMonth = '' %}
 {% set CurrentDay = ''%}
-<div class="row">
-<table class="table table-condensed table-striped table-hover span12">
+<table class="table table-condensed table-striped table-hover">
     <thead>
 		<tr>
 			<th style="width: 140px;">Time</th>
-            <th class="span2">Place</th>
-            <th class="hidden-phone" style="width: 32px; text-align: center;">Ship</th>
-            <th class="hidden-tablet hidden-phone" colspan="2" style="text-align: center;">Victim</th>
-			<th class="hidden-desktop" style="text-align: center;">Victim</th>
-            <th class="span4 hidden-phone">Final Blow</th>
-            <th style="width: 32px;">Link</th>
+            <th>Place</th>
+            <th class="hidden-xs" style="width: 32px; text-align: center;">Ship</th>
+            <th class="hidden-sm hidden-xs" colspan="2" style="text-align: center;">Victim</th>
+			<th class="hidden-lg hidden-md" style="text-align: center;">Victim</th>
+            <th class="hidden-xs">Final Blow</th>
+            <th style="width: 32px; text-align: right;">Link</th>
         </tr>
     </thead>
     <tbody>{% for kill in killList %}
@@ -32,7 +34,7 @@
       {% if CurrentDay != Day and sessionddmonthyear == "true" %}
       {% set CurrentDay = Day %}
       <tr>
-        <td colspan="6" style="text-align: left;"><h4><em>
+        <td colspan="6"><h4><em>
          {{Month}} 
         {{Day}},
         {{Year}}</em></h4></td>
@@ -41,7 +43,7 @@
       {% if CurrentMonth != Month and sessionddmonthyear == "false" %}
       {% set CurrentMonth = Month %}
       <tr>
-        <td colspan="6" style="text-align: left;"><h4><em>
+        <td colspan="6"><h4><em>
          {{Month}} 
         {{Year}}</em></h4></td>
       </tr> 
@@ -59,10 +61,10 @@
                 <a href="/system/{{ kill.info.solarSystemID }}/">{{ kill.info.solarSystemName }}</a> <span style="color: {{ kill.info.systemColorCode }}">{{ "%1.1f"|format(kill.info.solarSystemSecurity) }}</span> <br/>
                 <a href="/region/{{ kill.info.regionID }}/">{{ kill.info.regionName }}</a>
             </td>
-            <td class="icon hidden-phone" style="text-align: center;">
+            <td class="icon hidden-xs" style="text-align: center; vertical-align: middle;">
                 {% include 'components/image_ship.html' %}
             </td>
-            <td class="hidden-phone hidden-tablet" style="width: 120px;">
+            <td class="hidden-xs hidden-sm" style="width: 120px; vertical-align: middle;">
                 {% include 'components/image_char.html' %}
                 {% include 'components/image_corp.html' %}
                 {% include 'components/image_alli.html' %}
@@ -74,24 +76,23 @@
                     / <a href="/alliance/{{ kill.victim.allianceID }}/">{{ shortString(kill.victim.allianceName, txtLength) }}</a>
                 {% endif %}
             </td>
-            <td class="finalBlow hidden-phone" style="vertical-align: top;">
+            <td class="finalBlow hidden-xs" style="vertical-align: top;">
                 <a href="/character/{{ kill.finalBlow.characterID }}/">{{ kill.finalBlow.characterName }}</a> ({{ kill.info.number_involved }})<br />
                 <a href="/corporation/{{ kill.finalBlow.corporationID }}/">{{ shortString(kill.finalBlow.corporationName, txtLength) }}</a>
                 {% if kill.finalBlow.allianceID != 0 %}
                     / <a href="/alliance/{{ kill.finalBlow.allianceID }}/">{{ shortString(kill.finalBlow.allianceName, txtLength) }}</a>
 				{% endif %}
             </td>
-            <td class="link centered">
+            <td class="link">
                 <a href="/detail/{{ kill.info.killID }}/" class="pull-right">
                     View
                 </a>
 				<br/>
-				<span class="pull-right" style="font-size: 11px">{{ formatIsk(kill.info.total_price) }}</span>
+				<small class="pull-right">{{ formatIsk(kill.info.total_price) }}</small>
             </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
-</div>
 {% include 'components/pager.html' %}
 {% endif %}

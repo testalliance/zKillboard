@@ -1,5 +1,4 @@
 {% if not mixed and numPages > 1 %}
-<div class="pull-right">
     {%if YWMurl %}
     {% else %}
     {% set YWMurl = '' %}
@@ -13,10 +12,9 @@
       {% set pageBase = '/kills/page/' %}
       {% endif %}
     {% endif %}
-    <div class="pagination">
-    <ul>
+    <ul class="pagination pull-right">
     {% if page > 1 %}
-    <li><a href="{{ pageBase }}{{ page - 1 }}/{{YWMurl}}">Prev</a></li>
+    <li><a href="{{ pageBase }}{{ page - 1 }}/{{YWMurl}}">&laquo;</a></li>
     {% endif %}
     {% set startIndex = page - 3 %}
     {% set endIndex = page + 3 %}
@@ -26,10 +24,8 @@
         {% endif %}
     {% endfor %}
     {% if page < numPages %}
-    <li><a href="{{ pageBase }}{{ page + 1 }}/{{YWMurl}}">Next</a></li>
+    <li><a href="{{ pageBase }}{{ page + 1 }}/{{YWMurl}}">&raquo;</a></li>
     {% endif %}
     {% set startIndex = page - 3 %}
     </ul>
-    </div>
-</div>
 {% endif %}

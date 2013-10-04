@@ -4,25 +4,32 @@
 {% block title %}{% include 'components/title.html' %}{% endblock %}
 
 {% block content %}
-<div class="navbar">
-    <div class="navbar-inner">
-        <ul class="nav pull-left">
+<h2>Information</h2>
+<div class="navbar navbar-default">
+	<div class="navbar-header">
+    	<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+		</button>
+	</div>
+
+	<div class="collapse navbar-collapse navbar-sub">
+		<ul class="nav navbar-nav">
             <li class="{{ isActive('about', pageview) }}"><a href="/information/about/">About</a></li>
             <li class="{{ isActive('statistics', pageview) }}"><a href="/information/statistics/">Statistics</a></li>
             <li class="{{ isActive('points', pageview) }}"><a href="/information/points/">Points</a></li>
             <li class="{{ isActive('api', pageview) }}"><a href="/information/api/">API</a></li>
             <li class="{{ isActive('jabber', pageview) }}"><a href="/information/jabber/">Jabber</a></li>
             <li class="{{ isActive('contact', pageview) }}"><a href="/information/contact/">Contact</a></li>
-            <li class="{{ isActive('faq', pageview) }}"><a href="/information/faq/">F.A.Q.</a></li>
-            <li class="{{ isActive('tos', pageview) }}"><a href="/information/tos/">T.O.S.</a></li>
+            <li class="{{ isActive('faq', pageview) }}"><a href="/information/faq/">FAQ</a></li>
+            <li class="{{ isActive('tos', pageview) }}"><a href="/information/tos/">TOS</a></li>
             <li class="{{ isActive('legal', pageview) }}"><a href="/information/legal/">CCP Copyright</a></li>
-        </ul>
-        <ul class="nav pull-right">
 			<li class="{{ isActive('cookies', pageview) }}"><a href="/information/cookies/">Cookies</a></li>
 			<li class="{{ isActive('license', pageview) }}"><a href="/information/license/">License</a></li>
             <li class="{{ isActive('3rd', pageview) }}"><a href="/information/3rd/">3rd Parties</a></li>
-        </ul>
-    </div>
+		</ul>
+	</div>
 </div>
 
 {% if pageview == "about" %}
@@ -47,7 +54,9 @@
 </pre>
 {% elseif pageview == "faq" %}
 <h3>Frequently Asked Questions</h3>
+<pre class="prettyprint">
 {% include 'information/faq.html' %}
+</pre>
 {% elseif pageview == "tos" %}
 <h3>Terms of Service</h3>
 <pre class="prettyprint">
@@ -91,7 +100,7 @@
 {% endblock %}
 
 {% block robots %}
-        <meta name="robots" content="nofollow">
+	<meta name="robots" content="nofollow">
 {% endblock %}
 
 {% block script %}

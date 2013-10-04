@@ -1,8 +1,19 @@
 <div class="row">
-<div class="span6">
+<div class="col-lg-6">
+	<h3>Add Tracker</h3>	
+	<div class="well">
+		<p>Select which Character, Corporation, Alliance, Faction, Ship, System, Region you would like to follow.</p>
+		<form class="form-inline" name="addentity" id="addentity" method="post" action="/account/tracker/">
+			<input type="hidden" name="entitymetadata" value="" />
+			<input type="text" class="form-control" autocomplete="off" placeholder="Start typing a name..." id="addentitybox" name="addentitybox">
+		</form>
+	</div>
+</div>
+<div class="col-lg-6">
+	<h3>Existing Trackers</h3>
 {% set imageSize = 32 %}
 {% if data.entities %}
-<table class="table table-condensed table-striped table-hover span5">
+<table class="table table-condensed table-striped">
 {% for type, entity in data.entities %}
     {% for field in entity %}
 	<tr><td style="width: 32px;">
@@ -15,11 +26,11 @@
         {% elseif type == "system" %}{% include 'components/image_system.html' %}</td><td><a href="/system/{{ field.solarSystemID }}/">{{ field.solarSystemName }}</a>
       {% endif %}
 	</td>
-	<td>
+	<td style="text-align:right;">
         <form name="deleteentity" method="post" action="/account/tracker/">
             <input id="deleteentityid" name="deleteentityid" type="hidden" value="{{ field.id }}">
             <input id="deleteentitytype" name="deleteentitytype" type="hidden" value="{{ type }}">
-            <input type="submit" class="btn btn-danger" value="Remove" onclick="return confirm('Are you sure you want to remove {{ field.name }}?');">
+            <input type="submit" class="btn btn-danger btn-sm" value="Remove" onclick="return confirm('Are you sure you want to remove {{ field.name }}?');">
         </form>
     </td>
 	</tr>
@@ -27,16 +38,5 @@
 {% endfor %}
 </table>
 {% endif %}
-</div>
-<div class="span6">
-	<legend>Add Tracker</legend>
-	<p>Select which Character / Corporations / Alliances / Factions / Ship / System / Region you would like to follow.</p>
-	<form class="well form-inline" name="addentity" id="addentity" method="post" action="/account/tracker/">
-		<fieldset>
-			<input type="hidden" name="entitymetadata" value="" />
-			<label for="addentitybox">Name</label>
-			<input type="text" class="span5" autocomplete="off" placeholder="Name" id="addentitybox" name="addentitybox">
-		</fieldset>
-	</form>
 </div>
 </div>

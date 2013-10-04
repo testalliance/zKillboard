@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% set pageTitle = 'Related Kills / ' ~ systemName ~ ' / ' ~ time %}
 {% block title %}{% include 'components/title.html' %}{% endblock %}
@@ -24,45 +24,47 @@
 {% set teamBEff = teamATotal / total * 100 %}
 
 
-<table class="table table-condensed"
-    <tr>
-        <th class="span6" style="text-align: center"><h5>Team A ({{ teamASize }} involved)</h5></th>
-        <th class="span6" style="text-align: center"><h5>Team B ({{ teamBSize }} involved)</h5></th>
-    </tr>
-    <tr>
-        <td>{% set groupIDs = summary.teamA.totals.groupIDs %}{% include 'components/related_summary.html' %}</td>
-        <td>{% set groupIDs = summary.teamB.totals.groupIDs %}{% include 'components/related_summary.html' %}</td>
-    </tr>
-    <tr>
-        <td>Ships Lost: <div class="pull-right"><strong>{{ summary.teamA.totals.totalShips | number_format(0)}} Ships</strong></div></td>
-        <td>Ships Lost: <div class="pull-right"><strong>{{ summary.teamB.totals.totalShips | number_format(0)}} Ships</strong></div></td>
-    </tr>
-    <tr>
-        <td>Points Lost: <div class="pull-right"><strong>{{ teamAPoints | number_format(0)}}</strong></div></td>
-        <td>Points Lost: <div class="pull-right"><strong>{{ teamBPoints | number_format(0)}}</strong></div></td>
-    </tr>
-    <tr>
-        <td>ISK Lost: <div class="pull-right"><strong>{{ teamATotal | number_format(2)}}</strong></div></td>
-        <td>ISK Lost: <div class="pull-right"><strong>{{ teamBTotal | number_format(2)}}</strong></div></td>
-    </tr>
-    <tr>
-        <td>Efficiency: <div class="pull-right"><strong>{{ teamAEff | number_format(1)}} %</strong></div></td>
-        <td>Efficiency: <div class="pull-right"><strong>{{ teamBEff | number_format(1)}} %</strong></div></td>
-    </tr>
-    <tr>
-        <td>{% set list = summary.teamA.list %}{% include 'components/related_list.html' %}</td>
-        <td>{% set list = summary.teamB.list %}{% include 'components/related_list.html' %}</td>
-    </tr>
+<table class="table table-condensed">
+	<tr>
+		<th class="col-lg-6" style="text-align: center"><h5>Team A ({{ teamASize }} involved)</h5></th>
+		<th class="col-lg-6" style="text-align: center"><h5>Team B ({{ teamBSize }} involved)</h5></th>
+	</tr>
+	<tr>
+		<td>{% set groupIDs = summary.teamA.totals.groupIDs %}{% include 'components/related_summary.html' %}</td>
+		<td>{% set groupIDs = summary.teamB.totals.groupIDs %}{% include 'components/related_summary.html' %}</td>
+	</tr>
+	<tr>
+		<td>Ships Lost: <div class="pull-right"><strong>{{ summary.teamA.totals.totalShips | number_format(0)}} Ships</strong></div></td>
+		<td>Ships Lost: <div class="pull-right"><strong>{{ summary.teamB.totals.totalShips | number_format(0)}} Ships</strong></div></td>
+	</tr>
+	<tr>
+		<td>Points Lost: <div class="pull-right"><strong>{{ teamAPoints | number_format(0)}}</strong></div></td>
+		<td>Points Lost: <div class="pull-right"><strong>{{ teamBPoints | number_format(0)}}</strong></div></td>
+	</tr>
+	<tr>
+		<td>ISK Lost: <div class="pull-right"><strong>{{ teamATotal | number_format(2)}}</strong></div></td>
+		<td>ISK Lost: <div class="pull-right"><strong>{{ teamBTotal | number_format(2)}}</strong></div></td>
+	</tr>
+	<tr>
+		<td>Efficiency: <div class="pull-right"><strong>{{ teamAEff | number_format(1)}} %</strong></div></td>
+		<td>Efficiency: <div class="pull-right"><strong>{{ teamBEff | number_format(1)}} %</strong></div></td>
+	</tr>
+	<tr>
+		<td>{% set list = summary.teamA.list %}{% include 'components/related_list.html' %}</td>
+		<td>{% set list = summary.teamB.list %}{% include 'components/related_list.html' %}</td>
+	</tr>
 </table>
 
 {% set killListTitle = 'Team B Losses' %}
 {% set killList = summary.teamB.kills %}
-{% include "components/kill_list.html" %}
+{% set isEmbedded = true %}
+{% include 'components/kill_list.html' %}
 
 
 {% set killListTitle = 'Team A Losses' %}
 {% set killList = summary.teamA.kills %}
-{% include "components/kill_list.html" %}
+{% set isEmbedded = true %}
+{% include 'components/kill_list.html' %}
 
 {% endif %}
 

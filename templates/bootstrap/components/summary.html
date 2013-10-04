@@ -1,13 +1,11 @@
 {% set loopIndex = 0 %}
-
-<h4>Summary</h4>
-
+<h3>Summary</h3>
 {% if summaryTable is empty %}
-	<em>No summary data available...</em>
+<div class="alert">No summary data available...</div>
 {% else %}
 	<div class="row">
 		{% for data in summaryTable %}
-		<div class="pull-left span3">
+			<div class="col-lg-3">
 			<table class="table table-condensed table-hover">
 				<thead>
 					<tr>
@@ -26,7 +24,7 @@
 					{% endfor %}
 				</tbody>
 			</table>
-		</div>
+			</div>
 		{% endfor %}
 	</div>
 {% endif %}

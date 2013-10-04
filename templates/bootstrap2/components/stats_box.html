@@ -1,0 +1,102 @@
+{% if detail.shipsDestroyed or detail.shipsLost %}
+{% set shipEff = detail.shipsLost == 0 ? 100 : (detail.shipsDestroyed / (detail.shipsDestroyed + detail.shipsLost)) * 100 %}
+{% set pointsEff = detail.pointsLost == 0 ? 100 : (detail.pointsDestroyed / (detail.pointsDestroyed + detail.pointsLost)) * 100 %}
+{% set iskEff = detail.iskLost == 0 ? 100 : (detail.iskDestroyed / (detail.iskDestroyed + detail.iskLost)) * 100 %}
+{% set spanWidth = 2 %}
+{% if detail.shipsLost %}{% set spanWidth = spanWidth + 2 %}{% endif %}
+{% if detail.shipsDestroyed %}{% set spanWidth = spanWidth + 2 %}{% endif %}
+<table class="table table-condensed table-striped table-hover span{{spanWidth}}">
+	<tbody>
+	<tr>
+		<th>&nbsp;</th>
+	{% if detail.shipsDestroyed %}
+		<th style="text-align: right">Destroyed</th>
+	{% if detail.ranks is defined %}
+		<th style="text-align: right" class="hidden-phone">Rank</th>
+	{% endif %}
+	{% endif %}
+	{% if detail.shipsLost %}
+		<th style="text-align: right">Lost</th>
+	{% if detail.ranks is defined %}
+		<th style="text-align: right" class="hidden-phone">Rank</th>
+	{% endif %}
+	{% if detail.shipsDestroyed %}
+		<th style="text-align: right" class="hidden-phone">Eff. %</th>
+	{% endif %}
+	{% endif %}
+	{% if detail.ranks is defined %}
+		<th style="text-align: right" class="table-no-hover"><div class="hidden-phone">Alltime Rank</div><div class="visible-phone">Alltime</div></th>
+	{% endif %}
+	</tr>
+	<tr>
+		<th style="text-align: right">Ships</th>
+	{% if detail.shipsDestroyed %}
+		<td class="green" style="text-align: right" class="green-text">{{ detail.shipsDestroyed | number_format(0) }}</td>
+	{% if detail.ranks is defined %}
+		<td class="green hidden-phone" style="text-align: right">{{ detail.ranks.sdRank | number_format(0) }}</td>
+	{% endif %}
+	{% endif %}
+	{% if detail.shipsLost %}
+		<td class="red" style="text-align: right">{{ detail.shipsLost | number_format(0) }}</td>
+	{% if detail.ranks is defined %}
+		<td class="red hidden-phone" style="text-align: right">{{ detail.ranks.slRank | number_format(0) }}</td>
+	{% endif %}
+	{% if detail.shipsDestroyed %}
+		{% set greenred = shipEff >= 50 ? 'green' : 'red' %}
+		<td class="{{greenred}} hidden-phone" style="text-align: right">{{ shipEff | number_format(1) }}</td>
+	{% endif %}
+	{% endif %}
+	{% if detail.ranks is defined %}
+		<th style="text-align: right;"><strong>{{ detail.ranks.overallRank | number_format(0) }}</strong></th>
+	{% endif %}
+	</tr>
+	<tr>
+		<th style="text-align: right">Points</th>
+	{% if detail.shipsDestroyed %}
+		<td class="green" style="text-align: right">{{ detail.pointsDestroyed | number_format(0) }}</td>
+	{% if detail.ranks is defined %}
+		<td class="green hidden-phone" style="text-align: right">{{ detail.ranks.pdRank | number_format(0) }}</td>
+	{% endif %}
+	{% endif %}
+	{% if detail.shipsLost %}
+		<td class="red" style="text-align: right">{{ detail.pointsLost | number_format(0) }}</td>
+	{% if detail.ranks is defined %}
+		<td class="red hidden-phone" style="text-align: right">{{ detail.ranks.plRank | number_format(0) }}</td>
+	{% endif %}
+	{% if detail.shipsDestroyed %}
+		{% set greenred = pointsEff >= 50 ? 'green' : 'red' %}
+		<td class="{{greenred}} hidden-phone" style="text-align: right">{{ pointsEff | number_format(1) }}</td>
+	{% endif %}
+	{% endif %}
+	{% if detail.ranks is defined %}
+		<th style="text-align: right"><div class="hidden-phone">Recent Rank</div><div class="visible-phone">Recent</div></th>
+	{% endif %}
+	</tr>
+	<tr>
+		<th class="" style="text-align: right">ISK</th>
+	{% if detail.shipsDestroyed %}
+		<td class="green"  style="text-align: right">{{ detail.iskDestroyed | number_format(0) }}</td>
+	{% if detail.ranks is defined %}
+		<td class="green hidden-phone" style="text-align: right">{{ detail.ranks.idRank | number_format(0) }}</td>
+	{% endif %}
+	{% endif %}
+	{% if detail.shipsLost %}
+		<td class="red" style="text-align: right">{{ detail.iskLost | number_format(0) }}</td>
+	{% if detail.ranks is defined %}
+		<td class="red hidden-phone" style="text-align: right">{{ detail.ranks.ilRank | number_format(0) }}</td>
+	{% endif %}
+	{% if detail.shipsDestroyed %}
+		{% set greenred = iskEff >= 50 ? 'green' : 'red' %}
+		<td class="{{greenred}} hidden-phone" style="text-align: right">{{ iskEff | number_format(1) }}</td>
+	{% endif %}
+	{% endif %}
+    {% if detail.ranks is defined %}
+		{% set recentRank = ( detail.ranks.recentRank is defined ? detail.ranks.recentRank | number_format(0) : '-') %}
+        <th class="" style="text-align: right;"><strong>{{ recentRank }}</strong></th>
+	{% endif %}
+
+	</tr>
+	</tbody>
+</table>
+{% endif %}
+

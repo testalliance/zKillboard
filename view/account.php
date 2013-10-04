@@ -223,8 +223,8 @@ if($_POST)
 $data["domains"] = Domains::getUserTrackerDomains($userID);
 $data["domainEntities"] = Domains::getUserTrackerEntities($reqid);
 $data["entities"] = Account::getUserTrackerData();
-$data["themes"] = array("default", "amelia", "cerulean", "cosmo", "cyborg", "journal", "readable", "simplex", "slate", "spacelab", "spruce", "superhero", "united");
-$data["viewthemes"] = array("bootstrap", "edk");
+$data["themes"] = array("default", "amelia", "cerulean", "cosmo", "cyborg", "journal", "readable", "simplex", "slate", "spacelab", "united");
+$data["viewthemes"] = array("bootstrap2", "bootstrap", "edk");
 $data["apiKeys"] = Api::getKeys($userID);
 $data["apiChars"] = Api::getCharacters($userID);
 $charKeys = Api::getCharacterKeys($userID);

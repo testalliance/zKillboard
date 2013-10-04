@@ -1,11 +1,10 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% block title %}zKillboard.com / Login{% endblock %}
-
 {% block content %}
 {% if error %}
 <div class="alert alert-error">
-<h2>Error...</h2>
+<strong>Error...</strong>
  {{ error }}
 </div>
 <strong>Can't login? Passwords were reset, click the Forget Password button!</strong><br/>
@@ -15,24 +14,36 @@
         {{ message }}
     </div>
 {% else %}
-<form class="well" name="login" method="post" action="/login/">
-	<legend>Login</legend>
-	<input class="span3" id="username" name="username" type="text" autofocus="true" placeholder="username"><br>
-	<input class="span3" id="password" name="password" type="password" placeholder="password">
-	<input id="requesturi" name="requesturi" type="hidden" value="{{ requesturi }}">
-	<label class="checkbox">
-		<input id="autologin" name="autologin" type="checkbox">Remember Me
-	</label>
-	<table class="table">
-	<tbody>
-		<tr>
-			<th>
-				<button type="submit" value="Login" class="btn btn-primary" />Login</button>
-				<a class="btn btn-warning" href="/forgotpassword/">Forgot password</a>
-			</th>
-		</tr>
-	</tbody>
-	</table>
+<h2>Login</h2>
+<div class="well">
+<form class="form-horizontal" name="login" method="post" action="/login/">
+	<div class="form-group">
+		<label class="col-lg-2 control-label" for="inputUsername">Username</label>
+		<div class="col-lg-5">
+			<input class="form-control" id="inputUsername" name="username" type="text" autofocus="true" placeholder="username">
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-lg-2 control-label" for="inputPassword">Password</label>
+		<div class="col-lg-5">
+			<input class="form-control" id="inputPassword" name="password" type="password" placeholder="password">
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="col-lg-5 col-lg-offset-2">
+			<input id="requesturi" name="requesturi" type="hidden" value="{{ requesturi }}">
+			<label class="checkbox">
+				<input id="autologin" name="autologin" type="checkbox">Remember Me
+			</label>
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="col-lg-5 col-lg-offset-2">
+			<button type="submit" value="Login" class="btn btn-primary" />Login</button>
+			<a class="btn btn-warning" href="/forgotpassword/">Forgot password</a>
+		</div>
+	</div>
 </form>
+</div>
 {% endif %}
 {% endblock %}
