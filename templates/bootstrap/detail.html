@@ -26,8 +26,6 @@
 		<ul class="nav navbar-nav">
 			<li class="{{ isActive('overview', pageview) }}"><a href="/detail/{{ killdata.info.killID }}/overview/">Overview</a></li>
 			<li class="visible-lg {{ isActive('involved', pageview) }} hidden-xs"><a href="/detail/{{ killdata.info.killID }}/involved/">Involved Pilots ({{ killdata.info.number_involved }})</a></li>
-			<li class="{{ isActive('shiptypes', pageview) }} hidden-xs hidden-md"><a href="/detail/{{ killdata.info.killID }}/shiptypes/">Ship Types ({{ extra.involvedshipscount }})</a></li>
-			<li class="{{ isActive('comments', pageview) }}"><a href="/detail/{{ killdata.info.killID }}/comments/#disqus_thread" data-disqus-identifier="{{ extra.commentID }}">Comments</a></li>
 		</ul>
 		<ul class="nav navbar-nav pull-right hidden-phone">
 			{% if killdata.info.killID < 0 %}
@@ -93,13 +91,62 @@
 	</div>
 </div>
 <div class="col-lg-4 pull-right">
-	<div class="hidden-lg">{% include 'components/victim_info.html' %}</div>
-	<div>{% include 'components/tdfb.html' %}</div>
-	<div>
-		{% if extra.invAll | length %}
-		<div style="margin: 0px;">{% set field = extra.invAll %}{% include 'components/involved_summary.html' %}</div>
-		{% endif %}
-		<div style="margin: 0px;">{% include 'components/attackers.html' %}</div>
+	<ul class="nav nav-tabs">
+		<li class="active"><a href="#details" data-toggle="tab">Details</a></li>
+		<li><a href="#comments" data-toggle="tab" data-disqus-identifier="{{ extra.commentID }}">Comments</a></li>
+		<li><a href="#shiptypes" data-toggle="tab">Ship Types</a></li>
+	</ul>
+	<div class="tab-content">
+
+		<div class="tab-pane fade in active" id="details">
+			<div class="hidden-lg">{% include 'components/victim_info.html' %}</div>
+			<div>{% include 'components/tdfb.html' %}</div>
+			<div>
+			{% if extra.invAll | length %}
+			<div style="margin: 0px;">{% set field = extra.invAll %}{% include 'components/involved_summary.html' %}</div>
+			{% endif %}
+			<div style="margin: 0px;">{% include 'components/attackers.html' %}</div>
+			</div>
+		</div>
+
+		<div class="tab-pane fade" id="comments">
+			<div id="disqus_thread"></div>
+			<script type="text/javascript">
+			var disqus_shortname = '{{ disqusShortName }}';
+			var disqus_identifier = '{{ extra.commentID }}';
+			(function() {
+				var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+				dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+				(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+			})();
+			</script>
+			<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+			<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+		</div>
+
+		<div class="tab-pane fade" id="shiptypes">
+			<table class="table table-condensed table-striped">
+				<thead>
+					<tr class="titles">
+						<th>Ship</th>
+						<th>Count</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for involved in extra.involvedships %}
+					<tr>
+						{% set field = involved %}
+						{% set imageSize = 32 %}
+						<td>
+							{% include 'components/image_ship.html' %} 
+							{% include 'components/text_ship.html' %}
+						</td>
+						<td>{{ involved.count }}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
 	</div>
 </div>
 
@@ -144,45 +191,6 @@
 		{% endfor %}
 	</tbody>
 </table>
-
-
-{% elseif pageview == "shiptypes" %}
-<table class="table table-condensed table-striped">
-	<thead>
-		<tr class="titles">
-			<th>Ship</th>
-			<th>Count</th>
-		</tr>
-	</thead>
-	<tbody>
-		{% for involved in extra.involvedships %}
-		<tr>
-			{% set field = involved %}
-			{% set imageSize = 32 %}
-			<td>
-				{% include 'components/image_ship.html' %} 
-				{% include 'components/text_ship.html' %}
-			</td>
-			<td>{{ involved.count }}</td>
-		</tr>
-		{% endfor %}
-	</tbody>
-</table>
-
-
-{% elseif pageview == "comments" %}
-<div id="disqus_thread"></div>
-<script type="text/javascript">
-var disqus_shortname = '{{ disqusShortName }}';
-var disqus_identifier = '{{ extra.commentID }}';
-(function() {
-	var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-	dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-	(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-})();
-</script>
-<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 {% endif %}
 
 
