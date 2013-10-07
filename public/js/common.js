@@ -73,8 +73,8 @@ $(document).ready(function() {
 	});
 
 	// auto show comments tab on detail page
-	if(window.location.hash.match(/comments/)) {
-		$('a[href="#comments"]').tab('show');
+	if(window.location.hash.match(/comment/)) {
+		$('a[href="#comment"]').tab('show');
 	}
 });
 
