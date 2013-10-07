@@ -23,6 +23,7 @@ $dbUser = "%dbuser%";
 $dbPassword = "%dbpassword%";
 $dbName = "%dbname%";
 $dbHost = "%dbhost%";
+$dbExplain = false;
 
 // External Servers
 $apiServer = "%apiserver%";
