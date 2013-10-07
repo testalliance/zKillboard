@@ -20,6 +20,8 @@ $involved = array();
 $message = "";
 $pageID = "detail:$id";
 
+if($pageview == "comments")
+	$app->redirect("/detail/$id/#comment", 301);
 
 $info = User::getUserInfo();
 $name = $info["username"];
