@@ -114,6 +114,7 @@ class Db
 	public static function explainQuery($query, $param, $duration)
 	{
 		$query = "explain ". $query;
+		$hash = md5($query);
 		$find = array();
 		$replace = array();
 		foreach($param as $key => $value)
@@ -129,8 +130,9 @@ class Db
 		$stmt->closeCursor();
 
 		// insert it to a db..
-		$insertQuery = "INSERT DELAYED IGNORE INTO zz_query_stats VALUES (:query, :params, :selectType, :table, :queryType, :possibleKeys, :keyUsed, :keyLength, :ref, :rows, :extra, :duration)";
+		$insertQuery = "INSERT DELAYED IGNORE INTO zz_query_stats VALUES (:hash, :query, :params, :selectType, :table, :queryType, :possibleKeys, :keyUsed, :keyLength, :ref, :rows, :extra, :duration)";
 		$parameters = array(
+				":hash" => $hash,
 				":query" => str_replace("explain", "", $query),
 				":params" => implode(", ", $param),
 				":selectType" => $explainResult[0]["select_type"],
