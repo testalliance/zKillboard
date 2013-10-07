@@ -106,6 +106,51 @@ class Db
 	}
 
 	/**
+	 * Takes a query, and explains it, and drops it into a db table for later perusal..
+	 * 
+	 * @param string $query
+	 * @return void
+	 */
+	public static function explainQuery($query, $param, $duration)
+	{
+		$query = "explain ". $query;
+		$find = array();
+		$replace = array();
+		foreach($param as $key => $value)
+		{
+			$find[] = $key;
+			$replace[] = "'".$value."'";
+		}
+		$query = str_replace($find, $replace, $query);
+		$pdo = self::getPDO();
+		$stmt = $pdo->prepare($query);
+		$stmt->execute();
+		$explainResult = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		$stmt->closeCursor();
+
+		// insert it to a db..
+		$insertQuery = "INSERT DELAYED IGNORE INTO zz_query_stats VALUES (:query, :params, :selectType, :table, :queryType, :possibleKeys, :keyUsed, :keyLength, :ref, :rows, :extra, :duration)";
+		$parameters = array(
+				":query" => str_replace("explain", "", $query),
+				":params" => implode(", ", $param),
+				":selectType" => $explainResult[0]["select_type"],
+				":table" => $explainResult[0]["table"],
+				":queryType" => $explainResult[0]["type"],
+				":possibleKeys" => $explainResult[0]["possible_keys"],
+				":keyUsed" => $explainResult[0]["key"],
+				":keyLength" => $explainResult[0]["key_len"],
+				":ref" => $explainResult[0]["ref"],
+				":rows" => $explainResult[0]["rows"],
+				":extra" => $explainResult[0]["Extra"],
+				":duration" => $duration
+			);
+
+		$pdo = self::getPDO();
+		$stmt = $pdo->prepare($insertQuery);
+		$stmt->execute($parameters);
+		$stmt->closeCursor();
+	}
+	/**
 	 * @static
 	 * @throws Exception
 	 * @param	$statement
@@ -132,6 +177,7 @@ class Db
 	 */
 	public static function query($query, $params = array(), $cacheTime = 30)
 	{
+		global $dbExplain;
 		// Basic sanity check.
 		if (strpos($query, ";") !== false) throw new Exception("Semicolons are not allowed in queries.  Use parameters instead.");
 
@@ -176,6 +222,11 @@ class Db
 			if ($cacheTime > 0) {
 				Bin::set($key, $result);
 				Cache::set($key, $result, min(3600, $cacheTime));
+			}
+			if($dbExplain && !strpos($query, "explain"))
+			{
+				if(strpos($query, "select") !== FALSE)
+					self::explainQuery($query, $params, $duration);
 			}
 			if ($duration > 5000) self::log($query, $params, $duration);
 
