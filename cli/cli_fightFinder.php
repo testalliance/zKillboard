@@ -52,8 +52,9 @@ class cli_fightFinder implements cliCommand
 
 			$message = "Battle detected in |g|$system|n| with |g|$involved|n| involved and |g|$wrecks|n| wrecks. |g|$link";
 			Log::irc($message);
-			// let this run for a few days to ensure it works correctly, then TODO make it twitter the msg too
-			//$message = Log::stripIRCColors($message);
+			$message = Log::stripIRCColors($message);
+			$tweet = Twit::sendMessage($message);
+			Log::irc("Message was also tweeted: $tweet");
 		}
 	}
 }
