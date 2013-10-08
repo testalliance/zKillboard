@@ -54,9 +54,9 @@ class cli_hourly implements cliCommand
 		Storage::store("TopIsk", json_encode(Stats::getTopIsk(array("pastSeconds" => (3*86400), "limit" => 5))));
 		Storage::store("TopPods", json_encode(Stats::getTopIsk(array("shipTypeID" => 670, "pastSeconds" => (3*86400), "limit" => 5))));
 		Storage::store("TopPoints", json_encode(Stats::getTopPoints("killID", array("losses" => true, "pastSeconds" => (3*86400), "limit" => 5))));
+		Storage::store("KillCount", Db::queryField("select count(*) count from zz_killmails", "count"));
+		Storage::store("ActualKillCount", Db::queryField("select count(*) count from zz_killmails where processed = 1", "count"));
 
-
-		Primer::cachePrimer();
 		$fileCache = new FileCache();
 		$fileCache->cleanup();
 	}
