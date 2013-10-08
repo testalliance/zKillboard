@@ -44,7 +44,6 @@
 {{ info.kills|number_format(0, '.', ',') }} kills processed and available for viewing 
 {{ info.ignored|number_format(0, '.', ',') }} kills ignored (NPC, blue on blue, etc.)
 {{ info.total|number_format(0, '.', ',') }} total kills in the database.
-{{ ((( info.kills + info.ignored ) / info.total ) * 100)|number_format(1)}}% of the killmails have been parsed.
 {% endif %}
 </pre>
 {% elseif pageview == "contact" %}

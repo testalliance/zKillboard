@@ -31,10 +31,10 @@ class irc_stats implements ircCommand {
 		$unParsed = Db::queryField("select count(*) count from zz_killmails where processed = 0", "count", array(), 0);
 		$message .= "|g|Unparsed kills:|n| " . number_format($unParsed) . " / ";
 
-		$totalCount = Db::queryField("select count(*) count from zz_killmails", "count", array(), 000);
+		$totalCount = Storage::retrieve("ActualKillCount");
 		$message .= "|g|Total kills:|n| " . number_format($totalCount) . " / ";
 
-		$killCount = Db::queryField("select count(*) count from zz_killmails where processed = 1", "count", array(), 000);
+		$killCount = Storage::retrieve("KillCount");
 		$message .= "|g|Actual Kills:|n| " . number_format($killCount) . " / ";
 
 		$userCount = Db::queryField("select count(*) count from zz_users", "count", array(), 000);
