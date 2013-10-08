@@ -331,14 +331,19 @@ class Util
 					header("Content-type: application/json; charset=utf-8");
 					$data = json_encode(array("Error" => "You have requested data too fast, please wait $apiTimeBetweenAccess seconds..", "cachedUntil" => $cachedUntil));
 				}
+				header("X-Bin-Requests: ". count($bin));
+				header("X-Bin-Attempts-Allowed: ". $apiBinAttempts);
+				header("X-Bin-Seconds-Between-Request: ". $apiTimeBetweenAccess);
 				header("Retry-After: " . $cachedUntil . " GMT");
-				header("HTTP/1.1 403 Forbidden");
+				header("HTTP/1.1 429 Too Many Requests");
 				header("Etag: ".(md5(serialize($data))));
 				header("+".$apiTimeBetweenAccess." seconds");
 				echo $data;
 				die();
 			}
-
+			header("X-Bin-Attempts-Allowed: ". $apiBinAttempts);
+			header("X-Bin-Seconds-Between-Request: ". $apiTimeBetweenAccess);
+			header("X-Bin-Requests: ". count($bin));
 			$bin[] = time();
 			Cache::set($md5, $bin, $apiTimeBetweenAccess);
 		}
