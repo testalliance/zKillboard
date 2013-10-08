@@ -60,7 +60,7 @@ class cli_calculateAllTimeStatsAndRanks implements cliCommand
 
 	private static function ranks()
 	{
-		CLI::out("|g|Ranks calculation started");
+		//CLI::out("|g|Ranks calculation started");
 		Db::execute("drop table if exists zz_ranks_temporary");
 		Db::execute("create table zz_ranks_temporary like zz_ranks");
 
@@ -105,7 +105,7 @@ class cli_calculateAllTimeStatsAndRanks implements cliCommand
 				foreach($dupRanks as $dupRank) {
 					$num = $dupRank["n"];
 					$newRank = $dupRank["r"];
-					CLI::out("|g|$type |r|$typeColumn |g|$num $rank |n|->|g| $newRank");
+					//CLI::out("|g|$type |r|$typeColumn |g|$num $rank |n|->|g| $newRank");
 					Db::execute("update zz_ranks_temporary set $rank = $newRank where $typeColumn = $num and type = '$type'");
 				}
 			}
@@ -123,7 +123,7 @@ class cli_calculateAllTimeStatsAndRanks implements cliCommand
 
 	private static function stats()
 	{
-		CLI::out("|g|Stats calculation started");
+		//CLI::out("|g|Stats calculation started");
 		// Fix unknown group ID's
 		$result = Db::query("select distinct shipTypeID, i.groupID from zz_participants p left join ccp_invTypes i on (shipTypeID = i.typeID) where shipTypeID = i.typeID and p.groupID = 0 and shipTypeID != 0");
 		foreach ($result as $row) {
@@ -163,7 +163,7 @@ class cli_calculateAllTimeStatsAndRanks implements cliCommand
 
 	private static function recalc($type, $column, $calcKills = true)
 	{
-		CLI::out("|g|Calculating stats for $type");
+		//CLI::out("|g|Calculating stats for $type");
 		$now = time();
 		Log::log("Starting stat calculations for $type");
 		Log::irc("Starting stat calculations for $type");

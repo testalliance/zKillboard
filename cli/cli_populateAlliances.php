@@ -42,7 +42,7 @@ class cli_populateAlliances implements cliCommand
 
 	private static function populateAlliances()
 	{
-		CLI::out("Repopulating the alliance table");
+		//CLI::out("Repopulating the alliance table");
 		Log::log("Repopulating alliance tables.");
 		$allianceCount = 0;
 		$corporationCount = 0;
@@ -82,10 +82,10 @@ class cli_populateAlliances implements cliCommand
 
 			$allianceCount = number_format($allianceCount, 0);
 			$corporationCount = number_format($corporationCount, 0);
-			CLI::out("Alliance tables repopulated - $allianceCount active Alliances with a total of $corporationCount Corporations");
+			//CLI::out("Alliance tables repopulated - $allianceCount active Alliances with a total of $corporationCount Corporations");
 			Log::log("Alliance tables repopulated - $allianceCount active Alliances with a total of $corporationCount Corporations");
 		} else {
-			CLI::out("Unable to pull Alliance XML from API.  Will try again later.");
+			//CLI::out("Unable to pull Alliance XML from API.  Will try again later.");
 			Log::log("Unable to pull Alliance XML from API.  Will try again later.");
 			if ($exception != null) throw $exception;
 			throw new Exception("Unable to pull Alliance XML from API.  Will try again later");
