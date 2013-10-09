@@ -68,6 +68,12 @@
 				<td itemprop="class"><a href="/group/{{ detail.groupID }}/">{{ detail.groupName }}</a></td>
 			</tr>
             {% endif %}
+            {% if detail.solarSystemName %}
+			<tr>
+				<th>System:</th>
+				<td itemprop="systemname">{{ detail.solarSystemName }}</td>
+			</tr>
+            {% endif %}
             {% if detail.solarSystemSecurity %}
 			<tr>
 				<th>Security:</th>
