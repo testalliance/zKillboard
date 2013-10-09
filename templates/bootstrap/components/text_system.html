@@ -2,4 +2,8 @@
         {% set imageSize = 32 %}
         {% include 'components/image_system.html' %}
 {% endif %}
-<a href="/system/{{ field.solarSystemID }}/">{{ shortString(field.solarSystemName, 30) }}</a>
+{% if extra.wormhole %}
+	{% set wormholeclass = extra.wormhole.class %}
+{% endif %}
+
+<a href="/system/{{ field.solarSystemID }}/">{{ shortString(field.solarSystemName, 30) }} {% if wormholeclass %}(C{{ wormholeclass}}){% endif %}</a>
