@@ -20,7 +20,7 @@ class Account
 {
 	public static function getUserTrackerData()
 	{
-		$entities = array("character", "corporation", "alliance", "faction", "ship", "system", "region");
+		$entities = array("character", "corporation", "alliance", "faction", "ship", "item", "system", "region");
 		$entitylist = array();
 		
 		foreach($entities as $ent)
@@ -37,7 +37,11 @@ class Account
 						$sunType = Db::queryField("SELECT sunTypeID FROM ccp_systems WHERE solarSystemID = :id", "sunTypeID", array(":id" => $row["id"]));
 						$row["sunTypeID"] = $sunType;
 					break;
-					
+
+					case "item":
+						$row["typeID"] = $row["id"];
+						$row["shipName"] = $row["name"];
+
 					case "ship":
 						$row["shipTypeID"] = $row["id"];
 						$row["${ent}Name"] = $row["name"];

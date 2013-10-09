@@ -40,7 +40,7 @@ class UserGlobals extends Twig_Extension
 			$this->addGlobal($result, "sessioncorps", UserConfig::get("corporation"));
 			$this->addGlobal($result, "sessionalliances", UserConfig::get("alliance"));
 			$this->addGlobal($result, "sessionfactions", UserConfig::get("faction"));
-			$this->addGlobal($result, "sessionships", UserConfig::get("ship"));
+			$this->addGlobal($result, "sessionships", UserConfig::get("item"));
 			$this->addGlobal($result, "sessionsystems", UserConfig::get("system"));
 			$this->addGlobal($result, "sessionregions", UserConfig::get("region"));
 			$this->addGlobal($result, "sessionviewtheme", UserConfig::get("viewtheme"), "bootstrap");

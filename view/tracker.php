@@ -23,7 +23,7 @@ getIDs("characterID", $parameters, UserConfig::get("character"));
 getIDs("corporationID", $parameters, UserConfig::get("corporation"));
 getIDs("allianceID", $parameters, UserConfig::get("alliance"));
 getIDs("factionID", $parameters, UserConfig::get("faction"));
-getIDs("shipTypeID", $parameters, UserConfig::get("ship"));
+getIDs("shipTypeID", $parameters, UserConfig::get("item"));
 getIDs("solarSystemID", $parameters, UserConfig::get("system"));
 getIDs("regionID", $parameters, UserConfig::get("region"));
 if(empty($parameters)) throw new Exception("Nothing to track, please add entities to the tracker from your account page.");
@@ -32,7 +32,7 @@ GetNames("character", $names, UserConfig::get("character"));
 GetNames("corporation", $names, UserConfig::get("corporation"));
 GetNames("alliance", $names, UserConfig::get("alliance"));
 GetNames("faction", $names, UserConfig::get("faction"));
-GetNames("ship", $names, UserConfig::get("ship"));
+GetNames("ship", $names, UserConfig::get("item"));
 GetNames("systems", $names, UserConfig::get("system"));
 GetNames("regions", $names, UserConfig::get("region"));
 
