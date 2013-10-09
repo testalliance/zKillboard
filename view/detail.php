@@ -143,6 +143,10 @@ $extra["reports"] = Db::queryField("SELECT count(*) as cnt FROM zz_tickets WHERE
 $extra["slotCounts"] = Info::getSlotCounts($killdata["victim"]["shipTypeID"]);
 $extra["commentID"] = $commentID;
 
+$systemID = $killdata["info"]["solarSystemID"];
+$data = Info::getWormholeSystemInfo($systemID);
+$extra["wormhole"] = $data;
+
 $url = "https://". $_SERVER["SERVER_NAME"] ."/detail/$id/";
 $app->render("detail.html", array("pageview" => $pageview, "killdata" => $killdata, "extra" => $extra, "message" => $message, "flags" => Info::$effectToSlot, "topDamage" => $topDamage, "finalBlow" => $finalBlow, "url" => $url));
 
