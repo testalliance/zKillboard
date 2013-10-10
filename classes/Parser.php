@@ -399,10 +399,8 @@ class Parser
 		if ($killMail["victim"]["factionName"] != "" && strcasecmp($killMail["victim"]["factionName"], "None") != 0 && $killMail["victim"]["factionID"] == 0)
 			$errors[] = "Invalid victim faction: " . $killMail["victim"]["factionName"];
 
-		if (Bin::get("BreakOnInvalidDamage", true) && $killMail["victim"]["damageTaken"] == 0) $errors[] = "Invalid damage amount.";
-
-
-		if ($killMail["solarSystemID"] == 0) $errors[] = "Invalid solar system.";
+		if ($killMail["solarSystemID"] == 0)
+			$errors[] = "Invalid solar system.";
 
 		// Verified the victim, lets forget the rest to see if there's a dupe!
         $stdMail = json_decode(json_encode($killMail), false);
