@@ -48,7 +48,6 @@
         {{Year}}</em></h4></td>
       </tr> 
 	  {% endif %} 
-	  	{% set txtLength = 20 %}
         {% set imageSize = 32 %}
         {% set field = kill.victim %}
         {% set lossDisplay = '' %}
@@ -69,6 +68,11 @@
                 {% include 'components/image_corp.html' %}
                 {% include 'components/image_alli.html' %}
             </td>
+			{% if kill.victim.allianceID != 0 %}
+		  		{% set txtLength = 20 %}
+			{% else %}
+		  		{% set txtLength = 40 %}
+			{% endif %}
             <td class="victim" style="vertical-align: top;">
                 <a href="/character/{{ kill.victim.characterID }}/">{{ kill.victim.characterName }}</a> ({{ kill.victim.shipName }})<br />
                 <a href="/corporation/{{ kill.victim.corporationID }}/">{{ shortString(kill.victim.corporationName, txtLength) }}</a>
@@ -76,6 +80,11 @@
                     / <a href="/alliance/{{ kill.victim.allianceID }}/">{{ shortString(kill.victim.allianceName, txtLength) }}</a>
                 {% endif %}
             </td>
+			{% if kill.finalBlow.allianceID != 0 %}
+		  		{% set txtLength = 20 %}
+			{% else %}
+		  		{% set txtLength = 40 %}
+			{% endif %}
             <td class="finalBlow hidden-xs" style="vertical-align: top;">
                 <a href="/character/{{ kill.finalBlow.characterID }}/">{{ kill.finalBlow.characterName }}</a> ({{ kill.info.number_involved }})<br />
                 <a href="/corporation/{{ kill.finalBlow.corporationID }}/">{{ shortString(kill.finalBlow.corporationName, txtLength) }}</a>
