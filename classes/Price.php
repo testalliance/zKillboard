@@ -53,7 +53,7 @@ class Price
 	 */
 	public static function getItemPrice($typeID)
 	{
-		if (in_array($typeID, array(588, 596, 601, 670, 606))) return 10000; // Pods and noobships
+		if (in_array($typeID, array(588, 596, 601, 670, 606, 33328))) return 10000; // Pods and noobships
 		if (in_array($typeID, array(25, 51, 29148, 3468))) return 1; // Male Corpse, Female Corpse, Bookmarks, Plastic Wrap
 
 		$price = Price::getDatabasePrice($typeID);
