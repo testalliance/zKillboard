@@ -850,7 +850,8 @@ class Parser
 		$typeID = $item->typeID;
 		$itemName = $itemNames[$item->typeID];
 
-		$price = Price::getItemPrice($typeID);
+		if ($item->typeID == 33329 && $item->flag == 89) $price = 0.01; // Golden pod implant can't be destroyed
+		else $price = Price::getItemPrice($typeID);
 		if ($isCargo && strpos($itemName, "Blueprint") !== false) $item->singleton = 2;
 		if ($item->singleton == 2) {
 			$price = $price / 100;
