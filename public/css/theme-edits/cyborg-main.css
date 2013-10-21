@@ -20,7 +20,7 @@ color: black;
 	color: white;
 }
 .item_destroyed, .red {
-	color: red;
+	color: #800000;
 }
 .green {
 	color: green;
