@@ -37,6 +37,9 @@ $baseAddr = "%baseaddr%";
 $fullAddr = "http://" . $baseAddr;
 chdir($baseDir);
 
+// Debug
+$debug = true;
+
 // Logfile
 $logfile = "%logfile%";
 
@@ -88,10 +91,9 @@ $accessTokenSecret = "";
 $showAds = false;
 
 // Slim config
-// to enable log, add "log.writer" => call after "log.enabled" => true, - you might have to load it in index after init has run and do $config["log.writer"] = call;
 $config = array(
 	"mode" => "production",
-	"debug" => false,
+	"debug" => ($debug ? true : false),
 	"log.enabled" => false,
 	"cookies.secret_key" => $cookie_secret
 	);

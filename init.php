@@ -19,6 +19,12 @@
 // config load
 require_once( "config.php" );
 
+if($debug)
+{
+	ini_set('display_errors', 1);
+	error_reporting(E_ALL);
+}
+
 // vendor autoload
 require( "vendor/autoload.php" );
 
@@ -35,3 +41,46 @@ function zkbautoload($class_name)
 		return;
 	}
 }
+
+// initiate the timer!
+$timer = new Timer();
+
+// Starting Slim Framework
+$app = new \Slim\Slim($config);
+
+// Session
+session_cache_limiter(false);
+session_start();
+
+// Check if the user has autologin turned on
+if(!User::isLoggedIn()) User::autoLogin();
+
+// Theme
+$viewtheme = null;
+if(User::isLoggedIn())
+	$viewtheme = UserConfig::get("viewtheme");
+$app->config(array("templates.path" => $baseDir."templates/" . ($viewtheme ? $viewtheme : "bootstrap")));
+
+// Error handling
+$app->error(function (\Exception $e) use ($app){
+    include ( "view/error.php" );
+});
+
+// Determine domain
+$serverName = @$_SERVER["SERVER_NAME"];
+//if(Db::queryField("SELECT domain FROM zz_domains WHERE domain = :domain", "domain", array(":domain" => $serverName)))
+//	Util::isValidSubdomain($serverName);
+
+$restrictedSubDomains = array("www", "email", "mx", "ipv6", "blog", "forum", "cdn", "content", "static", "api", "image", "websocket", "news", "comments");
+$subDomain = Util::endsWith($serverName, ".".$baseAddr) ? str_replace(".".$baseAddr, "", $serverName) : null;
+if (in_array($subDomain, $restrictedSubDomains) || !Util::isValidSubdomain($subDomain))
+	header("Location: $fullAddr");
+
+// Load the routes - always keep at the bottom of the require list ;)
+include( "routes.php" );
+
+// Load twig stuff
+include( "twig.php" );
+
+// Run the thing!
+$app->run();

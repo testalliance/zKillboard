@@ -16,6 +16,4 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-require_once( "../index.php" );
+require_once( "../init.php" );
