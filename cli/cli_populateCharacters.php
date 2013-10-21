@@ -58,8 +58,8 @@ class cli_populateCharacters implements cliCommand
 				$keyID = $row["keyID"];
 				$m = $iterationCount % $fetchesPerSecond;
 				Db::execute("update zz_api set lastValidation = date_add(lastValidation, interval 5 minute) where keyID = :keyID", array(":keyID" => $keyID));
-				$command = "$baseDir/cliLock.sh apiFetchCharacters ".escapeshellarg($keyID); // REMEMBER TO CHECK IF THIS SHIT WORKS......
-				//Log::log($command);
+				$command = "flock -w 60 $baseDir/cache/locks/populate.$m zkillboard apiFetchCharacters " . escapeshellarg($keyID);
+				//Log::log("$command");
 				exec("$command >/dev/null 2>/dev/null &");
 				$iterationCount++;
 				if ($iterationCount % $fetchesPerSecond == 0) sleep(1);
