@@ -38,7 +38,7 @@ class cli_feedzKB implements cliCommand
 
 	public function execute($parameters)
 	{
-		if (sizeof($parameters) == 0 || $parameters[0] == "") CLI::out("Usage: |g|help <command>|n| To see a list of commands, use: |g|list", true);
+		if (sizeof($parameters) == 0 || $parameters[0] == "") CLI::out("Usage: |g|feedzKB <command>|n| To see a list of commands, use: |g|list", true);
 		$command = $parameters[0];
 
 		switch($command)
@@ -134,7 +134,7 @@ class cli_feedzKB implements cliCommand
 			case "list":
 				$list = Db::query("SELECT * FROM zz_feeds WHERE edkStyle = 0");
 				foreach($list as $url)
-					CLI::out($url["id"]."::|g|".$url["url"]);
+					CLI::out($url["id"]."::|g|".$url["url"]."|n|");
 			break;
 
 			case "fetch":
