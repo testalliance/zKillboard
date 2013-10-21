@@ -32,6 +32,7 @@ class cli_apiFetchKillLog implements cliCommand
 	{
 		@$apiRowID = $parameters[0];
 
+		$notRecentKillID = Storage::retrieve("notRecentKillID", 0);
 		$apiRow = Db::queryRow("select * from zz_api_characters where apiRowID = :id", array(":id" => $apiRowID), 0);
 		$maxKillID = $apiRow["maxKillID"];
 		$beforeKillID = 0;
@@ -82,6 +83,7 @@ class cli_apiFetchKillLog implements cliCommand
 					if ($beforeKillID == 0) $beforeKillID = $killID;
 					else $beforeKillID = min($beforeKillID, $killID);
 				}
+				if ($beforeKillID < $notRecentKillID) Db::execute("update zz_api_characters set cachedUntil = date_add(cachedUntil, interval 2 hour) where apiRowID = :id", array(":id" => $apiRowID));
 				if ($aff > 0) {
 					error_log($pheal->xml, 3, $file);
 				}
