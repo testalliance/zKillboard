@@ -382,4 +382,14 @@ class Util
 		}
 		return false;
 	}
+
+	public static function themesAvailable()
+	{
+		$dir = "templates/";
+		$avail = scandir($dir);
+		foreach($avail as $key => $val)
+			if($val == "." || $val == "..")
+				unset($avail[$key]);
+		return $avail;
+	}
 }
