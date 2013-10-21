@@ -37,17 +37,11 @@ class cli_hourly implements cliCommand
 
 	public function execute($parameters)
 	{
-		self::apiPercentage();
-		Db::execute("delete from zz_api_log where requestTime < date_sub(now(), interval 36 hour)");
-		Db::execute("update zz_killmails set kill_json = '' where processed = 2 and killID < 0 and kill_json != ''");
-		Db::execute("update zz_manual_mails set rawText = '' where killID > 0 and rawText != ''");
-
 		$p = array();
 		$p["limit"] = 5;
 		$p["pastSeconds"] = 3 * 86400;
 		$p["kills"] = true;
 
-		Db::execute("analyze table zz_participants");
 		Storage::store("Top3dayChars", json_encode(Info::doMakeCommon("Top Characters - Last 3 Days", "characterID", Stats::getTopPilots($p))));
 		Storage::store("Top3dayCorps", json_encode(Info::doMakeCommon("Top Corporations - Last 3 Days", "corporationID", Stats::getTopCorps($p))));
 		Storage::store("Top3dayAlli", json_encode(Info::doMakeCommon("Top Alliances - Last 3 Days", "allianceID", Stats::getTopAllis($p))));
@@ -57,8 +51,30 @@ class cli_hourly implements cliCommand
 		Storage::store("KillCount", Db::queryField("select count(*) count from zz_killmails", "count"));
 		Storage::store("ActualKillCount", Db::queryField("select count(*) count from zz_killmails where processed = 1", "count"));
 
+		self::apiPercentage();
+
+		Db::execute("delete from zz_api_log where requestTime < date_sub(now(), interval 36 hour)");
+		Db::execute("update zz_killmails set kill_json = '' where processed = 2 and killID < 0 and kill_json != ''");
+		Db::execute("update zz_manual_mails set rawText = '' where killID > 0 and rawText != ''");
+		Db::execute("delete from zz_errors where date < date_sub(now(), interval 1 day)");
+
 		$fileCache = new FileCache();
 		$fileCache->cleanup();
+
+		$tableQuery = Db::query("show tables");
+		$tables = array();
+		foreach($tableQuery as $row) {
+			foreach($row as $column) $tables[] = $column;
+		}
+
+		$tableIsGood = array("OK", "Table is already up to date", "The storage engine for the table doesn't support check");
+		$count = 0;
+		foreach ($tables as $table) {
+			$count++;
+			$result = Db::queryRow("analyze table $table");
+			if (!in_array($result["Msg_text"], $tableIsGood)) Log::ircAdmin("|r|Error analyzing table |g|$table|r|: " . $result["Msg_text"]);
+		}
+
 	}
 
 	private static function apiPercentage()
