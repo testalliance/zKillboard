@@ -7,10 +7,11 @@
         "pheal/pheal": "*",
         "phpmailer/phpmailer": "*",
         "mobiledetect/mobiledetectlib": "*",
-        "realityking/pchart": "*",
+        "realityking/pchart": "@dev",
         "dg/twitter-php": "*",
         "ircmaxell/password-compat": "*",
         "ccampbell/chromephp": "*"
     },
-    "minimum-stability": "dev"
+    "minimum-stability": "stable",
+	"prefer-stable": true
 }
