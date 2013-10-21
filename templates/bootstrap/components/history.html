@@ -3,7 +3,15 @@
 {% set currentYear = 0 %}
 <div class="row">
 <table class="table table-condensed table-striped table-hover">
-<tr style="text-align: right;"><th>&nbsp;</th><th>Kills</th><th>Points</th><th>ISK</th><th>Losses</th><th>Points</th><th>ISK</th></tr>
+<tr>
+	<th><span class="pull-right green">&nbsp;</span></th>
+	<th><span class="pull-right green">Kills</span></th>
+	<th><span class="pull-right green">Points</span></th>
+	<th><span class="pull-right green">ISK</span></th>
+	<th><span class="pull-right red">Losses</span></th>
+	<th><span class="pull-right red">Points</span></th>
+	<th><span class="pull-right red">ISK</span></th>
+</tr>
 {% for month in history %}
 	{% if currentYear != month.year %}
 		<tr><th colspan="7">{{ month.year }}</th></tr>
