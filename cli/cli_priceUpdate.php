@@ -42,7 +42,7 @@ class cli_priceUpdate implements cliCommand
 		$motherships = Db::query("select typeid from ccp_invTypes where groupid = 659");
 		foreach ($motherships as $mothership) {
 			$typeID = $mothership['typeid'];
-			Db::execute("replace into zz_prices (typeID, price) values (:typeID, 40000000000)", array(":typeID" => $typeID));
+			Db::execute("replace into zz_prices (typeID, price) values (:typeID, 20000000000)", array(":typeID" => $typeID));
 		}
 
 		$titans = Db::query("select typeid from ccp_invTypes where groupid = 30");
