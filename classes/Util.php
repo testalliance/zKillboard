@@ -68,7 +68,7 @@ class Util
 		PhealConfig::getInstance()->http_keepalive = true; // default 15 seconds
 		PhealConfig::getInstance()->http_keepalive = 10; // KeepAliveTimeout in seconds
 		PhealConfig::getInstance()->http_timeout = 30;
-		PhealConfig::getInstance()->cache = new PhealFileCache($phealCacheLocation);
+		if ($phealCacheLocation != null) PhealConfig::getInstance()->cache = new PhealFileCache($phealCacheLocation);
 		PhealConfig::getInstance()->log = new PhealLogger();
 		PhealConfig::getInstance()->api_customkeys = true;
 		PhealConfig::getInstance()->api_base = $apiServer;
