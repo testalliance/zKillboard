@@ -51,12 +51,12 @@ class cli_fightFinder implements cliCommand
 			$link = "https://zkillboard.com/related/$systemID/$date/";
 
 			$message = "Battle detected in |g|$system|n| with |g|$involved|n| involved and |g|$wrecks|n| wrecks.";
-			Log::irc($message . "|g|$link");
+			Log::irc($message . " |g|$link");
 			$isgd = Twit::shortenURL($link);
 			$message = Log::stripIRCColors($message . " $isgd #tweetfleet #eveonline");
 			$tweet = Twit::sendMessage($message);
 			$twitID = $tweet->id;
-			Log::irc("Message was also tweeted: $twitID");
+			Log::irc("Message was also tweeted: https://twitter.com/eve_kill/status/$twitID");
 		}
 	}
 }
