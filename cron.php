@@ -10,7 +10,7 @@ if(!extension_loaded('pcntl'))
 $base = __DIR__;
 require_once( "config.php" );
 
-if($debug)
+if($config["debug"])
 {
     ini_set('display_errors', 1);
     error_reporting(E_ALL);
