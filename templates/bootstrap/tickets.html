@@ -45,7 +45,16 @@
 			{% endif %}
 		</div>
 	</div>
+{% else %}
+<pre>
+You are not logged in, and thus cannot see any tickets, or submit any tickets.
+Please register and login to send tickets, or go to the <a href="/support/chat/">Live Chat</a>
+</pre>
+{% endif %}
 
+{% endblock %}
+
+{% block modal %}
 	<div class="modal fade" id="newIssue">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -71,13 +80,6 @@
 			</div>
 		</div>
 	</div>
-{% else %}
-<pre>
-You are not logged in, and thus cannot see any tickets, or submit any tickets.
-Please register and login to send tickets, or go to the <a href="/support/chat/">Live Chat</a>
-</pre>
-{% endif %}
-
 {% endblock %}
 
 {% block robots %}

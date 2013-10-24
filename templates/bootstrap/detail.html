@@ -192,8 +192,9 @@
 	</tbody>
 </table>
 {% endif %}
+{% endblock %}
 
-
+{% block modal %}
 <!-- modal -->
 <div class="modal hide fade" id="report">
 	<div class="modal-header">
@@ -298,8 +299,8 @@
 		</div>
 	</div>
 </div>
-
 {% endblock %}
+
 {% block style %}
 <link rel="stylesheet" href="//{{ siteurl }}/css/bootstrap-wysihtml5.css">
 {% endblock %}
