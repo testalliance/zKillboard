@@ -8,7 +8,30 @@ if(!extension_loaded('pcntl'))
     die("This script needs the pcntl extension!");
 
 $base = __DIR__;
-require_once "$base/init.php";
+require_once( "config.php" );
+
+if($debug)
+{
+    ini_set('display_errors', 1);
+    error_reporting(E_ALL);
+}
+
+// vendor autoload
+require( "vendor/autoload.php" );
+
+// zkb class autoloader
+spl_autoload_register("zkbautoload");
+
+function zkbautoload($class_name)
+{
+    $baseDir = dirname(__FILE__);
+    $fileName = "$baseDir/classes/$class_name.php";
+    if (file_exists($fileName))
+    {
+        require_once $fileName;
+        return;
+    }
+}
 
 interface cliCommand {
     public function getDescription();
