@@ -31,8 +31,8 @@ $app->get("/information(/:page)/", function($page = "about") use ($app) {
 });
 
 // Support
-$app->get("/support(/:page)/", function($page = "support") use ($app) {
-	include( "view/support.php" );
+$app->get("/livechat/", function() use ($app) {
+	include( "view/livechat.php" );
 });
 
 // Tickets
