@@ -26,9 +26,9 @@ if($_POST)
     $ircuserid = $_POST["ircuserid"];
   if(isset($_POST["accessLevel"]))
     $accessLevel = $_POST["accessLevel"];
-  if(issset($_POST["deleteirc"]))
+  if(isset($_POST["deleteirc"]))
     $deleteirc = $_POST["deleteirc"];
-  if(isset($_POST["commandlog"]));
+  if(isset($_POST["commandlog"]))
     $commandlog = $_POST["commandlog"];
   if(isset($_POST["grantadmin"]))
     $grantadmin = $_POST["grantadmin"];
