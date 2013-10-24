@@ -51,13 +51,13 @@ class cli_hourly implements cliCommand
 		Storage::store("KillCount", Db::queryField("select count(*) count from zz_killmails", "count"));
 		Storage::store("ActualKillCount", Db::queryField("select count(*) count from zz_killmails where processed = 1", "count"));
 
-		$highKillID = Db::queryRow("select max(killID) highKillID from zz_killmails", "highKillID");
+		$highKillID = Db::queryField("select max(killID) highKillID from zz_killmails", "highKillID");
 		if ($highKillID > 2000000) Storage::store("notRecentKillID", ($highKillID - 2000000));
 
 		self::apiPercentage();
 
 		Db::execute("delete from zz_api_log where requestTime < date_sub(now(), interval 36 hour)");
-		Db::execute("update zz_killmails set kill_json = '' where processed = 2 and killID < 0 and kill_json != ''");
+		//Db::execute("update zz_killmails set kill_json = '' where processed = 2 and killID < 0 and kill_json != ''");
 		Db::execute("update zz_manual_mails set rawText = '' where killID > 0 and rawText != ''");
 		Db::execute("delete from zz_errors where date < date_sub(now(), interval 1 day)");
 
