@@ -1,5 +1,19 @@
 body {
 	background-color: #060606;
+	background-image: url("/img/bg.jpg");
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	background-attachment: fixed;
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='.myBackground.jpg', sizingMethod='scale');
+	-ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='myBackground.jpg', sizingMethod='scale')";
+}
+
+.nobackground {
+	background-color: #060606;
+	position: relative;
+	opacity: 0.95;
 }
 
 .table tbody tr.error td

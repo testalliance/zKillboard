@@ -29,8 +29,8 @@
 		{% else %}
 		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootswatch/3.0.0/{{ sessiontheme }}/bootstrap.min.css">
 		{% endif %}
-        <link rel="stylesheet" href="//{{ siteurl }}/css/theme-edits/{{sessiontheme}}-main.css">
-		<link rel="stylesheet" href="//{{ siteurl }}/css/main.css">
+        <link rel="stylesheet" href="/css/theme-edits/{{sessiontheme}}-main.css">
+		<link rel="stylesheet" href="/css/main.css">
 		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
 		{% block style %}
         {% endblock %}
@@ -57,7 +57,7 @@
         </div>
 		{% endif %}
 
-        <div class="container">
+        <div class="container nobackground">
 			{% if sessionrevoked %}
 				<div class="alert alert-info fade in" data-dismiss="alert"><button type="button" class="close" data-dismiss="alert">&times;</button>You have had access revoked to certain parts of the site</a><br/>Reason: {{ sessionrevokereason }}</div>
 			{% endif %}
@@ -76,7 +76,7 @@
             {% if eveigb %}{{ igbbottomad|raw }}{% elseif isMobile and isTablet == false %}{{ mobilebottomad|raw }}{% else %}{{ bottomad|raw }}{% endif %}
         </div>
 		{% endif %}
-        <div class="container" id="footer">
+        <div class="container nobackground" id="footer">
             {% include "footer.html" %}
 		</div>
 		</div>
