@@ -94,18 +94,20 @@ $mixed = $pageType == "overview" ? Kills::getKills($parameters) : array();
 $kills = $pageType == "kills"    ? Kills::getKills($parameters) : array();
 $losses = $pageType == "losses"  ? Kills::getKills($parameters) : array();
 
-if ($pageType != "solo") $soloKills = array();
-else {
+if ($pageType != "solo" || $key == "faction") {
+	$soloKills = array();
+	$soloCount = 0;
+} else {
 	$soloParams = $parameters;
 	if (!isset($parameters["kills"]) || !isset($parameters["losses"])) $soloParams["mixed"] = true;
 	$soloKills = Kills::getKills($soloParams);
+	$soloCount = Db::queryField("select count(killID) count from zz_participants where " . $map[$key]["column"] . "ID = :id and isVictim = 1 and number_involved = 1", "count", array(":id" => $id), 3600);
 }
-$soloCount = $pageType == "solo" ? Db::queryField("select count(distinct killID) count from zz_participants where " . $map[$key]["column"] . "ID = :id and number_involved = 1", "count", array(":id" => $id), 3600) : 0;
 $soloPages = ceil($soloCount / $limit);
 $solo = Kills::mergeKillArrays($soloKills, array(), $limit, $columnName, $id);
 
 $topLists = array();
-$noTop = array("system", "region", "group", "ship");
+$noTop = array("system", "region", "group", "ship", "faction");
 if ($pageType == "top" && !in_array($key, $noTop)) {
 	$topParameters = $parameters; // array("limit" => 10, "kills" => true, "$columnName" => $id);
 	$topParameters["limit"] = 10;
@@ -132,7 +134,7 @@ if ($pageType == "api") $corpList = Info::getCorps($id);
 $corpStats = array();
 if ($pageType == "corpstats") $corpStats = Info::getCorpStats($id, $parameters);
 
-$detail["history"] = $pageType == "history" ? Summary::getMonthlyHistory($columnName, $id) : array();
+$detail["history"] = $key != "faction" && $pageType == "history" ? Summary::getMonthlyHistory($columnName, $id) : array();
 
 $cnt = 0;
 $cnid = 0;
