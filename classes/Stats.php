@@ -191,7 +191,7 @@ class Stats
 		$modifier = $adding ? 1 : -1;
 
 		$victim = Db::queryRow("select * from zz_participants where isVictim != 0 and killID = :killID", array(":killID" => $killID));
-		$chars = Db::query("select distinct characterID from zz_participants where isVictim = 0 and killID = :killID", array(":killID" => $killID));
+		$chars = Db::query("select characterID, shipTypeID, groupID from zz_participants where isVictim = 0 and killID = :killID", array(":killID" => $killID));
 		$corps = Db::query("select distinct corporationID from zz_participants where isVictim = 0 and killID = :killID", array(":killID" => $killID));
 		$allis = Db::query("select distinct allianceID from zz_participants where isVictim = 0 and killID = :killID", array(":killID" => $killID));
 		$factions = Db::query("select distinct factionID from zz_participants where isVictim = 0 and killID = :killID", array(":killID" => $killID));
@@ -204,8 +204,24 @@ class Stats
 		self::statLost("corp", $victim["corporationID"], $groupID, $modifier, $points, $isk);
 		self::statLost("alli", $victim["allianceID"], $groupID, $modifier, $points, $isk);
 		self::statLost("faction", $victim["factionID"], $groupID, $modifier, $points, $isk);
+		self::statLost("ship", $victim["shipTypeID"], $groupID, $modifier, $points, $isk);
+		self::statLost("group", $victim["groupID"], $groupID, $modifier, $points, $isk);
+		self::statLost("system", $victim["solarSystemID"], $groupID, $modifier, $points, $isk);
+		self::statLost("region", $victim["regionID"], $groupID, $modifier, $points, $isk);
 
-		foreach($chars as $char) self::statDestroyed("pilot", $char["characterID"], $groupID, $modifier, $points, $isk);
+		$shipTypes = array();
+		$groups = array();
+		foreach($chars as $char) {
+			self::statDestroyed("pilot", $char["characterID"], $groupID, $modifier, $points, $isk);
+			if (!in_array($char["shipTypeID"], $shipTypes)) {
+				self::statDestroyed("ship", $char["shipTypeID"], $groupID, $modifier, $points, $isk);
+				$shipTypes[] = $char["shipTypeID"];
+			}
+			if (!in_array($char["groupID"], $groups)) {
+				self::statDestroyed("group", $char["groupID"], $groupID, $modifier, $points, $isk);
+				$groups[] = $char["groupID"];
+			}
+		}
 		foreach($corps as $corp) self::statDestroyed("corp", $corp["corporationID"], $groupID, $modifier, $points, $isk);
 		foreach($allis as $alli) self::statDestroyed("alli", $alli["allianceID"], $groupID, $modifier, $points, $isk);
 		foreach($factions as $faction) self::statDestroyed("faction", $faction["factionID"], $groupID, $modifier, $points, $isk);
