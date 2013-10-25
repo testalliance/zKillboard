@@ -31,6 +31,7 @@ class irc_maintenance implements ircCommand {
 			else irc_out("|g|Site is not in maintenance mode");
 		} else if ($parameters[0] == "off") {
 			Db::execute("delete from zz_storage where locker in ('maintenance', 'MaintenanceReason')");
+			irc_out("|g|Maintenance mode disabled");
 		} else if ($parameters[0] == "on") {
 			array_shift($parameters);
 			$reason = implode(" ", $parameters);
