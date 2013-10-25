@@ -37,6 +37,7 @@ class cli_calculateRecentStatsAndRanks implements cliCommand
 
 	public function execute($parameters)
 	{
+		if (Util::isMaintenceMode()) return;
 		if (sizeof($parameters) == 0 || $parameters[0] == "") CLI::out("Usage: |g|recentStatsAndRanks <type>|n| To see a list of commands, use: |g|methods recentStatsAndRanks", true);
 		$command = $parameters[0];
 

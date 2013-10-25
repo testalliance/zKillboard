@@ -60,7 +60,7 @@ class cli_calculateAllTimeStatsAndRanks implements cliCommand
 
 	private static function ranks()
 	{
-		//CLI::out("|g|Ranks calculation started");
+		if (Util::isMaintenanceMode()) return;
 		Db::execute("drop table if exists zz_ranks_temporary");
 		Db::execute("create table zz_ranks_temporary like zz_ranks");
 
