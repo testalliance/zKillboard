@@ -76,6 +76,7 @@
 			{% endif %}
 
             {% if showAds != false %}
+			<div class="clearfix"></div>
             <div class="centered" id="adsensebottom" style="height: 90px;">
                 {% if eveigb %}{{ igbbottomad|raw }}{% elseif isMobile and isTablet == false %}{{ mobilebottomad|raw }}{% else %}{{ bottomad|raw }}{% endif %}
             </div>
