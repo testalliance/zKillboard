@@ -606,11 +606,7 @@ class Info
 				case "groupID":
 					global $loadGroupShips; // ugh
 					if (!isset($element["groupName"])) $element["groupName"] = Info::getGroupName($value);
-					if ($loadGroupShips && !isset($element["groupShips"]) && !isset($element["noRecursion"])) $element["groupShips"] = Db::query("select typeID as shipTypeID, typeName as shipName, raceID, 1 as noRecursion from ccp_invTypes where groupID = :id and published = 1 and marketGroupID is not null order by raceID, marketGroupID, typeName",
-							array
-							(
-							 ":id" => $value
-							), 30);
+					if ($loadGroupShips && !isset($element["groupShips"]) && !isset($element["noRecursion"])) $element["groupShips"] = Db::query("select typeID as shipTypeID, typeName as shipName, raceID, 1 as noRecursion from ccp_invTypes where groupID = :id and (groupID = 29 or (published = 1 and marketGroupID is not null)) order by raceID, marketGroupID, typeName", array (":id" => $value), 30);
 					break;
 				case "executorCorpID":
 					$element["executorCorpName"] = Info::getCorpName($value);
