@@ -8,7 +8,6 @@ CREATE TABLE `zz_api_log` (
   `name` varchar(64) DEFAULT NULL,
   `options` varchar(512) DEFAULT NULL,
   PRIMARY KEY (`logID`),
-  KEY `requestTime` (`requestTime`,`scope`,`name`),
-  KEY `errorCode` (`errorCode`)
-) ENGINE=MyISAM AUTO_INCREMENT=352991008 DEFAULT CHARSET=latin1  ROW_FORMAT=COMPRESSED;
+  KEY `requestTime` (`requestTime`,`scope`,`name`)
+) ENGINE=MyISAM AUTO_INCREMENT=5080788 DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
 

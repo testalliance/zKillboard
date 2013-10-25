@@ -18,5 +18,5 @@ CREATE TABLE `zz_users` (
   UNIQUE KEY `email` (`email`),
   KEY `login_index` (`username`,`password`),
   KEY `revoked` (`revoked`)
-) ENGINE=InnoDB AUTO_INCREMENT=6997 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPRESSED;
+) ENGINE=InnoDB AUTO_INCREMENT=8188 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 

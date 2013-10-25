@@ -6,7 +6,7 @@ CREATE TABLE `ccp_dgmTypeAttributes` (
   `valueInt` int(11) DEFAULT NULL,
   `valueFloat` double DEFAULT NULL,
   PRIMARY KEY (`typeID`,`attributeID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 
 LOCK TABLES `ccp_dgmTypeAttributes` WRITE;

@@ -10,13 +10,14 @@ CREATE TABLE `zz_api_characters` (
   `cachedUntil` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `lastChecked` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `errorCode` int(6) NOT NULL,
+  `errorCount` int(3) NOT NULL DEFAULT '0',
   PRIMARY KEY (`apiRowID`),
-  UNIQUE KEY `characterID_2` (`characterID`,`corporationID`,`isDirector`),
   UNIQUE KEY `keyID` (`keyID`,`characterID`),
   KEY `user_id` (`keyID`),
   KEY `characterID` (`characterID`),
   KEY `corporationID` (`corporationID`),
   KEY `isDirector` (`isDirector`),
-  KEY `cachedUntil` (`cachedUntil`)
-) ENGINE=InnoDB AUTO_INCREMENT=61781918 DEFAULT CHARSET=latin1 ROW_FORMAT=COMPRESSED;
+  KEY `cachedUntil` (`cachedUntil`),
+  KEY `errorCount` (`errorCount`)
+) ENGINE=InnoDB AUTO_INCREMENT=4737567 DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC ;
 

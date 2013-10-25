@@ -34,7 +34,7 @@ CREATE TABLE `ccp_systems` (
   KEY `mapSolarSystems_IX_security` (`security`),
   KEY `factionID` (`factionID`),
   KEY `sunTypeID` (`sunTypeID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPRESSED;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 
 LOCK TABLES `ccp_systems` WRITE;

@@ -15,7 +15,7 @@ CREATE TABLE `ccp_invGroups` (
   `published` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`groupID`),
   KEY `invGroups_IX_category` (`categoryID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 
 LOCK TABLES `ccp_invGroups` WRITE;

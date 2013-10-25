@@ -6,5 +6,5 @@ CREATE TABLE `zz_domains_entities` (
   `entityType` varchar(64) NOT NULL,
   `entityName` varchar(128) NOT NULL,
   UNIQUE KEY `entityID` (`domainID`,`entityID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
 

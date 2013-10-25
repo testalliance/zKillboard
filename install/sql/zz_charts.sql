@@ -7,5 +7,5 @@ CREATE TABLE `zz_charts` (
   `dataset` varchar(4096) NOT NULL,
   PRIMARY KEY (`chartID`),
   KEY `dataset` (`dataset`(767))
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPRESSED;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
 

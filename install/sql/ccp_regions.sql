@@ -16,7 +16,7 @@ CREATE TABLE `ccp_regions` (
   `radius` double DEFAULT NULL,
   PRIMARY KEY (`regionID`),
   KEY `factionID` (`factionID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 
 LOCK TABLES `ccp_regions` WRITE;

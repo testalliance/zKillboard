@@ -29,7 +29,7 @@ CREATE TABLE `ccp_dgmEffects` (
   `npcActivationChanceAttributeID` smallint(6) DEFAULT NULL,
   `fittingUsageChanceAttributeID` smallint(6) DEFAULT NULL,
   PRIMARY KEY (`effectID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 
 LOCK TABLES `ccp_dgmEffects` WRITE;

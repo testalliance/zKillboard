@@ -7,5 +7,5 @@ CREATE TABLE `zz_tickets_replies` (
   `reply` mediumtext NOT NULL,
   `moderator` int(11) NOT NULL DEFAULT '0',
   `datePosted` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
 

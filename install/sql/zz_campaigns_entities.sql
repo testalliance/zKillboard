@@ -5,5 +5,5 @@ CREATE TABLE `zz_campaigns_entities` (
   `entityType` varchar(64) NOT NULL,
   `entityID` int(11) NOT NULL,
   KEY `id` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
 
