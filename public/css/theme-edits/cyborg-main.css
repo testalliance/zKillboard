@@ -45,3 +45,7 @@ color: black;
 .table-no-hover tbody tr:hover td, .table tbody tr:hover th {
 	background-color: transparent;
 }
+
+.alert-danger {
+	background-color: #800000;
+}
