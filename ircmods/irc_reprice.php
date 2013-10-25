@@ -26,13 +26,25 @@ class irc_reprice implements ircCommand {
 	}
 
 	public function execute($nick, $uhost, $channel, $command, $parameters, $nickAccessLevel) {
+		if (Util::isMaintenanceMode()) {
+			irc_error("|r|Cannot reprice while in maintenance mode");
+		}
 		@$killID = (int) $parameters[0];
 		if ($killID == 0) irc_error("|r|Please provide a valid killID.");
 		$count = Db::queryField("select count(*) count from zz_participants where killID = :killID", "count", array(":killID" => $killID));
 		if ($count == 0) irc_error("|r|KillID $killID does not exist!");
 
-		$total = Price::updatePrice($killID);
-		$points = Points::updatePoints($killID);
+		Stats::calcStats($killID, false);
+		Db::execute("update zz_killmails set processed = 0 where killID = :killID", array(":killID" => $killID));
+		do {
+			sleep(1);
+			$processed = Db::queryField("select processed from zz_killmails where killID = :killID", "processed", array(":killID" => $killID), 0);
+		} while ($processed = 0);
+
+		$kill = Db::queryRow("select * from zz_participants where isVictim = 1 and killID = :killID", array(":killID" => $killID), 0);
+		$total = $kill["total_price"];
+		$points = $kill["points"];
+
 		irc_out("|g|$killID|n| repriced to|g| " . number_format($total, 2) . "|n| ISK and |g|" . number_format($points, 0) . "|n| points");
 	}
     public function isHidden() { return false; }
