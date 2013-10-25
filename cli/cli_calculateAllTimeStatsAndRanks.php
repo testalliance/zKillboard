@@ -136,6 +136,7 @@ class cli_calculateAllTimeStatsAndRanks implements cliCommand
 
 		Db::execute("set session wait_timeout = 6000");
 		if (!Util::isMaintenanceMode()) {
+			Db::execute("replace into zz_storage values ('MaintenanceReason', 'Full stats calculation in progress')");
 			Db::execute("replace into zz_storage values ('maintenance', 'true')");
 			Log::log("Maintenance mode engaged");
 			Log::irc("|r|Engaging maintenance mode for full stat calculations...");
@@ -167,6 +168,7 @@ class cli_calculateAllTimeStatsAndRanks implements cliCommand
 		$now = time();
 		Log::log("Starting stat calculations for $type");
 		Log::irc("Starting stat calculations for $type");
+		Db::execute("replace into zz_storage values ('MaintenanceReason', 'Full stats calculation - currently working on {$type}s')");
 
 		Db::execute("drop table if exists zz_stats_temporary");
 		Db::execute("
