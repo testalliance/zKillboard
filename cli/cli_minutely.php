@@ -47,8 +47,8 @@ class cli_minutely implements cliCommand
 			case "all":
 				$killsLastHour = Db::queryField("select count(*) count from zz_killmails where insertTime > date_sub(now(), interval 1 hour)", "count");
 				Storage::store("KillsLastHour", $killsLastHour);
-				Domains::deleteDomainsFromCloudflare();
-				Domains::registerDomainsWithCloudflare();
+				//Domains::deleteDomainsFromCloudflare();
+				//Domains::registerDomainsWithCloudflare();
 				$fc = new FileCache;
 				$fc->cacheDir = "$base/cache/queryCache/";
 				$fc->cleanUp();
