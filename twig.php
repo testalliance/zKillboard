@@ -76,6 +76,7 @@ $twig->addFunction("chart", new Twig_Function_Function("Chart::addChart"));
 $twig->addFunction("getMonth", new Twig_Function_Function("Util::getMonth"));
 $twig->addFunction("getLongMonth", new Twig_Function_Function("Util::getLongMonth"));
 $twig->addFunction("isMaintenance", new Twig_Function_Function("Util::isMaintenanceMode"));
+$twig->addFunction("getMaintenanceReason", new Twig_Function_Function("Util::getMaintenanceReason"));
 
 $igb = false;
 if(stristr(@$_SERVER["HTTP_USER_AGENT"], "EVE-IGB"))

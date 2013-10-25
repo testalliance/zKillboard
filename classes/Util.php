@@ -57,6 +57,10 @@ class Util
 		return "true" == Db::queryField("select contents from zz_storage where locker = 'maintenance'", "contents", array(), 0);
 	}
 
+	public static function getMaintenanceReason()
+	{
+		return Storage::retrieve("MaintenanceReason", "");
+	}
 
 	public static function getPheal($keyID = null, $vCode = null)
 	{
