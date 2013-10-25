@@ -52,7 +52,7 @@
 		<div class="content">
 		{% include "navigationbar.html" %}
 
-		{% if isMaintenance() %}
+		{% if isMaintenance %}
 			<div class="alert alert-danger"><center>Site is in maintenance mode<br/><small>During this time no kills are processed<br/>{{ getMaintenanceReason() }}</small></center></div>
 		{% endif %}
 
