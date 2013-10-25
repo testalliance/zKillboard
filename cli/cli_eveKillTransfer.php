@@ -30,6 +30,7 @@ class cli_eveKillTransfer implements cliCommand
 
 	public function execute($parameters)
 	{
+		if (Util::isMaintenanceMode()) return;
 		Bin::set("WaitForProcessing", false);
 
 		$count = Db::queryField("select count(*) count from zz_killmails where processed = 0", "count", array(), 0);
@@ -43,6 +44,7 @@ class cli_eveKillTransfer implements cliCommand
 		$result = Db::query("select eveKillID from zz_manual_mail_list where processed = 0 order by eveKillID desc limit 1000", array(), 0);
 		foreach($result as $row)
 		{
+			if (Util::isMaintenanceMode()) return;
 			$currentID = $row["eveKillID"];
 			Db::execute("update zz_manual_mail_list set processed = -2 where eveKillID = $currentID");
 			//echo "\n$currentID: ";
