@@ -1,6 +1,6 @@
 body {
 	background-color: #060606;
-	background-image: url("/img/bg.jpg");
+	background-image: url("/img/bg_cyborg_blueish.png");
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
 	-o-background-size: cover;
@@ -11,9 +11,14 @@ body {
 }
 
 .nobackground {
-	background-color: #060606;
-	position: relative;
-	opacity: 0.95;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border-radius: 10px;
+	background: #F8FEFE;
+	border: #solid 10px #F8FEFE;
+	background-color: rgba(6,6,6,0.7);
+	border-color: solid 5px rgba(0,0,0,0.1);
+	box-shadow: 0 0 15px 15px rgba(6,6,6,0.7);
 }
 
 .table tbody tr.error td
