@@ -123,7 +123,7 @@ class cli_calculateAllTimeStatsAndRanks implements cliCommand
 
 	private static function stats()
 	{
-		//CLI::out("|g|Stats calculation started");
+		Log::irc("|g|Stats calculation started - checking for unknown groupID's");
 		// Fix unknown group ID's
 		$result = Db::query("select distinct shipTypeID, i.groupID from zz_participants p left join ccp_invTypes i on (shipTypeID = i.typeID) where shipTypeID = i.typeID and p.groupID = 0 and shipTypeID != 0");
 		foreach ($result as $row) {
@@ -134,7 +134,7 @@ class cli_calculateAllTimeStatsAndRanks implements cliCommand
 			$affected = Db::execute("update zz_participants set groupID = $groupID where groupID = 0 and shipTypeID = $shipTypeID");
 		}
 
-		Db::execute("set session wait_timeout = 600");
+		Db::execute("set session wait_timeout = 6000");
 		if (!Util::isMaintenanceMode()) {
 			Db::execute("replace into zz_storage values ('maintenance', 'true')");
 			Log::log("Maintenance mode engaged");
