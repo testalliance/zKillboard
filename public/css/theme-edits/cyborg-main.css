@@ -11,14 +11,12 @@ body {
 }
 
 .nobackground {
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
-	border-radius: 10px;
+	-moz-border-radius: 15px;
+	-webkit-border-radius: 15px;
+	border-radius: 15px;
 	background: #060606;
-	border: #solid 10px #060606;
-	background-color: rgba(6,6,6,0.95);
-	border-color: solid 5px rgba(0,0,0,0.1);
-	box-shadow: 0 0 15px 15px rgba(6,6,6,0.7);
+	background-color: rgba(6,6,6,0.9);
+	box-shadow: 0 0 15px 15px rgba(6,6,6,0.9);
 	opacity: 0.95;
 }
 
