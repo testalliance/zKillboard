@@ -115,8 +115,8 @@ overflow: hidden !important;
 
 ul.autocomplete { width: 375px; }
 ul.autocomplete img { position: absolute; top: 4px; left: 4px; }
-ul.autocomplete a { position: relative; padding: 10px 2px 0px 40px; height: 30px; }
-ul.autocomplete span { position: absolute; top: 8px; right: 5px; }
+ul.autocomplete a { position: relative; padding: 10px 2px 0px 40px; height: 40px; }
+ul.autocomplete span { position: absolute; top: 10px; right: 5px; }
 
 
 #addentity label { margin-right: 15px; }
