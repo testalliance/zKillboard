@@ -37,22 +37,18 @@ class Cache
 		{
 			if(extension_loaded("Memcached") && (isset($memcacheServer) && isset($memcachePort)))
 			{
-				echo "memcached";
 				$cache = new MemcachedCache();
 			}
 			else if(extension_loaded("Memcache") && (isset($memcacheServer) && isset($memcachePort)))
 			{
-				echo "memcache";
 				$cache = new MemcacheCache();
 			}
 			else if(extension_loaded("apcu") || extension_loaded("apc"))
 			{
-				echo "apc / apcu";
 				$cache = new ApcCache();
 			}
 			else
 			{
-				echo "file";
 				$cache = new FileCache();
 			}
 		}
