@@ -1,39 +1,539 @@
-/*
+/** @license
+ * DHTML Snowstorm! JavaScript-based Snow for web pages
+ * --------------------------------------------------------
+ * Version 1.43.20111201 (Previous rev: 1.42.20111120)
+ * Copyright (c) 2007, Scott Schiller. All rights reserved.
+ * Code provided under the BSD License:
+ * http://schillmania.com/projects/snowstorm/license.txt
+ */
 
- DHTML Snowstorm! JavaScript-based Snow for web pages
- --------------------------------------------------------
- Version 2.0, EXPERIMENTAL DEV/WORK-IN-PROGRESS build
- (Previous rev: 1.41.20101113)
- Copyright (c) 2007, Scott Schiller. All rights reserved.
- Code provided under the BSD License:
- http://schillmania.com/projects/snowstorm/license.txt
-*/
-var snowStorm=function(f,e){var I;function m(a,d){isNaN(d)&&(d=0);return Math.random()*a+d}function B(a){return 1===parseInt(m(2),10)?-1*a:a}function J(){(this.excludeMobile&&!K||!this.excludeMobile)&&f.setTimeout(function(){a.start(!0)},20);a.events.remove(f,"load",J)}this.flakesMax=0;this.flakesMaxActive=1;this.flakesMinActive=14;this.flakeScale=1;this.animationInterval=42;this.excludeMobile=!0;this.flakeBottom=null;this.followMouse=!0;this.snowColor="#fff";this.snowCharacter="&bull;";this.snowStick=
-!0;this.targetElement=null;this.useMeltEffect=!0;this.usePositionFixed=this.useTwinkleEffect=!1;this.useOpacity=!0;this.freezeOnBlur=!1;this.flakeRightOffset=this.flakeLeftOffset=0;this.flakeHeight=this.flakeWidth=15;this.vMaxX=0.7;this.vMaxY=0.3;this.zIndex=0;this.useScaling=!0;this.useWebFont=!1;this.use3DRotate=this.use2DRotate=!0;this.scaleOffset=80;this.webFontCharacters="%'(67jCefo".split("");this.webFontCharactersSubset=["%","'"];var a=this,k=this,w,F,x,L,M,N,y=navigator.userAgent,q=y.match(/msie/i),
-p=y.match(/msie 6/i),K=y.match(/mobile/i),r=q&&"BackCompat"===e.compatMode;y.match(/(ipad|iphone|ipod)/i);var O=K||r||p,j=null,t=null,n=null,u=null,z=null,P=null,Q=0,h=1,R=1.1*h,s=1,v=0,C=!1,p=e.createElement("div"),A=null,G=null;a:{try{p.style.opacity="0.5"}catch(aa){r=!1;break a}r=!0}var W=r,r="undefined"!==typeof p.style["-ms-transform"]?"-ms-transform":null,X="undefined"!==typeof p.style.MozTransform?"MozTransform":null,Y="undefined"!==typeof p.style.OTransform?"OTransform":null,D="undefined"!==
-typeof p.style.webkitTransform?"webkitTransform":null,H=null,S=!1,T=e.createDocumentFragment(),H=X||D||r||Y;this.timer=null;this.flakes=[];this.active=this.disabled=!1;this.meltFrameCount=20;this.meltFrames=[];this.types=100;this.timing={frameCount:0,timestamp:0,lastTimestamp:0,wasSlow:null,slowInterval:Math.max(50,1.1*a.animationInterval),ping:function(){a.timing.lastTimestamp=(new Date).getTime();a.timing.frameCount++>a.timing.slowInterval&&a.timing.reset()},tooSlow:function(){var c=a.timing.report()>
-a.timing.slowInterval;c&&(a.timing.wasSlow=!0);return c},reset:function(c){a.timing.frameCount=0;a.timing.timestamp=(new Date).getTime()+(c||0);!1===a.timing.wasSlow&&a.flakesMaxActive<a.flakesMax-1&&(a.flakesMaxActive+=2);a.timing.wasSlow=!1},report:function(){return 1>a.timing.frameCount?0:parseInt((a.timing.lastTimestamp-a.timing.timestamp)/a.timing.frameCount,10)}};var U=function(a){a=Z.call(a);var d=a.length;E?(a[1]="on"+a[1],3<d&&a.pop()):3===d&&a.push(!1);return a},V=function(a,d){var e=a.shift(),
-g=[$[d]];if(E)e[g](a[0],a[1]);else e[g].apply(e,a)},E=!f.addEventListener&&f.attachEvent,Z=Array.prototype.slice,$={add:E?"attachEvent":"addEventListener",remove:E?"detachEvent":"removeEventListener"};this.events={add:function(){V(U(arguments),"add")},remove:function(){V(U(arguments),"remove")}};this.getSnowCharacter=function(){var c=a.useWebFont?a.use2DRotate?D?a.webFontCharacters:a.webFontCharactersSubset:a.webFontCharactersSubset:null;return!c?a.snowCharacter:c[parseInt(Math.random()*c.length,
-10)]};this.randomizeWind=function(){z=B(m(a.vMaxX,0.2));P=m(a.vMaxY,0.2);if(a.flakes)for(var c=a.flakes.length;c--;)a.flakes[c].active&&a.flakes[c].setVelocities()};this.scrollHandler=function(){u=a.flakeBottom?0:parseInt(f.scrollY||e.documentElement.scrollTop||e.body.scrollTop,10);isNaN(u)&&(u=0);if(!C&&!a.flakeBottom&&a.flakes)for(var c=a.flakes.length;c--;)0===a.flakes[c].active&&a.flakes[c].stick()};this.resizeHandler=function(){f.innerWidth||f.innerHeight?(j=f.innerWidth-2-a.flakeRightOffset,
-n=a.flakeBottom?a.flakeBottom:f.innerHeight):(j=(e.documentElement.clientWidth||e.body.clientWidth||e.body.scrollWidth)-(!q?8:-0)-a.flakeRightOffset,n=a.flakeBottom?a.flakeBottom:e.documentElement.clientHeight||e.body.clientHeight||e.body.scrollHeight);n<e.body.scrollHeight&&(j-=16);t=parseInt(j/2,10)};this.resizeHandlerAlt=function(){j=a.targetElement.offsetLeft+a.targetElement.offsetWidth-a.flakeRightOffset;n=a.flakeBottom?a.flakeBottom:a.targetElement.offsetTop+a.targetElement.offsetHeight;t=parseInt(j/
-2,10)};this.motionHandler=function(a){var d=a.x;a=a.y;var e;if(-90===v||90===v)e=d,d=a,a=e;0>z&&(z=Math.abs(z));null!==d?(90===v&&(d*=-1),0>d?(d=Math.max(-1,d)/1,h=Math.max(-R,h+1.1*d)):0<d&&(d=Math.min(1,d)/1,h=Math.min(R,h+1.1*d))):0.1<Math.abs(h)&&(h*=0.9);null!==a&&(-90===v&&(a*=-1),0>a?(a=Math.max(-1,a)/1,1>s&&(s-=a)):0<a&&(a=Math.min(1,a)/1,-1<s&&(s-=a)))};this.tiltHandler={iOS:function(c){a.motionHandler({x:c.accelerationIncludingGravity.x/8,y:c.accelerationIncludingGravity.y/8})},moz:function(c){a.motionHandler({x:-1*
-c.x,y:c.y})}};this.orientationHandler={iOS:function(){v=f.orientation},moz:{}};this.freeze=function(){if(a.disabled)return!1;a.disabled=1;clearInterval(a.timer)};this.resume=function(){if(a.disabled)a.disabled=0;else return!1;a.timerInit()};this.toggleSnow=function(){a.flakes.length?(a.active=!a.active,a.active?(a.show(),a.resume()):(a.stop(),a.freeze())):a.start()};this.stop=function(){this.freeze();for(var c=this.flakes.length;c--;)this.flakes[c].hide();a.events.remove(f,"scroll",a.scrollHandler);
-a.events.remove(f,"resize",a.resizeHandler);a.freezeOnBlur&&(q?(a.events.remove(e,"focusout",a.freeze),a.events.remove(e,"focusin",a.resume)):(a.events.remove(f,"blur",a.freeze),a.events.remove(f,"focus",a.resume)))};this.show=function(){for(var a=this.flakes.length;a--;)this.flakes[a].show()};this.SnowFlake=function(a,d,f,g){var b=this,k=[],p=a.useWebFont?1:0,l=a.useWebFont?3:0,r=Math.random(1);this.type=null;this.x=f||parseInt(m(j-20),10);this.y=!isNaN(g)?g:-m(n)-12;this.vY=this.vX=null;this.angle=
-0;this.angleOffset=parseInt(360*Math.random(),10);this.angleMultiplier=B(2*Math.random());this.rotateDirection=B(1+B(1*Math.random()));this.vAmp=null;this.melting=!1;this.meltFrameCount=a.meltFrameCount;this.meltFrames=a.meltFrames;this.twinkleFrame=this.meltFrame=0;this.active=1;this.opacity=this.scale=this.fontSize=null;this.character=a.getSnowCharacter();this.o=A.cloneNode(!0);this.oNode=a.useWebFont?this.o.childNodes[0]:this.o;this.oNode.innerHTML=this.character;this.flakeHeight=this.flakeWidth=
-null;this.visible=!1;T.appendChild(this.o);this.setType=function(d){if(b.type===d||b.melting)return!1;b.type=d;b.vAmp=1+2*(d/a.types);b.fontSize=9+d/a.types*(a.useWebFont?14:10)*a.flakeScale;b.scale=d/a.types;b.opacity=0.5+0.5*((d+1)/a.types);b.setOpacity(b.o,b.opacity);b.flakeWidth=b.fontSize+p;b.flakeHeight=b.fontSize+l;a.useWebFont||(b.oNode.style.marginBottom=-(b.flakeHeight/2.35)+r+"px",b.oNode.style.lineHeight=b.flakeHeight+4+"px");b.o.style.fontSize=b.fontSize+"px";b.o.style.width=b.flakeWidth+
-"px";b.o.style.height=b.flakeHeight+"px"};this.refresh=function(a){if(isNaN(b.x)||isNaN(b.y)||!a&&b.y<-b.flakeHeight)return!1;b.o.style.left=b.x+"px";b.o.style.top=b.y+"px"};this.stick=function(){O||a.targetElement!==e.documentElement&&a.targetElement!==e.body?(b.y=n+u-b.flakeHeight-(q&&a.useWebFont?1:0),b.o.style.top=b.y+"px"):a.flakeBottom?b.o.style.top=a.flakeBottom+"px":(b.hide(),b.o.style.top="auto",b.o.style.bottom="0px",b.o.style.position="fixed",b.show())};this.vCheck=function(){0<=b.vX&&
-0.2>b.vX?b.vX=0.2:0>b.vX&&-0.2<b.vX&&(b.vX=-0.2);0<=b.vY&&0.2>b.vY&&(b.vY=0.2)};this.applyTransform=function(d){if(a.use2DRotate&&b.y>=-b.flakeHeight&&(D||14<=this.fontSize)){var e=Math.abs(Math.min(3,b.angleOffset+d*b.angleMultiplier));!a.use3DRotate||!D?k.push("rotate("+d+"deg)"):(360<Math.abs(e)&&(e=0),k.push("rotate("+d+"deg) rotate3D(0,1,0,"+e+"deg)"));b.oNode.style[H]=k.join(" ");k=[]}};this.move=function(){var e=b.vX*h*b.scale,g;b.x+=e;b.y+=b.vY*b.vAmp*s;b.x>=j||j-b.x<b.flakeWidth?b.x=0:0>
-e&&b.x-a.flakeLeftOffset<0-b.flakeWidth&&(b.x=j-b.flakeWidth-1);e=n+u-b.y;a.useScaling&&(g=Math.floor(Math.max(0,Math.min(a.types,e*(100/a.scaleOffset)/(n+u)*d))),b.setType(g));a.use2DRotate&&H&&(b.angle+=5*h*b.rotateDirection,360<=Math.abs(b.angle)&&(b.angle=0),b.applyTransform(b.angle));e<=b.flakeHeight?(b.active=0,a.snowStick?b.stick():b.recycle()):(a.useMeltEffect&&(b.active&&3>b.type&&!b.melting&&0.998<Math.random())&&(b.melting=!0,b.melt()),a.useTwinkleEffect&&(b.twinkleFrame?(b.twinkleFrame--,
-b.o.style.visibility=b.twinkleFrame&&0===b.twinkleFrame%2?"hidden":"visible"):0.9<Math.random()&&(b.twinkleFrame=parseInt(20*Math.random(),10))));b.refresh()};this.animate=function(){b.move()};this.setVelocities=function(){b.vX=z+m(0.2*a.vMaxX,0.1);b.vY=P+m(0.2*a.vMaxY,0.1)};this.setOpacity=function(b,d){a.useOpacity&&W&&(b.style.opacity=d)};this.melt=function(){!a.useMeltEffect||!b.melting?b.recycle():b.meltFrame<b.meltFrameCount?(b.meltFrame++,b.setOpacity(b.o,b.opacity*b.meltFrames[b.meltFrame]),
-b.o.style.fontSize=b.fontSize-b.fontSize*(b.meltFrame/b.meltFrameCount)+"px",a.useWebFont||(b.oNode.style.marginBottom=-(b.flakeHeight/2.35)-Math.random(1)+"px")):b.recycle()};this.show=function(){b.visible||(b.visible=!0,b.o.style.display="block")};this.hide=function(){b.visible&&(b.visible=!1,b.o.style.display="none")};this.recycle=function(e){b.hide();b.meltFrame=0;b.melting=!1;e||N<a.flakesMaxActive&&!b.active?(b.o.style.position=C?"fixed":"absolute",b.o.style.bottom="auto",b.setType(d),b.setVelocities(),
-b.vCheck(),b.setOpacity(b.o,b.opacity),b.o.style.padding="0px",b.o.style.margin="0px",b.o.style.fontSize=b.fontSize+"px",b.x=parseInt(m(j-b.flakeWidth-20),10),b.y=parseInt(-1*m(n),10)-b.flakeHeight,b.refresh(!0),b.show(),b.active=1):b.active=0};this.setType(d);this.recycle(!0);this.refresh(!0)};this.snow=function(){var c=0,d=0,f=0,g=null,b,g=[],j=[],h=[],l=k.timing.tooSlow();for(b=a.flakes.length;b--;)1===a.flakes[b].active?(a.flakes[b].move(),l&&(1===a.flakes[b].active&&!a.flakes[b].melting)&&g.push(b),
-c++):0===a.flakes[b].active?(d++,h.push(b)):(f++,j.push(b)),a.flakes[b].melting&&a.flakes[b].melt();N=c;c>a.flakesMaxActive&&g.length&&(b=a.flakes[g[parseInt(Math.random()*g.length,10)]],b.melting=!0);l&&(c>k.flakesMinActive&&g.length)&&(b=a.flakes[g[parseInt(Math.random()*g.length,10)]],b.melting=!0,a.timing.reset());l&&(a.flakesMaxActive>a.flakesMinActive&&a.flakesMaxActive--,h.length&&(b=a.flakes[h[parseInt(Math.random()*h.length,10)]],0===b.active&&!a.snowStick?b.recycle():b.melting=!0));!l&&
-c<a.flakesMaxActive&&(g.length&&(b=a.flakes[g[parseInt(Math.random()*g.length,10)]],b.melting=!0),g=a.flakes[parseInt(m(a.flakes.length),10)],0===g.active&&(g.melting=!0));if(a.flakes.length<a.flakesMaxActive&&(a.flakes.length<a.flakesMinActive||!l))l=(new Date).getTime(),333<l-Q&&(Q=l,a.createSnow(1,!1));a.timing.ping();l=Math.floor(1E3*(a.timing.frameCount/(a.timing.lastTimestamp-a.timing.timestamp)));!isNaN(l)&&(Infinity!==l&&e.getElementById("active"))&&(e.getElementById("active").innerHTML=c+
-" of "+a.flakes.length+" (max active: "+a.flakesMaxActive+"), used: "+d+", waiting: "+f+", load: "+parseInt(100*(k.timing.report()/k.timing.slowInterval),10)+"%, FPS: ~"+l+", slow: "+(a.timing.wasSlow?"true":"false"))};this.mouseMove=function(c){if(!a.followMouse)return!0;c=parseInt(c.clientX,10);c<t?h=-1.1+1.1*(c/t):(c-=t,h=1.1*(c/t))};this.createTemplate=function(){A=e.createElement("div");A.className="snowflake";G=e.createElement("div");var c=A.style,d=G.style;c.MozUserSelect="none";c.KhtmlUserSelect=
-"none";c.WebkitlUserSelect="none";c.color=k.snowColor;c.margin="0px";c.padding="0px";c.position=C?"fixed":"absolute";c.fontFamily=(a.useWebFont?"WWFlakesRegular,":"")+"arial,verdana,sans-serif";c.overflow="hidden";c.fontWeight="normal";c.zIndex=k.zIndex;d.display="block";d.cursor="default";d.position="absolute";d.bottom="0px";d.left="1px";d.overflow="hidden";k.useWebFont&&A.appendChild(G)};this.createSnow=function(c,d){for(var e=0;e<c&&a.flakes.length<a.flakesMax;e++)if(a.flakes.push(new a.SnowFlake(a,
-parseInt(m(k.types),10))),d||e>a.flakesMaxActive)a.flakes[a.flakes.length-1].active=-1;k.targetElement.appendChild(T)};this.timerInit=function(){a.timing.reset(a.animationInterval);a.timer=setInterval(a.snow,a.animationInterval)};this.init=function(){if(a.useWebFont){var c;if(c=!y.match(/blackberry/i)){var d;c=e.createElement("style");var h=e.implementation||{hasFeature:function(){return!1}};c.type="text/css";w.insertBefore(c,w.firstChild);d=c.sheet||c.styleSheet;c=(h.hasFeature("CSS2","")?function(a){if(!d||
-!a)return!1;var b=!1;try{d.insertRule(a,0),b=!/unknown/i.test(d.cssRules[0].cssText),d.deleteRule(d.cssRules.length-1)}catch(c){}return b}:function(a){if(!d||!a)return!1;d.cssText=a;return 0!==d.cssText.length&&!/unknown/i.test(d.cssText)&&0===d.cssText.replace(/\r+|\n+/g,"").indexOf(a.split(" ")[0])})('@font-face { font-family: "font"; src: "http://zkillboard.com/wwflakes-webfont.ttf"; }')}c?(F=e.createElement("style"),I=["font-family: 'WWFlakesRegular';","src: url('http://zkillboard.com/wwflakes-webfont.eot');",
-"src: local('?'), url('http://zkillboard.com/wwflakes-webfont.woff') format('woff'), url('http://zkillboard.com/wwflakes-webfont.ttf') format('truetype');","font-weight: normal;","font-style: normal;"],L="@font-face {\n"+I.join("\n")+"\n}",M=e.createTextNode(L),q?(x=e.createElement("link"),x.rel="stylesheet",x.type="text/css",x.href="wwflakes-webfont.css",w.appendChild(x)):(F.appendChild(M),w.appendChild(F))):(a.useWebFont=!1,a.use2DRotate=!1)}else a.useWebFont=!1,a.use2DRotate=!1;a.createTemplate();
-for(c=0;c<a.meltFrameCount;c++)a.meltFrames.push(1-c/a.meltFrameCount);v="undefined"!==typeof f.orientation?f.orientation:0;a.randomizeWind();a.createSnow(2);a.events.add(f,"devicemotion",a.tiltHandler.iOS);a.events.add(f,"MozOrientation",a.tiltHandler.moz);a.events.add(e.body,"orientationchange",a.orientationHandler.iOS);a.events.add(f,"resize",a.resizeHandler);a.events.add(f,"scroll",a.scrollHandler);a.freezeOnBlur&&(q?(a.events.add(e,"focusout",a.freeze),a.events.add(e,"focusin",a.resume)):(a.events.add(f,
-"blur",a.freeze),a.events.add(f,"focus",a.resume)));a.resizeHandler();a.scrollHandler();a.followMouse&&a.events.add(q?e:f,"mousemove",a.mouseMove);a.animationInterval=Math.max(20,a.animationInterval);a.timerInit()};this.start=function(c){if(S){if(c)return!0}else S=!0;if("string"===typeof a.targetElement&&(c=a.targetElement,a.targetElement=e.getElementById(c),!a.targetElement))throw Error('Snowstorm: Unable to get targetElement "'+c+'"');a.targetElement||(a.targetElement=!q?e.documentElement?e.documentElement:
-e.body:e.body);a.targetElement!==e.documentElement&&a.targetElement!==e.body&&(a.resizeHandler=a.resizeHandlerAlt);w=e.getElementsByTagName("head")[0];a.resizeHandler();a.usePositionFixed=a.usePositionFixed&&!O;C=a.usePositionFixed;j&&(n&&!a.disabled)&&(a.init(),a.active=!0)};a.events.add(f,"load",J,!1);return this}(window,document);
+/*global window, document, navigator, clearInterval, setInterval */
+/*jslint white: false, onevar: true, plusplus: false, undef: true, nomen: true, eqeqeq: true, bitwise: true, regexp: true, newcap: true, immed: true */
+
+var snowStorm = (function(window, document) {
+
+  // --- common properties ---
+
+  this.autoStart = true;          // Whether the snow should start automatically or not.
+  this.flakesMax = 256;           // Limit total amount of snow made (falling + sticking)
+  this.flakesMaxActive = 80;      // Limit amount of snow falling at once (less = lower CPU use)
+  this.animationInterval = 50;    // Theoretical "miliseconds per frame" measurement. 20 = fast + smooth, but high CPU use. 50 = more conservative, but slower
+  this.excludeMobile = true;      // Snow is likely to be bad news for mobile phones' CPUs (and batteries.) By default, be nice.
+  this.flakeBottom = null;        // Integer for Y axis snow limit, 0 or null for "full-screen" snow effect
+  this.followMouse = false;        // Snow movement can respond to the user's mouse
+  this.snowColor = '#fff';        // Don't eat (or use?) yellow snow.
+  this.snowCharacter = '&bull;';  // &bull; = bullet, &middot; is square on some systems etc.
+  this.snowStick = true;          // Whether or not snow should "stick" at the bottom. When off, will never collect.
+  this.targetElement = null;      // element which snow will be appended to (null = document.body) - can be an element ID eg. 'myDiv', or a DOM node reference
+  this.useMeltEffect = true;      // When recycling fallen snow (or rarely, when falling), have it "melt" and fade out if browser supports it
+  this.useTwinkleEffect = false;  // Allow snow to randomly "flicker" in and out of view while falling
+  this.usePositionFixed = false;  // true = snow does not shift vertically when scrolling. May increase CPU load, disabled by default - if enabled, used only where supported
+
+  // --- less-used bits ---
+
+  this.freezeOnBlur = true;       // Only snow when the window is in focus (foreground.) Saves CPU.
+  this.flakeLeftOffset = 0;       // Left margin/gutter space on edge of container (eg. browser window.) Bump up these values if seeing horizontal scrollbars.
+  this.flakeRightOffset = 0;      // Right margin/gutter space on edge of container
+  this.flakeWidth = 8;            // Max pixel width reserved for snow element
+  this.flakeHeight = 8;           // Max pixel height reserved for snow element
+  this.vMaxX = 5;                 // Maximum X velocity range for snow
+  this.vMaxY = 4;                 // Maximum Y velocity range for snow
+  this.zIndex = 0;                // CSS stacking order applied to each snowflake
+
+  // --- End of user section ---
+
+  var s = this, storm = this, i,
+  // UA sniffing and backCompat rendering mode checks for fixed position, etc.
+  isIE = navigator.userAgent.match(/msie/i),
+  isIE6 = navigator.userAgent.match(/msie 6/i),
+  isWin98 = navigator.appVersion.match(/windows 98/i),
+  isMobile = navigator.userAgent.match(/mobile|opera m(ob|in)/i),
+  isBackCompatIE = (isIE && document.compatMode === 'BackCompat'),
+  noFixed = (isMobile || isBackCompatIE || isIE6),
+  screenX = null, screenX2 = null, screenY = null, scrollY = null, vRndX = null, vRndY = null,
+  windOffset = 1,
+  windMultiplier = 2,
+  flakeTypes = 6,
+  fixedForEverything = false,
+  opacitySupported = (function(){
+    try {
+      document.createElement('div').style.opacity = '0.5';
+    } catch(e) {
+      return false;
+    }
+    return true;
+  }()),
+  didInit = false,
+  docFrag = document.createDocumentFragment();
+
+  this.timers = [];
+  this.flakes = [];
+  this.disabled = false;
+  this.active = false;
+  this.meltFrameCount = 20;
+  this.meltFrames = [];
+
+  this.events = (function() {
+
+    var old = (!window.addEventListener && window.attachEvent), slice = Array.prototype.slice,
+    evt = {
+      add: (old?'attachEvent':'addEventListener'),
+      remove: (old?'detachEvent':'removeEventListener')
+    };
+
+    function getArgs(oArgs) {
+      var args = slice.call(oArgs), len = args.length;
+      if (old) {
+        args[1] = 'on' + args[1]; // prefix
+        if (len > 3) {
+          args.pop(); // no capture
+        }
+      } else if (len === 3) {
+        args.push(false);
+      }
+      return args;
+    }
+
+    function apply(args, sType) {
+      var element = args.shift(),
+          method = [evt[sType]];
+      if (old) {
+        element[method](args[0], args[1]);
+      } else {
+        element[method].apply(element, args);
+      }
+    }
+
+    function addEvent() {
+      apply(getArgs(arguments), 'add');
+    }
+
+    function removeEvent() {
+      apply(getArgs(arguments), 'remove');
+    }
+
+    return {
+      add: addEvent,
+      remove: removeEvent
+    };
+
+  }());
+
+  function rnd(n,min) {
+    if (isNaN(min)) {
+      min = 0;
+    }
+    return (Math.random()*n)+min;
+  }
+
+  function plusMinus(n) {
+    return (parseInt(rnd(2),10)===1?n*-1:n);
+  }
+
+  this.randomizeWind = function() {
+    var i;
+    vRndX = plusMinus(rnd(s.vMaxX,0.2));
+    vRndY = rnd(s.vMaxY,0.2);
+    if (this.flakes) {
+      for (i=0; i<this.flakes.length; i++) {
+        if (this.flakes[i].active) {
+          this.flakes[i].setVelocities();
+        }
+      }
+    }
+  };
+
+  this.scrollHandler = function() {
+    var i;
+    // "attach" snowflakes to bottom of window if no absolute bottom value was given
+    scrollY = (s.flakeBottom?0:parseInt(window.scrollY||document.documentElement.scrollTop||document.body.scrollTop,10));
+    if (isNaN(scrollY)) {
+      scrollY = 0; // Netscape 6 scroll fix
+    }
+    if (!fixedForEverything && !s.flakeBottom && s.flakes) {
+      for (i=s.flakes.length; i--;) {
+        if (s.flakes[i].active === 0) {
+          s.flakes[i].stick();
+        }
+      }
+    }
+  };
+
+  this.resizeHandler = function() {
+    if (window.innerWidth || window.innerHeight) {
+      screenX = window.innerWidth-16-s.flakeRightOffset;
+      screenY = (s.flakeBottom?s.flakeBottom:window.innerHeight);
+    } else {
+      screenX = (document.documentElement.clientWidth||document.body.clientWidth||document.body.scrollWidth)-(!isIE?8:0)-s.flakeRightOffset;
+      screenY = s.flakeBottom?s.flakeBottom:(document.documentElement.clientHeight||document.body.clientHeight||document.body.scrollHeight);
+    }
+    screenX2 = parseInt(screenX/2,10);
+  };
+
+  this.resizeHandlerAlt = function() {
+    screenX = s.targetElement.offsetLeft+s.targetElement.offsetWidth-s.flakeRightOffset;
+    screenY = s.flakeBottom?s.flakeBottom:s.targetElement.offsetTop+s.targetElement.offsetHeight;
+    screenX2 = parseInt(screenX/2,10);
+  };
+
+  this.freeze = function() {
+    // pause animation
+    var i;
+    if (!s.disabled) {
+      s.disabled = 1;
+    } else {
+      return false;
+    }
+    for (i=s.timers.length; i--;) {
+      clearInterval(s.timers[i]);
+    }
+  };
+
+  this.resume = function() {
+    if (s.disabled) {
+       s.disabled = 0;
+    } else {
+      return false;
+    }
+    s.timerInit();
+  };
+
+  this.toggleSnow = function() {
+    if (!s.flakes.length) {
+      // first run
+      s.start();
+    } else {
+      s.active = !s.active;
+      if (s.active) {
+        s.show();
+        s.resume();
+      } else {
+        s.stop();
+        s.freeze();
+      }
+    }
+  };
+
+  this.stop = function() {
+    var i;
+    this.freeze();
+    for (i=this.flakes.length; i--;) {
+      this.flakes[i].o.style.display = 'none';
+    }
+    s.events.remove(window,'scroll',s.scrollHandler);
+    s.events.remove(window,'resize',s.resizeHandler);
+    if (s.freezeOnBlur) {
+      if (isIE) {
+        s.events.remove(document,'focusout',s.freeze);
+        s.events.remove(document,'focusin',s.resume);
+      } else {
+        s.events.remove(window,'blur',s.freeze);
+        s.events.remove(window,'focus',s.resume);
+      }
+    }
+  };
+
+  this.show = function() {
+    var i;
+    for (i=this.flakes.length; i--;) {
+      this.flakes[i].o.style.display = 'block';
+    }
+  };
+
+  this.SnowFlake = function(parent,type,x,y) {
+    var s = this, storm = parent;
+    this.type = type;
+    this.x = x||parseInt(rnd(screenX-20),10);
+    this.y = (!isNaN(y)?y:-rnd(screenY)-12);
+    this.vX = null;
+    this.vY = null;
+    this.vAmpTypes = [1,1.2,1.4,1.6,1.8]; // "amplification" for vX/vY (based on flake size/type)
+    this.vAmp = this.vAmpTypes[this.type];
+    this.melting = false;
+    this.meltFrameCount = storm.meltFrameCount;
+    this.meltFrames = storm.meltFrames;
+    this.meltFrame = 0;
+    this.twinkleFrame = 0;
+    this.active = 1;
+    this.fontSize = (10+(this.type/5)*10);
+    this.o = document.createElement('div');
+    this.o.innerHTML = storm.snowCharacter;
+    this.o.style.color = storm.snowColor;
+    this.o.style.position = (fixedForEverything?'fixed':'absolute');
+    this.o.style.width = storm.flakeWidth+'px';
+    this.o.style.height = storm.flakeHeight+'px';
+    this.o.style.fontFamily = 'arial,verdana';
+    this.o.style.cursor = 'default';
+    this.o.style.overflow = 'hidden';
+    this.o.style.fontWeight = 'normal';
+    this.o.style.zIndex = storm.zIndex;
+    docFrag.appendChild(this.o);
+
+    this.refresh = function() {
+      if (isNaN(s.x) || isNaN(s.y)) {
+        // safety check
+        return false;
+      }
+      s.o.style.left = s.x+'px';
+      s.o.style.top = s.y+'px';
+    };
+
+    this.stick = function() {
+      if (noFixed || (storm.targetElement !== document.documentElement && storm.targetElement !== document.body)) {
+        s.o.style.top = (screenY+scrollY-storm.flakeHeight)+'px';
+      } else if (storm.flakeBottom) {
+        s.o.style.top = storm.flakeBottom+'px';
+      } else {
+        s.o.style.display = 'none';
+        s.o.style.top = 'auto';
+        s.o.style.bottom = '0px';
+        s.o.style.position = 'fixed';
+        s.o.style.display = 'block';
+      }
+    };
+
+    this.vCheck = function() {
+      if (s.vX>=0 && s.vX<0.2) {
+        s.vX = 0.2;
+      } else if (s.vX<0 && s.vX>-0.2) {
+        s.vX = -0.2;
+      }
+      if (s.vY>=0 && s.vY<0.2) {
+        s.vY = 0.2;
+      }
+    };
+
+    this.move = function() {
+      var vX = s.vX*windOffset, yDiff;
+      s.x += vX;
+      s.y += (s.vY*s.vAmp);
+      if (s.x >= screenX || screenX-s.x < storm.flakeWidth) { // X-axis scroll check
+        s.x = 0;
+      } else if (vX < 0 && s.x-storm.flakeLeftOffset < -storm.flakeWidth) {
+        s.x = screenX-storm.flakeWidth-1; // flakeWidth;
+      }
+      s.refresh();
+      yDiff = screenY+scrollY-s.y;
+      if (yDiff<storm.flakeHeight) {
+        s.active = 0;
+        if (storm.snowStick) {
+          s.stick();
+        } else {
+          s.recycle();
+        }
+      } else {
+        if (storm.useMeltEffect && s.active && s.type < 3 && !s.melting && Math.random()>0.998) {
+          // ~1/1000 chance of melting mid-air, with each frame
+          s.melting = true;
+          s.melt();
+          // only incrementally melt one frame
+          // s.melting = false;
+        }
+        if (storm.useTwinkleEffect) {
+          if (!s.twinkleFrame) {
+            if (Math.random()>0.9) {
+              s.twinkleFrame = parseInt(Math.random()*20,10);
+            }
+          } else {
+            s.twinkleFrame--;
+            s.o.style.visibility = (s.twinkleFrame && s.twinkleFrame%2===0?'hidden':'visible');
+          }
+        }
+      }
+    };
+
+    this.animate = function() {
+      // main animation loop
+      // move, check status, die etc.
+      s.move();
+    };
+
+    this.setVelocities = function() {
+      s.vX = vRndX+rnd(storm.vMaxX*0.12,0.1);
+      s.vY = vRndY+rnd(storm.vMaxY*0.12,0.1);
+    };
+
+    this.setOpacity = function(o,opacity) {
+      if (!opacitySupported) {
+        return false;
+      }
+      o.style.opacity = opacity;
+    };
+
+    this.melt = function() {
+      if (!storm.useMeltEffect || !s.melting) {
+        s.recycle();
+      } else {
+        if (s.meltFrame < s.meltFrameCount) {
+          s.setOpacity(s.o,s.meltFrames[s.meltFrame]);
+          s.o.style.fontSize = s.fontSize-(s.fontSize*(s.meltFrame/s.meltFrameCount))+'px';
+          s.o.style.lineHeight = storm.flakeHeight+2+(storm.flakeHeight*0.75*(s.meltFrame/s.meltFrameCount))+'px';
+          s.meltFrame++;
+        } else {
+          s.recycle();
+        }
+      }
+    };
+
+    this.recycle = function() {
+      s.o.style.display = 'none';
+      s.o.style.position = (fixedForEverything?'fixed':'absolute');
+      s.o.style.bottom = 'auto';
+      s.setVelocities();
+      s.vCheck();
+      s.meltFrame = 0;
+      s.melting = false;
+      s.setOpacity(s.o,1);
+      s.o.style.padding = '0px';
+      s.o.style.margin = '0px';
+      s.o.style.fontSize = s.fontSize+'px';
+      s.o.style.lineHeight = (storm.flakeHeight+2)+'px';
+      s.o.style.textAlign = 'center';
+      s.o.style.verticalAlign = 'baseline';
+      s.x = parseInt(rnd(screenX-storm.flakeWidth-20),10);
+      s.y = parseInt(rnd(screenY)*-1,10)-storm.flakeHeight;
+      s.refresh();
+      s.o.style.display = 'block';
+      s.active = 1;
+    };
+
+    this.recycle(); // set up x/y coords etc.
+    this.refresh();
+
+  };
+
+  this.snow = function() {
+    var active = 0, used = 0, waiting = 0, flake = null, i;
+    for (i=s.flakes.length; i--;) {
+      if (s.flakes[i].active === 1) {
+        s.flakes[i].move();
+        active++;
+      } else if (s.flakes[i].active === 0) {
+        used++;
+      } else {
+        waiting++;
+      }
+      if (s.flakes[i].melting) {
+        s.flakes[i].melt();
+      }
+    }
+    if (active<s.flakesMaxActive) {
+      flake = s.flakes[parseInt(rnd(s.flakes.length),10)];
+      if (flake.active === 0) {
+        flake.melting = true;
+      }
+    }
+  };
+
+  this.mouseMove = function(e) {
+    if (!s.followMouse) {
+      return true;
+    }
+    var x = parseInt(e.clientX,10);
+    if (x<screenX2) {
+      windOffset = -windMultiplier+(x/screenX2*windMultiplier);
+    } else {
+      x -= screenX2;
+      windOffset = (x/screenX2)*windMultiplier;
+    }
+  };
+
+  this.createSnow = function(limit,allowInactive) {
+    var i;
+    for (i=0; i<limit; i++) {
+      s.flakes[s.flakes.length] = new s.SnowFlake(s,parseInt(rnd(flakeTypes),10));
+      if (allowInactive || i>s.flakesMaxActive) {
+        s.flakes[s.flakes.length-1].active = -1;
+      }
+    }
+    storm.targetElement.appendChild(docFrag);
+  };
+
+  this.timerInit = function() {
+    s.timers = (!isWin98?[setInterval(s.snow,s.animationInterval)]:[setInterval(s.snow,s.animationInterval*3),setInterval(s.snow,s.animationInterval)]);
+  };
+
+  this.init = function() {
+    var i;
+    for (i=0; i<s.meltFrameCount; i++) {
+      s.meltFrames.push(1-(i/s.meltFrameCount));
+    }
+    s.randomizeWind();
+    s.createSnow(s.flakesMax); // create initial batch
+    s.events.add(window,'resize',s.resizeHandler);
+    s.events.add(window,'scroll',s.scrollHandler);
+    if (s.freezeOnBlur) {
+      if (isIE) {
+        s.events.add(document,'focusout',s.freeze);
+        s.events.add(document,'focusin',s.resume);
+      } else {
+        s.events.add(window,'blur',s.freeze);
+        s.events.add(window,'focus',s.resume);
+      }
+    }
+    s.resizeHandler();
+    s.scrollHandler();
+    if (s.followMouse) {
+      s.events.add(isIE?document:window,'mousemove',s.mouseMove);
+    }
+    s.animationInterval = Math.max(20,s.animationInterval);
+    s.timerInit();
+  };
+
+  this.start = function(bFromOnLoad) {
+    if (!didInit) {
+      didInit = true;
+    } else if (bFromOnLoad) {
+      // already loaded and running
+      return true;
+    }
+    if (typeof s.targetElement === 'string') {
+      var targetID = s.targetElement;
+      s.targetElement = document.getElementById(targetID);
+      if (!s.targetElement) {
+        throw new Error('Snowstorm: Unable to get targetElement "'+targetID+'"');
+      }
+    }
+    if (!s.targetElement) {
+      s.targetElement = (!isIE?(document.documentElement?document.documentElement:document.body):document.body);
+    }
+    if (s.targetElement !== document.documentElement && s.targetElement !== document.body) {
+      s.resizeHandler = s.resizeHandlerAlt; // re-map handler to get element instead of screen dimensions
+    }
+    s.resizeHandler(); // get bounding box elements
+    s.usePositionFixed = (s.usePositionFixed && !noFixed); // whether or not position:fixed is supported
+    fixedForEverything = s.usePositionFixed;
+    if (screenX && screenY && !s.disabled) {
+      s.init();
+      s.active = true;
+    }
+  };
+
+  function doDelayedStart() {
+    window.setTimeout(function() {
+      s.start(true);
+    }, 20);
+    // event cleanup
+    s.events.remove(isIE?document:window,'mousemove',doDelayedStart);
+  }
+
+  function doStart() {
+    if (!s.excludeMobile || !isMobile) {
+      if (s.freezeOnBlur) {
+        s.events.add(isIE?document:window,'mousemove',doDelayedStart);
+      } else {
+        doDelayedStart();
+      }
+    }
+    // event cleanup
+    s.events.remove(window, 'load', doStart);
+  }
+
+  // hooks for starting the snow
+  if (s.autoStart) {
+    s.events.add(window, 'load', doStart, false);
+  }
+
+  return this;
+
+}(window, document));
