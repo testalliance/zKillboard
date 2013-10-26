@@ -88,7 +88,7 @@ else
 $killdata = Kills::getKillDetails($id);
 
 if (sizeof($killdata["victim"]) == 0) {
-	return $app->render("message.html", array("message"=> "KillID $id does not exist."));
+	return $app->render("detail.html", array("message" => "KillID $id does not exist."));
 }
 
 // create the dropdown involved array
