@@ -22,6 +22,11 @@ body {
 	opacity: 0.95;
 }
 
+.table tbody tr.error td
+{
+  background-color: #CECECE;
+}
+
 .item_dropped_row {
 	background-color: #FBEFEF;
 }
