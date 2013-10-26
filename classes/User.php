@@ -24,7 +24,7 @@ class User
 		if ($autoLogin) {
 			$val = $username."/".hash("sha256", $username.$hash.time());
 			Db::execute("UPDATE zz_users SET autoLoginHash = :autoLoginHash WHERE username = :username", array(":username" => $username, ":autoLoginHash" => $val));
-			$app->setEncryptedCookie($cookie_name, $val, time() + $cookie_time, "/", $baseAddr);
+			$app->setEncryptedCookie($cookie_name, $val, time() + $cookie_time, "/", $baseAddr, true);
 		}
 		$_SESSION["loggedin"] = $username;
 		return true;
@@ -35,7 +35,7 @@ class User
 		global $cookie_name, $cookie_time, $baseAddr, $app;
 		$val = $username."/".hash("sha256", $username.$hash.time());
 		Db::execute("UPDATE zz_users SET autoLoginHash = :autoLoginHash WHERE username = :username", array(":username" => $username, ":autoLoginHash" => $val));
-		$app->setEncryptedCookie($cookie_name, $val, time() + $cookie_time, "/", $baseAddr);
+		$app->setEncryptedCookie($cookie_name, $val, time() + $cookie_time, "/", $baseAddr, true);
 		$_SESSION["loggedin"] = $username;
 		return true;
 	}
