@@ -93,7 +93,30 @@ if (file_put_contents($configLocation, $configFile) === false) out("|r|Unable to
 
 try {
 	out("|g|Config file written, now attempting to initialize settings");
-	require_once "$base/../init.php";
+	require_once( "$base/../config.php" );
+
+	if($debug)
+	{
+		ini_set('display_errors', 1);
+		error_reporting(E_ALL);
+	}
+
+	// vendor autoload
+	require( "$base/../vendor/autoload.php" );
+
+	// zkb class autoloader
+	spl_autoload_register("zkbautoload");
+
+	function zkbautoload($class_name)
+	{
+		$baseDir = dirname(__FILE__);
+		$fileName = "$baseDir/classes/$class_name.php";
+		if (file_exists($fileName))
+		{
+			require_once $fileName;
+			return;
+		}
+	}
 	$one = Db::queryField("select 1 one from dual", "one", array(), 1);
 	if ($one != "1")
 		throw new Exception("We were able to connect but the database did not return the expected '1' for: select 1 one from dual;");
