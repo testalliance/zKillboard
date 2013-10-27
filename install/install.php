@@ -102,21 +102,11 @@ try {
 	}
 
 	// vendor autoload
-	require( "$base/../vendor/autoload.php" );
+	require( "../vendor/autoload.php" );
 
 	// zkb class autoloader
 	spl_autoload_register("zkbautoload");
 
-	function zkbautoload($class_name)
-	{
-		$baseDir = dirname(__FILE__);
-		$fileName = "$baseDir/classes/$class_name.php";
-		if (file_exists($fileName))
-		{
-			require_once $fileName;
-			return;
-		}
-	}
 	$one = Db::queryField("select 1 one from dual", "one", array(), 1);
 	if ($one != "1")
 		throw new Exception("We were able to connect but the database did not return the expected '1' for: select 1 one from dual;");
@@ -174,6 +164,16 @@ if(strtolower(prompt("|g|Do you want to migrate kills from an existing EDK insta
 		$cmd .= escapeshellarg($settings["dbname"]);
 
 		passthru($cmd);
+	}
+}
+
+function zkbautoload($class_name)
+{
+	$fileName = "../classes/$class_name.php";
+	if (file_exists($fileName))
+	{
+		require_once $fileName;
+		return;
 	}
 }
 
