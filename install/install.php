@@ -70,7 +70,7 @@ $settings["baseaddr"] = prompt("Domain name?", "zkillboard.com");
 $settings["logfile"] = prompt("Log file location?", "/var/log/zkb.log");
 
 // Image server
-out("Image and API server defaults to the zKillboard proxies, you can however use CCPs servers if you want: |g|https://api.eveonline.com and https://image.eveonline.com|n|");
+out("Image and API server defaults to the zKillboard proxies, you can however use CCPs servers if you want: \n|g|https://api.eveonline.com and https://image.eveonline.com|n|");
 $settings["apiserver"] = prompt("API Server?", "https://api.zkillboard.com/");
 $settings["imageserver"] = prompt("Image Server?", "https://image.zkillboard.com/");
 
@@ -101,8 +101,22 @@ try {
 		error_reporting(E_ALL);
 	}
 
-	// vendor autoload
-	require( "../vendor/autoload.php" );
+	out("|g|Installing and self-updating composer:\n");
+	chdir("$base/..");
+
+	passthru("php -r \"eval('?>'.file_get_contents('https://getcomposer.org/installer'));\"");
+
+	chdir("$base/..");
+	passthru("php composer.phar self-update");
+
+	out("|g|Installing vendor files");
+	passthru("php composer.phar update");
+
+	out("\n|g|composer install complete!");
+
+	require( "$base/../vendor/autoload.php" );
+
+	chdir("$base/..");
 
 	// zkb class autoloader
 	spl_autoload_register("zkbautoload");
@@ -131,7 +145,7 @@ try {
 	foreach($sqlFiles as $file) {
 		if (Util::endsWith($file, ".sql")) {
 			$table = str_replace(".sql", "", $file);
-			out("Adding table |g|$table|n| ... ");
+			out("Adding table |g|$table|n| ... ", false, false);
 			$sqlFile = "$base/sql/$file";
 			loadFile($sqlFile);
 			out("|g|done");
@@ -139,6 +153,17 @@ try {
 	}
 } catch (Exception $ex) {
 	out("|r|Error! Removing configuration file.");
+	unlink($configLocation);
+	throw $ex;
+}
+
+try {
+	out("|g|Installing default admin user...");
+	// Install the default admin user
+	Db::execute("INSERT INTO zz_users (username, moderator, admin, password) VALUES ('admin', 1, 1, '$2y$10\$maxuZ/qozcjIgr7ZSnrWJemywbThbPiJDYIuOk9eLxF0pGE5SkNNu')");
+	out("\n\n|r|*** NOTICE ***\nDefault admin user has password 'admin'\nIt is strongly recommended you change this password!\n*** NOTICE ***\n");
+} catch (Exception $ex) {
+	out("|r|Error! Unable to add default admin user...");
 	unlink($configLocation);
 	throw $ex;
 }
@@ -167,9 +192,13 @@ if(strtolower(prompt("|g|Do you want to migrate kills from an existing EDK insta
 	}
 }
 
+out("|g|Enjoy your new installation of zKillboard, you may browse to it here: http://" . $settings["baseaddr"] . "\n");
+exit;
+
 function zkbautoload($class_name)
 {
-	$fileName = "../classes/$class_name.php";
+	global $base;
+	$fileName = "$base/../classes/$class_name.php";
 	if (file_exists($fileName))
 	{
 		require_once $fileName;
@@ -203,6 +232,7 @@ function out($message, $die = false, $newline = true)
 		"|n|" => "0" //Neutral
 		);
 
+	$message = "$message|n|";
 	foreach($colors as $color => $value)
 		$message = str_replace($color, "\033[".$value."m", $message);
 
@@ -216,6 +246,7 @@ function out($message, $die = false, $newline = true)
 function prompt($prompt, $default = "") {
 	out("$prompt [$default] ", false, false);
 	$answer = trim(fgets(STDIN));
+	echo "\n";
 	if (strlen($answer) == 0) return $default;
 	return $answer;
 }
