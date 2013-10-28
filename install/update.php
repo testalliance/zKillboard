@@ -1,7 +1,49 @@
 <?php
+/* zKillboard
+ * Copyright (C) 2012-2013 EVE-KILL Team and EVSCO.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 $base = dirname(__FILE__);
-require_once "$base/../init.php";
+
+if(php_sapi_name() != "cli")
+    die("This is a cli script!");
+
+if(!extension_loaded('pcntl'))
+    die("This script needs the pcntl extension!");
+
+chdir("$base/..");
+require_once( "config.php" );
+chdir("$base");
+
+// vendor autoload
+require( "$base/../vendor/autoload.php" );
+
+// zkb class autoloader
+spl_autoload_register("zkbautoload");
+
+function zkbautoload($class_name)
+{
+	global $base;
+    $fileName = "$base/../classes/$class_name.php";
+    if (file_exists($fileName))
+    {
+        require_once $fileName;
+        return;
+    }
+}
 
 Db::execute("SET SESSION wait_timeout = 120000000");
 out("|g|Starting maintenance mode...|n|");
@@ -24,6 +66,11 @@ try {
 } catch (Exception $ex) {
     out("|r|Error!|n|");
     throw $ex;
+}
+
+$count = Db::execute("INSERT IGNORE INTO zz_users (username, moderator, admin, password) VALUES ('admin', 1, 1, '$2y$10\$maxuZ/qozcjIgr7ZSnrWJemywbThbPiJDYIuOk9eLxF0pGE5SkNNu')");
+if ($count > 0) {
+	out("\n\n|r|*** NOTICE ***\nDefault admin user has been added with password 'admin'\nIt is strongly recommended you change this password!\n*** NOTICE ***\n");
 }
 
 out("|g|Unsetting maintenance mode|n|");
