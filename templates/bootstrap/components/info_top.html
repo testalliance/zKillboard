@@ -29,7 +29,7 @@
             {% if detail.corporationID %}
             <tr>
                 <th>Corporation:</th>
-				<td itemprop="corporation">{% include 'components/text_corp.html' %}</td>
+				<td itemprop="corporation">{% include 'components/text_corp.html' %} {% if detail.cticker %}[{{ detail.cticker }}]{% endif %}</td>
             </tr>
 			{% endif %}
 			{% if detail.ceoID and detail.ceoName %}
@@ -41,7 +41,7 @@
 			{% if detail.allianceName %}
 			<tr>
 				<th>Alliance:</th>
-				<td itemprop="alliance">{% include 'components/text_alli.html' %}</td>
+				<td itemprop="alliance">{% include 'components/text_alli.html' %} {% if detail.aticker %}&lt;{{ detail.aticker }}&gt;{% endif %}</td>
 			</tr>
 			{% endif %}
 			{% if detail.executorCorpID and detail.executorCorpName %}
