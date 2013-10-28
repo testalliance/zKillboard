@@ -148,6 +148,8 @@ try {
 			out("Adding table |g|$table|n| ... ", false, false);
 			$sqlFile = "$base/sql/$file";
 			loadFile($sqlFile);
+			// Ensure the table starts with base parameters and doesn't inherit anything from zkillboard.com
+			if (!Util::startsWith($table, "ccp_")) Db::execute("truncate table $table");
 			out("|g|done");
 		}
 	}
