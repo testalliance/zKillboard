@@ -44,6 +44,10 @@ class cli_eveKillTransfer implements cliCommand
 		$result = Db::query("select eveKillID from zz_manual_mail_list where processed = 0 order by eveKillID desc limit 1000", array(), 0);
 		foreach($result as $row)
 		{
+			do {
+				$minute = (int) date("i");
+				if ($minute == 59 || $minute == 0) sleep(10);
+			} while ($minute == 59 || $minute == 0);
 			if (Util::isMaintenanceMode()) return;
 			$currentID = $row["eveKillID"];
 			Db::execute("update zz_manual_mail_list set processed = -2 where eveKillID = $currentID");
