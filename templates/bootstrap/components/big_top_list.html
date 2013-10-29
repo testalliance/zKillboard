@@ -1,3 +1,4 @@
+{% if topSet | length %}
 <h4 style="text-align: center;">{{ topTitle }}</h4>
 <table class="table table-condensed topBoxes">
 	{% for data in topSet %}
@@ -16,3 +17,4 @@
 	</tr>
 	{% endfor %}
 </table>
+{% endif %}
