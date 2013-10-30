@@ -131,7 +131,7 @@ if($req == "tickets" && $id)
 }
 elseif($req == "tickets")
 {
-	$info = Db::query("SELECT * FROM zz_tickets WHERE killID = 0 ORDER BY status DESC", array(),0);
+	$info = Db::query("SELECT * FROM zz_tickets WHERE killID = 0 ORDER BY status DESC, datePosted DESC", array(),0);
 	foreach($info as $key => $val)
 	{
 		if($val["tags"])
