@@ -30,8 +30,6 @@ if(isset($req))
 
 if($_POST)
 {
-
-	var_dump($_POST);
 	// Create variable from the $_POST data.
     extract($_POST);
 
