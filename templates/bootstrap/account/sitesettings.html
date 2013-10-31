@@ -7,10 +7,10 @@
 				<form class="form-horizontal" name="themes" method="post" action="/account/sitesettings/">
 					<div class="form-group col-lg-3">
 						<select name="theme" class="form-control input-sm">
-						{% for theme in data.themes %}
+						{% for t in data.themes %}
 							{% set selected = "" %}
-							{% if theme == sessiontheme %}{% set selected = "selected"%}{% endif %}
-							<option value="{{ theme }}" {{ selected }}>{{ theme }}</option>
+							{% if t == theme %}{% set selected = "selected"%}{% endif %}
+							<option value="{{ t }}" {{ selected }}>{{ t }}</option>
 						{% endfor %}
 						</select>
 					</div>
