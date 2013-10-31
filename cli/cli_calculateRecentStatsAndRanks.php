@@ -127,11 +127,6 @@ class cli_calculateRecentStatsAndRanks implements cliCommand
 	{
 		CLI::out("|g|Stats calculation started");
 		Db::execute("set session wait_timeout = 600");
-		if (!Util::isMaintenanceMode()) {
-			Db::execute("replace into zz_storage values ('maintenance', 'true')");
-			Log::log("Maitenance mode engaged");
-			sleep(30); // Wait for processes to finish and cleanup
-		}
 
 		// Fix unknown group ID's
 		echo "Updating groups...\n";
@@ -161,14 +156,11 @@ class cli_calculateRecentStatsAndRanks implements cliCommand
 		} catch (Exception $e) {
 			print_r($e);
 		}
-
-		Db::execute("delete from zz_storage where locker = 'maintenance'");
 	}
 
 	private static function recalc($type, $column, $calcKills = true)
 	{
-			Log::log("Starting stat calculations for $type");
-			echo "$type ";
+			Log::log("Starting recent stat calculations for $type");
 
 			Db::execute("drop table if exists zz_stats_temporary");
 			Db::execute("
