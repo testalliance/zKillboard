@@ -31,6 +31,7 @@ if(isset($req))
 if($_POST)
 {
 	// Post is just generic, we'll figure out what the user wants, based on what is set
+	$useSummaryAccordion = "";
 	$keyid = "";
 	$vcode = "";
 	$label = null;
@@ -99,6 +100,8 @@ if($_POST)
         $deleteentityid = $_POST["deleteentityid"];
     if(isset($_POST["deleteentitytype"]))
         $deleteentitytype = $_POST["deleteentitytype"];
+    if(isset($_POST["useSummaryAccordion"]))
+    	$useSummaryAccordion = $_POST["useSummaryAccordion"];
      
     // Delete an entity from a domain
     if($deletedomainentitytype && $deletedomainentitytype)
@@ -216,8 +219,11 @@ if($_POST)
 
 	if($ddcombine)
 		UserConfig::set("ddcombine", $ddcombine);
-  if($ddmonthyear)
-    UserConfig::set("ddmonthyear",$ddmonthyear);
+	if($ddmonthyear)
+    	UserConfig::set("ddmonthyear",$ddmonthyear);
+
+    if($useSummaryAccordion)
+    	UserConfig::set("useSummaryAccordion", $useSummaryAccordion);
 }
 
 $data["domains"] = Domains::getUserTrackerDomains($userID);
@@ -235,5 +241,6 @@ $data["currentTheme"] = UserConfig::get("theme", "default");
 $data["timeago"] = UserConfig::get("timeago");
 $data["ddcombine"] = UserConfig::get("ddcombine");
 $data["ddmonthyear"] = UserConfig::get("ddmonthyear");
+$data["useSummaryAccordion"] = UserConfig::get("useSummaryAccordion");
 
 $app->render("account.html", array("data" => $data, "message" => $error, "key" => $key, "reqid" => $reqid));
