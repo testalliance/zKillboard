@@ -181,7 +181,12 @@ $app->get("/api/:input+", function($input) use ($app) {
     include( "view/api.php" );
 });
 
-// RSS
+// API V2
+$app->get("/apiv2/:flags+/", function($flags) use($app){
+    include( "view/apiv2.php" );
+});
+
+// chart
 $app->get("/chart/:chartID/", function($chartID) use ($app) {
     include( "view/chart.php" );
 });
