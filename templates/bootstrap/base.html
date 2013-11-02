@@ -23,13 +23,13 @@
         <title>{% block title %}zKillboard.com{% endblock %}</title>
 		<link rel="canonical" href="https://zkillboard.com{{ requesturi }}">
         <link rel="search" type="application/opensearchdescription+xml" href="//{{ siteurl }}/xml/zkbsearch.xml" title="zKillboard">
-{% if sessiontheme is not defined %}{% set sessiontheme = 'cyborg' %}{% endif %}
-		{% if sessiontheme == "default" %}
+{% if theme is not defined %}{% set theme = 'cyborg' %}{% endif %}
+		{% if theme == "default" %}
 		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
 		{% else %}
-		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootswatch/3.0.0/{{ sessiontheme }}/bootstrap.min.css">
+		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootswatch/3.0.0/{{ theme }}/bootstrap.min.css">
 		{% endif %}
-        <link rel="stylesheet" href="/css/theme-edits/{{sessiontheme}}-main.css">
+        <link rel="stylesheet" href="/css/theme-edits/{{theme}}-main.css">
 		<link rel="stylesheet" href="/css/main.css">
 		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
 		{% block style %}
@@ -82,6 +82,7 @@
                 </div>
                 {% endif %}
 
+    			<div class="clearfix"></div>
                 {% include "footer.html" %}
             </div>		
             <div class="container">

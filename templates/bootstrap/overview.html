@@ -65,7 +65,7 @@
 </div>
 
 {% if pageType == 'overview' %}
-    {% if isTablet == true or isMobile == false %}{% include 'components/summary.html' %}{% endif %}
+    {% if isTablet == true or isMobile == false %}{% if useSummaryAccordion == "true" %}{% include 'components/summary_accordion.html' %}{% else %}{% include 'components/summary.html' %}{% endif %}{% endif %}
     {% if mixed %}
         {% set killListTitle = 'Recent Activity' %}
     {% else %}

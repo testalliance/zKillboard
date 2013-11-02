@@ -2,11 +2,11 @@
 DROP TABLE IF EXISTS `zz_users_config`;
 CREATE TABLE `zz_users_config` (
   `id` int(3) NOT NULL,
-  `key` varchar(64) NOT NULL,
-  `value` text NOT NULL,
-  UNIQUE KEY `id` (`id`,`key`),
+  `locker` varchar(64) NOT NULL,
+  `content` text NOT NULL,
+  UNIQUE KEY `id` (`id`,`locker`),
   KEY `id_2` (`id`),
-  KEY `key` (`key`)
+  KEY `key` (`locker`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 

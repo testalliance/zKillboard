@@ -20,28 +20,20 @@ class UserConfig
 {
 	private static $userConfig = null;
 
-	public static function getUserId()
-	{
-		$userInfo = User::getUserInfo();
-		if ($userInfo === null) throw new Exception("user is not logged in");
-		$id = $userInfo["id"];
-		return $id;
-	}
-
 	private static function loadUserConfig($id)
 	{
 		if (UserConfig::$userConfig != null) return;
 		UserConfig::$userConfig = array();
 		$result = Db::query("select * from zz_users_config where id = :id", array(":id" => $id), 0);
 		foreach ($result as $row) {
-			UserConfig::$userConfig[$row["key"]] = $row["value"];
+			UserConfig::$userConfig[$row["locker"]] = $row["content"];
 		}
 	}
 
 	public static function get($key, $defaultValue = null)
 	{
 		if (!User::isLoggedIn()) return $defaultValue;
-		$id = UserConfig::getUserId();
+		$id = User::getUserID();
 		UserConfig::loadUserConfig($id);
 
 		$value = isset(UserConfig::$userConfig["$key"]) ? UserConfig::$userConfig["$key"] : null;
@@ -50,19 +42,32 @@ class UserConfig
 		return $value;
 	}
 
+	public static function getAll()
+	{
+		if (!user::isLoggedIn()) return null;
+
+		$id = User::getUserID();
+		UserConfig::loadUserConfig($id);
+
+		foreach(UserConfig::$userConfig as $key => $value)
+			UserConfig::$userConfig[$key] = json_decode($value, true);
+
+		return UserConfig::$userConfig;
+	}
+
 	public static function set($key, $value)
 	{
 		if (!User::isLoggedIn()) throw new Exception("User is not logged in.");
-		$id = UserConfig::getUserId();
+		$id = User::getUserID();
 		UserConfig::$userConfig = null;
 
 		if (is_null($value) || (is_string($value) && strlen(trim($value)) == 0)) {
 			// Just remove the row and let the defaults take over
-			return Db::execute("delete from zz_users_config where id = :id and `key` = :key", array(":id" => $id, ":key" => $key));
+			return Db::execute("delete from zz_users_config where id = :id and locker = :key", array(":id" => $id, ":key" => $key));
 		}
 
 		$value = json_encode($value);
-		return Db::execute("insert into zz_users_config (id, `key`, `value`) values (:id, :key, :value)
-                                on duplicate key update `value` = :value", array(":id" => $id, ":key" => $key, ":value" => $value));
+		return Db::execute("insert into zz_users_config (id, locker, content) values (:id, :key, :value)
+                                on duplicate key update content = :value", array(":id" => $id, ":key" => $key, ":value" => $value));
 	}
 }

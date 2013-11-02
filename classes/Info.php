@@ -639,7 +639,7 @@ class Info
 				case "solarSystemID":
 					$info = Info::getSystemInfo($value);
 					$element["solarSystemName"] = $info["solarSystemName"];
-					$element["sunTypeID"] = 8; //$info["sunTypeID"];
+					$element["sunTypeID"] = $info["sunTypeID"];
 					$securityLevel = number_format($info["security"], 1);
 					if ($securityLevel == 0 && $info["security"] > 0) $securityLevel = 0.1;
 					$element["solarSystemSecurity"] = $securityLevel;

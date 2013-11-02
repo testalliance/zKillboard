@@ -31,7 +31,7 @@
       {% set test = test[0]|split(" ")%}
       {% set Month = test[0]%}
       {% set Day = test[1]%}
-      {% if CurrentDay != Day and sessionddmonthyear == "true" %}
+      {% if CurrentDay != Day and ddmonthyear == "true" %}
       {% set CurrentDay = Day %}
       <tr>
         <td colspan="7"><h4><em>
@@ -40,7 +40,7 @@
         {{Year}}</em></h4></td>
       </tr> 
       {% endif %}
-      {% if CurrentMonth != Month and sessionddmonthyear == "false" %}
+      {% if CurrentMonth != Month and ddmonthyear == "false" %}
       {% set CurrentMonth = Month %}
       <tr>
         <td colspan="7"><h4><em>
@@ -54,7 +54,7 @@
         {% if kill.displayAsLoss == true and key != 'system' and key != 'region' %}{% set lossDisplay = 'error' %}{% endif %}
 		<tr class="{{lossDisplay}} killListRow" onclick="window.location='/detail/{{kill.info.killID}}/'">
 			<td>
-			{% if sessiontimeago == "true" %}<abbr class="timeago" title="{{ kill.info.ISO8601 }}">{{ kill.info.ISO8601}}</abbr>{% else %}{{ kill.info.killTime }}{% endif %}
+			{% if timeago == "true" %}<abbr class="timeago" title="{{ kill.info.ISO8601 }}">{{ kill.info.ISO8601}}</abbr>{% else %}{{ kill.info.killTime }}{% endif %}
 			</td>
             <td>
                 <a href="/system/{{ kill.info.solarSystemID }}/">{{ kill.info.solarSystemName }}</a> <span style="color: {{ kill.info.systemColorCode }}">{{ "%1.1f"|format(kill.info.solarSystemSecurity) }}</span> <br/>

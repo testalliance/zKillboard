@@ -33,49 +33,55 @@
 						<li><a href="/kills/supers/">Supers</a></li>
 					</ul>
 				</li>
-				{% if sessionpilots or sessioncorps or sessionalliances or sessionfactions or sessionships or sessionsystems or sessionregions %}
+				{% if character or corporation or alliance or faction or ship or item or system or region %}
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown">Tracker <b class="caret"></b></a>
 					<ul class="dropdown-menu">
-						{% if sessionpilots %}
+						{% if character %}
 						<li class="dropdown-header">Pilots</li>
-						{% for data in sessionpilots %}
+						{% for data in character %}
 						<li><a href="/character/{{ data.id }}/">{{ data.name }}</a></li>
 						{% endfor %}
 						{% endif %}
-						{% if sessioncorps %}
+						{% if corporation %}
 						<li class="dropdown-header">Corps</li>
-						{% for data in sessioncorps %}
+						{% for data in corporation %}
 						<li><a href="/corporation/{{ data.id }}/">{{ data.name }}</a></li>
 						{% endfor %}
 						{% endif %}
-						{% if sessionalliances %}
+						{% if alliance %}
 						<li class="dropdown-header">Alliances</li>
-						{% for data in sessionalliances %}
+						{% for data in alliance %}
 						<li><a href="/alliance/{{ data.id }}/">{{ data.name }}</a></li>
 						{% endfor %}
 						{% endif %}
-						{% if sessionfactions %}
+						{% if faction %}
 						<li class="dropdown-header">Factions</li>
-						{% for data in sessionfactions %}
+						{% for data in faction %}
 						<li><a href="/faction/{{ data.id }}/">{{ data.name }}</a></li>
 						{% endfor %}
 						{% endif %}
-						{% if sessionships %}
+						{% if ship %}
 						<li class="dropdown-header">Ships</li>
-						{% for data in sessionships %}
+						{% for data in ship %}
 						<li><a href="/ship/{{ data.id }}/">{{ data.name }}</a></li>
 						{% endfor %}
 						{% endif %}
-						{% if sessionsystems %}
+						{% if item %}
+						<li class="dropdown-header">Ships</li>
+						{% for data in item %}
+						<li><a href="/ship/{{ data.id }}/">{{ data.name }}</a></li>
+						{% endfor %}
+						{% endif %}
+						{% if system %}
 						<li class="dropdown-header">Systems</li>
-						{% for data in sessionsystems %}
+						{% for data in system %}
 						<li><a href="/system/{{ data.id }}/">{{ data.name }}</a></li>
 						{% endfor %}
 						{% endif %}
-						{% if sessionregions %}
+						{% if region %}
 						<li class="dropdown-header">Regions</li>
-						{% for data in sessionregions %}
+						{% for data in region %}
 						<li><a href="/region/{{ data.id }}/">{{ data.name }}</a></li>
 						{% endfor %}
 						{% endif %}

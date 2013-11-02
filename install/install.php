@@ -101,15 +101,13 @@ try {
 		error_reporting(E_ALL);
 	}
 
-	out("|g|Installing and self-updating composer:\n");
+	out("Installing composer:\n");
 	chdir("$base/..");
 
 	passthru("php -r \"eval('?>'.file_get_contents('https://getcomposer.org/installer'));\"");
 
 	chdir("$base/..");
-	passthru("php composer.phar self-update");
-
-	out("|g|Installing vendor files");
+	out("\nInstalling vendor files");
 	passthru("php composer.phar update");
 
 	out("\n|g|composer install complete!");

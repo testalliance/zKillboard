@@ -24,7 +24,13 @@ if(php_sapi_name() != "cli")
 if(!extension_loaded('pcntl'))
     die("This script needs the pcntl extension!");
 
+// Update composer and any vendor products
+out("\nUpdating composer...");
 chdir("$base/..");
+passthru("php composer.phar self-update");
+out("\nUpdating vendor files...");
+passthru("php composer.phar update");
+
 require_once( "config.php" );
 chdir("$base");
 
@@ -46,7 +52,7 @@ function zkbautoload($class_name)
 }
 
 Db::execute("SET SESSION wait_timeout = 120000000");
-out("|g|Starting maintenance mode...|n|");
+out("\n|g|Starting maintenance mode...|n|");
 Db::execute("replace into zz_storage values ('maintenance', 'true')");
 out("|b|Waiting 60 seconds for all executing scripts to stop...|n|");
 sleep(60);
@@ -123,6 +129,7 @@ function out($message, $die = false, $newline = true)
         "|n|" => "0" //Neutral
         );
 
+	$message = "$message|n|";
     foreach($colors as $color => $value)
         $message = str_replace($color, "\033[".$value."m", $message);
 

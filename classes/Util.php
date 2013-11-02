@@ -232,6 +232,11 @@ class Util
 					$value = (int) $value;
 					if ($value < 200) $parameters["limit"] = $value;
 					break;
+				case "beforeKillID":
+				case "afterKillID":
+					if (!is_numeric($value)) throw new Exception("$value is not a valid entry for $key");
+					$parameters[$key] = (int) $value;
+					break;
 				case "xml":
 					$value = true;
 				default:

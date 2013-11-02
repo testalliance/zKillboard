@@ -30,85 +30,18 @@ if(isset($req))
 
 if($_POST)
 {
-	// Post is just generic, we'll figure out what the user wants, based on what is set
-	$keyid = "";
-	$vcode = "";
-	$label = null;
-	$theme = "";
-	$viewtheme = "";
-	$deletekeyid = "";
-    $deleteentity = "";
-	$orgpw = "";
-	$password = "";
-	$password2 = "";
-	$timeago = "";
-	$entity = "";
-	$entitytype = "";
-	$ddcombine = "";
-	$ddmonthyear = ""; 
-    $deleteentityid = "";
-    $deleteentitytype = "";
-    $entitymetadata = "";
-    $deletedomainentityid = "";
-    $deletedomainentitytype = "";
-    $subdomain = "";
-    $domainname = "";
-    $deletedomainid = "";
+	// Create variable from the $_POST data.
+    extract($_POST);
 
-    if(isset($_POST["deletedomainid"]))
-    	$deletedomainid = $_POST["deletedomainid"];
-    if(isset($_POST["deletedomainentityid"]))
-    	$deletedomainentityid = $_POST["deletedomainentityid"];
-    if(isset($_POST["deletedomainentitytype"]))
-    	$deletedomainentitytype = $_POST["deletedomainentitytype"];
-    if(isset($_POST["subdomain"]))
-    	$subdomain = $_POST["subdomain"];
-    if(isset($_POST["domainname"]))
-    	$domainname = $_POST["domainname"];
-	if(isset($_POST["keyid"]))
-		$keyid = trim($_POST["keyid"]);
-	if(isset($_POST["vcode"]))
-		$vcode = trim($_POST["vcode"]);
-	if(isset($_POST["label"]))
-		$label = $_POST["label"];
-	if(isset($_POST["viewtheme"]))
-		$viewtheme = $_POST["viewtheme"];
-	if(isset($_POST["theme"]))
-		$theme = $_POST["theme"];
-	if(isset($_POST["deletekeyid"]))
-		$deletekeyid = $_POST["deletekeyid"];
-	if(isset($_POST["deleteentity"]))
-		$deleteentity = $_POST["deleteentity"];
-	if(isset($_POST["orgpw"]))
-		$orgpw = $_POST["orgpw"];
-	if(isset($_POST["password"]))
-		$password = $_POST["password"];
-	if(isset($_POST["password2"]))
-		$password2 = $_POST["password2"];
-	if(isset($_POST["timeago"]))
-		$timeago = $_POST["timeago"];
-	if(isset($_POST["addentitybox"]))
-		$entity = $_POST["addentitybox"];
-	if(isset($_POST["entitymetadata"]))
-		$entitymetadata = $_POST["entitymetadata"];
-	if(isset($_POST["ddcombine"]))
-		$ddcombine = $_POST["ddcombine"];
-  if(isset($_POST["ddmonthyear"]))
-    $ddmonthyear = $_POST["ddmonthyear"];
-    if(isset($_POST["deleteentityid"]))
-        $deleteentityid = $_POST["deleteentityid"];
-    if(isset($_POST["deleteentitytype"]))
-        $deleteentitytype = $_POST["deleteentitytype"];
-     
     // Delete an entity from a domain
-    if($deletedomainentitytype && $deletedomainentitytype)
+    if(isset($deletedomainentitytype) && isset($deletedomainentitytype))
     {
     	Domains::deleteUserTrackerEntity($reqid, $deletedomainentityid, $deletedomainentitytype);
     	$app->redirect("/account/subdomains/$reqid/");
     }
 
     // Add an entity to a domain
-    if($entitymetadata && $subdomain)
+    if(isset($entitymetadata) && isset($subdomain))
     {
     	$json = json_decode($entitymetadata, true);
     	$id = $json["id"];
@@ -119,19 +52,17 @@ if($_POST)
     }
 
     // Add a domain name
-    if($domainname)
+    if(isset($domainname))
     {
     	Domains::addUserTrackerDomain($userID, $domainname);
     }
 
     // Delete a domain name
-    if($deletedomainid)
-    {
+    if(isset($deletedomainid))
     	Domains::deleteUserTrackerDomain($userID, $deletedomainid);	
-    }
     
 	// Apikey stuff
-	if($keyid || $vcode)
+	if(isset($keyid) || isset($vcode))
 	{
 		$check = Api::checkAPI($keyid, $vcode);
 		if($check == "success")
@@ -145,28 +76,24 @@ if($_POST)
 	}
 
 	// Delete an apikey
-	if($deletekeyid && !$deleteentity)
-	{
+	if(isset($deletekeyid) && !isset($deleteentity))
 		$error = Api::deleteKey($deletekeyid);
-	}
 
-    if($deletekeyid && $deleteentity)
-    {
+    if(isset($deletekeyid) && isset($deleteentity))
         $error = Domains::deleteEntity($deletekeyid, $deleteentity);
-    }
     
 	// Theme stuff
-	if($viewtheme)
+	if(isset($viewtheme))
 	{
 		UserConfig::set("viewtheme", $viewtheme);
 		$app->redirect($_SERVER["REQUEST_URI"]);
 	}
 	
-	if($theme)
+	if(isset($theme))
 		UserConfig::set("theme", $theme);
 	
 	// Password
-	if($orgpw && $password && $password2)
+	if(isset($orgpw) && isset($password) && isset($password2))
 	{
 		if($password != $password2)
 			$error = "Passwords don't match, try again";
@@ -179,11 +106,11 @@ if($_POST)
 			$error = "Original password is wrong, please try again";
 	}
 
-	if($timeago)
+	if(isset($timeago))
 		UserConfig::set("timeago", $timeago);
 
 	// Tracker
-    if($deleteentityid && $deleteentitytype)
+    if(isset($deleteentityid) && isset($deleteentitytype))
     {
         $q = UserConfig::get($deleteentitytype);
         foreach($q as $k => $ent)
@@ -198,7 +125,7 @@ if($_POST)
     }
 
     // Tracker
-	if($entity && $entitymetadata)
+	if((isset($entity) && $entity != null) && (isset($entitymetadata) && $entitymetadata != null))
 	{
 		$entitymetadata = json_decode($entitymetadata, true);
 		$entities = UserConfig::get($entitymetadata['type']);
@@ -214,10 +141,13 @@ if($_POST)
 			 $error = "{$entitymetadata['name']} is already being tracked";
 	}
 
-	if($ddcombine)
+	if(isset($ddcombine))
 		UserConfig::set("ddcombine", $ddcombine);
-  if($ddmonthyear)
-    UserConfig::set("ddmonthyear",$ddmonthyear);
+	if(isset($ddmonthyear))
+    	UserConfig::set("ddmonthyear",$ddmonthyear);
+
+    if(isset($useSummaryAccordion))
+    	UserConfig::set("useSummaryAccordion", $useSummaryAccordion);
 }
 
 $data["domains"] = Domains::getUserTrackerDomains($userID);
@@ -235,5 +165,6 @@ $data["currentTheme"] = UserConfig::get("theme", "default");
 $data["timeago"] = UserConfig::get("timeago");
 $data["ddcombine"] = UserConfig::get("ddcombine");
 $data["ddmonthyear"] = UserConfig::get("ddmonthyear");
+$data["useSummaryAccordion"] = UserConfig::get("useSummaryAccordion");
 
 $app->render("account.html", array("data" => $data, "message" => $error, "key" => $key, "reqid" => $reqid));
