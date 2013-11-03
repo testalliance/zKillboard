@@ -114,7 +114,7 @@ $(document).ready(function() {
     	for (i = 0; i < Math.min(80, kill_history.length); i++) {
             if ( kill_history[i].shipTypeID in ships && kill_history[i].solarSystemID in systems) {
                 ship_details = ships[kill_history[i].shipTypeID], system_details = systems[kill_history[i].solarSystemID];
-                killlog_html += '<li class="' + ship_details.group + ' ' + ship_details.meta  + '"><a href="/detail/' + kill_history[i].killID + '/">' + ship_details.name + ' lost in ' + system_details.name + ', ' + timeago(kill_history[i].killTime) + '</a></li>';
+                killlog_html += '<li class="' + ship_details.group + ' ' + ship_details.meta  + '"><a href="/detail/' + kill_history[i].killID + '/" target="_blank">' + ship_details.name + ' lost in ' + system_details.name + ', ' + timeago(kill_history[i].killTime) + '</a></li>';
             }
     	}
 
