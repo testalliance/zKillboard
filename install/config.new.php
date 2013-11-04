@@ -47,6 +47,10 @@ $logfile = "%logfile%";
 $memcacheServer = "%memcache%";
 $memcachePort = "%memcacheport%";
 
+// Redis
+$redisServer = "%redis%";
+$redisPort = "%redisport%";
+
 // Pheal
 $phealCacheLocation = "%phealcachelocation%";
 
