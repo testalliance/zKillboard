@@ -26,10 +26,37 @@ see `LICENSE.md` file
 - MariaDB 5.5+ (MySQL 5.5+ might work, but isn't strictly supported, since some tables are in the Aria format)
 - Composer
 - Memcached isn't strictly required, but is highly recommended
+- Redis 2.6+ (http://redis.io) and PHPRedis extension (https://github.com/nicolasff/phpredis) are alternative to Memcached
 - cURL and it's php library, php5-curl
 
 ## Path
 Always use the /public/ dir in your httpd, many things are located in said directory that are needed for the page to work.
+
+## Nginx Config
+```
+upstream php-upstream {
+  server unix:/tmp/php-fpm.sock;
+  server 127.0.0.1:9000;
+}
+
+server {
+  server_name example.com www.example.com;
+  listen      80;
+  root        /path/to/zkb_install/public;
+
+  location    / {
+    try_files $uri $uri/ /index.php?$args;
+  }
+
+  location    ~ \.php$ {
+    try_files $uri =404;
+    include   fastcgi_params;
+    fastcgi_index index.php;
+    fastcgi_pass  php-upstream;
+  }
+}
+
+```
 
 ## Apache rewrite
 Apache rewrite is handled by the .htaccess, located in the /public directory.
