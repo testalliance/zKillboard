@@ -28,5 +28,9 @@ $info = Db::queryRow("select typeID, typeName, description from ccp_invTypes whe
 $info["description"] = str_replace("<br>", "\n", $info["description"]);
 $info["description"] = strip_tags($info["description"]);
 $hasKills = 1 == Db::queryField("select 1 as hasKills from zz_participants where shipTypeID = :id limit 1", "hasKills", array(":id" => $id), 3600);
+$buyOrders = Db::query("select * from zz_marketdata where typeID = :typeID and bid = 1 order by price desc limit 10", array(":typeID" => $id));
+$sellOrders = Db::query("select * from zz_marketdata where typeID = :typeID and bid = 0 order by price asc limit 10", array(":typeID" => $id));
+Info::addInfo($buyOrders);
+Info::addInfo($sellOrders);
 
-$app->render("item.html", array("info" => $info, "hasKills" => $hasKills));
+$app->render("item.html", array("info" => $info, "hasKills" => $hasKills, "buyOrders" => $buyOrders, "sellOrders" => $sellOrders));

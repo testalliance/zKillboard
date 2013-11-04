@@ -26,4 +26,26 @@
 
 {{ info.description|nl2br }}
 
+{% if buyOrders|length > 0 or sellOrders|length > 0 %}
+<hr/>
+<div class="clearfix"></div>
+
+
+<div class="col-md-3">
+<h4>Buy Orders</h4>
+{% set field = buyOrders %}
+{% include 'components/market.html' %}
+</div>
+
+<div class="col-md-3">
+<h4>Sell Orders</h4>
+{% set field = sellOrders %}
+{% include 'components/market.html' %}
+</div>
+
+<div class="clearfix"></div>
+
+<em style="padding-left: 2em;"><small>Powered by <a href="http://www.eve-emdr.com/en/latest/index.html" target="_blank">EMDR</a> and <a href="http://eve-central.com/home/quicklook.html?typeid={{ info.typeID }}" target="_blank">Eve-Central</a>. Data reflects market hubs only.</small></em>
+{% endif %}
+
 {% endblock %}
