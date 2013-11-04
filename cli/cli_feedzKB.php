@@ -31,13 +31,14 @@ class cli_feedzKB implements cliCommand
 	public function getCronInfo()
 	{
 		return array(
-				30 => "fetch"
-				);
+			30 => ""
+		);
 	}
 
 	public function execute($parameters)
 	{
-		if (Util::isMaintenanceMode()) return;
+		if (Util::isMaintenanceMode())
+			return;
 
 		$feeds = Db::query("SELECT * FROM zz_feeds where edkStyle = '0' order by lastFetchTime");
 
