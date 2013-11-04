@@ -16,6 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
+$ip = IP::get();
+if ($ip != "") Db::execute("insert into zz_online (ip) values (:ip) on duplicate key update dttm = now()", array(":ip" => $ip));
+
 $app->notFound(function () use ($app) {
     $app->render('404.html');
 });
