@@ -130,10 +130,10 @@ class cli_calculateRecentStatsAndRanks implements cliCommand
 
 		// Fix unknown group ID's
 		echo "Updating groups...\n";
-		$result = Db::query("select distinct shipTypeID, i.groupID from zz_participants p left join ccp_invTypes i on (shipTypeID = i.typeID) where shipTypeID = i.typeID and p.groupID = 0 and shipTypeID != 0");
+		$result = Db::query("select distinct shipTypeID from zz_participants where groupID = 0 and shipTypeID != 0");
 		foreach ($result as $row) {
 			$shipTypeID = $row["shipTypeID"];
-			$groupID = $row["groupID"];
+			$groupID = Info::getGroupID($shipTypeID);
 			if ($groupID == null) $groupID = 0;
 			if ($groupID == 0) continue;
 			echo "Updating $shipTypeID to $groupID\n";
