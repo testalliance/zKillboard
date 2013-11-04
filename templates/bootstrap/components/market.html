@@ -1,0 +1,16 @@
+{% if field|length %}
+<table class="table table-hover col-md-4">
+	<thead>
+		<tr><th>System</th><th style="text-align: right">Price</th></tr>
+	</thead>
+	<tbody>
+	{% for row in field %}
+		<tr>
+			<td>{{ row.solarSystemName }}</td>
+			<td style="text-align: right">{{ row.price|number_format(2) }}</td></tr>
+	{% endfor %}
+	</tbody>
+</table>
+
+
+{% endif %}
