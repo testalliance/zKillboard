@@ -77,12 +77,14 @@
 
                 {% if showAds != false %}
     			<div class="clearfix"></div>
+				<hr/>
                 <div class="centered" id="adsensebottom" style="height: 90px; margin-top: 10px;">
                     {% if eveigb %}{{ igbbottomad|raw }}{% elseif isMobile and isTablet == false %}{{ mobilebottomad|raw }}{% else %}{{ bottomad|raw }}{% endif %}
                 </div>
                 {% endif %}
 
-    			<div class="clearfix"></div>
+				<div class="clearfix"></div>
+
                 {% include "footer.html" %}
             </div>		
             <div class="container">
