@@ -125,10 +125,10 @@ class cli_calculateAllTimeStatsAndRanks implements cliCommand
 	{
 		Log::irc("|g|Stats calculation started - checking for unknown groupID's");
 		// Fix unknown group ID's
-		$result = Db::query("select distinct shipTypeID, i.groupID from zz_participants p left join ccp_invTypes i on (shipTypeID = i.typeID) where shipTypeID = i.typeID and p.groupID = 0 and shipTypeID != 0");
+		$result = Db::query("select distinct shipTypeID from zz_participants where groupID = 0 and shipTypeID != 0");
 		foreach ($result as $row) {
 			$shipTypeID = $row["shipTypeID"];
-			$groupID = $row["groupID"];
+			$groupID = Info::getGroupID($shipTypeID);
 			if($groupID == 0) continue;
 			Log::log("Updating $shipTypeID to group $groupID");
 			$affected = Db::execute("update zz_participants set groupID = $groupID where groupID = 0 and shipTypeID = $shipTypeID");

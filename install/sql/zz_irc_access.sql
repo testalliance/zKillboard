@@ -10,5 +10,5 @@ CREATE TABLE `zz_irc_access` (
   UNIQUE KEY `name_2` (`name`,`host`),
   KEY `insertTime` (`insertTime`),
   KEY `name_3` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
 
