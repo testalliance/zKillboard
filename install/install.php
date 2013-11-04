@@ -58,6 +58,17 @@ if($memc == "yes")
 	$settings["memcacheport"] = prompt("Memcache port?", "11211");
 }
 
+// Redis
+$settings["redis"] = "";
+$settings["redisport"] = "";
+
+$redis = prompt("|g|Do you have Redis and Phpredis installed?|n|", "yes");
+if($redis == "yes")
+{
+	$settings["redis"] = prompt("Redis server?", "localhost");
+	$settings["redisport"] = prompt("Redis port?", "6379");
+}
+
 // Pheal cache
 out("|g|It is highly recommended you find a good location other than the default for these files.|n|");
 $settings["phealcachelocation"] = prompt("Where do you want to store Pheal's cache files?", "/tmp/");

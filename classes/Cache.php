@@ -31,7 +31,7 @@ class Cache
 	 */
 	protected static function getCache()
 	{
-		global $cache, $memcacheServer, $memcachePort;
+		global $cache, $memcacheServer, $memcachePort, $redisServer;
 
 		if ($cache == null)
 		{
@@ -42,6 +42,10 @@ class Cache
 			else if(extension_loaded("Memcache") && (isset($memcacheServer) && isset($memcachePort)))
 			{
 				$cache = new MemcacheCache();
+			}
+			else if(extension_loaded("redis") && !empty($redisServer))
+			{
+				$cache = new RedisCache();
 			}
 			else if(extension_loaded("apcu") || extension_loaded("apc"))
 			{
