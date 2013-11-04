@@ -14,5 +14,5 @@ CREATE TABLE `zz_domains` (
   KEY `userID` (`userID`),
   KEY `expirationDTTM` (`expirationDTTM`),
   KEY `cloudFlareID` (`cloudFlareID`)
-) ENGINE=InnoDB AUTO_INCREMENT=798 DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
 
