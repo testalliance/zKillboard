@@ -5,8 +5,8 @@ CREATE TABLE `zz_feeds` (
   `url` varchar(2048) NOT NULL,
   `lastFetchTime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `edkStyle` tinyint(1) NOT NULL DEFAULT '0',
+  `lastKillTime` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`),
   KEY `edkStyle` (`edkStyle`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
 
