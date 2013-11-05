@@ -17,7 +17,8 @@
  */
  
 $ip = IP::get();
-if ($ip != "") Db::execute("insert into zz_online (ip) values (:ip) on duplicate key update dttm = now()", array(":ip" => $ip));
+$uri = $_SERVER["REQUEST_URI"];
+if ($ip != "" && !Util::startsWith($uri, "/api/")) Db::execute("insert into zz_online (ip) values (:ip) on duplicate key update dttm = now()", array(":ip" => $ip));
 
 $app->notFound(function () use ($app) {
     $app->render('404.html');
