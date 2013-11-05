@@ -1,17 +1,17 @@
 {
-    "require": {
-        "slim/slim": "2.2.0",
-        "slim/extras": "*",
-        "twig/twig": "*",
-        "twig/extensions": "*",
-        "pheal/pheal": "*",
-        "phpmailer/phpmailer": "*",
-        "mobiledetect/mobiledetectlib": "*",
-        "realityking/pchart": "@dev",
-        "dg/twitter-php": "*",
-        "ircmaxell/password-compat": "*",
-        "ccampbell/chromephp": "*"
-    },
-    "minimum-stability": "stable",
-	"prefer-stable": true
+	"require": {
+		"slim/slim": "2.2.0",
+			"slim/extras": "*",
+			"twig/twig": "*",
+			"twig/extensions": "*",
+			"pheal/pheal": "*",
+			"phpmailer/phpmailer": "*",
+			"mobiledetect/mobiledetectlib": "*",
+			"realityking/pchart": "@dev",
+			"dg/twitter-php": "*",
+			"ircmaxell/password-compat": "*",
+			"ccampbell/chromephp": "*"
+	},
+		"minimum-stability": "stable",
+		"prefer-stable": true
 }
