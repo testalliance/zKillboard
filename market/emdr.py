@@ -15,7 +15,7 @@ def main():
     subscriber.connect('tcp://relay-us-central-1.eve-emdr.com:8050')                                                                                                  
     # Disable filtering.                                                                                                                                              
     subscriber.setsockopt(zmq.SUBSCRIBE, "")                                                                                                                          
-                                                                                                                                                                      
+    count = 0                                                                                                                                                           
     while True:                                                                                                                                                       
         # Receive raw market JSON strings.                                                                                                                            
         market_json = zlib.decompress(subscriber.recv())                                                                                                              
@@ -27,7 +27,10 @@ def main():
         filename = "/dev/shm/" + str(time.time()) + ".json"                                                                                                           
         with open(filename, "w") as myfile:                                                                                                                           
             myfile.write(str(market_json))                                                                                                                            
-                                                                                                                                                                      
+        count += 1
+        if count > 1000:
+            return
+                                                                                                                                                        
 if __name__ == '__main__':                                                                                                                                            
     main()                                                                                                                                                            
 
