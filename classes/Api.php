@@ -200,8 +200,14 @@ class Api
 				$msg = "Error 904 detected using key $keyID";
 				Log::log($msg);
 				$msg = "|r|$msg";
-	//			Log::irc($msg);
-	//			Log::admin($msg);
+				$lastTime = Storage::retrieve("Last904Time", 0);
+				$time = time();
+				Storage::store("Last904Time", $time);
+				// Only announce 904's every 5 minutes
+				if ($lastTime > ($time - 300)) {
+					Log::irc($msg);
+					Log::admin($msg);
+				}
 				break;
 			case 403:
 			case 502:
