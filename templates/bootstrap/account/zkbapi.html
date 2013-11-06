@@ -1,0 +1,31 @@
+<h3>API Keys</h3>
+<table class="table table-striped table-condensed">
+    <thead>
+        <th>Key Code</th>
+        <th>Last Access</th>
+        <th class="col-lg-1">Access Left</th>
+        <th class="col-lg-2">Additional Access</th>
+    </thead>
+    <tbody>
+        {% for data in data.zkbAPI %}
+		<tr>
+			<td>{{ data.keyCode }}</td>
+			<td>{{ data.lastAccess }}</td>
+			<td>{{ data.accessLeft }}</td>
+			<td>{{ data.additionalAccess }}</td>
+	    </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h3>How to</h3>
+<p>Blablabla how to use it...</p>
+<p>Blablabla how to use it...</p>
+<p>Blablabla how to use it...</p>
+<p>Blablabla how to use it...</p>
+<p>Blablabla how to use it...</p>
+<p>Blablabla how to use it...</p>
+<p>Blablabla how to use it...</p>
+<p>Blablabla how to use it...</p>
+<p>Blablabla how to use it...</p>
+<p>Blablabla how to use it...</p>
