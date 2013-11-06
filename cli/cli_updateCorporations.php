@@ -66,7 +66,7 @@ class cli_updateCorporations implements cliCommand
 						array(":id" => $id, ":name" => $name, ":ticker" => $ticker, ":memberCount" => $memberCount, ":ceoID" => $ceoID, ":dscr" => $dscr));
 
 			} catch (Exception $ex) {
-				Db::execute("update zz_corporations set lastUpdated = now() where corporationID = :id", array(":id" => $id));
+				Db::execute("update zz_corporations set lastUpdated = now(), name = :name where corporationID = :id", array(":id" => $id, ":name" => "Corporation $id"));
 				if ($ex->getCode() != 503) Log::log("ERROR Validating Corp $id: " . $ex->getMessage());
 			}
 			usleep(100000); // Try not to spam the API servers (pauses 1/10th of a second)
