@@ -107,8 +107,8 @@ $soloPages = ceil($soloCount / $limit);
 $solo = Kills::mergeKillArrays($soloKills, array(), $limit, $columnName, $id);
 
 $topLists = array();
-$noTop = array("system", "region", "group", "ship", "faction");
-if ($pageType == "top" && !in_array($key, $noTop)) {
+$onlyTop = array("character", "corporation", "alliance");
+if ($pageType == "top" && in_array($key, $onlyTop)) {
 	$topParameters = $parameters; // array("limit" => 10, "kills" => true, "$columnName" => $id);
 	$topParameters["limit"] = 10;
 	if (!array_key_exists("kills", $topParameters) && !array_key_exists("losses", $topParameters)) $topParameters["kills"] = true;
