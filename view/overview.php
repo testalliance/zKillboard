@@ -134,7 +134,9 @@ if ($pageType == "api") $corpList = Info::getCorps($id);
 $corpStats = array();
 if ($pageType == "corpstats") $corpStats = Info::getCorpStats($id, $parameters);
 
-$detail["history"] = $key != "faction" && $pageType == "history" ? Summary::getMonthlyHistory($columnName, $id) : array();
+if ($pageType == "history" && in_array($key, $onlyTop)) {
+	$detail["history"] = Summary::getMonthlyHistory($columnName, $id);
+} else $detail["history"] = array();
 
 $cnt = 0;
 $cnid = 0;

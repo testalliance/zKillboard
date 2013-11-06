@@ -31,8 +31,8 @@
 		<li class="dropdown hidden-xs">
 	{% if key == "character" or key == "corporation" or key == "alliance" %}
 		<li class="{{ isActive('top', pageType) }} hidden-xs"><a href="/{{ key }}/{{ id }}/top/">Top</a></li>
-	{% endif %}
 		<li class="{{ isActive('history', pageType) }} hidden-xs"><a href="/{{ key }}/{{ id }}/history/">History</a></li>
+	{% endif %}
 	{% if key == "alliance" %}
 		<li class="{{ isActive('Corpstats', pageType) }} hidden-xs"><a href="/{{ key }}/{{ id }}/corpstats/">Corp Stats</a></li>
 		<li class="{{ isActive('api', pageType) }} hidden-xs"><a href="/{{ key }}/{{ id }}/api/">API</a></li>
