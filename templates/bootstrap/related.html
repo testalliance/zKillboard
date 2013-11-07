@@ -17,12 +17,12 @@
 {% if total == 0 %}
 <em>There was no battle in {{ systemName }} at {{ time }}.</em><br/><br/>
 {% else %}
+{% set totalSize = summary.teamA.totals.pilotCount + summary.teamB.totals.pilotCount %}
 
 {% set teamASize = summary.teamA.totals.pilotCount %}
 {% set teamBSize = summary.teamB.totals.pilotCount %}
 {% set teamAEff = teamBTotal / total * 100 %}
 {% set teamBEff = teamATotal / total * 100 %}
-
 
 <table class="table table-condensed">
 	<tr>
@@ -68,4 +68,16 @@
 
 {% endif %}
 
+{% endblock %}
+
+{% block opengraph %}
+	{% set totalLostISK = summary.teamA.totals.total_price + summary.teamB.totals.total_price %}
+	{% set totalSize = summary.teamA.totals.pilotCount + summary.teamB.totals.pilotCount %}
+	<meta name="twitter:title" content="zKillboard.com / {{ pageTitle }}">
+	<meta name="twitter:image" content="https://zkillboard.com/3D.png">
+	<meta name="twitter:card" content="summary">
+	<meta name="og:title" content="zKillboard.com / {{ pageTitle }}">
+	<meta name="twitter:description" content="A battle took place in {{ systemName }} ({{ regionName }}) involving {{ totalSize }} pilots. Who lost a total of {{ totalLostISK|number_format(2, '.', ',') }} isk">
+	<meta name="og:description" content="A battle took place in {{ systemName }} ({{ regionName }}) involving {{ totalSize }} pilots. Who lost a total of {{ totalLostISK|number_format(2, '.', ',') }} isk">
+	<meta name="og:image" content="https://zkillboard.com/3D.png">
 {% endblock %}
