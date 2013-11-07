@@ -8,12 +8,23 @@
         <meta name="title" content="zKillboard.com / {{ pageTitle }}">
         <meta name="keywords" content="eve-online, eve, ccp, ccp games, kills, kill, massively, multiplayer, online, role, playing, game, mmorpg, rank, isk, mmorpg, killboard, eve-kill, zkillboard">
         <meta name="robots" content="index,follow">
-{% block opengraph %}
-        <meta name="twitter:card" content="summary">
+        <link href="https://plus.google.com/+michaelkarbowiak/" rel="author"/>
+        <link href="https://plus.google.com/+evekill/" rel="publisher"/>
+        <meta name="og:locale" content="en_US">
+        <meta name="og:type" content="website">
+        <meta name="og:site_name" content="zKillboard.com">
+        <meta name="fb:app_id" content="276051669171756">
         <meta name="twitter:site" content="@eve_kill">
+        <meta name="twitter:domain" content="https://zkillboard.com">
+{% block opengraph %}
+        <meta name="twitter:title" content="zKillboard.com / {{ pageTitle }}">
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:description" content="{{ description }}">
+        <meta name="twitter:image" content="https://zkillboard.com/3D.png">
         <meta name="og:title" content="zKillboard.com / {{ pageTitle }}">
         <meta name="og:url" content="{{ fullsiteurl }}">
         <meta name="og:description" content="{{ description }}">
+        <meta name="og:image" content="https://zkillboard.com/3D.png">
 		<meta name="google-site-verification" content="4YdeWaZKjMbr1Fnia-8e2DMgfn4nBT6OVuXqtZc2suA" />
 {% endblock %}
 {% block robots %}
