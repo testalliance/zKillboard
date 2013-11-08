@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="navbar navbar-default">
+<div class="navbar navbar-default hidden-xs">
 	<div class="navbar-header">
 		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
 			<span class="icon-bar"></span>
@@ -27,7 +27,7 @@
 			<li class="{{ isActive('overview', pageview) }}"><a href="/detail/{{ killdata.info.killID }}/overview/">Overview</a></li>
 			<li class="visible-lg {{ isActive('involved', pageview) }} hidden-xs"><a href="/detail/{{ killdata.info.killID }}/involved/">Involved Pilots ({{ killdata.info.number_involved }})</a></li>
 		</ul>
-		<ul class="nav navbar-nav pull-right hidden-phone">
+		<ul class="nav navbar-nav pull-right">
 			{% if killdata.info.killID < 0 %}
 			<li><a data-toggle="modal" data-target="#report" href="#">Report ({{ extra.reports }})</a></li>
 			{% endif %}
