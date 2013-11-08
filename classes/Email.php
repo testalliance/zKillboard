@@ -20,14 +20,14 @@ class Email
 {
 	public static function send($email, $subject, $body)
 	{
-		global $emailsmtp, $emailusername, $emailpassword, $sentfromemail, $sentfromdomain, $baseDir;
+		global $emailsmtp, $emailport, $emailusername, $emailpassword, $sentfromemail, $sentfromdomain, $baseDir;
 		$mail = new PHPMailer();
 		$mail->isSMTP();
 		$mail->SMTPDebug = 0;
 		$mail->SMTPAuth = true;
 		$mail->SMTPSecure = "ssl";
 		$mail->Host = $emailsmtp;
-		$mail->Port = "465";
+		$mail->Port = $emailport;
 		$mail->Username = $emailusername;
 		$mail->Password = $emailpassword;
 		$mail->SetFrom($sentfromemail, $sentfromdomain);
