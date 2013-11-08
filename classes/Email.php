@@ -25,7 +25,6 @@ class Email
 		$mail->isSMTP();
 		$mail->SMTPDebug = 0;
 		$mail->SMTPAuth = true;
-		$mail->SMTPSecure = "ssl";
 		$mail->Host = $emailsmtp;
 		$mail->Port = $emailport;
 		$mail->Username = $emailusername;
