@@ -48,6 +48,7 @@ class cli_minutely implements cliCommand
 				$killsLastHour = Db::queryField("select count(*) count from zz_killmails where insertTime > date_sub(now(), interval 1 hour)", "count");
 				Storage::store("KillsLastHour", $killsLastHour);
 				Db::execute("delete from zz_online where dttm < date_sub(now(), interval 5 minute)");
+				Db::execute("delete from zz_online_uri where dttm < date_sub(now(), interval 15 minute)");
 				//Domains::deleteDomainsFromCloudflare();
 				//Domains::registerDomainsWithCloudflare();
 				$fc = new FileCache;
