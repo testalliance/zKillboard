@@ -635,8 +635,8 @@ class Parser
 		$maxTime = 65 * 1000 ;
 
 		Db::execute("set session wait_timeout = 120000");
-		Db::execute("create table if not exists zz_items_temporary select * from zz_items where 1 = 0");
-		Db::execute("create table if not exists zz_participants_temporary select * from zz_participants where 1 = 0");
+		Db::execute("create temporary table if not exists zz_items_temporary select * from zz_items where 1 = 0");
+		Db::execute("create temporary table if not exists zz_participants_temporary select * from zz_participants where 1 = 0");
 
 		$numKills = 0;
 
@@ -722,8 +722,8 @@ class Parser
 
 	private static function removeTempTables()
 	{
-		//Db::execute("drop table if exists zz_participants_temporary");
-		//Db::execute("drop table if exists zz_items_temporary");
+		Db::execute("drop table if exists zz_participants_temporary");
+		Db::execute("drop table if exists zz_items_temporary");
 	}
 
 	private static function validKill(&$kill)
