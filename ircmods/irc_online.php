@@ -26,9 +26,9 @@ class irc_online implements ircCommand {
 	}
 
 	public function execute($nick, $uhost, $channel, $command, $parameters, $nickAccessLevel) {
-		Db::execute("delete from zz_online where dttm < date_sub(now(), interval 5 minute)");
+		Db::execute("delete from zz_online where dttm < date_sub(now(), interval 1 minute)");
 		$count = Db::queryField("select count(*) count from zz_online", "count", array(), 1);
-		irc_out("|g|$count|n| unique IP addresses in the last 5 minutes");
+		irc_out("|g|$count|n| unique IP addresses in the last minute");
 	}
 	public function isHidden() { return true; }
 }

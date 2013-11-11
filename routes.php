@@ -18,7 +18,7 @@
  
 $ip = IP::get();
 $uri = $_SERVER["REQUEST_URI"];
-if ($ip != "" && !Util::startsWith($uri, "/api/")) Db::execute("insert into zz_online (ip, lastURI) values (:ip, :uri) on duplicate key update dttm = now(), lastURI = :uri", array(":ip" => $ip, ":uri" => $uri));
+if ($ip != "" && !Util::startsWith($uri, "/api/") && $uri != "/killslasthour/") Db::execute("insert into zz_online (ip, lastURI) values (:ip, :uri) on duplicate key update dttm = now(), lastURI = :uri", array(":ip" => $ip, ":uri" => $uri));
 if ($uri != "/" && $uri != "/killslasthour/" && $uri != "/autocomplete/" && $uri != "/search/") Db::execute("insert into zz_online_uri (uri) values (:uri)", array(":uri" => $uri));
 
 $app->notFound(function () use ($app) {
