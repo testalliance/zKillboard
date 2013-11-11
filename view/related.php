@@ -24,7 +24,7 @@ $regionName = Info::getRegionName(Info::getRegionIDFromSystemID($systemID));
 $unixTime = strtotime($relatedTime);
 $time = date("Y-m-d H:i", $unixTime);
 
-$parameters = array("solarSystemID" => $systemID, "relatedTime" => $relatedTime, "excludeSubdomain" => true);
+$parameters = array("solarSystemID" => $systemID, "relatedTime" => $relatedTime);
 $kills = Kills::getKills($parameters);
 $summary = Summary::buildSummary($kills, $parameters, "$systemName:$time");
 

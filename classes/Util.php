@@ -17,41 +17,6 @@
  */
 class Util
 {
-	public static function setSubdomainGlobals($key, $row, $type)
-	{
-		global $subDomainKey, $subDomainRow;
-		$subDomainKey = $key;
-		$row["type"] = $type;
-		$subDomainRow = $row;
-		return true;
-	}
-
-	public static function isValidSubdomain($subDomain)
-	{
-		if ($subDomain === null || trim($subDomain) == "") return true;
-		$subDomain = str_replace("_", " ", $subDomain);
-		$array = array(":subDomain" => $subDomain);
-
-		$row = Info::getFactionTicker($subDomain);
-		if ($row != null) return Util::setSubdomainGlobals("factionID", $row, "faction");
-		/*$row = Db::queryRow("select allianceID, name from zz_alliances where ticker = :subDomain order by memberCount desc limit 1", $array, 3600);
-		if ($row != null) return Util::setSubdomainGlobals("allianceID", $row, "alliance");
-		$row = Db::queryRow("select corporationID, name from zz_corporations where ticker = :subDomain order by memberCount desc limit 1", $array, 3600);
-		if ($row != null) return Util::setSubdomainGlobals("corporationID", $row, "corporation");*/
-		$row = Db::queryRow("select * from zz_domains where domain = :subDomain", $array, 300);
-		if ($row) {
-			$entities = Db::query("SELECT * FROM zz_domains_entities WHERE domainID = :domainID", array(":domainID" => $row["domainID"]));
-			foreach($entities as $entity) {
-				$ent = array();
-				$ent["type"] = $entity["entityType"];
-				$ent[$entity["entityType"] . "ID"] = $entity["entityID"];
-				$ent["name"] = $entity["entityName"];
-				return Util::setSubdomainGlobals($entity["entityType"] . "ID", $ent, $entity["entityType"]);
-			}
-		}
-		return false;
-	}
-
 	public static function isMaintenanceMode()
 	{
 		return "true" == Db::queryField("select contents from zz_storage where locker = 'maintenance'", "contents", array(), 0);

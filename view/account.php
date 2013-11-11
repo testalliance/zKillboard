@@ -33,34 +33,6 @@ if($_POST)
 	// Create variable from the $_POST data.
     extract($_POST);
 
-    // Delete an entity from a domain
-    if(isset($deletedomainentitytype) && isset($deletedomainentitytype))
-    {
-    	Domains::deleteUserTrackerEntity($reqid, $deletedomainentityid, $deletedomainentitytype);
-    	$app->redirect("/account/subdomains/$reqid/");
-    }
-
-    // Add an entity to a domain
-    if(isset($entitymetadata) && isset($subdomain))
-    {
-    	$json = json_decode($entitymetadata, true);
-    	$id = $json["id"];
-    	$name = $json["name"];
-    	$type = $json["type"];
-    	Domains::addUserTrackerEntity($reqid, $id, $type, $name);
-    	$app->redirect("/account/subdomains/$reqid/");
-    }
-
-    // Add a domain name
-    if(isset($domainname))
-    {
-    	Domains::addUserTrackerDomain($userID, $domainname);
-    }
-
-    // Delete a domain name
-    if(isset($deletedomainid))
-    	Domains::deleteUserTrackerDomain($userID, $deletedomainid);	
-    
 	// Apikey stuff
 	if(isset($keyid) || isset($vcode))
 	{
@@ -78,9 +50,6 @@ if($_POST)
 	// Delete an apikey
 	if(isset($deletekeyid) && !isset($deleteentity))
 		$error = Api::deleteKey($deletekeyid);
-
-    if(isset($deletekeyid) && isset($deleteentity))
-        $error = Domains::deleteEntity($deletekeyid, $deleteentity);
     
 	// Theme stuff
 	if(isset($viewtheme))
@@ -150,8 +119,6 @@ if($_POST)
     	UserConfig::set("useSummaryAccordion", $useSummaryAccordion);
 }
 
-$data["domains"] = Domains::getUserTrackerDomains($userID);
-$data["domainEntities"] = Domains::getUserTrackerEntities($reqid);
 $data["entities"] = Account::getUserTrackerData();
 $data["themes"] = array("default", "amelia", "cerulean", "cosmo", "cyborg", "journal", "readable", "simplex", "slate", "spacelab", "united");
 $data["viewthemes"] = Util::themesAvailable();

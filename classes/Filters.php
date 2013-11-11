@@ -18,29 +18,6 @@
 
 class Filters
 {
-	private static function addSubDomainToFilter(&$parameters, $excludeSubdomain)
-	{
-		global $subDomainKey, $subDomainRow;
-		if (!isset($subDomainKey)) return false;
-
-		Filters::addFilter($parameters, $subDomainKey, $subDomainRow, $excludeSubdomain);
-		return true;
-	}
-
-	private static function addFilter(&$parameters, $key, $row, $excludeSubdomain)
-	{
-		global $twig;
-		$twig->addGlobal("KillboardName", $row["name"]);
-		if (!$excludeSubdomain) {
-			if (!isset($parameters[$key])) $parameters[$key] = array();
-			else if (!is_array($parameters[$key])) $parameters[$key] = array($parameters[$key]);
-			$id = (int)$row[$key];
-			$parameters[$key][] = $id;
-			if (!isset($parameters["kills"]) && !isset($parameters["losses"])) $parameters["kills"] = true;
-		}
-		return true;
-	}
-
 	private static function grabParameters($parameters, $name)
 	{
 		$retValue = isset($parameters[$name]) ? $parameters[$name] : null;
@@ -70,10 +47,6 @@ class Filters
 
 	public static function buildFilters(&$tables, &$combined, &$whereClauses, &$parameters, $allTime = true)
 	{
-		global $subDomainRow;
-		$excludeSubdomain = @$parameters["excludeSubdomain"] == true;
-		//Filters::addSubDomainToFilter($parameters, $excludeSubdomain);
-
 		// zz_participants filters
 		$participants = "zz_participants p";
 		$filterColumns = array("allianceID", "characterID", "corporationID", "factionID", "shipTypeID", "groupID", "solarSystemID", "regionID");

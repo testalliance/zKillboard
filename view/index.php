@@ -16,12 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-global $subDomainKey, $subDomainRow;
-if ($subDomainRow) {
-	include( "view/overview.php" );
-	return;
-}
-
 $topPoints = array();
 $topIsk = json_decode(Storage::retrieve("TopIsk"), true);
 $topPods = json_decode(Storage::retrieve("TopPods"), true);

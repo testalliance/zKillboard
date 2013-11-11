@@ -16,12 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-global $subDomainRow;
 if (@!is_array($input)) $input = array();
-if ($subDomainRow && sizeof($input) == 0) {
-	$input[] = $subDomainRow["type"];
-	$input[] = $subDomainRow[$subDomainRow["type"] . "ID"];
-}
 
 @$key = $input[0];
 @$id = $input[1];
@@ -57,7 +52,7 @@ if (!is_numeric($id))
 
 if ($id <= 0) $app->notFound();
 
-$parameters = Util::convertUriToParameters($subDomainRow);
+$parameters = Util::convertUriToParameters();
 @$page = max(1, $parameters["page"]);
 $year = "";
 $week = "";
