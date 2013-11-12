@@ -273,18 +273,15 @@ class Util
 
 	public static function scrapeCheck()
 	{
-		global $app, $apiBinAttempts, $apiTimeBetweenAccess, $apiWhiteList;
+		global $app, $apiTimeBetweenAccess, $apiWhiteList;
+		if ($apiTimeBetweenAccess == null || $apiTimeBetweenAccess == "") $apiTimeBetweenAccess = 15;
 
-		$ip = IP::get();
+		$ip = substr(IP::get(), 0, 64);
 		if(!in_array($ip, $apiWhiteList))
 		{
-			// Make a pool with the IP as an MD5
-			// Store a count in the cache with the md5 as hash
-			// Count it up, if it hits $apiBinAttempts, he need to wait atleast $apiTimeBetweenAccess seconds before another request can be made.
-			$md5 = md5("IP:$ip");
-			$bin = Cache::get($md5);
+			$count = Db::queryField("select count(*) count from zz_analytics where ip = :ip and uri like '/api/%' and dttm >= date_sub(now(), interval :sec second)", "count", array(":ip" => $ip, ":sec" => $apiTimeBetweenAccess), 1);
 
-			if($bin != null && count($bin) >= $apiBinAttempts)
+			if($count > 1) // Don't count our current access
 			{
 				$date = date("Y-m-d H:i:s");
 				$cachedUntil = date("Y-m-d H:i:s", time() + $apiTimeBetweenAccess);
@@ -305,8 +302,6 @@ class Util
 					header("Content-type: application/json; charset=utf-8");
 					$data = json_encode(array("Error" => "You have requested data too fast, please wait $apiTimeBetweenAccess seconds..", "cachedUntil" => $cachedUntil));
 				}
-				header("X-Bin-Requests: ". count($bin));
-				header("X-Bin-Attempts-Allowed: ". $apiBinAttempts);
 				header("X-Bin-Seconds-Between-Request: ". $apiTimeBetweenAccess);
 				header("Retry-After: " . $cachedUntil . " GMT");
 				header("HTTP/1.1 429 Too Many Requests");
@@ -315,11 +310,7 @@ class Util
 				echo $data;
 				die();
 			}
-			header("X-Bin-Attempts-Allowed: ". $apiBinAttempts);
 			header("X-Bin-Seconds-Between-Request: ". $apiTimeBetweenAccess);
-			header("X-Bin-Requests: ". count($bin));
-			$bin[] = time();
-			Cache::set($md5, $bin, $apiTimeBetweenAccess);
 		}
 	}
 

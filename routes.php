@@ -16,10 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
-$ip = IP::get();
-$uri = $_SERVER["REQUEST_URI"];
-if ($ip != "" && !Util::startsWith($uri, "/api/") && $uri != "/killslasthour/") Db::execute("insert into zz_online (ip, lastURI) values (:ip, :uri) on duplicate key update dttm = now(), lastURI = :uri", array(":ip" => $ip, ":uri" => $uri));
-if ($uri != "/" && $uri != "/killslasthour/" && $uri != "/autocomplete/" && $uri != "/search/") Db::execute("insert into zz_online_uri (uri) values (:uri)", array(":uri" => $uri));
+$ip = substr(IP::get(), 0, 64);
+$uri = substr($_SERVER["REQUEST_URI"], 0, 256);
+if ($uri != "/killslasthour/") Db::execute("insert into zz_analytics values (:ip, :uri, now())", array(":ip" => $ip, ":uri" => $uri));
 
 $app->notFound(function () use ($app) {
     $app->render('404.html');
@@ -184,11 +183,6 @@ $app->get("/api/dna(/:flags+)/", function($flags = null) use ($app) {
 
 $app->get("/api/:input+", function($input) use ($app) {
     include( "view/api.php" );
-});
-
-// API V2
-$app->get("/apiv2/:flags+/", function($flags) use($app){
-    include( "view/apiv2.php" );
 });
 
 // chart
