@@ -673,29 +673,21 @@ class Parser
 
 				$date = $kill->killTime;
 
-				$date = strtotime($date);
-				$year = date("Y", $date);
-				$month = date("m", $date);
-				$week = date("W", $date);
-				if ($week >= 52 && $month == 1) $year -= 1;
-				if (strlen($week) < 2) $week = "0$week";
-
 				// Cleanup if we're reparsing
 				$cleanupKills[] = $killID;
 
 				// Do some validation on the kill
 				if (!self::validKill($kill)) {
 					Db::execute("update zz_killmails set processed = 3 where killid = :killid", array(":killid" => $row["killID"]));
-					//self::processVictim($year, $month, $week, $kill, $killID, $kill->victim, true);
 					continue;
 				}
 
 				$totalCost = 0;
 				$itemInsertOrder = 0;
 
-				$totalCost += self::processItems($year, $week, $kill, $killID, $kill->items, $itemInsertOrder);
-				$totalCost += self::processVictim($year, $month, $week, $kill, $killID, $kill->victim, false);
-				foreach ($kill->attackers as $attacker) self::processAttacker($year, $month, $week, $kill, $killID, $attacker, $kill->victim->shipTypeID, $totalCost);
+				$totalCost += self::processItems($kill, $killID, $kill->items, $itemInsertOrder);
+				$totalCost += self::processVictim($kill, $killID, $kill->victim, false);
+				foreach ($kill->attackers as $attacker) self::processAttacker($kill, $killID, $attacker, $kill->victim->shipTypeID, $totalCost);
 				$points = Points::calculatePoints($killID, true);
 				Db::execute("update zz_participants_temporary set points = :points, number_involved = :numI, total_price = :tp where killID = :killID", array(":killID" => $killID, ":points" => $points, ":numI" => sizeof($kill->attackers), ":tp" => $totalCost));
 
@@ -749,7 +741,7 @@ class Parser
 		return true;
 	}
 
-	private static function processVictim(&$year, &$month, &$week, &$kill, $killID, &$victim, $isNpcVictim)
+	private static function processVictim(&$kill, $killID, &$victim, $isNpcVictim)
 	{
 		$shipPrice = Price::getItemPrice($victim->shipTypeID);
 		$groupID = Info::getGroupID($victim->shipTypeID);
@@ -787,7 +779,7 @@ class Parser
 		return $shipPrice;
 	}
 
-	private static function processAttacker(&$year, &$month, &$week, &$kill, &$killID, &$attacker, $victimShipTypeID, $totalCost)
+	private static function processAttacker(&$kill, &$killID, &$attacker, $victimShipTypeID, $totalCost)
 	{
 		$victimGroupID = Info::getGroupID($victimShipTypeID);
 		$attackerGroupID = Info::getGroupID($attacker->shipTypeID);
@@ -824,20 +816,20 @@ class Parser
 		Info::addAlli($attacker->allianceID, $attacker->allianceName);
 	}
 
-	private static function processItems(&$year, &$week, &$kill, &$killID, &$items, &$itemInsertOrder, $isCargo = false, $parentFlag = 0)
+	private static function processItems(&$kill, &$killID, &$items, &$itemInsertOrder, $isCargo = false, $parentFlag = 0)
 	{
 		$totalCost = 0;
 		foreach ($items as $item) {
-			$totalCost += self::processItem($year, $week, $kill, $killID, $item, $itemInsertOrder++, $isCargo, $parentFlag);
+			$totalCost += self::processItem($kill, $killID, $item, $itemInsertOrder++, $isCargo, $parentFlag);
 			if (@is_array($item->items)) {
 				$itemContainerFlag = $item->flag;
-				$totalCost += self::processItems($year, $week, $kill, $killID, $item->items, $itemInsertOrder, true, $itemContainerFlag);
+				$totalCost += self::processItems($kill, $killID, $item->items, $itemInsertOrder, true, $itemContainerFlag);
 			}
 		}
 		return $totalCost;
 	}
 
-	private static function processItem(&$year, &$week, &$kill, &$killID, &$item, $itemInsertOrder, $isCargo = false, $parentContainerFlag = -1)
+	private static function processItem(&$kill, &$killID, &$item, $itemInsertOrder, $isCargo = false, $parentContainerFlag = -1)
 	{
 		global $itemNames;
 		if ($itemNames == null ) {
