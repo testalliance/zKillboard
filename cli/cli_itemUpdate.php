@@ -31,7 +31,7 @@ class cli_itemUpdate implements cliCommand
 	public function getCronInfo()
 	{
 		return array(
-			21600 => ""
+			604800 => "" // once a week
 		);
 	}
 
