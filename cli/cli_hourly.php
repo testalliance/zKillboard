@@ -51,6 +51,19 @@ class cli_hourly implements cliCommand
 		Storage::store("KillCount", Db::queryField("select count(*) count from zz_killmails", "count"));
 		Storage::store("ActualKillCount", Db::queryField("select count(*) count from zz_killmails where processed = 1", "count"));
 
+		$actualKills = Storage::retrieve("ActualKillCount");
+		$iteration = 0;
+		while ($actualKills > 0) {
+			$iteration++;
+			$actualKills -= 1000000;
+			if ($actualKills > 0 && Storage::retrieve("{$iteration}mAnnounced", null) == null) {
+				Storage::store("{$iteration}mAnnounced", true);
+				$message = "|g|Woohoo! |r|$iteration million kills surpassed!";
+				Log::irc($message);
+				Log::ircAdmin($message);
+			}
+		}
+
 		$highKillID = Db::queryField("select max(killID) highKillID from zz_killmails", "highKillID");
 		if ($highKillID > 2000000) Storage::store("notRecentKillID", ($highKillID - 2000000));
 
