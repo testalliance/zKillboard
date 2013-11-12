@@ -279,7 +279,7 @@ class Util
 		$ip = substr(IP::get(), 0, 64);
 		if(!in_array($ip, $apiWhiteList))
 		{
-			$count = Db::queryField("select count(*) count from zz_analytics where ip = :ip and uri like '/api/%' and dttm >= date_sub(now(), interval :sec second)", "count", array(":ip" => $ip, ":sec" => $apiTimeBetweenAccess), 1);
+			$count = Db::queryField("select count(*) count from zz_analytics where ip = :ip and uri like '/api/%' and dttm >= date_sub(now(), interval :sec second)", "count", array(":ip" => $ip, ":sec" => $apiTimeBetweenAccess), 0);
 
 			if($count > 1) // Don't count our current access
 			{
