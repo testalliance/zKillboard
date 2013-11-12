@@ -700,6 +700,20 @@ class Parser
 			if (sizeof($processedKills)) Db::execute("update zz_killmails set processed = 1 where killID in (" . implode(",", $processedKills) . ")");
 			foreach($processedKills as $killID) {
 				Stats::calcStats($killID, true);
+				// Add points and total value to the json stored in the database
+				$raw = Db::queryField("select kill_json from zz_killmails where killID = :killID", "kill_json", array(":killID" => $killID), 0);
+				$json = json_decode($raw, true);
+				unset($json["_stringValue"]);
+				unset($json["zkb"]);
+				$stuff = Db::queryRow("select * from zz_participants where killID = :killID and isVictim = 1", array(":killID" => $killID), 0);
+				if ($stuff != null) {
+					$zkb = array();
+					$zkb["totalValue"] = $stuff["total_price"];
+					$zkb["points"] = $stuff["points"];
+					$json["zkb"] = $zkb;
+				}
+				$raw = json_encode($json);
+				Db::execute("update zz_killmails set kill_json = :raw where killID = :killID", array(":killID" => $killID, ":raw" => $raw));
 			}
 		}
 		if ($numKills > 0)
