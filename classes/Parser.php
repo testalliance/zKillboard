@@ -31,7 +31,6 @@ class Parser
 	 * @param $userID - the ID of the user who posted the raw mail
 	 * @return array
 	 */
-
 	public static function parseRaw($rawMail, $userID)
 	{
 		$errors = array();
@@ -663,15 +662,13 @@ class Parser
 			$cleanupKills = array();
 			foreach ($result as $row) {
 				$numKills++;
-				$kill = json_decode($row['kill_json']);
-				if (!isset($kill->killID)) {
+				$kill = json_decode($row['kill_json'], true);
+				if (!isset($kill["killID"])) {
 					Log::log("Problem with kill " . $row["killID"]);
 					Db::execute("update zz_killmails set processed = 2 where killid = :killid", array(":killid" => $row["killID"]));
 					continue;
 				}
-				$killID = $kill->killID;
-
-				$date = $kill->killTime;
+				$killID = $kill["killID"];
 
 				// Cleanup if we're reparsing
 				$cleanupKills[] = $killID;
@@ -685,11 +682,11 @@ class Parser
 				$totalCost = 0;
 				$itemInsertOrder = 0;
 
-				$totalCost += self::processItems($kill, $killID, $kill->items, $itemInsertOrder);
-				$totalCost += self::processVictim($kill, $killID, $kill->victim, false);
-				foreach ($kill->attackers as $attacker) self::processAttacker($kill, $killID, $attacker, $kill->victim->shipTypeID, $totalCost);
+				$totalCost += self::processItems($kill, $killID, $kill["items"], $itemInsertOrder);
+				$totalCost += self::processVictim($kill, $killID, $kill["victim"], false);
+				foreach ($kill["attackers"] as $attacker) self::processAttacker($kill, $killID, $attacker, $kill["victim"]["shipTypeID"], $totalCost);
 				$points = Points::calculatePoints($killID, true);
-				Db::execute("update zz_participants_temporary set points = :points, number_involved = :numI, total_price = :tp where killID = :killID", array(":killID" => $killID, ":points" => $points, ":numI" => sizeof($kill->attackers), ":tp" => $totalCost));
+				Db::execute("update zz_participants_temporary set points = :points, number_involved = :numI, total_price = :tp where killID = :killID", array(":killID" => $killID, ":points" => $points, ":numI" => sizeof($kill["attackers"]), ":tp" => $totalCost));
 
 				$processedKills[] = $killID;
 			}
@@ -720,21 +717,21 @@ class Parser
 
 	private static function validKill(&$kill)
 	{
-		$killID = $kill->killID;
-		$victimCorp = $kill->victim->corporationID < 1000999 ? 0 : $kill->victim->corporationID;
-		$victimAlli = $kill->victim->allianceID;
+		$killID = $kill["killID"];
+		$victimCorp = $kill["victim"]["corporationID"] < 1000999 ? 0 : $kill["victim"]["corporationID"];
+		$victimAlli = $kill["victim"]["allianceID"];
 
 		$npcOnly = true;
 		$blueOnBlue = true;
-		foreach ($kill->attackers as $attacker) {
-			$attackerGroupID = Info::getGroupID($attacker->shipTypeID);
+		foreach ($kill["attackers"] as $attacker) {
+			$attackerGroupID = Info::getGroupID($attacker["shipTypeID"]);
 			if ($attackerGroupID == 365) return true; // A tower is involved
 
 			// Don't process the kill if it's NPC only
-			$npcOnly &= $attacker->characterID == 0 && $attacker->corporationID < 1999999;
+			$npcOnly &= $attacker["characterID"] == 0 && $attacker["corporationID"] < 1999999;
 
 			// Check for blue on blue
-			if ($attacker->characterID != 0) $blueOnBlue &= $victimCorp == $attacker->corporationID && $victimAlli == $attacker->allianceID;
+			if ($attacker["characterID"] != 0) $blueOnBlue &= $victimCorp == $attacker["corporationID"] && $victimAlli == $attacker["allianceID"];
 		}
 		if ($npcOnly /*|| $blueOnBlue*/) return false;
 
@@ -743,11 +740,11 @@ class Parser
 
 	private static function processVictim(&$kill, $killID, &$victim, $isNpcVictim)
 	{
-		$shipPrice = Price::getItemPrice($victim->shipTypeID);
-		$groupID = Info::getGroupID($victim->shipTypeID);
-		$regionID = Info::getRegionIDFromSystemID($kill->solarSystemID);
+		$shipPrice = Price::getItemPrice($victim["shipTypeID"]);
+		$groupID = Info::getGroupID($victim["shipTypeID"]);
+		$regionID = Info::getRegionIDFromSystemID($kill["solarSystemID"]);
 
-		$dttm = (string) $kill->killTime;
+		$dttm = (string) $kill["killTime"];
 
 		if (!$isNpcVictim) Db::execute("
 				insert into zz_participants_temporary
@@ -758,23 +755,23 @@ class Parser
 				 :corporationID, :characterID, :dttm, :vGroupID)",
 				(array(
 					   ":killID" => $killID,
-					   ":solarSystemID" => $kill->solarSystemID,
+					   ":solarSystemID" => $kill["solarSystemID"],
 					   ":regionID" => $regionID,
-					   ":shipTypeID" => $victim->shipTypeID,
+					   ":shipTypeID" => $victim["shipTypeID"],
 					   ":groupID" => $groupID,
 					   ":vGroupID" => $groupID,
 					   ":shipPrice" => $shipPrice,
-					   ":damageTaken" => $victim->damageTaken,
-					   ":factionID" => $victim->factionID,
-					   ":allianceID" => $victim->allianceID,
-					   ":corporationID" => $victim->corporationID,
-					   ":characterID" => $victim->characterID,
+					   ":damageTaken" => $victim["damageTaken"],
+					   ":factionID" => $victim["factionID"],
+					   ":allianceID" => $victim["allianceID"],
+					   ":corporationID" => $victim["corporationID"],
+					   ":characterID" => $victim["characterID"],
 					   ":dttm" => $dttm,
 					  )));
 
-		Info::addChar($victim->characterID, $victim->characterName);
-		Info::addCorp($victim->corporationID, $victim->corporationName);
-		Info::addAlli($victim->allianceID, $victim->allianceName);
+		Info::addChar($victim["characterID"], $victim["characterName"]);
+		Info::addCorp($victim["corporationID"], $victim["corporationName"]);
+		Info::addAlli($victim["allianceID"], $victim["allianceName"]);
 
 		return $shipPrice;
 	}
@@ -782,10 +779,10 @@ class Parser
 	private static function processAttacker(&$kill, &$killID, &$attacker, $victimShipTypeID, $totalCost)
 	{
 		$victimGroupID = Info::getGroupID($victimShipTypeID);
-		$attackerGroupID = Info::getGroupID($attacker->shipTypeID);
-		$regionID = Info::getRegionIDFromSystemID($kill->solarSystemID);
+		$attackerGroupID = Info::getGroupID($attacker["shipTypeID"]);
+		$regionID = Info::getRegionIDFromSystemID($kill["solarSystemID"]);
 
-		$dttm = (string) $kill->killTime;
+		$dttm = (string) $kill["killTime"];
 
 		Db::execute("
 				insert into zz_participants_temporary
@@ -796,24 +793,24 @@ class Parser
 				 :factionID, :damageDone, :finalBlow, :weaponTypeID, :shipTypeID, :groupID, :dttm)",
 				(array(
 					   ":killID" => $killID,
-					   ":solarSystemID" => $kill->solarSystemID,
+					   ":solarSystemID" => $kill["solarSystemID"],
 					   ":regionID" => $regionID,
-					   ":characterID" => $attacker->characterID,
-					   ":corporationID" => $attacker->corporationID,
-					   ":allianceID" => $attacker->allianceID,
-					   ":factionID" => $attacker->factionID,
-					   ":damageDone" => $attacker->damageDone,
-					   ":finalBlow" => $attacker->finalBlow,
-					   ":weaponTypeID" => $attacker->weaponTypeID,
-					   ":shipTypeID" => $attacker->shipTypeID,
+					   ":characterID" => $attacker["characterID"],
+					   ":corporationID" => $attacker["corporationID"],
+					   ":allianceID" => $attacker["allianceID"],
+					   ":factionID" => $attacker["factionID"],
+					   ":damageDone" => $attacker["damageDone"],
+					   ":finalBlow" => $attacker["finalBlow"],
+					   ":weaponTypeID" => $attacker["weaponTypeID"],
+					   ":shipTypeID" => $attacker["shipTypeID"],
 					   ":groupID" => $attackerGroupID,
 					   ":dttm" => $dttm,
 					   ":total" => $totalCost,
 					   ":vGroupID" => $victimGroupID,
 					  )));
-		Info::addChar($attacker->characterID, $attacker->characterName);
-		Info::addCorp($attacker->corporationID, $attacker->corporationName);
-		Info::addAlli($attacker->allianceID, $attacker->allianceName);
+		Info::addChar($attacker["characterID"], $attacker["characterName"]);
+		Info::addCorp($attacker["corporationID"], $attacker["corporationName"]);
+		Info::addAlli($attacker["allianceID"], $attacker["allianceName"]);
 	}
 
 	private static function processItems(&$kill, &$killID, &$items, &$itemInsertOrder, $isCargo = false, $parentFlag = 0)
@@ -821,9 +818,9 @@ class Parser
 		$totalCost = 0;
 		foreach ($items as $item) {
 			$totalCost += self::processItem($kill, $killID, $item, $itemInsertOrder++, $isCargo, $parentFlag);
-			if (@is_array($item->items)) {
-				$itemContainerFlag = $item->flag;
-				$totalCost += self::processItems($kill, $killID, $item->items, $itemInsertOrder, true, $itemContainerFlag);
+			if (@is_array($item["items"])) {
+				$itemContainerFlag = $item["flag"];
+				$totalCost += self::processItems($kill, $killID, $item["items"], $itemInsertOrder, true, $itemContainerFlag);
 			}
 		}
 		return $totalCost;
@@ -839,13 +836,13 @@ class Parser
 				$itemNames[$row["typeID"]] = $row["typeName"];
 			}
 		}
-		$typeID = $item->typeID;
-		$itemName = $itemNames[$item->typeID];
+		$typeID = $item["typeID"];
+		$itemName = $itemNames[$item["typeID"]];
 
-		if ($item->typeID == 33329 && $item->flag == 89) $price = 0.01; // Golden pod implant can't be destroyed
+		if ($item["typeID"] == 33329 && $item["flag"] == 89) $price = 0.01; // Golden pod implant can't be destroyed
 		else $price = Price::getItemPrice($typeID);
-		if ($isCargo && strpos($itemName, "Blueprint") !== false) $item->singleton = 2;
-		if ($item->singleton == 2) {
+		if ($isCargo && strpos($itemName, "Blueprint") !== false) $item["singleton"] = 2;
+		if ($item["singleton"] == 2) {
 			$price = $price / 100;
 		}
 
@@ -856,16 +853,16 @@ class Parser
 				(:killID, :typeID, :flag, :qtyDropped, :qtyDestroyed, :insertOrder, :price, :singleton, :inContainer)",
 				(array(
 					   ":killID" => $killID,
-					   ":typeID" => $item->typeID,
-					   ":flag" => ($isCargo ? $parentContainerFlag : $item->flag),
-					   ":qtyDropped" => $item->qtyDropped,
-					   ":qtyDestroyed" => $item->qtyDestroyed,
+					   ":typeID" => $item["typeID"],
+					   ":flag" => ($isCargo ? $parentContainerFlag : $item["flag"]),
+					   ":qtyDropped" => $item["qtyDropped"],
+					   ":qtyDestroyed" => $item["qtyDestroyed"],
 					   ":insertOrder" => $itemInsertOrder,
 					   ":price" => $price,
-					   ":singleton" => $item->singleton,
+					   ":singleton" => $item["singleton"],
 					   ":inContainer" => ($isCargo ? 1 : 0),
 					  )));
 
-		return ($price * ($item->qtyDropped + $item->qtyDestroyed));
+		return ($price * ($item["qtyDropped"] + $item["qtyDestroyed"]));
 	}
 }
