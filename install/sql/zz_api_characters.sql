@@ -13,6 +13,7 @@ CREATE TABLE `zz_api_characters` (
   `errorCount` int(3) NOT NULL DEFAULT '0',
   PRIMARY KEY (`apiRowID`),
   UNIQUE KEY `keyID` (`keyID`,`characterID`),
+  UNIQUE KEY `characterID_2` (`characterID`,`corporationID`),
   KEY `user_id` (`keyID`),
   KEY `characterID` (`characterID`),
   KEY `corporationID` (`corporationID`),
