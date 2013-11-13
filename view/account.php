@@ -133,6 +133,5 @@ $data["timeago"] = UserConfig::get("timeago");
 $data["ddcombine"] = UserConfig::get("ddcombine");
 $data["ddmonthyear"] = UserConfig::get("ddmonthyear");
 $data["useSummaryAccordion"] = UserConfig::get("useSummaryAccordion");
-$data["zkbAPI"] = zKBApi::getKey($userID);
 
 $app->render("account.html", array("data" => $data, "message" => $error, "key" => $key, "reqid" => $reqid));
