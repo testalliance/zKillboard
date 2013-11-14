@@ -46,6 +46,7 @@ class cli_apiFetchKillLog implements cliCommand
 
 		if ($keyID == "" || $vCode == "") die("no keyID or vCode");
 
+		$pheal = null;
 		try {
 			do {
 				$pheal = Util::getPheal($keyID, $vCode);
@@ -102,6 +103,9 @@ class cli_apiFetchKillLog implements cliCommand
 				case 220: // Invalid Corporation Key. Key owner does not fullfill role requirements anymore.
 				case 403: // New error code for invalid API
 					Db::execute("delete from zz_api_characters where apiRowID = :id", array(":id" => $apiRowID));
+					break;
+				case 1001:
+					Db::execute("update zz_api_characters set cachedUntil = date_add(now(), interval 10 minute) where apiRowID = :id", array(":id" => $apiRowID));
 					break;
 				default:
 					Log::log($keyID . " " . $ex->getCode() . " " . $ex->getMessage());
