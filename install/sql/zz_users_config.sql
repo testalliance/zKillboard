@@ -9,3 +9,4 @@ CREATE TABLE `zz_users_config` (
   KEY `locker` (`locker`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
+
