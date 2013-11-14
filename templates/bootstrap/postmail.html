@@ -48,11 +48,17 @@
 	<div class="col-lg-7">
 		<h3>Post Killmail</h3>
 		<div class="well">
+			{% if sessionusername == "" %}
+				<div class="alert alert-danger">You are not logged in, your killmail will not be accepted.</div>
+			{% endif %}
 			<p>Post a killmail from the ingame character sheet.</p>
 			<form  name="postkillmail" method="post" action="/post/" class="form">
 				<div class="form-group">
 					<textarea id="killmail" name="killmail" type="text" required rows="12" class="col-xs-12"></textarea>
 				</div>
+			{% if sessionusername == "" %}
+				<div class="alert alert-danger">You are not logged in, your killmail will not be accepted.</div>
+			{% endif %}
 				<div class="form-group">
 					<input type="submit" class="btn btn-large btn-primary" value="Post mail">
 				</div>
