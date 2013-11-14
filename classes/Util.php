@@ -287,7 +287,7 @@ class Util
 				$cachedUntil = date("Y-m-d H:i:s", time() + $apiTimeBetweenAccess);
 				if(stristr($_SERVER["REQUEST_URI"], "xml"))
 				{
-					$data = "<?xml version=\"1.0\" encoding=\"UTF-8\?" . ">"; // separating the ? and > allows vi to still color format code nicely
+					$data = "<?xml version=\"1.0\" encoding=\"UTF-8\"?" . ">"; // separating the ? and > allows vi to still color format code nicely
 					$data .= "<eveapi version=\"2\" zkbapi=\"1\">";
 					$data .= "<currentTime>$date</currentTime>";
 					$data .= "<result>";
