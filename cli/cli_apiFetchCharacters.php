@@ -70,7 +70,8 @@ class cli_apiFetchCharacters implements cliCommand
 					$allianceID = Db::queryField("select allianceID from zz_corporations where corporationID = :corpID", "allianceID", array(":corpID" => $corporationID));
 					$alliName = $allianceID > 0 ? "/ " . Info::getAlliName($allianceID) : "";
 					$type = $isDirector == "T" ? "corp" : "char";
-					Log::log("Populating ($type) $charName / $corpName $alliName");
+					while (strlen($keyID) < 8) $keyID = " " . $keyID;
+					Log::log("KeyID: $keyID ($type) Populating $charName / $corpName $alliName");
 				}
 			}
 		}
