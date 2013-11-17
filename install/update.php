@@ -29,7 +29,7 @@ out("\nUpdating composer...");
 chdir("$base/..");
 passthru("php composer.phar self-update");
 out("\nUpdating vendor files...");
-passthru("php composer.phar update");
+passthru("php composer.phar update --optimize-autoloader");
 
 require_once( "config.php" );
 chdir("$base");
