@@ -19,6 +19,7 @@
 $base = dirname(__FILE__);
 
 function exception_error_handler($errno, $errstr, $errfile, $errline ) {
+	if (error_reporting() === 0) { return; } //error has been suppressed with "@"
     throw new ErrorException($errstr, $errno, 0, $errfile, $errline);
 }
 
