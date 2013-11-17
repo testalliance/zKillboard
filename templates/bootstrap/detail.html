@@ -82,15 +82,21 @@
 
 {% if pageview == "overview" %}
 <div class="col-lg-8">
-	<div class="row">
-		<div class="col-lg-7 hidden-xs">{% include 'components/fitting_wheel.html' %}</div>
-		<div class="col-lg-5 hidden-xs hidden-md">{% include 'components/victim_info.html' %}</div>
+	<table class="hidden-xs" style="background-color:transparent;">
+		<tr>
+			<td class="col-lg-7">{% include 'components/fitting_wheel.html' %}</td>
+			<td style="width:100%;">{% include 'components/victim_info.html' %}</td>
+		<tr>
+	</table>
+	<div class="row hidden-lg hidden-md hidden-sm">
+		<div class="col-lg-5">{% include 'components/victim_info.html' %}</div>
 	</div>
 	<div class="row">
 		<div class="col-lg-12">{% if ddcombine == "true" or isMobile or isTablet %}{% include 'components/item_list_combined.html' %}{% else %}{% include 'components/item_list.html' %}{% endif %}</div>
 	</div>
 </div>
-<div class="col-lg-4 pull-right">
+
+<div class="col-lg-4">
 	<ul class="nav nav-tabs">
 		<li class="active"><a href="#details" data-toggle="tab">Details</a></li>
 		<li><a href="#comment" data-toggle="tab" data-disqus-identifier="{{ extra.commentID }}">Comments</a></li>

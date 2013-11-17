@@ -12,7 +12,7 @@
     {% set destroyed = item.qtyDestroyed > 0 ? 'item_destroyed' : '' %}
 	<tr class="{{ droppedRow }}">
 		{% set field = item %}
-		<td class="icons hidden-phone"><div align="center">{% include 'components/image_item.html' %}</div></td>
+		<td class="icons hidden-xs"><div align="center">{% include 'components/image_item.html' %}</div></td>
 		<td class="{% if dropped %}{{ dropped }}{% else %}{{ destroyed }}{% endif %}">{% if item.inContainer == 1%}&mdash; {% endif %}<a href="/item/{{item.typeID}}/">{{ item.typeName }}{% if item.singleton == 2%} (Copy){% endif %}</a></td>
 		<td class="{% if dropped %}{{ dropped }}{% else %}{{ destroyed }}{% endif %}" style="text-align: right;">{% if item.qtyDropped %}{{ item.qtyDropped|number_format(0) }}{%else%}{{ item.qtyDestroyed|number_format(0) }}{% endif %}</td>
 		<td class="price" style="text-align: right;">{{ item.price|number_format(2) }}</td>

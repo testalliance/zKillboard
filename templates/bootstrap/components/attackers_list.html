@@ -2,7 +2,7 @@
 	<thead>
 		<tr class="titles">
 			<th colspan="2" class="hidden-md hidden-xs">&nbsp;</th>
-			<th class="hidden-lg hidden-xs">&nbsp;</th>
+			<th class="hidden-lg">&nbsp;</th>
 			<th>&nbsp;</th>
 			<th class="pull-right">Damage</th>
 		</tr>
@@ -11,7 +11,12 @@
 	{% for attacker in attackList %}
 	{% set field = attacker %}
 		<tr class="attacker">
-			<td style="width: 64px; vertical-align: middle;">
+			<td class="hidden-lg hidden-md hidden-sm" style="width: 40px; vertical-align: middle;">
+				{% set imageSize = 64 %}
+				{% include 'components/image_char.html' %}
+				{% include 'components/image_ship.html' %}
+			</td>
+			<td class="hidden-xs" style="width: 64px; vertical-align: middle;">
 				{% set imageSize = 64 %}
 				{% include 'components/image_char.html' %}
 			</td>
