@@ -120,7 +120,7 @@ try {
 
 	chdir("$base/..");
 	out("\nInstalling vendor files");
-	passthru("php composer.phar update");
+	passthru("php composer.phar install --optimize-autoloader");
 
 	out("\n|g|composer install complete!");
 
