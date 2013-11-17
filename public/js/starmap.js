@@ -79,7 +79,7 @@ $(document).ready(function() {
     	$.getJSON('/js/starmap-ships.json', function(data) { ships = data; });
 
     	//setup the stomple connection - yay websockets = we should get this from the config setting
-    	var ws = new SockJS("http://stomp.zkillboard.com:15674/stomp");
+    	var ws = new SockJS("https://stomp.zkillboard.com:15678/stomp");
     	var client = Stomp.over(ws);
 
         //disable the debug mode in stomp.js
