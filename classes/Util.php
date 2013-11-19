@@ -279,9 +279,9 @@ class Util
 		$ip = substr(IP::get(), 0, 64);
 		if(!in_array($ip, $apiWhiteList))
 		{
-			$count = Db::queryField("select count(*) count from zz_analytics where ip = :ip and uri like '/api/%' and dttm >= date_sub(now(), interval :sec second)", "count", array(":ip" => $ip, ":sec" => $apiTimeBetweenAccess), 0);
+			$count = Db::queryField("select count(*) count from zz_analytics where ip = :ip and uri like '/api/%' and dttm >= date_sub(now(), interval 24 hour)", "count", array(":ip" => $ip, ":sec" => $apiTimeBetweenAccess), 0);
 
-			if($count > 1) // Don't count our current access
+			if($count > 8640) // They can access the API as much as they want up to 8,640 requests per day
 			{
 				$date = date("Y-m-d H:i:s");
 				$cachedUntil = date("Y-m-d H:i:s", time() + $apiTimeBetweenAccess);
