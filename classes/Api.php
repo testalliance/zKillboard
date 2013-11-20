@@ -311,6 +311,9 @@ class Api
 		$timer = new Timer();
 		$preFetched = array();
 
+		$apiCount = Db::queryField("select count(*) count from zz_api_characters where errorCount < 10 and cachedUntil < date_add(now(), interval 60 second)", "count", array(), 0);
+		if ($apiCount == 0) return;
+
 		$maxTime = 60 * 1000;
 		while ($timer->stop() < $maxTime) {
 			Db::execute("delete from zz_api_characters where isDirector = ''");

@@ -47,6 +47,9 @@ class cli_populateCharacters implements cliCommand
 		$timer = new Timer();
 		$maxTime = 65 * 1000;
 
+		$apiCount = Db::queryField("select count(*) count from zz_api where errorCode not in (203, 220) and lastValidation > date_add(now(), interval 1 minute)", "count", array(), 0);
+		if ($apiCount == 0) return;
+
 		$fetchesPerSecond = 25;
 		$iterationCount = 0;
 
