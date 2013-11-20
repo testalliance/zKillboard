@@ -66,9 +66,9 @@ $apiTimeBetweenAccess = 10; // 6 seconds between each bin of requests
 $apiWhiteList = array();
 
 // Stomp
-$stompServer = "";
-$stompUser = "";
-$stompPassword = "";
+$stompServer = "tcp://stomp.zkillboard.com:61613";
+$stompUser = "guest";
+$stompPassword = "guest";
 
 // CloudFlare
 $cfUser = "";
