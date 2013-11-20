@@ -30,7 +30,8 @@ class cli_stompSend implements cliCommand
 
 	public function getCronInfo()
 	{
-		return array(); // class_exists("Stomp") ? array(60 => "") : array();
+		global $stompUser;
+		return class_exists("Stomp") && $stompUser != "guest" ? array(60 => "") : array();
 	}
 
 
