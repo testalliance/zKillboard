@@ -81,7 +81,7 @@ if($_POST)
 	// Tracker
     if(isset($deleteentityid) && isset($deleteentitytype))
     {
-        $q = UserConfig::get($deleteentitytype);
+        $q = UserConfig::get("tracker_" . $deleteentitytype);
         foreach($q as $k => $ent)
         {
             if($ent["id"] == $deleteentityid)
@@ -90,20 +90,20 @@ if($_POST)
                 $error = $ent["name"]." has been removed";
             }
         }
-        UserConfig::set($deleteentitytype, $q);
+        UserConfig::set("tracker_" . $deleteentitytype, $q);
     }
 
     // Tracker
 	if((isset($entity) && $entity != null) && (isset($entitymetadata) && $entitymetadata != null))
 	{
 		$entitymetadata = json_decode($entitymetadata, true);
-		$entities = UserConfig::get($entitymetadata['type']);
+		$entities = UserConfig::get("tracker_" . $entitymetadata['type']);
 		$entity = array('id' => $entitymetadata['id'], 'name' => $entitymetadata['name']);
 		
 		if(empty($entities) || !in_array($entity, $entities))
 		{
 			$entities[] = $entity;
-			UserConfig::set($entitymetadata['type'], $entities);
+			UserConfig::set("tracker_" . $entitymetadata['type'], $entities);
 			$error = "{$entitymetadata['name']} has been added to your tracking list";
 		}
 		else

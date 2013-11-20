@@ -33,55 +33,55 @@
 						<li><a href="/kills/supers/">Supers</a></li>
 					</ul>
 				</li>
-				{% if character or corporation or alliance or faction or ship or item or system or region %}
+				{% if tracker_character or tracker_corporation or tracker_alliance or tracker_faction or tracker_ship or tracker_item or tracker_system or tracker_region %}
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown">Tracker <b class="caret"></b></a>
 					<ul class="dropdown-menu">
-						{% if character %}
+						{% if tracker_character %}
 						<li class="dropdown-header">Pilots</li>
-						{% for data in character %}
+						{% for data in tracker_character %}
 						<li><a href="/character/{{ data.id }}/">{{ data.name }}</a></li>
 						{% endfor %}
 						{% endif %}
-						{% if corporation %}
+						{% if tracker_corporation %}
 						<li class="dropdown-header">Corps</li>
-						{% for data in corporation %}
+						{% for data in tracker_corporation %}
 						<li><a href="/corporation/{{ data.id }}/">{{ data.name }}</a></li>
 						{% endfor %}
 						{% endif %}
-						{% if alliance %}
+						{% if tracker_alliance %}
 						<li class="dropdown-header">Alliances</li>
-						{% for data in alliance %}
+						{% for data in tracker_alliance %}
 						<li><a href="/alliance/{{ data.id }}/">{{ data.name }}</a></li>
 						{% endfor %}
 						{% endif %}
-						{% if faction %}
+						{% if tracker_faction %}
 						<li class="dropdown-header">Factions</li>
-						{% for data in faction %}
+						{% for data in tracker_faction %}
 						<li><a href="/faction/{{ data.id }}/">{{ data.name }}</a></li>
 						{% endfor %}
 						{% endif %}
-						{% if ship %}
+						{% if tracker_ship %}
 						<li class="dropdown-header">Ships</li>
-						{% for data in ship %}
+						{% for data in tracker_ship %}
 						<li><a href="/ship/{{ data.id }}/">{{ data.name }}</a></li>
 						{% endfor %}
 						{% endif %}
-						{% if item %}
+						{% if tracker_item %}
 						<li class="dropdown-header">Ships</li>
-						{% for data in item %}
+						{% for data in tracker_item %}
 						<li><a href="/ship/{{ data.id }}/">{{ data.name }}</a></li>
 						{% endfor %}
 						{% endif %}
-						{% if system %}
+						{% if tracker_system %}
 						<li class="dropdown-header">Systems</li>
-						{% for data in system %}
+						{% for data in tracker_system %}
 						<li><a href="/system/{{ data.id }}/">{{ data.name }}</a></li>
 						{% endfor %}
 						{% endif %}
-						{% if region %}
+						{% if tracker_region %}
 						<li class="dropdown-header">Regions</li>
-						{% for data in region %}
+						{% for data in tracker_region %}
 						<li><a href="/region/{{ data.id }}/">{{ data.name }}</a></li>
 						{% endfor %}
 						{% endif %}

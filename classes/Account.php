@@ -25,7 +25,8 @@ class Account
 		
 		foreach($entities as $ent)
 		{
-			$result = UserConfig::get($ent);
+			Db::execute("update zz_users_config set locker = 'tracker_$ent' where locker = '$ent'");
+			$result = UserConfig::get("tracker_$ent");
 			$part = array();
 			
 			if($result != null) foreach($result as $row) {
