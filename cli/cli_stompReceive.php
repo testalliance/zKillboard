@@ -25,17 +25,23 @@ class cli_stompReceive implements cliCommand
 
 	public function getAvailMethods()
 	{
-		return ""; // Space seperated list
+		return "";
 	}
 
 	public function getCronInfo()
 	{
-		return array();
+		return class_exists("Stomp") ? array(0 => "") : array();
 	}
 
 	public function execute($parameters)
 	{
 		global $stompServer, $stompUser, $stompPassword, $baseAddr;
+
+		// Ensure the class exists
+		if (!class_exists("Stomp")) {
+			die("ERROR! Stomp not installed!  Check the README to learn how to install Stomp...\n");
+		}
+
 		$stomp = new Stomp($stompServer, $stompUser, $stompPassword);
 		$stomp->setReadTimeout(10);
 		$destination = "/topic/kills";

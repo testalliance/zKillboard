@@ -28,9 +28,21 @@ class cli_stompSend implements cliCommand
 		return ""; // Space seperated list
 	}
 
+	public function getCronInfo()
+	{
+		return array(); // class_exists("Stomp") ? array(60 => "") : array();
+	}
+
+
 	public function execute($parameters)
 	{
 		global $stompServer, $stompUser, $stompPassword;
+
+		// Ensure the class exists
+		if (!class_exists("Stomp")) {
+			die("ERROR! Stomp not installed!  Check the README to learn how to install Stomp...\n");
+		}
+
 		$stomp = new Stomp($stompServer, $stompUser, $stompPassword);
 
 		$stompKey = "StompSend::lastFetch";
@@ -62,7 +74,7 @@ class cli_stompSend implements cliCommand
 				}
 			}
 			Storage::store($stompKey, $lastFetch);
-				if(sizeof($result) > 0)
+			if(sizeof($result) > 0)
 				Log::log("Stomped " . sizeof($result) . " killmails");
 			sleep(5);
 		}
