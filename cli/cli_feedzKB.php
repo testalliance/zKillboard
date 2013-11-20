@@ -30,9 +30,7 @@ class cli_feedzKB implements cliCommand
 
 	public function getCronInfo()
 	{
-		return array(
-			30 => ""
-		);
+		return array(30 => "");
 	}
 
 	public function execute($parameters)
@@ -40,7 +38,7 @@ class cli_feedzKB implements cliCommand
 		if (Util::isMaintenanceMode())
 			return;
 
-		$feeds = Db::query("SELECT * FROM zz_feeds where edkStyle = '0' order by lastFetchTime");
+		$feeds = Db::query("SELECT * FROM zz_feeds where edkStyle = '0' and lastFetchTime <= date_sub(now(), interval 1 hour) order by lastFetchTime", array(), 0);
 
 		$totalCount = 0;
 
@@ -51,11 +49,10 @@ class cli_feedzKB implements cliCommand
 			CLI::out("Fetching for |g|$baseurl|n|");
 			$lastKillTime = $feed["lastKillTime"];
 
-			do
-			{
+			do {
 				$insertCount = 0;
-				$url = "$baseurl/orderDirection/asc/";
-				if ($lastKillTime != null) $url .= "startTime/" . preg_replace( '/[^0-9]/', '', $lastKillTime ) . "/";
+				$url = "{$baseurl}orderDirection/asc/";
+				if ($lastKillTime != null && $lastKillTime != 0) $url .= "startTime/" . preg_replace( '/[^0-9]/', '', $lastKillTime ) . "/";
 				CLI::out($url);
 				$fetchedData = self::fetchUrl($url);
 				if ($fetchedData == "")
@@ -85,22 +82,16 @@ class cli_feedzKB implements cliCommand
 				}
 
 				if ($insertCount == 0) Db::execute("UPDATE zz_feeds SET lastFetchTime = now() WHERE id = :id", array(":id" => $id));
-				Db::execute("UPDATE zz_feeds SET lastKillTime = :lastKillTime WHERE id = :id", array(":id" => $id, ":lastKillTime" => $lastKillTime));
+				Db::execute("UPDATE zz_feeds SET lastKillTime = :lastKillTime, lastFetchTime = now() WHERE id = :id", array(":id" => $id, ":lastKillTime" => $lastKillTime));
 
 				$totalCount += $insertCount;
 				CLI::out("Inserted |g|$insertCount|n|/|g|" . sizeof($data) . "|n| kills...");
 				Log::log("Inserted $insertCount new kills from $url");
+			} while ($insertCount > 0 || sizeof($data) >= 50);
 
-				if($insertCount > 0 && $totalCount < 400)
-				{
-					CLI::out("|g|Pausing|n| for 15 seconds...");
-					sleep(15);
-				}
-			} while ($insertCount > 0 && $totalCount < 400);
 		}
 
-		if ($totalCount > 0)
-			CLI::out("Inserted a total of |g|" . number_format($totalCount, 0) . "|n| kills.");
+		if ($totalCount > 0) CLI::out("Inserted a total of |g|" . number_format($totalCount, 0) . "|n| kills.");
 	}
 
 	private static function fetchUrl($url)
