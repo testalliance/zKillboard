@@ -19,22 +19,22 @@
 $parameters = array();
 $names = array();
 
-getIDs("characterID", $parameters, UserConfig::get("character"));
-getIDs("corporationID", $parameters, UserConfig::get("corporation"));
-getIDs("allianceID", $parameters, UserConfig::get("alliance"));
-getIDs("factionID", $parameters, UserConfig::get("faction"));
-getIDs("shipTypeID", $parameters, UserConfig::get("item"));
-getIDs("solarSystemID", $parameters, UserConfig::get("system"));
-getIDs("regionID", $parameters, UserConfig::get("region"));
+getIDs("characterID", $parameters, UserConfig::get("tracker_character"));
+getIDs("corporationID", $parameters, UserConfig::get("tracker_corporation"));
+getIDs("allianceID", $parameters, UserConfig::get("tracker_alliance"));
+getIDs("factionID", $parameters, UserConfig::get("tracker_faction"));
+getIDs("shipTypeID", $parameters, UserConfig::get("tracker_item"));
+getIDs("solarSystemID", $parameters, UserConfig::get("tracker_system"));
+getIDs("regionID", $parameters, UserConfig::get("tracker_region"));
 if(empty($parameters)) throw new Exception("Nothing to track, please add entities to the tracker from your account page.");
 
-GetNames("character", $names, UserConfig::get("character"));
-GetNames("corporation", $names, UserConfig::get("corporation"));
-GetNames("alliance", $names, UserConfig::get("alliance"));
-GetNames("faction", $names, UserConfig::get("faction"));
-GetNames("ship", $names, UserConfig::get("item"));
-GetNames("systems", $names, UserConfig::get("system"));
-GetNames("regions", $names, UserConfig::get("region"));
+GetNames("character", $names, UserConfig::get("tracker_character"));
+GetNames("corporation", $names, UserConfig::get("tracker_corporation"));
+GetNames("alliance", $names, UserConfig::get("tracker_alliance"));
+GetNames("faction", $names, UserConfig::get("tracker_faction"));
+GetNames("ship", $names, UserConfig::get("tracker_item"));
+GetNames("systems", $names, UserConfig::get("tracker_system"));
+GetNames("regions", $names, UserConfig::get("tracker_region"));
 
 $parameters["combined"] = true;
 $limit = 100;

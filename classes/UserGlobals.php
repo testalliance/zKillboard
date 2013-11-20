@@ -33,8 +33,7 @@ class UserGlobals extends Twig_Extension
 
 			$config = UserConfig::getAll();
 
-			foreach($config as $key => $val)
-				$this->addGlobal($result, $key, $val);
+			foreach($config as $key => $val) $this->addGlobal($result, $key, $val);
 
 			$this->addGlobal($result, "sessionrevoked", User::isRevoked());
 			$this->addGlobal($result, "sessionrevokereason", User::getRevokeReason());
