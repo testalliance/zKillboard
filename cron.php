@@ -102,7 +102,7 @@ function runCron($command, $interval, $args)
         return;
     }
 
-    Log::log("Cron $cronName running at ".date($dateFormat, $curTime));
+    //Log::log("Cron $cronName running at ".date($dateFormat, $curTime));
 
     Storage::store($locker, $curTime);
 
