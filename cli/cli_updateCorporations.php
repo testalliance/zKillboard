@@ -44,7 +44,7 @@ class cli_updateCorporations implements cliCommand
 	{
 		Db::execute("delete from zz_corporations where corporationID = 0");
 		Db::execute("insert ignore into zz_corporations (corporationID) select executorCorpID from zz_alliances where executorCorpID > 0");
-		$result = Db::query("select corporationID, name, memberCount, ticker from zz_corporations where (memberCount is null or memberCount > 0 or lastUpdated = 0)  and corporationID >= 1000001 order by lastUpdated limit 100", array(), 0);
+		$result = Db::query("select corporationID, name, memberCount, ticker from zz_corporations where lastUpdated < date_sub(now(), interval 1 week) and corporationID >= 1000001 order by lastUpdated limit 100", array(), 0);
 		foreach($result as $row) {
 			$id = $row["corporationID"];
 			$oMemberCount = $row["memberCount"];
