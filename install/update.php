@@ -57,6 +57,14 @@ Db::execute("replace into zz_storage values ('maintenance', 'true')");
 out("|b|Waiting 60 seconds for all executing scripts to stop...|n|");
 sleep(60);
 
+// Get a list of all tables
+$tableResult = Db::query("show tables", array(), 0);
+$tables = array();
+foreach($tableResult as $row) {
+	$table = array_pop($row);
+	$tables[$table] = true;
+}
+
 // Now install the db structure
 try {
     $sqlFiles = scandir("$base/sql");
@@ -67,8 +75,15 @@ try {
             $sqlFile = "$base/sql/$file";
             loadFile($sqlFile, $table);
             out("|w|done|n|");
-        }   
-    }   
+			$tables[$table] = false;
+        }
+    }
+	foreach ($tables as $table=>$drop) {
+		if ($drop && Util::startsWith($table, "zz_")) {
+			out("|r|Dropping table: |g|$table|n|\n", false, false);
+			Db::execute("drop table $table");
+		}
+	}
 } catch (Exception $ex) {
     out("|r|Error!|n|");
     throw $ex;
