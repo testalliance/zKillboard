@@ -142,6 +142,7 @@
             (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
         }());
         </script>
+	{% if showAds != false %}
         <script type="text/javascript">
           (function() {
             var po = document.createElement("script"); po.type = "text/javascript"; po.async = true;
@@ -165,6 +166,7 @@
     document.getElementById('fb').setAttribute('data-href', sUrl);
     FB.XFBML.parse();
     </script>
+	{% endif %}
 
 {% block script %}
 {% endblock %}
