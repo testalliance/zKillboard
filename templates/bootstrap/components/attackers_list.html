@@ -20,7 +20,7 @@
 				{% set imageSize = 64 %}
 				{% include 'components/image_char.html' %}
 			</td>
-			<td class="hidden-xs hidden-md" style="width: 35px; vertical-align: middle;">
+			<td class="hidden-xs" style="width: 35px; vertical-align: middle;">
 				{% set imageSize = 32 %}
 				{% include 'components/image_ship.html' %}
 				{% if attacker.weaponTypeID == 0 %}
@@ -32,9 +32,16 @@
 			<td class="pilotinfo">
 				{% set field = attacker %}
 				{% set shortLength = 25 %}
-				{% include 'components/text_char.html' %}<br/>
-				{% include 'components/text_corp.html' %}<br/>
-				{% include 'components/text_alli.html' %}
+				<div class="hidden-lg">
+					{% include 'components/text_char.html' %} / {% include 'components/text_ship.html' %}<br/>
+					{% include 'components/text_corp.html' %} / {% include 'components/text_item.html' %}<br/>
+					{% include 'components/text_alli.html' %}{% if field.factionName %} ({% include 'components/text_faction.html' %}){% endif %}
+				</div>
+				<div class="hidden-sm hidden-md hidden-xs">
+					{% include 'components/text_char.html' %}<br/>
+					{% include 'components/text_corp.html' %}<br/>
+					{% include 'components/text_alli.html' %}
+				</div>
 				{% set shortLength = 30 %}
 			</td>
 			<td class="damage" style="vertical-align: middle; text-align: right;">
