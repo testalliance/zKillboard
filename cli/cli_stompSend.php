@@ -49,10 +49,10 @@ class cli_stompSend implements cliCommand
 		$stompKey = "StompSend::lastFetch";
 		$lastFetch = date("Y-m-d H:i:s", time() - (12 * 3600));
 		$lastFetch = Storage::retrieve($stompKey, $lastFetch);
+		$stompCount = 0;
 
-		Log::log("stompSend started");
 		$timer = new Timer();
-		while ($timer->stop() < 599000)
+		while ($timer->stop() < 65000)
 		{
 			$time = $timer->stop();
 			$result = Db::query("SELECT killID, insertTime, kill_json FROM zz_killmails WHERE insertTime > :lastFetch AND processed > 0 ORDER BY killID limit 1000", array(":lastFetch" => $lastFetch), 0);
@@ -61,10 +61,12 @@ class cli_stompSend implements cliCommand
 				$lastFetch = max($lastFetch, $kill["insertTime"]);
 				if(!empty($kill["kill_json"]))
 				{
-					if($kill["killID"] > 0)
+					if($kill["killID"] > 0) 
 					{
-						$killID = $kill["killID"];
-						foreach (self::Destinations($kill["kill_json"]) as $destination) {
+						$stompCount++;
+						$destinations = self::getDestinations($kill["kill_json"]);
+						foreach ($destinations as $destination)
+						{
 							$stomp->send($destination, $kill["kill_json"]);
 						}
 					}
@@ -75,13 +77,12 @@ class cli_stompSend implements cliCommand
 				}
 			}
 			Storage::store($stompKey, $lastFetch);
-			if(sizeof($result) > 0)
-				Log::log("Stomped " . sizeof($result) . " killmails");
 			sleep(5);
 		}
+		if($stompCount > 0) Log::log("Stomped $stompCount killmails");
 	}
 
-	private function Destinations($kill)
+	private function getDestinations($kill)
 	{
 		$kill = json_decode($kill, true);
 		$destinations = array();
@@ -90,26 +91,18 @@ class cli_stompSend implements cliCommand
 		$destinations[] = "/topic/location.solarsystem.".$kill["solarSystemID"];
 
 		// victim
-		if($kill["victim"]["characterID"] > 0)
-			$destinations[] = "/topic/involved.character.".$kill["victim"]["characterID"];
-		if($kill["victim"]["corporationID"] > 0)
-			$destinations[] = "/topic/involved.corporation.".$kill["victim"]["corporationID"];
-		if($kill["victim"]["factionID"] > 0)
-			$destinations[] = "/topic/involved.faction.".$kill["victim"]["factionID"];
-		if($kill["victim"]["allianceID"] > 0)
-			$destinations[] = "/topic/involved.alliance.".$kill["victim"]["allianceID"];
+		if($kill["victim"]["characterID"] > 0) $destinations[] = "/topic/involved.character.".$kill["victim"]["characterID"];
+		if($kill["victim"]["corporationID"] > 0) $destinations[] = "/topic/involved.corporation.".$kill["victim"]["corporationID"];
+		if($kill["victim"]["factionID"] > 0) $destinations[] = "/topic/involved.faction.".$kill["victim"]["factionID"];
+		if($kill["victim"]["allianceID"] > 0) $destinations[] = "/topic/involved.alliance.".$kill["victim"]["allianceID"];
 
 		// attackers
 		foreach($kill["attackers"] as $attacker)
 		{
-			if($attacker["characterID"] > 0)
-				$destinations[] = "/topic/involved.character." . $attacker["characterID"];
-			if($attacker["corporationID"] > 0)
-				$destinations[] = "/topic/involved.corporation." . $attacker["corporationID"];
-			if($attacker["factionID"] > 0)
-				$destinations[] = "/topic/involved.faction." . $attacker["factionID"];
-			if($attacker["allianceID"] > 0)
-				$destinations[] = "/topic/involved.alliance." . $attacker["allianceID"];
+			if($attacker["characterID"] > 0) $destinations[] = "/topic/involved.character." . $attacker["characterID"];
+			if($attacker["corporationID"] > 0) $destinations[] = "/topic/involved.corporation." . $attacker["corporationID"];
+			if($attacker["factionID"] > 0) $destinations[] = "/topic/involved.faction." . $attacker["factionID"];
+			if($attacker["allianceID"] > 0) $destinations[] = "/topic/involved.alliance." . $attacker["allianceID"];
 		}
 
 		return $destinations;
