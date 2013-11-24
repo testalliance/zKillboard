@@ -39,7 +39,7 @@ class irc_reprice implements ircCommand {
 		do {
 			sleep(1);
 			$processed = Db::queryField("select processed from zz_killmails where killID = :killID", "processed", array(":killID" => $killID), 0);
-		} while ($processed = 0);
+		} while ($processed == 0);
 
 		$kill = Db::queryRow("select * from zz_participants where isVictim = 1 and killID = :killID", array(":killID" => $killID), 0);
 		$total = $kill["total_price"];
