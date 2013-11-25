@@ -223,6 +223,11 @@ $app->get("/evekillrelatedintercept/:id/", function($id) use ($app) {
 	include( "view/evekillrelatedintercept.php" );
 });
 
+// primer
+$app->get("/primer/", function() use ($app) {
+	include("view/primer.php");
+});
+
 // The Overview stuff
 $app->get("/:input+/", function($input) use ($app) {
 	include("view/overview.php");
