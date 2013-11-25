@@ -57,6 +57,7 @@ $phealCacheLocation = "%phealcachelocation%";
 
 // Cookiiieeeee
 $cookie_name = "zKB";
+$cookie_ssl = false;
 $cookie_time = (3600 * 24 * 30); // 30 days
 $cookie_secret = "%cookiesecret%";
 

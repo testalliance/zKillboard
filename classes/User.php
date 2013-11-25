@@ -19,12 +19,12 @@ class User
 {
 	public static function setLogin($username, $password, $autoLogin)
 	{
-		global $cookie_name, $cookie_time, $baseAddr, $app;
+		global $cookie_name, $cookie_time, $cookie_ssl, $baseAddr, $app;
 		$hash = Password::genPassword($password);
 		if ($autoLogin) {
 			$val = $username."/".hash("sha256", $username.$hash.time());
 			Db::execute("UPDATE zz_users SET autoLoginHash = :autoLoginHash WHERE username = :username", array(":username" => $username, ":autoLoginHash" => $val));
-			$app->setEncryptedCookie($cookie_name, $val, time() + $cookie_time, "/", $baseAddr, true);
+			$app->setEncryptedCookie($cookie_name, $val, time() + $cookie_time, "/", $baseAddr, $cookie_ssl);
 		}
 		$_SESSION["loggedin"] = $username;
 		return true;
@@ -32,10 +32,10 @@ class User
 
 	public static function setLoginHashed($username, $hash)
 	{
-		global $cookie_name, $cookie_time, $baseAddr, $app;
+		global $cookie_name, $cookie_time, $cookie_ssl, $baseAddr, $app;
 		$val = $username."/".hash("sha256", $username.$hash.time());
 		Db::execute("UPDATE zz_users SET autoLoginHash = :autoLoginHash WHERE username = :username", array(":username" => $username, ":autoLoginHash" => $val));
-		$app->setEncryptedCookie($cookie_name, $val, time() + $cookie_time, "/", $baseAddr, true);
+		$app->setEncryptedCookie($cookie_name, $val, time() + $cookie_time, "/", $baseAddr, $cookie_ssl);
 		$_SESSION["loggedin"] = $username;
 		return true;
 	}
@@ -62,7 +62,7 @@ class User
 	public static function autoLogin()
 	{
 		global $cookie_name, $cookie_time, $app;
-		$sessionCookie = $app->getEncryptedCookie($cookie_name);
+		$sessionCookie = $app->getEncryptedCookie($cookie_name, false);
 
 		if (!empty($sessionCookie)) {
 			$cookie = explode("/", $sessionCookie);
