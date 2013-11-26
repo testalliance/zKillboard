@@ -118,15 +118,15 @@ class Parser
 			switch($key) {
 				case "Victim:":
 					$killMail["victim"]["characterName"] = (string) $value;
-					$killMail["victim"]["characterID"] = (int) Info::getCharID($value, true);
+					$killMail["victim"]["characterID"] = (int) Info::getCharID($value);
 				break;
 				case "Corp:":
 					if ($inVictim) {
 						$killMail["victim"]["corporationName"] = (string) $value;
-						$killMail["victim"]["corporationID"] = (int) Info::getCorpID($value, true);
+						$killMail["victim"]["corporationID"] = (int) Info::getCorpID($value);
 					} else if ($inAttackers) {
 						$currentAttacker["corporationName"] = (string) $value;
-						$currentAttacker["corporationID"] = (int) Info::getCorpID($value, true);
+						$currentAttacker["corporationID"] = (int) Info::getCorpID($value);
 					}
 				break;
 				case "Alliance:":
@@ -201,7 +201,7 @@ class Parser
 						$value = trim(str_ireplace("(laid the final blow)", "", $value));
 					}
 					$id = 0;
-					if ($value != "" && strpos($value, "/") === false) $id = (int) Info::getCharID($value, true);
+					if ($value != "" && strpos($value, "/") === false) $id = (int) Info::getCharID($value);
 					if ($id != 0) {
 						$currentAttacker["characterName"] = (string) $value;
 						$currentAttacker["characterID"] = $id;
@@ -216,7 +216,7 @@ class Parser
 						//$currentAttacker["characterName"] = (string) $npc;
 						if (sizeof($npcSplit) > 1 && trim($npcSplit[1]) != "Unknown") {
 							// Look up the corp
-							$corpID = Info::getCorpID(trim($npcSplit[1]), true);
+							$corpID = Info::getCorpID(trim($npcSplit[1]));
 							if ($corpID > 0) {
 								$currentAttacker["corporationID"] = $corpID;
 								$currentAttacker["corporationName"] = trim($npcSplit[1]);

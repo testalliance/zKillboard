@@ -120,7 +120,7 @@ class Info
 	 * @param $name
 	 * @return int The corporationID of a corporation
 	 */
-	public static function getCorpId($name)
+	public static function getCorpID($name)
 	{
 		$id = Db::queryField("select corporationID from zz_corporations where name = :name order by memberCount desc limit 1", "corporationID",
 				array(":name" => $name), 30);
@@ -243,7 +243,7 @@ class Info
 		return null;
 	}
 
-	public static function getFactionId($name)
+	public static function getFactionID($name)
 	{
 		$factions = array("Caldari State" => 500001, "Minmatar Republic" => 500002, "Amarr Empire" => 500003, "Gallente Federation" => 500004);
 
@@ -319,14 +319,14 @@ class Info
 		return $name;
 	}
 
-	public static function getAlliId($name)
+	public static function getAlliID($name)
 	{
 		if ($name == "BOGLYFT") return 1708771618; 
 		return Db::queryField("select allianceID from zz_alliances where name = :name order by memberCount desc limit 1", "allianceID",
 				array(":name" => $name), 30);
 	}
 
-	public static function getCharId($name)
+	public static function getCharID($name)
 	{
 		if (Bin::get("s:$name", null) != null) return Bin::get("s:$name", null);
 		$id = (int)Db::queryField("select characterID from zz_characters where name = :name order by corporationID desc", "characterID",
