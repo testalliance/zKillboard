@@ -25,7 +25,10 @@ class User
 			$hash = $username."/".hash("sha256", $username.$hash.time());
 			$validTill = date("Y-m-d H:i:s", time() + $cookie_time);
 			$userID = Db::queryField("SELECT id FROM zz_users WHERE username = :username", "id", array(":username" => $username));
-			Db::execute("INSERT INTO zz_users_sessions (userID, sessionHash, validTill) VALUES (:userID, :sessionHash, :validTill)", array(":userID" => $userID, ":sessionHash" => $hash, ":validTill" => $validTill));
+			$userAgent = $_SERVER["HTTP_USER_AGENT"];
+			$ip = IP::get();
+			Db::execute("INSERT INTO zz_users_sessions (userID, sessionHash, validTill, userAgent, ip) VALUES (:userID, :sessionHash, :validTill, :userAgent, :ip)", 
+				array(":userID" => $userID, ":sessionHash" => $hash, ":validTill" => $validTill, ":userAgent" => $userAgent, ":ip" => $ip));
 			$app->setEncryptedCookie($cookie_name, $hash, time() + $cookie_time, "/", $baseAddr, $cookie_ssl);
 		}
 		$_SESSION["loggedin"] = $username;
