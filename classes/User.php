@@ -24,7 +24,7 @@ class User
 		if ($autoLogin) {
 			$hash = $username."/".hash("sha256", $username.$hash.time());
 			$validTill = date("Y-m-d H:i:s", time() + $cookie_time);
-			$userID = Db::queryField("SELECT id FROM zz_users WHERE username = :username", "id", array(":username" => $username));
+			$userID = Db::queryField("SELECT id FROM zz_users WHERE username = :username", "id", array(":username" => $username), 0);
 			$userAgent = $_SERVER["HTTP_USER_AGENT"];
 			$ip = IP::get();
 			Db::execute("INSERT INTO zz_users_sessions (userID, sessionHash, validTill, userAgent, ip) VALUES (:userID, :sessionHash, :validTill, :userAgent, :ip)", 
@@ -37,7 +37,7 @@ class User
 
 	public static function checkLogin($username, $password)
 	{
-		$p = Db::query("SELECT username, password FROM zz_users WHERE username = :username", array(":username" => $username));
+		$p = Db::query("SELECT username, password FROM zz_users WHERE username = :username", array(":username" => $username), 0);
 		if(!empty($p[0]))
 		{
 			$user = $p[0]["username"];
@@ -52,8 +52,7 @@ class User
 
 	public static function checkLoginHashed($userID)
 	{
-		return Db::query("SELECT sessionHash FROM zz_users_sessions WHERE userID = :userID AND now() < validTill", array(":userID" => $userID));
-		//return Db::queryField("SELECT autoLoginHash FROM zz_users WHERE username = :username", "autoLoginHash", array(":username" => $username), 0);
+		return Db::query("SELECT sessionHash FROM zz_users_sessions WHERE userID = :userID AND now() < validTill", array(":userID" => $userID), 0);
 	}
 
 	public static function autoLogin()
@@ -65,7 +64,7 @@ class User
 			$cookie = explode("/", $sessionCookie);
 			$username = $cookie[0];
 			$cookieHash = $cookie[1];
-			$userID = Db::queryField("SELECT id FROM zz_users WHERE username = :username", "id", array(":username" => $username));
+			$userID = Db::queryField("SELECT id FROM zz_users WHERE username = :username", "id", array(":username" => $username), 0);
 			$hashes = self::checkLoginHashed($userID, $cookieHash);
 			foreach($hashes as $hash)
 			{
