@@ -125,7 +125,7 @@ class Info
 		$id = Db::queryField("select corporationID from zz_corporations where name = :name order by memberCount desc limit 1", "corporationID",
 				array(":name" => $name), 30);
 
-		if ($id == null) {
+		if ($id == null || $id == 0) {
 			try {
 				$pheal = Util::getPheal();
 				$pheal->scope = "eve";
