@@ -22,23 +22,16 @@ class User
 		global $cookie_name, $cookie_time, $cookie_ssl, $baseAddr, $app;
 		$hash = Password::genPassword($password);
 		if ($autoLogin) {
-			$val = $username."/".hash("sha256", $username.$hash.time());
-			Db::execute("UPDATE zz_users SET autoLoginHash = :autoLoginHash WHERE username = :username", array(":username" => $username, ":autoLoginHash" => $val));
-			$app->setEncryptedCookie($cookie_name, $val, time() + $cookie_time, "/", $baseAddr, $cookie_ssl);
+			$hash = $username."/".hash("sha256", $username.$hash.time());
+			$validTill = date("Y-m-d H:i:s", time() + $cookie_time);
+			$userID = Db::queryField("SELECT id FROM zz_users WHERE username = :username", "id", array(":username" => $username));
+			Db::execute("INSERT INTO zz_users_sessions (userID, sessionHash, validTill) VALUES (:userID, :sessionHash, :validTill)", array(":userID" => $userID, ":sessionHash" => $hash, ":validTill" => $validTill));
+			$app->setEncryptedCookie($cookie_name, $hash, time() + $cookie_time, "/", $baseAddr, $cookie_ssl);
 		}
 		$_SESSION["loggedin"] = $username;
 		return true;
 	}
 
-	public static function setLoginHashed($username, $hash)
-	{
-		global $cookie_name, $cookie_time, $cookie_ssl, $baseAddr, $app;
-		$val = $username."/".hash("sha256", $username.$hash.time());
-		Db::execute("UPDATE zz_users SET autoLoginHash = :autoLoginHash WHERE username = :username", array(":username" => $username, ":autoLoginHash" => $val));
-		$app->setEncryptedCookie($cookie_name, $val, time() + $cookie_time, "/", $baseAddr, $cookie_ssl);
-		$_SESSION["loggedin"] = $username;
-		return true;
-	}
 	public static function checkLogin($username, $password)
 	{
 		$p = Db::query("SELECT username, password FROM zz_users WHERE username = :username", array(":username" => $username));
@@ -54,9 +47,10 @@ class User
 		return false;
 	}
 
-	public static function checkLoginHashed($username)
+	public static function checkLoginHashed($userID)
 	{
-		return Db::queryField("SELECT autoLoginHash FROM zz_users WHERE username = :username", "autoLoginHash", array(":username" => $username), 0);
+		return Db::query("SELECT sessionHash FROM zz_users_sessions WHERE userID = :userID AND now() < validTill", array(":userID" => $userID));
+		//return Db::queryField("SELECT autoLoginHash FROM zz_users WHERE username = :username", "autoLoginHash", array(":username" => $username), 0);
 	}
 
 	public static function autoLogin()
@@ -68,10 +62,15 @@ class User
 			$cookie = explode("/", $sessionCookie);
 			$username = $cookie[0];
 			$cookieHash = $cookie[1];
-			$hash = self::checkLoginHashed($username, $cookieHash);
-			if ($sessionCookie == $hash) {
-				self::setLoginHashed($username, $hash);
-				return true;
+			$userID = Db::queryField("SELECT id FROM zz_users WHERE username = :username", "id", array(":username" => $username));
+			$hashes = self::checkLoginHashed($userID, $cookieHash);
+			foreach($hashes as $hash)
+			{
+				$hash = $hash["sessionHash"];
+				if ($sessionCookie == $hash) {
+					$_SESSION["loggedin"] = $username;
+					return true;
+				}
 			}
 			return false;
 		}
