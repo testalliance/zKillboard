@@ -49,6 +49,7 @@ $timer = new Timer();
 $app = new \Slim\Slim($config);
 
 // Session
+ini_set("session.save_path", $baseDir."cache/sessions/");
 session_cache_limiter(false);
 session_start();
 
