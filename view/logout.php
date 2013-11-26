@@ -16,8 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+global $cookie_name;
 if(isset($_SERVER["HTTP_REFERER"])) $requesturi = $_SERVER["HTTP_REFERER"];
-
+$sessionCookie = $app->getEncryptedCookie($cookie_name, false);
+// remove the entry from the database
+Db::execute("DELETE FROM zz_users_sessions WHERE sessionHash = :hash", array(":hash" => $sessionCookie));
 unset($_SESSION["loggedin"]);
 $app->view(new \Slim\Extras\Views\Twig());
 $twig = $app->view()->getEnvironment();
