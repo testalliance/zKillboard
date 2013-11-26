@@ -330,7 +330,7 @@ class Info
 		if (Bin::get("s:$name", null) != null) return Bin::get("s:$name", null);
 		$id = (int)Db::queryField("select characterID from zz_characters where name = :name order by corporationID desc", "characterID",
 				array(":name" => $name), 30);
-		if ($id == 0) {
+		if ($id == 0 || $id == NULL) {
 			try {
 					$pheal = Util::getPheal();
 					$pheal->scope = "eve";
