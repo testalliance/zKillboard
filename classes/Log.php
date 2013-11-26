@@ -36,19 +36,21 @@ class Log
 	 */
 	public static function irc($text, $from = "zkillboard - ")
 	{
+		global $ircLogFile;
+		if (!isset($ircLogFile) || $ircLogFile == "") return;
 		$text = Log::addIRCColors($text);
-    	$logfile = "/var/killboard/bot/esc.txt";
-		if (!file_exists($logfile) && !is_writable(dirname($logfile))) return; // Can't create the file
-		error_log("\n${from}$text\n", 3, $logfile);
+		if (!is_writable($ircLogFile) && !is_writable(dirname($ircLogFile))) return;
+		error_log("\n${from}$text\n", 3, $ircLogFile);
 	}
 
 
 	public static function ircAdmin($text, $from = "zkillboard - ")
 	{
+		global $ircAdminLogFile;
+		if (!isset($ircAdminLogFile) || $ircAdminLogFile == "") return;
 		$text = Log::addIRCColors($text);
-    	$logfile = "/var/killboard/bot/escadmin.txt";
-		if (!file_exists($logfile) && !is_writable(dirname($logfile))) return; // Can't create the file
-		error_log("\n${from}$text\n", 3, $logfile);
+		if (!is_writable($ircAdminLogFile) && !is_writable(dirname($ircAdminLogFile))) return; // Can't create the file
+		error_log("\n${from}$text\n", 3, $ircAdminLogFile);
 	}
 
 	public static function error($text)
