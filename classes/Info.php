@@ -321,7 +321,6 @@ class Info
 
 	public static function getAlliID($name)
 	{
-		if ($name == "BOGLYFT") return 1708771618; 
 		return Db::queryField("select allianceID from zz_alliances where name = :name order by memberCount desc limit 1", "allianceID",
 				array(":name" => $name), 30);
 	}
