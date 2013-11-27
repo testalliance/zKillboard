@@ -133,7 +133,7 @@ class User
 
 	public static function getSessions($userID)
 	{
-		return Db::query("SELECT sessionHash, dateCreated, validTill, userAgent, ip FROM zz_users_sessions WHERE userID = :userID", array(":userID" => $userID));
+		return Db::query("SELECT sessionHash, dateCreated, validTill, userAgent, ip FROM zz_users_sessions WHERE userID = :userID", array(":userID" => $userID), 0);
 	}
 
 	public static function deleteSession($userID, $sessionHash)
