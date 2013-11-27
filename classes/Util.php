@@ -359,4 +359,14 @@ class Util
 				unset($avail[$key]);
 		return $avail;
 	}
+
+	public static function bootstrapThemes()
+	{
+		$dir = "public/css/themes/";
+		$avail = scandir($dir);
+		foreach($avail as $key => $val)
+			if($val == "." || $val == "..")
+				unset($avail[$key]);
+		return $avail;
+	}	
 }

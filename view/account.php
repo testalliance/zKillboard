@@ -124,7 +124,7 @@ if($_POST)
 }
 
 $data["entities"] = Account::getUserTrackerData();
-$data["themes"] = array("default", "amelia", "cerulean", "cosmo", "cyborg", "journal", "readable", "simplex", "slate", "spacelab", "united");
+$data["themes"] = Util::bootstrapThemes();
 $data["viewthemes"] = Util::themesAvailable();
 $data["apiKeys"] = Api::getKeys($userID);
 $data["apiChars"] = Api::getCharacters($userID);
