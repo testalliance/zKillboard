@@ -130,7 +130,7 @@ class Db
 		$stmt->closeCursor();
 
 		// insert it to a db..
-		$insertQuery = "INSERT DELAYED IGNORE INTO zz_query_stats VALUES (:hash, :query, :params, :selectType, :table, :queryType, :possibleKeys, :keyUsed, :keyLength, :ref, :rows, :extra, :duration)";
+		$insertQuery = "INSERT IGNORE INTO zz_query_stats VALUES (:hash, :query, :params, :selectType, :table, :queryType, :possibleKeys, :keyUsed, :keyLength, :ref, :rows, :extra, :duration)";
 		$parameters = array(
 				":hash" => $hash,
 				":query" => str_replace("explain", "", $query),
