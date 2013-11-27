@@ -1,7 +1,7 @@
 
 DROP TABLE IF EXISTS `zz_irc_log`;
 CREATE TABLE `zz_irc_log` (
-  `id` int(11) NOT NULL,
+  `id` int(8) NOT NULL,
   `nick` varchar(64) NOT NULL,
   `command` varchar(64) NOT NULL,
   `parameters` varchar(256) DEFAULT NULL,
