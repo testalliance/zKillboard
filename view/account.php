@@ -47,6 +47,10 @@ if($_POST)
 		}
 	}
 
+	// delete a session
+	if(isset($deletesessionid))
+		User::deleteSession($userID, $deletesessionid);
+	
 	// Delete an apikey
 	if(isset($deletekeyid) && !isset($deleteentity))
 		$error = Api::deleteKey($deletekeyid);
@@ -133,5 +137,6 @@ $data["timeago"] = UserConfig::get("timeago");
 $data["ddcombine"] = UserConfig::get("ddcombine");
 $data["ddmonthyear"] = UserConfig::get("ddmonthyear");
 $data["useSummaryAccordion"] = UserConfig::get("useSummaryAccordion");
+$data["sessions"] = User::getSessions($userID);
 
 $app->render("account.html", array("data" => $data, "message" => $error, "key" => $key, "reqid" => $reqid));

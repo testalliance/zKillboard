@@ -130,4 +130,14 @@ class User
 	{
 		return Db::queryField("SELECT username FROM zz_users WHERE userID = :userID", array(":userID" => $userID));
 	}
+
+	public static function getSessions($userID)
+	{
+		return Db::query("SELECT sessionHash, dateCreated, validTill, userAgent, ip FROM zz_users_sessions WHERE userID = :userID", array(":userID" => $userID));
+	}
+
+	public static function deleteSession($userID, $sessionHash)
+	{
+		Db::execute("DELETE FROM zz_users_sessions WHERE userID = :userID AND sessionHash = :sessionHash", array(":userID" => $userID, ":sessionHash" => $sessionHash));
+	}
 }
