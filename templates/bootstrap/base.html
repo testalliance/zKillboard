@@ -48,14 +48,10 @@
 		<link rel="canonical" href="https://zkillboard.com{{ requesturi }}">
         <link rel="search" type="application/opensearchdescription+xml" href="//{{ siteurl }}/xml/zkbsearch.xml" title="zKillboard">
 {% if theme is not defined %}{% set theme = 'cyborg' %}{% endif %}
-		{% if theme == "default" %}
-		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
-		{% else %}
-		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootswatch/3.0.0/{{ theme }}/bootstrap.min.css">
-		{% endif %}
+		<link rel="stylesheet" href="/css/themes/{{ theme }}/bootstrap.min.css">
         <link rel="stylesheet" href="/css/theme-edits/{{theme}}-main.css">
 		<link rel="stylesheet" href="/css/main.css">
-		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
+		<link rel="stylesheet" href="/css/font-awesome.css">
 		{% block style %}
         {% endblock %}
         {{ analytics|raw }}
