@@ -48,10 +48,15 @@
 		<link rel="canonical" href="https://zkillboard.com{{ requesturi }}">
         <link rel="search" type="application/opensearchdescription+xml" href="//{{ siteurl }}/xml/zkbsearch.xml" title="zKillboard">
 {% if theme is not defined %}{% set theme = 'cyborg' %}{% endif %}
-		<link rel="stylesheet" href="/css/themes/{{ theme }}/bootstrap.min.css">
+        {% if theme == "default" %}
+            <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+        {% else %}
+            <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootswatch/latest/{{ theme }}/bootstrap.min.css">
+        {% endif %}
+
         <link rel="stylesheet" href="/css/theme-edits/{{theme}}-main.css">
 		<link rel="stylesheet" href="/css/main.css">
-		<link rel="stylesheet" href="/css/font-awesome.css">
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.min.css">
 		{% block style %}
         {% endblock %}
         {{ analytics|raw }}
@@ -119,10 +124,10 @@
             </div>
         </div>
 
-        <script type="text/javascript" src="/js/jquery.min.js"></script>
-        <script type="text/javascript" src="/js/jquery.timeago.min.js"></script>
-        <script type="text/javascript" src="/js/jquery.dataTables.min.js"></script>
-		<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.1.0/jquery.timeago.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/jquery.dataTables.min.js"></script>
+		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.2/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="/js/search.js"></script>
         <script type="text/javascript" src="/js/common.js"></script>
         <script type="text/javascript" src="/js/sclock1.js"></script>
