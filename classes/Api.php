@@ -204,10 +204,10 @@ class Api
 				$time = time();
 				Storage::store("Last904Time", $time);
 				// Only announce 904's every 5 minutes
-				if ($lastTime > ($time - 300)) {
-					Log::irc($msg);
-					Log::admin($msg);
-				}
+				//if ($lastTime > ($time - 300)) {
+				//	Log::irc($msg);
+				//	Log::ircAdmin($msg);
+				//}
 				break;
 			case 403:
 			case 502:
