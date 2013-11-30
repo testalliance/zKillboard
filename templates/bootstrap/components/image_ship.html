@@ -1,9 +1,9 @@
 {% set actualSize = (resizeImage is defined) ? resizeImage : imageSize %}
 {% if field.shipTypeID == 0 %}
 	{% if resizeImage %}
-		<img src="/img/eve-question.png" height="{{resizeImage}}" width="{{resizeImage}}" class="eveimage img-rounded" alt=""/>
+		<img src="/img/eve-question.png" height="{{actualSize}}" width="{{actualSize}}" class="eveimage img-rounded" alt=""/>
 	{% else %}
-		<img src="/img/eve-question.png" height="{{imageSize}}" width="{{imageSize}}" class="eveimage img-rounded" alt=""/>
+		<img src="/img/eve-question.png" height="{{actualSize}}" width="{{actualSize}}" class="eveimage img-rounded" alt=""/>
 	{% endif %}
 {% else %}
 	{% if shipImageLinkOverride != 0 %}
