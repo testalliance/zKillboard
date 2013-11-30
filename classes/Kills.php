@@ -113,6 +113,7 @@ class Kills
 			Info::addInfo($element);
 			if (!isset($array1[$killid])) $array1[$killid] = array();
 			$array1[$killid][$type] = $element;
+			$array1[$killid][$type]["commentID"] = Info::commentID($killid);
 		}
 		return $array1;
 	}

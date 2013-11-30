@@ -70,20 +70,6 @@ if ($id < 0) {
 	}
 }
 
-// Find the old killID or EVE-KILL ID
-$checkID = $id;
-if($checkID < 0)
-        $checkID = -1 * $checkID;
-$okID = Db::queryRow("SELECT mKillID, killID, eveKillID FROM zz_manual_mails WHERE (mKillID = :mKillID OR killID = :killID)", array(":mKillID" => $checkID, ":killID" => $checkID));
-if($okID["eveKillID"])
-        $commentID = $okID["eveKillID"];
-elseif($okID["mKillID"])
-        $commentID = $okID["mKillID"];
-elseif($okID["killID"])
-        $commentID = $okID["killID"];
-else
-        $commentID = $id;
-
 // Create the details on this kill
 $killdata = Kills::getKillDetails($id);
 
@@ -141,7 +127,7 @@ $extra["edkrawmail"] = Kills::getRawMail($id);
 $extra["zkbrawmail"] = Kills::getRawMail($id, array(), false);
 $extra["reports"] = Db::queryField("SELECT count(*) as cnt FROM zz_tickets WHERE killID = :killid", "cnt", array(":killid" => $id), 0);
 $extra["slotCounts"] = Info::getSlotCounts($killdata["victim"]["shipTypeID"]);
-$extra["commentID"] = $commentID;
+$extra["commentID"] = Info::commentID($id);
 
 $systemID = $killdata["info"]["solarSystemID"];
 $data = Info::getWormholeSystemInfo($systemID);
