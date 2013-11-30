@@ -40,7 +40,8 @@ if($_POST)
             else
             {
                 global $baseAddr;
-                $subject = "It seems you might have forgotten your password, so here is a link, that'll allow you to reset it: $baseAddr/changepassword/$hash";
+                $username = Db::queryField("SELECT username FROM zz_users WHERE email = :email", "username", array(":email" => $email));
+                $subject = "It seems you might have forgotten your password, so here is a link, that'll allow you to reset it: $baseAddr/changepassword/$hash/ ps, your username is: $username";
                 $header = "Password change for $email";
                 Db::execute("UPDATE zz_users SET change_hash = :hash, change_expiration = :expires WHERE email = :email", array(":hash" => $hash, ":expires" => $date, ":email" => $email));
                 Email::send($email, $header, $subject);
