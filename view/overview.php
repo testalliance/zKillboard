@@ -149,9 +149,26 @@ foreach($detail["stats"] as $q)
 }
 if ($mixedKills) $kills = Kills::mergeKillArrays($mixed, array(), $limit, $columnName, $id);
 
+$uri = $_SERVER["REQUEST_URI"];
+$explode = explode("/", $uri);
+foreach($explode as $ex)
+{
+        if($ex == "page")
+        {
+                // time to remove shit!
+                $number = count($explode);
+                $number = $number -1;
+                unset($explode[max($number)]);
+                unset($explode[max($number)-1]);
+                unset($explode[max($number)-2]);
+        }
+}
+
+$actualURI = implode("/", $explode);
+
 $renderParams = array("pageName" => $pageName, "kills" => $kills, "losses" => $losses, "detail" => $detail, "page" => $page,
 		"mixed" => $mixedKills, "key" => $key, "id" => $id, "pageType" => $pageType, "solo" => $solo, "soloPages" => $soloPages,
-    "killPages" => $killPages,"combinedPages"=>$combinedPages, "lossPages" => $lossPages, "topLists" => $topLists, "corps" => $corpList, "corpStats" => $corpStats, "summaryTable" => $stats,"YWMurl"=>$YWMurl);
+    "killPages" => $killPages,"combinedPages"=>$combinedPages, "lossPages" => $lossPages, "topLists" => $topLists, "corps" => $corpList, "corpStats" => $corpStats, "summaryTable" => $stats,"YWMurl"=>$YWMurl, "actualURI" => $actualURI);
 
 //$app->etag(md5(serialize($renderParams)));
 //$app->expires("+5 minutes");

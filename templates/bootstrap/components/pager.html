@@ -5,6 +5,7 @@
     {% endif %}
     {%if key is defined %}
     {% set pageBase = '/' ~ key ~ '/' ~ id ~ '/' ~ pageType ~ '/page/' %}
+    {% if actualURI|last == '/' %}{% set pageBase = actualURI ~ 'page/' %}{% else %}{% set pageBase = actualURI ~ '/page/' %}{% endif %}
     {% else %}
       {% if pageType %}
       {% set pageBase = '/kills/' ~pageType~ '/page/' %}
