@@ -14,14 +14,18 @@
 {% set CurrentDay = ''%}
 <table class="table table-condensed table-striped table-hover">
     <thead>
-		<tr>
-			<th style="width: 140px;">Time</th>
-            <th>Place</th>
-            <th class="hidden-xs" style="width: 32px; text-align: center;">Ship</th>
+        <tr>
+            {% if timeago == "true" %}
+            <th style="width: 100px;">Time</th>
+            {% else %}
+            <th style="width: 124px;">Time</th>
+            {% endif %}
+            <th style="width:115px;">Place</th>
+            <th class="hidden-xs" style="width: 58px; text-align: center;">Ship</th>
             <th class="hidden-sm hidden-xs" colspan="2" style="text-align: center;">Victim</th>
-			<th class="hidden-lg hidden-md" style="text-align: center;">Victim</th>
+            <th class="hidden-lg hidden-md" style="text-align: center;">Victim</th>
             <th class="hidden-xs">Final Blow</th>
-            <th style="width: 32px; text-align: right;">Link</th>
+            <th style="width: 80px; text-align: right;">Link</th>
         </tr>
     </thead>
     <tbody>{% for kill in killList %}
@@ -48,7 +52,8 @@
         {{Year}}</em></h4></td>
       </tr> 
 	  {% endif %} 
-        {% set imageSize = 32 %}
+        {% set imageSize = 64 %}
+        {% set resizeImage = 48 %}
         {% set field = kill.victim %}
         {% set lossDisplay = '' %}
         {% if kill.displayAsLoss == true and key != 'system' and key != 'region' %}{% set lossDisplay = 'error' %}{% endif %}
@@ -63,7 +68,7 @@
             <td class="icon hidden-xs" style="text-align: center; vertical-align: middle;">
                 {% include 'components/image_ship.html' %}
             </td>
-            <td class="hidden-xs hidden-sm" style="width: 120px; vertical-align: middle;">
+            <td class="hidden-xs hidden-sm" style="width: 164px; vertical-align: middle;">
                 {% include 'components/image_char.html' %}
                 {% include 'components/image_corp.html' %}
                 {% include 'components/image_alli.html' %}
@@ -98,6 +103,8 @@
                 </a>
 				<br/>
 				<small class="pull-right">{{ formatIsk(kill.info.total_price) }}</small>
+        <br>
+        <small class="pull-right"> <a href="/detail/{{ kill.info.killID }}/#comments" data-disqus-identifier="{{ kill.info.commentID }}">0 Comments</a></small>
             </td>
         </tr>
         {% endfor %}
