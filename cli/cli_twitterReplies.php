@@ -39,6 +39,8 @@ class cli_twitterReplies implements cliCommand
 		$maxID = $latest;
 		$twitter = Twit::getMessages(25);
 
+		$messages = array();
+
 		foreach ($twitter as $status) {
 			$text = (array) $status->text;
 			$createdAt = (array) $status->created_at;
@@ -50,9 +52,11 @@ class cli_twitterReplies implements cliCommand
 			$maxID = max($id, $maxID);
 
 			$message = array("message" => $text[0], "postedAt" => $createdAt[0], "postedBy" => $postedBy[0], "screenName" => $screenName[0], "url" => $url.$id[0]);
-			$msg = "Twitter: |g|" . $message["postedBy"] . "|n| (|g|@". $screenName[0] ."|n|) / |g|" . date("Y-m-d H:i:s", strtotime($message["postedAt"])) . " Message:|n| " . $message["message"];
-			Log::irc($msg, "");
+			$msg = "Twitter: ($id) |g|" . $message["postedBy"] . "|n| (|g|@". $screenName[0] ."|n|) / |g|" . date("Y-m-d H:i:s", strtotime($message["postedAt"])) . " Message:|n| " . $message["message"];
+			$messages[$id] = $msg;
 		}
+		ksort($messages);
+		foreach($messages as $id=>$msg) Log::irc($msg, "");
 		if (sizeof($twitter)) {
 			Db::execute("INSERT INTO zz_storage (contents, locker) VALUES (:contents, :locker) ON DUPLICATE KEY UPDATE contents = :contents", array(":locker" => $storageName, ":contents" => $maxID));
 		}
