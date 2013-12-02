@@ -1,5 +1,5 @@
 {% if topSet | length %}
-<h4 style="text-align: center;">{{ topTitle }}</h4>
+<h4 style="text-align: center;">{{ topTitle }}-</h4>
 <table class="table table-condensed topBoxes">
 	{% for data in topSet %}
 	<tr>	
@@ -8,7 +8,7 @@
 		{% set shipImageLinkOverride = data.info.killID %}
 		<td>{% include 'components/image_ship.html' %}</td>
 		<td class="hidden-md hidden-sm">{% include 'components/text_ship.html' %}</td>
-		{% if data.characterID != 0 %}
+		{% if field.characterName|length > 0 %}
 		<td>{% include 'components/text_char.html' %} </td>
 		{% else %}
 		<td>{% include 'components/text_corp.html' %} </td>
