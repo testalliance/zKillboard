@@ -44,8 +44,8 @@
 			<form class="form-horizontal" name="turnonofftimestamps" method="post" action="/account/sitesettings/">
 				<div class="form-group col-lg-3">
 					<select name="timeago" class="form-control input-sm">
-						<option value="true" {% if data.timeago == true %}selected{% endif %}>On</option>
-						<option value="false" {% if data.timeago == false %}selected{% endif %}>Off</option>
+						<option value="true" {% if data.timeago == "true" %}selected{% endif %}>On</option>
+						<option value="false" {% if data.timeago == "false" %}selected{% endif %}>Off</option>
 					</select>
 				</div>
 				<div class="form-group col-lg-2">
@@ -59,8 +59,23 @@
 			<form class="form-horizontal" name="turnonoffsummaryaccordion" method="post" action="/account/sitesettings/">
 				<div class="form-group col-lg-3">
 					<select name="useSummaryAccordion" class="form-control input-sm">
-						<option value="true" {% if data.useSummaryAccordion == true %}selected{% endif %}>Yes</option>
-						<option value="false" {% if data.useSummaryAccordion == false %}selected{% endif %}>No</option>
+						<option value="true" {% if data.useSummaryAccordion == "true" %}selected{% endif %}>Yes</option>
+						<option value="false" {% if data.useSummaryAccordion == "false" %}selected{% endif %}>No</option>
+					</select>
+				</div>
+				<div class="form-group col-lg-2">
+					<input type="submit" class="btn btn-primary btn-sm" value="Set">
+				</div>
+			</form>
+			<p>Will replace the summary table with a collapsed summary table.</p>
+		</div>
+		<h3>Show the snowstorm</h3>
+		<div class="well">
+			<form class="form-horizontal" name="turnonoffsnowstorm" method="post" action="/account/sitesettings/">
+				<div class="form-group col-lg-3">
+					<select name="showSnowstorm" class="form-control input-sm">
+						<option value="true" {% if data.showSnowstorm == "true" %}selected{% endif %}>Yes</option>
+						<option value="false" {% if data.showSnowstorm == "false" %}selected{% endif %}>No</option>
 					</select>
 				</div>
 				<div class="form-group col-lg-2">
