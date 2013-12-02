@@ -9,4 +9,5 @@ cron.overrides
 public/apc-nrp.php
 www.pid
 public/www.pid
+public/report.html
 cache/sessions
