@@ -112,7 +112,7 @@ if ($pageType == "top" && in_array($key, $onlyTop)) {
 	$topLists[] = array("type" => "corporation", "data" => Stats::getTopCorps($topParameters, true));
 	$topLists[] = array("type" => "alliance", "data" => Stats::getTopAllis($topParameters, true));
 	$topLists[] = array("type" => "ship", "data" => Stats::getTopShips($topParameters, true));
-	$topLists[] = array("type" => "group", "data" => Stats::getTopGroups($topParameters, true));
+	$topLists[] = array("type" => "system", "data" => Stats::getTopSystems($topParameters, true));
 	$topLists[] = array("type" => "weapon", "data" => Stats::getTopWeapons($topParameters, true));
 
 	if (isset($detail["factionID"]) && $detail["factionID"] != 0 && $key != "faction") {
