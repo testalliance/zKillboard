@@ -69,6 +69,7 @@ class cli_apiFetchKillLog implements cliCommand
 				if ($cachedUntil == "") $cachedUntil = 0;
 				Db::execute("update zz_api_characters set cachedUntil = if(:cachedUntil = 0, date_add(now(), interval 1 hour), :cachedUntil), errorCount = 0, errorCode = '0' where apiRowID = :id", array(":id" => $apiRowID, ":cachedUntil" => $cachedUntil));
 
+				$keyID = trim($keyID);
 				$file = "/var/killboard/zkb_killlogs/{$keyID}_{$charID}_$beforeKillID.xml";
 				@unlink($file);
 
@@ -85,9 +86,9 @@ class cli_apiFetchKillLog implements cliCommand
 					else $beforeKillID = min($beforeKillID, $killID);
 				}
 				if ($beforeKillID < $notRecentKillID) Db::execute("update zz_api_characters set cachedUntil = date_add(cachedUntil, interval 2 hour) where apiRowID = :id", array(":id" => $apiRowID));
-				if ($aff > 0) {
-					error_log($pheal->xml, 3, $file);
-				}
+				$hour = date("H");
+				if ($hour >= 12 && $hour <= 15) @error_log($pheal->xml, 3, $file); // Write all files once a day
+				else if ($aff > 0) @error_log($pheal->xml, 3, $file);
 			} while ($aff > 25 || ($beforeKillID > 0 && $maxKillID == 0));
 		} catch (Exception $ex) {
 			$errorCode = $ex->getCode();
