@@ -139,7 +139,7 @@
             (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
         }());
         </script>
-	{% if showAds != false %}
+	{% if showAds != false and not isMaintenance() %}
         <script type="text/javascript">
           (function() {
             var po = document.createElement("script"); po.type = "text/javascript"; po.async = true;
