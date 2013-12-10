@@ -117,15 +117,19 @@ class Price
 				return 0;
 			}
 		}
-		$xml = new SimpleXMLElement($result);
-		@$sellMedian = (double)$xml->marketstat->type->sell->median;
-		@$allMedian = (double)$xml->marketstat->type->all->median;
-		if ($allMedian == 0) $allMedian = 0.00001;
-		$price = $allMedian;
-		if ($price == 0 || ($sellMedian / $allMedian) > 2) $price = $sellMedian;
-		if ($price !== null && $price >= 0.01) {
-			Price::storeItemPrice($typeID, $price);
-			return $price;
+		try {
+			$xml = new SimpleXMLElement($result);
+			@$sellMedian = (double)$xml->marketstat->type->sell->median;
+			@$allMedian = (double)$xml->marketstat->type->all->median;
+			if ($allMedian == 0) $allMedian = 0.00001;
+			$price = $allMedian;
+			if ($price == 0 || ($sellMedian / $allMedian) > 2) $price = $sellMedian;
+			if ($price !== null && $price >= 0.01) {
+				Price::storeItemPrice($typeID, $price);
+				return $price;
+			}
+		} catch (Exception $ex) {
+
 		}
 		//if ($useJita == false) return getMarketPrice($typeID, true);
 		return 0;
@@ -147,10 +151,10 @@ class Price
 
 		//Log::log("Storing $typeID at price $price");
 		Db::execute("replace into zz_prices (typeID, price, expires) values (:typeID, :price, date_add(now(), interval 7 day))",
-								array(
-										 ":price" => $price,
-										 ":typeID" => $typeID,
-								));
+				array(
+					":price" => $price,
+					":typeID" => $typeID,
+					));
 	}
 
 }
