@@ -29,7 +29,7 @@ class User
 			$ip = IP::get();
 			Db::execute("INSERT INTO zz_users_sessions (userID, sessionHash, validTill, userAgent, ip) VALUES (:userID, :sessionHash, :validTill, :userAgent, :ip)", 
 				array(":userID" => $userID, ":sessionHash" => $hash, ":validTill" => $validTill, ":userAgent" => $userAgent, ":ip" => $ip));
-			$app->setEncryptedCookie($cookie_name, $hash, time() + $cookie_time, "/", $baseAddr, $cookie_ssl);
+			$app->setEncryptedCookie($cookie_name, $hash, time() + $cookie_time, "/", $baseAddr, $cookie_ssl, true);
 		}
 		$_SESSION["loggedin"] = $username;
 		return true;
