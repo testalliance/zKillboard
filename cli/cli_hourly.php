@@ -87,6 +87,8 @@ class cli_hourly implements cliCommand
 		$count = 0;
 		foreach ($tables as $table) {
 			$count++;
+continue;
+			if (Util::isMaintenanceMode()) continue;
 			$result = Db::queryRow("analyze table $table");
 			if (!in_array($result["Msg_text"], $tableIsGood)) Log::ircAdmin("|r|Error analyzing table |g|$table|r|: " . $result["Msg_text"]);
 		}

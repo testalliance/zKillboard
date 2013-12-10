@@ -52,6 +52,7 @@ class cli_updateCharacters implements cliCommand
 		Db::execute("update zz_characters set lastUpdated = now() where characterID >= 40000000 and characterID <= 41004590");
 		$result = Db::query("select characterID, name from zz_characters where lastUpdated < date_sub(now(), interval 7 day) and corporationID != 1000001 order by lastUpdated limit 600", array(), 0);
 		foreach ($result as $row) {
+			if (Util::isMaintenanceMode()) return;
 			$id = $row["characterID"];
 			$oName = $row["name"];
 			Db::execute("update zz_characters set lastUpdated = now() where characterID = :id", array(":id" => $id));

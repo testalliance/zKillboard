@@ -58,6 +58,7 @@ class cli_populateCharacters implements cliCommand
 					order by lastValidation, dateAdded desc limit 100", array(), 0);
 
 			foreach($keyIDs as $row) {
+				if (Util::isMaintenanceMode()) return;
 				$keyID = $row["keyID"];
 				$m = $iterationCount % $fetchesPerSecond;
 				Db::execute("update zz_api set lastValidation = date_add(lastValidation, interval 5 minute) where keyID = :keyID", array(":keyID" => $keyID));

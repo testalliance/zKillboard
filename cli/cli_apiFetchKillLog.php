@@ -30,6 +30,7 @@ class cli_apiFetchKillLog implements cliCommand
 
 	public function execute($parameters)
 	{
+		if (Util::isMaintenanceMode()) return;
 		@$apiRowID = $parameters[0];
 
 		$notRecentKillID = Storage::retrieve("notRecentKillID", 0);
