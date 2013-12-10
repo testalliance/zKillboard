@@ -851,7 +851,8 @@ class Parser
 			}
 		}
 		$typeID = $item["typeID"];
-		$itemName = $itemNames[$item["typeID"]];
+		if (isset($item["typeID"]) && isset($itemNames[$item["typeID"]])) $itemName = $itemNames[$item["typeID"]];
+		else $itemName = "TypeID $typeID";
 
 		if ($item["typeID"] == 33329 && $item["flag"] == 89) $price = 0.01; // Golden pod implant can't be destroyed
 		else $price = Price::getItemPrice($typeID);
