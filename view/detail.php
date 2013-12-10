@@ -65,8 +65,7 @@ if ($id < 0) {
 	$mKillID = -1 * $id;
 	$killID = Db::queryField("select killID from zz_manual_mails where mKillID = :mKillID", "killID", array(":mKillID" => $mKillID), 1);
 	if ($killID > 0) {
-		header("Location: /detail/$killID");
-		die();
+		$app->redirect("/detail/$killID/");
 	}
 }
 
