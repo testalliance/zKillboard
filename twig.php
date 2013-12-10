@@ -45,7 +45,6 @@ $twig->addGlobal("image_ship", $imageServer."Render/");
 $twig->addGlobal("siteurl", $baseAddr);
 $twig->addGlobal("fullsiteurl", $fullAddr);
 $twig->addGlobal("requesturi", $_SERVER["REQUEST_URI"]);
-$twig->addGlobal("pathinfo", $path);
 $twig->addGlobal("topad", zKillboard::top());
 $twig->addGlobal("bottomad", zKillboard::bottom());
 $twig->addGlobal("mobiletopad", zKillboard::mobileTop());

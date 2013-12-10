@@ -35,7 +35,6 @@ $baseDir = dirname($baseFile) . "/";
 $baseUrl = "/";
 $baseAddr = "%baseaddr%";
 $fullAddr = "http://" . $baseAddr;
-$path = @$_SERVER["PATH_INFO"];
 chdir($baseDir);
 
 // Debug
