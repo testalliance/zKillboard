@@ -348,11 +348,8 @@ class Parser
 			}
 		}
 
-		if ($currentAttacker != null) $killMail["attackers"][] = $currentAttacker;
-
 		// Check that stuff is actually sane, and not some made up shit..
 		// Victim must have a valid characterID and corporationID
-
 		if ($killMail["victim"]["shipTypeID"] == 0) $errors[] = "Invalid destroyed ship.";
 		else 
 		{
