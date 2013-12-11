@@ -59,9 +59,16 @@ class Parser
 		$timestamp = str_replace(".", "-", $timestamp);
 		$timestamp .= ":00";
 
-		// Make sure there is a time stamp
+		// Make sure there is a timestamp
 		if (!$timestamp)
 			$errors[] = "No timestamp, probably not even a killmail";
+
+		// Validate timestamp
+		$time = DateTime::createFromFormat("Y-m-d H:i:s", $timestamp);
+		if($time != false)
+			$timestamp = $time->format("Y-m-d H:i:s");
+		else
+			$errors[] = "Error with the timestamp..";
 
 		// Make sure there is an involved party
 		if (stripos($mail, "Involved parties:") === false)
