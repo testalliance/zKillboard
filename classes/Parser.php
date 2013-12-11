@@ -55,6 +55,10 @@ class Parser
 		$mail = preg_replace('/(\d),(\d)/', '$1.$2', $mail);
 		$mail = str_replace('?', '-', $mail);
 
+		// Remove (Other) - because CCP fails at life.. Refer to https://github.com/EVE-KILL/zKillboard/issues/174
+		$mail = str_replace(" (Other)", "", $mail);
+
+		// Find the timestamp
 		$timestamp = substr($mail, 0, 16);
 		$timestamp = str_replace(".", "-", $timestamp);
 		$timestamp .= ":00";
