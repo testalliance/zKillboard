@@ -262,7 +262,6 @@ class Parser
 					$qty = 1;
 
 					// ADD ALL THE FLAGS!!!!!!!!!!!
-					//$flags = array("(Cargo)" => 5, "(Drone Bay)" => 87, "(Implant)" => 89);
 					$dbFlags = Db::query("SELECT flagText, flagID FROM ccp_invFlags", array(), 3600);
 					$flags = array();
 					foreach($dbFlags as $f)
@@ -299,33 +298,36 @@ class Parser
 					}
 					if ($flag === null) {
 						// Ok, we need to figure out which slot this is in...
-						$flagSlot = Db::queryField("select e.effectID effectID from ccp_invTypes i left join ccp_dgmTypeEffects d on (d.typeID = i.typeID) left join ccp_dgmEffects e on (d.effectID = e.effectID) where i.typeID = :typeID", "effectID", array(":typeID" => $typeID));
-						switch($flagSlot) {
-							case 11:
-								$flag = $currentLowSlot;
-								$currentLowSlot++;
-							break;
-							case 12:
-								$flag = $currentHighSlot;
-								$currentHighSlot++;
-							break;
-							case 13:
-								$flag = $currentMidSlot;
-								$currentMidSlot++;
-							break;
-							case 2663:
-								$flag = $currentRigSlot;
-								$currentRigSlot++;
-							break;
-							case 3772:
-								$flag = $currentSubSlot;
-								$currentSubSlot++;
-							break;
-							default: $flag = 0;
+						$flagSlot = Db::query("select e.effectID effectID from ccp_invTypes i left join ccp_dgmTypeEffects d on (d.typeID = i.typeID) left join ccp_dgmEffects e on (d.effectID = e.effectID) where i.typeID = :typeID", array(":typeID" => $typeID));
+						foreach($flagSlot as $f)
+						{
+							$flagSlot = $f["effectID"];
+							switch($flagSlot) {
+								case 11:
+									$flag = $currentLowSlot;
+									$currentLowSlot++;
+								break;
+								case 12:
+									$flag = $currentHighSlot;
+									$currentHighSlot++;
+								break;
+								case 13:
+									$flag = $currentMidSlot;
+									$currentMidSlot++;
+								break;
+								case 2663:
+									$flag = $currentRigSlot;
+									$currentRigSlot++;
+								break;
+								case 3772:
+									$flag = $currentSubSlot;
+									$currentSubSlot++;
+								break;
+							}
 						}
 					}
 
-					if ($flag == null) $flag = 5;
+					if ($flag == null || $flag == 0) $flag = 5;
 					$item = self::createItem();
 					$item["typeID"] = $typeID;
 					$item["flag"] = $flag;
