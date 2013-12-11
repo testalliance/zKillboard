@@ -633,7 +633,8 @@ class Info
 					$groupID = Info::getGroupID($value);
 					if (!isset($element["groupID"])) $element["groupID"] = $groupID;
 					if (!isset($element["groupName"])) $element["groupName"] = Info::getGroupName($groupID);
-					if (!isset($element["fittable"])) $element["fittable"] = Info::getEffectID($value) != null;
+					if (Util::startsWith($element["groupName"], "Infantry ")) $element["fittable"] = true;
+					else if (!isset($element["fittable"])) $element["fittable"] = Info::getEffectID($value) != null;
 					break;
 				case "solarSystemID":
 					$info = Info::getSystemInfo($value);

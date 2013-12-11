@@ -114,7 +114,7 @@ if($pageview == "comments")
 $extra["droppedisk"] = droppedIsk(md5($id), $killdata["items"]);
 $extra["lostisk"] = $killdata["info"]["total_price"] - $extra["droppedisk"];
 $extra["relatedtime"] = date("YmdH00", strtotime($killdata["info"]["killTime"]));
-$extra["fittingwheel"] = eftarray(md5($id), $killdata["items"]);
+$extra["fittingwheel"] = eftarray(md5($id), $killdata["items"], $killdata["victim"]["characterID"]);
 $extra["involvedships"] = involvedships($killdata["involved"]);
 $extra["involvedshipscount"] = count($extra["involvedships"]);
 $extra["totalprice"] = usdeurgbp($killdata["info"]["total_price"]);
@@ -165,10 +165,10 @@ function usdeurgbp($totalprice)
     return array("usd" => $totalprice / $usdval, "eur" => $totalprice / $eurval, "gbp" => $totalprice / $gbpval);
 }
 
-function eftarray($md5, $items)
+function eftarray($md5, $items, $victimID = 0)
 {
 	$Cache = Cache::get($md5."eftarray");
-	if ($Cache) return $Cache;
+	//if ($Cache) return $Cache;
 
 	// EFT / Fitting Wheel
 	$eftarray["high"] = array(); // high
@@ -182,7 +182,20 @@ function eftarray($md5, $items)
 
 	foreach($items as $itm)
 	{
-		if (!isset($itm["flagName"])) $itm["flagName"] = Info::getFlagName($itm["flag"]);
+
+		if ($victimID >= 2000000000 && $victimID <= 2999999999) $itm["flagName"] = Info::getGroupName(Info::getGroupID($itm["typeID"]));
+		else if (!isset($itm["flagName"])) $itm["flagName"] = Info::getFlagName($itm["flag"]);
+
+		if ($itm["flagName"] == "Infantry Modules") $itm["flagName"] = "Mid Slots";
+		if ($itm["flagName"] == "Infantry Weapons") $itm["flagName"] = "High Slots";
+		if ($itm["flagName"] == "Infantry Equipment") $itm["flagName"] = "Low Slots";
+
+		if (!isset($itm["flag"]) || $itm["flag"] == 0) {
+			if ($itm["flagName"] == "High Slots") $itm["flag"] = 27;
+			if ($itm["flagName"] == "Mid Slots") $itm["flag"] = 19;
+			if ($itm["flagName"] == "Low Slots") $itm["flag"] = 11;
+		}
+
 		$key = $itm["typeName"] . "|" . $itm["flagName"];
 		if(isset($itm["flagName"]))
 		{
