@@ -188,21 +188,8 @@ class Parser
 						else $errors[] = "Invalid Moon: $value";
 					}
 				break;
-				case "Security:":
-					if ($inAttackers) $currentAttacker["securityStatus"] = (float) $value;
-				break;
-				case "Ship:":
-					if ($inAttackers) $currentAttacker["shipTypeID"] = (int) Info::getItemID($value);
-				break;
-				case "Weapon:":
-					if ($inAttackers) $currentAttacker["weaponTypeID"] = (int) Info::getItemID($value);
-				break;
-				case "Damage Done:":
-					if ($inAttackers) $currentAttacker["damageDone"] = (int) $value;
-				break;
 				case "Name:":
-					if ($currentAttacker != null) $killMail["attackers"][] = $currentAttacker;
-					$currentAttacker = self::createAttacker();
+					if($inAttackers) $currentAttacker = self::createAttacker();
 					if (stripos($value, "(laid the final blow)") !== false) {
 						$currentAttacker["finalBlow"] = 1;
 						$value = trim(str_ireplace("(laid the final blow)", "", $value));
@@ -220,7 +207,6 @@ class Parser
 						$id = (int) Db::queryField("select typeID from ccp_invTypes where typeName = :name", "typeID", 
 								array(":name" => $npc));
 						$currentAttacker["weaponTypeID"] = $id;
-						//$currentAttacker["characterName"] = (string) $npc;
 						if (sizeof($npcSplit) > 1 && trim($npcSplit[1]) != "Unknown") {
 							// Look up the corp
 							$corpID = Info::getCorpID(trim($npcSplit[1]));
@@ -233,6 +219,20 @@ class Parser
 						}
 					}
 				break;
+				case "Security:":
+					if ($inAttackers) $currentAttacker["securityStatus"] = (float) $value;
+				break;
+				case "Ship:":
+					if ($inAttackers) $currentAttacker["shipTypeID"] = (int) Info::getItemID($value);
+				break;
+				case "Weapon:":
+					if ($inAttackers) $currentAttacker["weaponTypeID"] = (int) Info::getItemID($value);
+				break;
+				case "Damage Done:":
+					if ($inAttackers) $currentAttacker["damageDone"] = (int) $value;
+					if ($currentAttacker != null) $killMail["attackers"][] = $currentAttacker;
+				break;
+
                 case "Involved parties:":
                     $inVictim = false;
                     $inAttackers = true;
@@ -343,7 +343,7 @@ class Parser
 					$killValue += ($qty * Price::getItemPrice($typeID));
 			}
 		}
-
+var_dump($killMail); die();
 		if ($currentAttacker != null) $killMail["attackers"][] = $currentAttacker;
 
 		// Check that stuff is actually sane, and not some made up shit..
