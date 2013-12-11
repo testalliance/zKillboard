@@ -257,16 +257,16 @@ class Kills
 			foreach ($k["attackers"] as $inv)
 			{
 				// find groupID for the ship
+				if(!isset($inv["shipName"])) $inv["shipName"] = "Unknown";
 				$groupID = Db::queryField("SELECT groupID FROM ccp_invTypes WHERE typeName LIKE :shipName", "groupID", array(":shipName" => $inv["shipName"]));
 				if(in_array($groupID, $deadspaceIDs))
 				{
 					// shipName isn't set, but it's an npc.. fml..
-					if(!isset($inv["shipName"])) $inv["shipName"] = "Unknown";
 					if ($inv["finalBlow"] == 1)
 						$mail .= "Name: ". $inv["shipName"] . " / " . $inv["corporationName"] . " (laid the final blow)\n";
 					else
 						$mail .= "Name: ". $inv["shipName"] . " / " . $inv["corporationName"] . "\n";
-					$mail .= "Damage Done: " . $inv["damageDone"] . "\n";
+					$mail .= "Damage Done: " . $inv["damageDone"] . "\n\n";
 				}
 				else
 				{
