@@ -343,7 +343,7 @@ class Parser
 					$killValue += ($qty * Price::getItemPrice($typeID));
 			}
 		}
-var_dump($killMail); die();
+
 		if ($currentAttacker != null) $killMail["attackers"][] = $currentAttacker;
 
 		// Check that stuff is actually sane, and not some made up shit..
