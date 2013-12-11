@@ -213,7 +213,7 @@ class Kills
 
 		// Find all groupIDs where they contain Deadspace
 		$deadspaceIDs = array();
-		$dIDs = Db::query("SELECT groupID FROM ccp_invGroups WHERE groupName LIKE '%deadspace%' OR groupName LIKE 'FW%'");
+		$dIDs = Db::query("SELECT groupID FROM ccp_invGroups WHERE groupName LIKE '%deadspace%' OR groupName LIKE 'FW%' OR groupName LIKE 'Asteroid%'");
 		foreach($dIDs as $dd)
 			$deadspaceIDs[] = $dd["groupID"];
 
