@@ -68,7 +68,7 @@ switch($type)
 		$kills = Kills::getKills(array("w-space" => true, "page" => $page));
 	break;
 	case "dust":
-		$kills = Kill::getKills(array("groupID" => "351064", "limit" => $limit, "cacheTime" => 300, "losses" => true, "page" => $page));
+		$kills = Kills::getKills(array("groupID" => "351064", "limit" => $limit, "cacheTime" => 300, "losses" => true, "page" => $page));
 	break;
 	default:
 		$kills = Kills::getKills(array("combined" => true, "page" => $page));
