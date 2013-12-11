@@ -70,6 +70,9 @@ switch($type)
 	case "dust":
 		$kills = Kills::getKills(array("groupID" => "351064", "limit" => $limit, "cacheTime" => 300, "losses" => true, "page" => $page));
 	break;
+	case "dust_vehicles":
+		$kills = Kills::getKills(array("groupID" => "351210", "limit" => $limit, "cacheTime" => 300, "losses" => true, "page" => $page));
+	break;
 	default:
 		$kills = Kills::getKills(array("combined" => true, "page" => $page));
 	break;

@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% if pageType %}
+	{% set pageType = pageType|replace({"_": " "}) %}
     {% set pageTitle = 'Kills (' ~ firstUpper(pageType) ~ ')' %}
 {% else %}
     {% set pageTitle = 'Kills' %}
