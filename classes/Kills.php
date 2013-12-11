@@ -209,7 +209,13 @@ class Kills
 
 		// Check if the mail has already been generated, then return it from the cache..
 		$Cache = Cache::get($cacheName);
-		if($Cache) return $Cache;
+		//if($Cache) return $Cache;
+
+		// Find all groupIDs where they contain Deadspace
+		$deadspaceIDs = array();
+		$dIDs = Db::query("SELECT groupID FROM ccp_invGroups WHERE groupName LIKE '%deadspace%' OR groupName LIKE 'FW%'");
+		foreach($dIDs as $dd)
+			$deadspaceIDs[] = $dd["groupID"];
 
 		// ADD ALL THE FLAGS!!!!!!!!!!!
 		//$flags = array("(Cargo)" => 5, "(Drone Bay)" => 87, "(Implant)" => 89);
@@ -250,27 +256,41 @@ class Kills
 			$mail .= "Involved parties:\n\n";
 			foreach ($k["attackers"] as $inv)
 			{
-				if ($inv["finalBlow"] == 1)
-					$mail .= "Name: " . $inv["characterName"] . " (laid the final blow)\n";
-				else if (strlen($inv["characterName"]))
-					$mail .= "Name: " . $inv["characterName"] . "\n";
-				if (strlen($inv["characterName"])) $mail .= "Security: " . $inv["securityStatus"] . "\n";
-				$mail .= "Corp: " . $inv["corporationName"] . "\n";
-				if (!isset($inv["allianceName"]) || $inv["allianceName"] == "")
-					$inv["allianceName"] = "None";
-				$mail .= "Alliance: " . $inv["allianceName"] . "\n";
-				if (!isset($inv["factionName"]) || $inv["factionName"] == "")
-					$inv["factionName"] = "None";
-				$mail .= "Faction: " . $inv["factionName"] . "\n";
-				if (!isset($inv["shipName"]) || $inv["shipName"] == "")
-					$inv["shipName"] = "None";
-				$mail .= "Ship: " . $inv["shipName"] . "\n";
-				if (!isset($inv["weaponName"]) || $inv["weaponName"] == "")
-					$inv["weaponName"] = $inv["shipName"];
-				$mail .= "Weapon: " . $inv["weaponName"] . "\n";
-				$mail .= "Damage Done: " . $inv["damageDone"] . "\n\n";
+				// find groupID for the ship
+				$groupID = Db::queryField("SELECT groupID FROM ccp_invTypes WHERE typeName LIKE :shipName", "groupID", array(":shipName" => $inv["shipName"]));
+				if(in_array($groupID, $deadspaceIDs))
+				{
+					if ($inv["finalBlow"] == 1)
+						$mail .= "Name: ". $inv["shipName"] . " / " . $inv["corporationName"] . " (laid the final blow)\n";
+					else
+						$mail .= "Name: ". $inv["shipName"] . " / " . $inv["corporationName"] . "\n";
+					$mail .= "Damage Done: " . $inv["damageDone"] . "\n";
+				}
+				else
+				{
+					if ($inv["finalBlow"] == 1)
+						$mail .= "Name: " . $inv["characterName"] . " (laid the final blow)\n";
+					else if (strlen($inv["characterName"]))
+						$mail .= "Name: " . $inv["characterName"] . "\n";
+					if (strlen($inv["characterName"])) $mail .= "Security: " . $inv["securityStatus"] . "\n";
+					$mail .= "Corp: " . $inv["corporationName"] . "\n";
+					if (!isset($inv["allianceName"]) || $inv["allianceName"] == "")
+						$inv["allianceName"] = "None";
+					$mail .= "Alliance: " . $inv["allianceName"] . "\n";
+					if (!isset($inv["factionName"]) || $inv["factionName"] == "")
+						$inv["factionName"] = "None";
+					$mail .= "Faction: " . $inv["factionName"] . "\n";
+					if (!isset($inv["shipName"]) || $inv["shipName"] == "")
+						$inv["shipName"] = "None";
+					$mail .= "Ship: " . $inv["shipName"] . "\n";
+					if (!isset($inv["weaponName"]) || $inv["weaponName"] == "")
+						$inv["weaponName"] = $inv["shipName"];
+					$mail .= "Weapon: " . $inv["weaponName"] . "\n";
+					$mail .= "Damage Done: " . $inv["damageDone"] . "\n\n";
+				}
 			}
 		}
+
 		$mail .= "\n";
 		$dropped = array();
 		$destroyed = array();
