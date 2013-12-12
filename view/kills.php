@@ -72,7 +72,7 @@ switch($type)
 		$kills = Kills::getKills(array("groupID" => "351210", "limit" => $limit, "cacheTime" => 300, "losses" => true, "page" => $page));
 	break;
 	default:
-		$kills = Kills::getKills(array("combined" => true, "page" => 1)); //$page));
+		$kills = Kills::getKills(array("combined" => true, "page" => $page));
 	break;
 }
 
