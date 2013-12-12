@@ -375,13 +375,17 @@ class Info
 		if ($name != null) return $name;
 		if ($id < 39999999) return ""; // Don't try to look up invalid characterID's
 
-		$pheal = Util::getPheal();
-		$pheal->scope = "eve";
-		$charInfo = $pheal->CharacterInfo(array("characterid" => $id));
-		$name = $charInfo->characterName;
-		if ($name != null) { //addName($id, $name, 1, 1, null);
-			Db::execute("insert ignore into zz_characters (characterID, name) values (:id, :name)",
-					array(":id" => $id, ":name" => $name));
+		try {
+			$pheal = Util::getPheal();
+			$pheal->scope = "eve";
+			$charInfo = $pheal->CharacterInfo(array("characterid" => $id));
+			$name = $charInfo->characterName;
+			if ($name != null) { //addName($id, $name, 1, 1, null);
+				Db::execute("insert ignore into zz_characters (characterID, name) values (:id, :name)",
+						array(":id" => $id, ":name" => $name));
+			}
+		} catch (Exception $ex) {
+			return $id;
 		}
 		return $name;
 	}
@@ -805,6 +809,6 @@ class Info
 		else
 			$commentID = $id;
 
-	    return $commentID;
+		return $commentID;
 	}
 }
