@@ -17,8 +17,6 @@
  */
 
 $limit = 50;
-$killPages = 10;
-if ($page > 10) $page = 10;
 
 switch($type)
 {
@@ -74,8 +72,8 @@ switch($type)
 		$kills = Kills::getKills(array("groupID" => "351210", "limit" => $limit, "cacheTime" => 300, "losses" => true, "page" => $page));
 	break;
 	default:
-		$kills = Kills::getKills(array("combined" => true, "page" => $page));
+		$kills = Kills::getKills(array("combined" => true, "page" => 1)); //$page));
 	break;
 }
 
-$app->render("kills.html", array("kills" => $kills, "numPages" => $killPages, "page" => $page, "pageType" => $type));
+$app->render("kills.html", array("kills" => $kills, "page" => $page, "pageType" => $type));

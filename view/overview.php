@@ -54,13 +54,6 @@ if ($id <= 0) $app->notFound();
 
 $parameters = Util::convertUriToParameters();
 @$page = max(1, $parameters["page"]);
-$year = "";
-$week = "";
-$month = "";
-if (array_key_exists("year", $parameters)) $year = "year/".(int)$parameters["year"]."/"; // Optional
-if (array_key_exists("week", $parameters)) $week ="week/". (int)$parameters["week"]."/"; // Optional
-if (array_key_exists("month", $parameters)) $month = "month/".(int)$parameters["month"]."/"; // Optional
-$YWMurl = $year.$month.$week;// Set it so the year/week/month carry over
 global $loadGroupShips; // Can't think of another way to do this just yet
 $loadGroupShips = $key == "group";
 
@@ -158,9 +151,9 @@ foreach($explode as $ex)
                 // time to remove shit!
                 $number = count($explode);
                 $number = $number -1;
-                unset($explode[max($number)]);
-                unset($explode[max($number)-1]);
-                unset($explode[max($number)-2]);
+                unset($explode[max(array($number))]);
+                unset($explode[max(array($number))-1]);
+                unset($explode[max(array($number))-2]);
         }
 }
 
@@ -168,7 +161,7 @@ $actualURI = implode("/", $explode);
 
 $renderParams = array("pageName" => $pageName, "kills" => $kills, "losses" => $losses, "detail" => $detail, "page" => $page,
 		"mixed" => $mixedKills, "key" => $key, "id" => $id, "pageType" => $pageType, "solo" => $solo, "soloPages" => $soloPages,
-    "killPages" => $killPages,"combinedPages"=>$combinedPages, "lossPages" => $lossPages, "topLists" => $topLists, "corps" => $corpList, "corpStats" => $corpStats, "summaryTable" => $stats,"YWMurl"=>$YWMurl, "actualURI" => $actualURI);
+    "killPages" => $killPages,"combinedPages"=>$combinedPages, "lossPages" => $lossPages, "topLists" => $topLists, "corps" => $corpList, "corpStats" => $corpStats, "summaryTable" => $stats, "actualURI" => $actualURI);
 
 //$app->etag(md5(serialize($renderParams)));
 //$app->expires("+5 minutes");
