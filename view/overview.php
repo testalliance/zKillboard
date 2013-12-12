@@ -58,9 +58,7 @@ global $loadGroupShips; // Can't think of another way to do this just yet
 $loadGroupShips = $key == "group";
 
 $limit = 50;
-$maxpage = 10; // Max number of pages to use
 $parameters["limit"] = $limit;
-if($page > $maxpage) $page =$maxpage;// Same idea as kills force a max of 10 pages
 $parameters["page"] = $page;
 $detail = call_user_func($map[$key]["details"], $id, $parameters);
 $totalKills = isset($detail["shipsDestroyed"]) ? $detail["shipsDestroyed"] : 0;
