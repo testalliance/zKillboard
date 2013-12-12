@@ -49,6 +49,10 @@ class cli_fightFinder implements cliCommand
 			$system = $row["solarSystemName"];
 			$date = date("YmdH00");
 			$link = "https://zkillboard.com/related/$systemID/$date/";
+			
+			// Insert to zz_battles
+			Db::execute("INSERT INTO zz_battles (solarSystemID, solarSystemName, timestamp, involved, kills) VALUES (:solarSystemID, :solarSystemName, :timestamp, :involved, :kills)",
+				array(":solarSystemID" => $systemID, ":solarSystemName" => $system, ":timestamp" => $date, ":involved" => $involved, ":kills" => $wrecks));
 
 			$message = "Battle detected in |g|$system|n| with |g|$involved|n| involved and |g|$wrecks|n| wrecks.";
 			Log::irc($message . " |g|$link");
