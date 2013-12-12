@@ -39,6 +39,7 @@ GetNames("regions", $names, UserConfig::get("tracker_region"));
 $parameters["combined"] = true;
 $limit = 50;
 $parameters["limit"] = $limit;
+$parameters["page"] = $page;
 
 $pageTitle = "Tracking";
 
@@ -47,6 +48,7 @@ $kills = Kills::getKills($parameters);
 // Flag losses as red
 unset($parameters["limit"]);
 unset($parameters["combined"]);
+unset($parameters["page"]);
 foreach($parameters as $columnName=>$ids) {
 	foreach($ids as $id) {
 		$kills = Kills::mergeKillArrays($kills, array(), $limit, $columnName, $id);
