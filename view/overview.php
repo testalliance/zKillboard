@@ -132,7 +132,8 @@ foreach($detail["stats"] as $q)
 if ($mixedKills) $kills = Kills::mergeKillArrays($mixed, array(), $limit, $columnName, $id);
 
 $renderParams = array("pageName" => $pageName, "kills" => $kills, "losses" => $losses, "detail" => $detail, "page" => $page,
-		"mixed" => $mixedKills, "key" => $key, "id" => $id, "pageType" => $pageType, "solo" => $solo, "topLists" => $topLists, "corps" => $corpList, "corpStats" => $corpStats, "summaryTable" => $stats);
+		"mixed" => $mixedKills, "key" => $key, "id" => $id, "pageType" => $pageType, "solo" => $solo, "topLists" => $topLists,
+		"corps" => $corpList, "corpStats" => $corpStats, "summaryTable" => $stats, "pager" => true);
 
 //$app->etag(md5(serialize($renderParams)));
 //$app->expires("+5 minutes");
