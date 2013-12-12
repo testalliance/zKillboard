@@ -51,10 +51,31 @@ unset($parameters["combined"]);
 unset($parameters["page"]);
 foreach($parameters as $columnName=>$ids) {
 	foreach($ids as $id) {
+        $z[] = $id;
 		$kills = Kills::mergeKillArrays($kills, array(), $limit, $columnName, $id);
 	}
 }
-$app->render("tracker.html", array("kills" => $kills, "pageTitle" => $pageTitle, "tracking" => $names, "page" => $page));
+$imp = implode(", ", $z);
+$st = Db::query("SELECT s.groupID AS groupID, SUM(s.destroyed) AS destroyed, SUM(s.lost) AS lost, SUM(s.pointsDestroyed) AS pointsDestroyed, SUM(s.pointsLost) AS pointsLost, SUM(s.iskDestroyed) AS iskDestroyed, SUM(s.iskLost) as iskLost,
+c.groupName AS groupName FROM zz_stats s
+JOIN ccp_invGroups c ON s.groupID = c.groupID
+WHERE s.typeID IN (99000645, 268946627) GROUP BY s.groupID
+", array(":in" => $imp));
+$cnt = 0;
+$cnid = 0;
+$stats = array();
+$totalcount = ceil(count($st) / 4);
+foreach($st as $q)
+{
+    if($cnt == $totalcount)
+    {
+        $cnid++;
+        $cnt = 0;
+    }
+    $stats[$cnid][] = $q;
+    $cnt++;
+}
+$app->render("tracker.html", array("kills" => $kills, "pageTitle" => $pageTitle, "tracking" => $names, "page" => $page, "summaryTable" => $stats));
 
 function getIDs($filterName, &$ids, $array) {
     if (is_null($array) || sizeof($array) == 0) return;
