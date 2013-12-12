@@ -67,14 +67,7 @@ $pageName = isset($detail[$map[$key]["column"] . "Name"]) ? $detail[$map[$key]["
 $columnName = $map[$key]["column"] . "ID";
 $mixedKills = $pageType == "overview" && $map[$key]["mixed"] && UserConfig::get("mixKillsWithLosses", true);
 
-$killPages = min (ceil($totalKills / $limit),$maxpage);
-$lossPages = min (ceil($totalLosses / $limit),$maxpage);
-$combinedPages = min(ceil(($totalKills + $totalLosses)/$limit),$maxpage);
 
-if ($mixedKills) $page = min($combinedPages,$page);
-else if ($page == "kills") $page = min($killPages, $page);
-else if ($page == "losses") $page = min($lossPages, $page);
-$page = max(1, $page);
 
 $mixed = $pageType == "overview" ? Kills::getKills($parameters) : array();
 $kills = $pageType == "kills"    ? Kills::getKills($parameters) : array();
@@ -158,8 +151,7 @@ foreach($explode as $ex)
 $actualURI = implode("/", $explode);
 
 $renderParams = array("pageName" => $pageName, "kills" => $kills, "losses" => $losses, "detail" => $detail, "page" => $page,
-		"mixed" => $mixedKills, "key" => $key, "id" => $id, "pageType" => $pageType, "solo" => $solo, "soloPages" => $soloPages,
-    "killPages" => $killPages,"combinedPages"=>$combinedPages, "lossPages" => $lossPages, "topLists" => $topLists, "corps" => $corpList, "corpStats" => $corpStats, "summaryTable" => $stats, "actualURI" => $actualURI);
+		"mixed" => $mixedKills, "key" => $key, "id" => $id, "pageType" => $pageType, "solo" => $solo, "topLists" => $topLists, "corps" => $corpList, "corpStats" => $corpStats, "summaryTable" => $stats, "actualURI" => $actualURI);
 
 //$app->etag(md5(serialize($renderParams)));
 //$app->expires("+5 minutes");
