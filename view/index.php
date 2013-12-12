@@ -38,4 +38,4 @@ $top[] = json_decode(Storage::retrieve("Top3dayAlli"), true);
 $killsLimit = 50;
 $kills = Kills::getKills(array("limit" => $killsLimit));
 
-$app->render("index.html", array("topPods" => $topPods, "topIsk" => $topIsk, "topPoints" => $topPoints, "topKillers" => $top, "kills" => $kills, "page" => 1, "pageType" => "kills", "pager" => true));
+$app->render("index.html", array("topPods" => $topPods, "topIsk" => $topIsk, "topPoints" => $topPoints, "topKillers" => $top, "kills" => $kills, "page" => 1, "pageType" => "kills", "pager" => true, "datepicker" => true));

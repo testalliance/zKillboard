@@ -55,6 +55,7 @@
         {% endif %}
 
         <link rel="stylesheet" href="/css/theme-edits/{{theme}}-main.css">
+        <link rel="stylesheet" href="/css/datepicker.css">
 		<link rel="stylesheet" href="/css/main.css">
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.min.css">
 		{% block style %}
@@ -127,6 +128,7 @@
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.1.0/jquery.timeago.min.js"></script>
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/jquery.dataTables.min.js"></script>
 		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.2/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/js/bootstrap-datepicker.js"></script>
         <script type="text/javascript" src="/js/search.js"></script>
         <script type="text/javascript" src="/js/common.js"></script>
         <script type="text/javascript" src="/js/sclock1.js"></script>
@@ -149,6 +151,14 @@
         </script>
     <div id="fb-root"></div>
     <script>
+    var nowTemp = new Date();
+    var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
+    $('.datepicker').datepicker({
+        format: "mm/yyyy",
+        viewMode: 1,
+        minViewMode: 1
+    });
+
     (function(d, s, id) {
       var js, fjs = d.getElementsByTagName(s)[0];
       if (d.getElementById(id)) return;
