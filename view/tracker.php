@@ -37,7 +37,7 @@ GetNames("systems", $names, UserConfig::get("tracker_system"));
 GetNames("regions", $names, UserConfig::get("tracker_region"));
 
 $parameters["combined"] = true;
-$limit = 100;
+$limit = 50;
 $parameters["limit"] = $limit;
 
 $pageTitle = "Tracking";
