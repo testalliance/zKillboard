@@ -54,7 +54,7 @@ class Kills
 			if (sizeof($andWhereClauses)) $query .= implode(" and ", $andWhereClauses);
 		}
 
-		$limit = array_key_exists("limit", $parameters) ? (int)$parameters["limit"] : 25;
+		$limit = array_key_exists("limit", $parameters) ? (int)$parameters["limit"] : 50;
 		$page = array_key_exists("page", $parameters) ? (int)$parameters["page"] : 1;
 		$offset = ($page - 1) * $limit;
 
