@@ -67,8 +67,6 @@ $pageName = isset($detail[$map[$key]["column"] . "Name"]) ? $detail[$map[$key]["
 $columnName = $map[$key]["column"] . "ID";
 $mixedKills = $pageType == "overview" && $map[$key]["mixed"] && UserConfig::get("mixKillsWithLosses", true);
 
-
-
 $mixed = $pageType == "overview" ? Kills::getKills($parameters) : array();
 $kills = $pageType == "kills"    ? Kills::getKills($parameters) : array();
 $losses = $pageType == "losses"  ? Kills::getKills($parameters) : array();
@@ -133,25 +131,8 @@ foreach($detail["stats"] as $q)
 }
 if ($mixedKills) $kills = Kills::mergeKillArrays($mixed, array(), $limit, $columnName, $id);
 
-$uri = $_SERVER["REQUEST_URI"];
-$explode = explode("/", $uri);
-foreach($explode as $ex)
-{
-        if($ex == "page")
-        {
-                // time to remove shit!
-                $number = count($explode);
-                $number = $number -1;
-                unset($explode[max(array($number))]);
-                unset($explode[max(array($number))-1]);
-                unset($explode[max(array($number))-2]);
-        }
-}
-
-$actualURI = implode("/", $explode);
-
 $renderParams = array("pageName" => $pageName, "kills" => $kills, "losses" => $losses, "detail" => $detail, "page" => $page,
-		"mixed" => $mixedKills, "key" => $key, "id" => $id, "pageType" => $pageType, "solo" => $solo, "topLists" => $topLists, "corps" => $corpList, "corpStats" => $corpStats, "summaryTable" => $stats, "actualURI" => $actualURI);
+		"mixed" => $mixedKills, "key" => $key, "id" => $id, "pageType" => $pageType, "solo" => $solo, "topLists" => $topLists, "corps" => $corpList, "corpStats" => $corpStats, "summaryTable" => $stats);
 
 //$app->etag(md5(serialize($renderParams)));
 //$app->expires("+5 minutes");
