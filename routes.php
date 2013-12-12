@@ -54,7 +54,7 @@ $app->map("/campaigns/:type(/:id)/", function($type = "all", $id = NULL) use($ap
 })->via("GET");
 
 // Tracker
-$app->get("/tracker(/:page)/", function($page = 1) use ($app) {
+$app->get("/tracker(/page/:page)/", function($page = 1) use ($app) {
     include( "view/tracker.php" );
 });
 
