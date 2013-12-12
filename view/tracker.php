@@ -55,12 +55,8 @@ foreach($parameters as $columnName=>$ids) {
 		$kills = Kills::mergeKillArrays($kills, array(), $limit, $columnName, $id);
 	}
 }
-$imp = implode(", ", $z);
-$st = Db::query("SELECT s.groupID AS groupID, SUM(s.destroyed) AS destroyed, SUM(s.lost) AS lost, SUM(s.pointsDestroyed) AS pointsDestroyed, SUM(s.pointsLost) AS pointsLost, SUM(s.iskDestroyed) AS iskDestroyed, SUM(s.iskLost) as iskLost,
-c.groupName AS groupName FROM zz_stats s
-JOIN ccp_invGroups c ON s.groupID = c.groupID
-WHERE s.typeID IN (:in) GROUP BY s.groupID ORDER BY c.groupName
-", array(":in" => $imp));
+$imp = implode(",", $z);
+$st = Db::query("SELECT s.groupID AS groupID, SUM(s.destroyed) AS destroyed, SUM(s.lost) AS lost, SUM(s.pointsDestroyed) AS pointsDestroyed, SUM(s.pointsLost) AS pointsLost, SUM(s.iskDestroyed) AS iskDestroyed, SUM(s.iskLost) as iskLost, c.groupName AS groupName FROM zz_stats s JOIN ccp_invGroups c ON s.groupID = c.groupID WHERE s.typeID IN ($imp) GROUP BY s.groupID ORDER BY c.groupName");
 $cnt = 0;
 $cnid = 0;
 $stats = array();
