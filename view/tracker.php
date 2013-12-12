@@ -52,7 +52,7 @@ foreach($parameters as $columnName=>$ids) {
 		$kills = Kills::mergeKillArrays($kills, array(), $limit, $columnName, $id);
 	}
 }
-$app->render("tracker.html", array("kills" => $kills, "pageTitle" => $pageTitle, "tracking" => $names));
+$app->render("tracker.html", array("kills" => $kills, "pageTitle" => $pageTitle, "tracking" => $names, "page" => $page));
 
 function getIDs($filterName, &$ids, $array) {
     if (is_null($array) || sizeof($array) == 0) return;

@@ -35,6 +35,23 @@ $cachepath = "cache/templates/" . ($viewtheme ? $viewtheme : "bootstrap");
 
 $twig = $app->view()->getEnvironment();
 
+$uri = $_SERVER["REQUEST_URI"];
+$explode = explode("/", $uri);
+foreach($explode as $ex)
+{
+        if($ex == "page")
+        {
+                // time to remove shit!
+                $number = count($explode);
+                $number = $number -1;
+                unset($explode[max(array($number))]);
+                unset($explode[max(array($number))-1]);
+                unset($explode[max(array($number))-2]);
+        }
+}
+
+$actualURI = implode("/", $explode);
+$twig->addGlobal("actualURI", $actualURI);
 // Twig globals
 $twig->addGlobal("image_character", $imageServer."Character/");
 $twig->addGlobal("image_corporation", $imageServer."Corporation/");
