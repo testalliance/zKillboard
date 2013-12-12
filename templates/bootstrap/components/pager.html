@@ -10,7 +10,7 @@
 
 <ul class="pagination pull-right">
     {% if page > 1 %}
-        <li><a href="{{ pageBase }}{{ page - 1 }}/" rel="prev">&laquo;</a></li>
+        <li><a href="{{ pageBase }}{{ page - 1 }}/" rel="nofollow prev">&laquo;</a></li>
     {% endif %}
 
     {% set startIndex = page - 3 %}
@@ -18,8 +18,8 @@
 
     {% for pageIndex in startIndex..endIndex %}
         {% if pageIndex > 0 %}
-            <li class="{{ isActive(pageIndex, page, 'active') }}"><a href="{{ pageBase }}{{pageIndex}}/">{{ pageIndex }}</a></li>
+            <li class="{{ isActive(pageIndex, page, 'active') }}"><a href="{{ pageBase }}{{pageIndex}}/" rel="nofollow">{{ pageIndex }}</a></li>
         {% endif %}
     {% endfor %}
-    <li><a href="{{ pageBase }}{{ page + 1 }}/" rel="next">&raquo;</a></li>
+    <li><a href="{{ pageBase }}{{ page + 1 }}/" rel="nofollow next">&raquo;</a></li>
 </ul>
