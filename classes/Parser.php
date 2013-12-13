@@ -452,6 +452,7 @@ class Parser
 		$victimGroupID = Info::getGroupID($killMail["victim"]["shipTypeID"]);
 		// Ships with specialized bays
 		$bayShips = array(
+			28, // Industrials
 			30, // Titans
 			659, // Supercarriers
 			485, // Dreads
@@ -463,13 +464,7 @@ class Parser
 			941, // Industrial Command Ships
 			883, // Captial Industiral Ships
 		);
-		if (in_array($victimGroupID, $bayShips)) $errors[] = "The victim ship has bays which are not displayed on manual killmails, please use API to post the kill";
-		$specialIterons = array(
-			32811, // Iteron Mark IV Amastris Edition
-			4363, // Iteron Mark IV Quafe Ultra Edition
-			4388, // Iteron Mark IV Quafe Ultramarine Edition
-		);
-		if (in_array($killMail["victim"]["shipTypeID"], $specialIterons)) $errors[] = "The victim ship has bays which are not displayed on manual killmails, please use API to post the kill";
+		if (in_array($victimGroupID, $bayShips)) $errors[] = "The victim ship has bays which are not displayed properly on manual killmails, please use API to post the kill";
 
 		// We're done with sanity checks, if we have any errors return them
 		if (sizeof($errors)) {
