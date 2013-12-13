@@ -102,6 +102,7 @@
     {% include 'components/history.html' %}
 {% elseif pageType == 'top' %}
 	{% set showImage = true %}
+	<div class="row centered"><input style="background: transparent; color: white; border: 0px; width:60px; height:35px;" type="text" name="datepicker" class="datepicker" value="{{ month }}/{{ year }}">&nbsp;<i class="fa fa-calendar-o"></i></div>
 	{% include 'components/top_list.html' %}
 {% elseif pageType == 'corpstats' %}
 	{% include 'components/corpstats.html' %}
