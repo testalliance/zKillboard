@@ -39,13 +39,8 @@ class cli_fightFinder implements cliCommand
 			$key = ($row["solarSystemID"] * 100) + date("H");
 			$key2 = ($row["solarSystemID"] * 100) + date("H", time() + 3600);
 
-			// Insert into (or update) zz_battles
-			Db::execute("REPLACE INTO zz_battles (solarSystemID, solarSystemName, timestamp, involved, kills) VALUES (:solarSystemID, :solarSystemName, :timestamp, :involved, :kills)",
-				array(":solarSystemID" => $systemID, ":solarSystemName" => $system, ":timestamp" => $date, ":involved" => $involved, ":kills" => $wrecks));
-
 			// Have we already reported this battle to the masses?
-			$count = Db::queryField("select count(*) count from zz_social where killID = :killID", "count", array(":killID" => $key), 0);
-			if ($count != 0) continue;
+			$socailCount = Db::queryField("select count(*) count from zz_social where killID = :killID", "count", array(":killID" => $key), 0);
 			Db::execute("insert ignore into zz_social (killID) values (:k1), (:k2)", array(":k1" => $key, ":k2" => $key2));
 
 			Info::addInfo($row);
@@ -54,14 +49,21 @@ class cli_fightFinder implements cliCommand
 			$system = $row["solarSystemName"];
 			$date = date("YmdH00");
 			$link = "https://zkillboard.com/related/$systemID/$date/";
-			
-			$message = "Battle detected in |g|$system|n| with |g|$involved|n| involved and |g|$wrecks|n| wrecks.";
-			Log::irc($message . " |g|$link");
-			$isgd = Twit::shortenURL($link);
-			$message = Log::stripIRCColors($message . " $isgd #tweetfleet #eveonline");
-			$tweet = Twit::sendMessage($message);
-			$twitID = $tweet->id;
-			Log::irc("Message was also tweeted: https://twitter.com/eve_kill/status/$twitID");
+
+			// Insert into (or update) zz_battles
+			Db::execute("REPLACE INTO zz_battles (solarSystemID, solarSystemName, timestamp, involved, kills) VALUES (:solarSystemID, :solarSystemName, :timestamp, :involved, :kills)",
+					array(":solarSystemID" => $systemID, ":solarSystemName" => $system, ":timestamp" => $date, ":involved" => $involved, ":kills" => $wrecks));
+
+
+			if ($socialCount != 0) {
+				$message = "Battle detected in |g|$system|n| with |g|$involved|n| involved and |g|$wrecks|n| wrecks.";
+				Log::irc($message . " |g|$link");
+				$isgd = Twit::shortenURL($link);
+				$message = Log::stripIRCColors($message . " $isgd #tweetfleet #eveonline");
+				$tweet = Twit::sendMessage($message);
+				$twitID = $tweet->id;
+				Log::irc("Message was also tweeted: https://twitter.com/eve_kill/status/$twitID");
+			}
 		}
 	}
 }
