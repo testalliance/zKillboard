@@ -205,7 +205,7 @@ class Util
 				case "xml":
 					$value = true;
 				default:
-					if (is_numeric($value) && $value < 0) throw new Exception("$value is not a valid entry for $key");
+					if (is_numeric($value) && $value < 0) continue; //throw new Exception("$value is not a valid entry for $key");
 					if ($key != "" && $value != "") $parameters[$key] = $value;
 			}
 			$currentIndex++;
