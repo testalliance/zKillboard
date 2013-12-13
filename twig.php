@@ -37,21 +37,23 @@ $twig = $app->view()->getEnvironment();
 
 $uri = $_SERVER["REQUEST_URI"];
 $explode = explode("/", $uri);
-foreach($explode as $ex)
+foreach($explode as $key => $ex)
 {
-        if($ex == "page")
-        {
-                // time to remove shit!
-                $number = count($explode);
-                $number = $number -1;
-                unset($explode[max(array($number))]);
-                unset($explode[max(array($number))-1]);
-                unset($explode[max(array($number))-2]);
-        }
+
+    if(in_array($ex, array("year", "month", "page")))
+    {
+        // find the key for the page array
+        unset($explode[$key]);
+        unset($explode[$key+1]);
+    }
+
 }
 
 $actualURI = implode("/", $explode);
 $twig->addGlobal("actualURI", $actualURI);
+$uriParams = Util::convertUriToParameters();
+$twig->addGlobal("year", (isset($uriParams["year"]) ? $uriParams["year"] : date("Y")));
+$twig->addGlobal("month", (isset($uriParams["month"]) ? $uriParams["month"] : date("m")));
 // Twig globals
 $twig->addGlobal("image_character", $imageServer."Character/");
 $twig->addGlobal("image_corporation", $imageServer."Corporation/");

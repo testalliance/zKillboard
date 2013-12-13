@@ -10,7 +10,7 @@
 
 <ul class="pagination pull-right">
     {% if datepicker == true %}
-    <li class="pull-left"><input style="background: transparent; color: white; border: 0px; width:75px; height:35px;" type="text" class="datepicker"><i class="fa fa-calendar-o"></i>&nbsp;&nbsp;&nbsp;</li>
+    <li class="pull-left"><input style="background: transparent; color: white; border: 0px; width:60px; height:35px;" type="text" name="datepicker" class="datepicker" value="{{ month }}/{{ year }}">&nbsp;<i class="fa fa-calendar-o"></i>&nbsp;&nbsp;</li>
     {% endif %}
     {% if pager == true %}
         {% if page > 1 %}

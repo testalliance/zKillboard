@@ -71,7 +71,7 @@ foreach($st as $q)
     $stats[$cnid][] = $q;
     $cnt++;
 }
-$app->render("tracker.html", array("kills" => $kills, "pageTitle" => $pageTitle, "tracking" => $names, "page" => $page, "summaryTable" => $stats, "pager" => true, "datepicker" => true));
+$app->render("tracker.html", array("kills" => $kills, "pageTitle" => $pageTitle, "tracking" => $names, "page" => $page, "summaryTable" => $stats, "pager" => true));
 
 function getIDs($filterName, &$ids, $array) {
     if (is_null($array) || sizeof($array) == 0) return;

@@ -151,12 +151,18 @@
         </script>
     <div id="fb-root"></div>
     <script>
-    var nowTemp = new Date();
-    var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
-    $('.datepicker').datepicker({
+    var datepicker = $('.datepicker').datepicker({
         format: "mm/yyyy",
         viewMode: 1,
-        minViewMode: 1
+        minViewMode: 1,
+        autoclose: true
+    }).on("changeDate", function(ev){
+        console.log(ev);
+        date = new Date(ev.date);
+        var year = date.getFullYear();
+        var month = date.getMonth() +1;
+        location.href = '{{ actualURI }}' + 'year/' + year + '/month/' + month + '/';
+        console.log(month)
     });
 
     (function(d, s, id) {
