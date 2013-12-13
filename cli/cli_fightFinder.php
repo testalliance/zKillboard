@@ -39,6 +39,11 @@ class cli_fightFinder implements cliCommand
 			$key = ($row["solarSystemID"] * 100) + date("H");
 			$key2 = ($row["solarSystemID"] * 100) + date("H", time() + 3600);
 
+			// Insert into (or update) zz_battles
+			Db::execute("REPLACE INTO zz_battles (solarSystemID, solarSystemName, timestamp, involved, kills) VALUES (:solarSystemID, :solarSystemName, :timestamp, :involved, :kills)",
+				array(":solarSystemID" => $systemID, ":solarSystemName" => $system, ":timestamp" => $date, ":involved" => $involved, ":kills" => $wrecks));
+
+			// Have we already reported this battle to the masses?
 			$count = Db::queryField("select count(*) count from zz_social where killID = :killID", "count", array(":killID" => $key), 0);
 			if ($count != 0) continue;
 			Db::execute("insert ignore into zz_social (killID) values (:k1), (:k2)", array(":k1" => $key, ":k2" => $key2));
@@ -50,10 +55,6 @@ class cli_fightFinder implements cliCommand
 			$date = date("YmdH00");
 			$link = "https://zkillboard.com/related/$systemID/$date/";
 			
-			// Insert to zz_battles
-			Db::execute("INSERT INTO zz_battles (solarSystemID, solarSystemName, timestamp, involved, kills) VALUES (:solarSystemID, :solarSystemName, :timestamp, :involved, :kills)",
-				array(":solarSystemID" => $systemID, ":solarSystemName" => $system, ":timestamp" => $date, ":involved" => $involved, ":kills" => $wrecks));
-
 			$message = "Battle detected in |g|$system|n| with |g|$involved|n| involved and |g|$wrecks|n| wrecks.";
 			Log::irc($message . " |g|$link");
 			$isgd = Twit::shortenURL($link);
