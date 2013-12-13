@@ -48,7 +48,9 @@
         {{Year}}</em></h4></td>
       </tr> 
 	  {% endif %} 
-        {% set imageSize = 32 %}
+        {% set imageSize = 64 %}
+	{% set resizeImage = 40 %}
+	
         {% set field = kill.victim %}
         {% set lossDisplay = '' %}
         {% if kill.displayAsLoss == true and key != 'system' and key != 'region' %}{% set lossDisplay = 'error' %}{% endif %}
