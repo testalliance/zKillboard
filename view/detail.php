@@ -183,7 +183,7 @@ function eftarray($md5, $items, $victimID = 0)
 	foreach($items as $itm)
 	{
 
-		if ($victimID >= 2000000000 && $victimID <= 2999999999) $itm["flagName"] = Info::getGroupName(Info::getGroupID($itm["typeID"]));
+		if ($victimID >= 2100000000 && $victimID <= 2999999999) $itm["flagName"] = Info::getGroupName(Info::getGroupID($itm["typeID"]));
 		else if (!isset($itm["flagName"])) $itm["flagName"] = Info::getFlagName($itm["flag"]);
 
 		if ($itm["flagName"] == "Infantry Modules") $itm["flagName"] = "Mid Slots";
