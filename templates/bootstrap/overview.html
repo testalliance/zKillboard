@@ -29,8 +29,8 @@
 		<li class="{{ isActive('Description', pageType) }}"><a href="/item/{{ id }}/">Description</a></li>
 	{% endif %}
 		<li class="dropdown hidden-xs">
-	{% if key == "character" or key == "corporation" or key == "alliance" %}
 		<li class="{{ isActive('top', pageType) }} hidden-xs"><a href="/{{ key }}/{{ id }}/top/">Top</a></li>
+	{% if key == "character" or key == "corporation" or key == "alliance" %}
 		<li class="{{ isActive('history', pageType) }} hidden-xs"><a href="/{{ key }}/{{ id }}/history/">History</a></li>
 	{% endif %}
 	{% if key == "alliance" %}
