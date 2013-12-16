@@ -84,8 +84,7 @@ $soloPages = ceil($soloCount / $limit);
 $solo = Kills::mergeKillArrays($soloKills, array(), $limit, $columnName, $id);
 
 $topLists = array();
-$onlyTop = array("character", "corporation", "alliance");
-if ($pageType == "top" && in_array($key, $onlyTop)) {
+if ($pageType == "top") {
 	$topParameters = $parameters; // array("limit" => 10, "kills" => true, "$columnName" => $id);
 	$topParameters["limit"] = 10;
 	if(!isset($topParameters["year"]))
@@ -116,7 +115,8 @@ if ($pageType == "api") $corpList = Info::getCorps($id);
 $corpStats = array();
 if ($pageType == "corpstats") $corpStats = Info::getCorpStats($id, $parameters);
 
-if ($pageType == "history" && in_array($key, $onlyTop)) {
+$onlyHistory = array("character", "corporation", "alliance");
+if ($pageType == "history" && in_array($key, $onlyHistory)) {
 	$detail["history"] = Summary::getMonthlyHistory($columnName, $id);
 } else $detail["history"] = array();
 
