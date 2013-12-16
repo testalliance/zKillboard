@@ -88,6 +88,11 @@ $onlyTop = array("character", "corporation", "alliance");
 if ($pageType == "top" && in_array($key, $onlyTop)) {
 	$topParameters = $parameters; // array("limit" => 10, "kills" => true, "$columnName" => $id);
 	$topParameters["limit"] = 10;
+	if(!isset($topParameters["year"]))
+		$topParameters["year"] = date("Y");
+	if(!isset($topParameters["month"]))
+		$topParameters["month"] = date("m");
+	
 	if (!array_key_exists("kills", $topParameters) && !array_key_exists("losses", $topParameters)) $topParameters["kills"] = true;
 
 	$topLists[] = array("type" => "character", "data" => Stats::getTopPilots($topParameters, true));
