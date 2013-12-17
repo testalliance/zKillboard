@@ -26,10 +26,25 @@
 
 {{ info.description|nl2br }}
 
-{% if buyOrders|length > 0 or sellOrders|length > 0 %}
-<hr/>
 <div class="clearfix"></div>
+<hr/>
 
+<div class="col-md-4">
+{% set category = "" %}
+{% for row in info.attributes %}
+	{% if row.categoryName != category %}
+		{% if category != "" %}</tbody></table>{% endif %}
+		<h4>{{ row.categoryName }}</h4>
+		<table class="table table-striped table-condensed table-bordered table-hover"><tbody>
+		{% set category = row.categoryName %}
+	{% else %}
+		<tr><td>{{ row.attributeName }}</td><td><span class="pull-right">{{ row.value }}</span></td></tr>
+	{% endif %}
+{% endfor %}
+</tbody></table>
+</div>
+
+{% if buyOrders|length > 0 or sellOrders|length > 0 %}
 
 <div class="col-md-3">
 <h4>Buy Orders</h4>
@@ -45,7 +60,7 @@
 
 <div class="clearfix"></div>
 
-<em style="padding-left: 2em;"><small>Powered by <a href="http://www.eve-emdr.com/en/latest/index.html" target="_blank">EMDR</a> and <a href="http://eve-central.com/home/quicklook.html?typeid={{ info.typeID }}" target="_blank">Eve-Central</a>. Data reflects market hubs only.</small></em>
+<em style="padding-left: 2em;"><small>Market values powered by <a href="http://www.eve-emdr.com/en/latest/index.html" target="_blank">EMDR</a> and <a href="http://eve-central.com/home/quicklook.html?typeid={{ info.typeID }}" target="_blank">Eve-Central</a>. Data reflects market hubs only.</small></em>
 {% endif %}
 
 {% endblock %}
