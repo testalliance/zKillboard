@@ -4,10 +4,10 @@ CREATE TABLE `zz_battles` (
   `battleID` int(11) NOT NULL AUTO_INCREMENT,
   `solarSystemID` int(11) NOT NULL,
   `solarSystemName` varchar(100) NOT NULL,
-  `timestamp` varchar(14) NOT NULL DEFAULT '00000000000000',
+  `dttm` datetime NOT NULL,
   `involved` int(11) NOT NULL,
   `kills` int(11) NOT NULL,
   PRIMARY KEY (`battleID`),
-  UNIQUE KEY `battleID` (`battleID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  UNIQUE KEY `solarSystemID` (`solarSystemID`,`dttm`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
