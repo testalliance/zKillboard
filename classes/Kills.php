@@ -130,6 +130,7 @@ class Kills
 		$kill = $victim;
 		$involved = Db::query("select * from zz_participants where killID = :killID and isVictim = 0 order by damage desc", array(":killID" => $killID));
 		$items = Db::query("select * from zz_items where killID = :killID order by insertOrder", array(":killID" => $killID));
+$items = Kills::getItems($killID);
 
 		Info::addInfo($kill);
 		Info::addInfo($victim);
@@ -141,6 +142,30 @@ class Kills
 		unset($items);
 
 		return array("info" => $kill, "victim" => $victim, "involved" => $infoInvolved, "items" => $infoItems);
+	}
+
+	public static function getItems($killID)
+	{
+		Db::execute("insert ignore into zz_item_price_lookup select typeID, dttm, price from zz_items i left join zz_participants p on (i.killID = p.killID) where i.killID = $killID");
+
+		$json = Db::queryField("select kill_json from zz_killmails where killID = :killID", "kill_json", array(":killID" => $killID));
+		$killArray = json_decode($json, true);
+		$killTime = $killArray["killTime"];
+		$items = array();
+		Kills::addItems($items, $killArray["items"], $killTime);
+		return $items;
+	}
+
+	public static function addItems(&$itemArray, $items, $killTime, $inContainer = 0) {
+		foreach ($items as $item) {
+			$typeID = $item["typeID"];
+			$priceLookup = Db::queryRow("select * from zz_item_price_lookup where typeID = :typeID and priceDate = date(:date)", array(":typeID" => $typeID, ":date" => $killTime), 0);
+			$item["price"] = $priceLookup["price"];
+			$item["inContainer"] = $inContainer;
+			unset($item["_stringValue"]);
+			$itemArray[] = $item;
+			if (isset($item["items"])) Kills::addItems($itemArray, $item["items"], $killTime, 1);
+		}
 	}
 
 	/**
