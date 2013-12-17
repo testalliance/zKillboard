@@ -156,15 +156,18 @@ $items = Kills::getItems($killID);
 		return $items;
 	}
 
-	public static function addItems(&$itemArray, $items, $killTime, $inContainer = 0) {
+	public static function addItems(&$itemArray, $items, $killTime, $inContainer = 0, $parentFlag = 0) {
 		foreach ($items as $item) {
 			$typeID = $item["typeID"];
 			$priceLookup = Db::queryRow("select * from zz_item_price_lookup where typeID = :typeID and priceDate = date(:date)", array(":typeID" => $typeID, ":date" => $killTime), 0);
 			$item["price"] = $priceLookup["price"];
 			$item["inContainer"] = $inContainer;
+			if ($inContainer) $item["flag"] = $parentFlag;
 			unset($item["_stringValue"]);
 			$itemArray[] = $item;
-			if (isset($item["items"])) Kills::addItems($itemArray, $item["items"], $killTime, 1);
+			$subItems = isset($item["items"]) ? $item["items"] : null;
+			unset($item["items"]);
+			if ($subItems != null) Kills::addItems($itemArray, $subItems, $killTime, 1, $item["flag"]);
 		}
 	}
 
