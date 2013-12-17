@@ -199,7 +199,7 @@ function eftarray($md5, $items, $victimID = 0)
 		$key = $itm["typeName"] . "|" . $itm["flagName"];
 		if(isset($itm["flagName"]))
 		{
-			if($itm["fittable"]) // not ammo or whatever
+			if($itm["fittable"] && $itm["inContainer"] == 0) // not ammo or whatever
 			{
 				$repeats = $itm["qtyDropped"] + $itm["qtyDestroyed"];
 				$i = 0;
@@ -289,7 +289,7 @@ function eftarray($md5, $items, $victimID = 0)
 function combineditems($md5, $items)
 {
 	$Cache = Cache::get($md5."combineditems");
-	if($Cache) return $Cache;
+	//if($Cache) return $Cache;
 
 	// Create the new item array with combined items and whatnot
 	$itemList = array();
