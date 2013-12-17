@@ -866,6 +866,7 @@ class Parser
 			$price = $price / 100;
 		}
 
+		Db::execute("insert ignore into zz_item_price_lookup (typeID, priceDate, price) values (:typeID, now(), :price)", array(":typeID" => $item["typeID"], ":price" => $price));
 		Db::execute("
 				insert into zz_items_temporary
 				(killID, typeID, flag, qtyDropped, qtyDestroyed, insertOrder, price, singleton, inContainer)
