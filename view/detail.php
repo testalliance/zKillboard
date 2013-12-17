@@ -268,7 +268,7 @@ function eftarray($md5, $items, $victimID = 0)
 
 	// Ammo shit
 	foreach($items as $itm) {
-		if(!$itm["fittable"] && isset($itm["flagName"])) // possibly ammo
+		if($itm["inContainer"] == 0 && !$itm["fittable"] && isset($itm["flagName"])) // possibly ammo
 		{
 			if($itm["flagName"] == "High Slots") // high slot ammo
 				$eftarray["high"][$itm["flag"]][] = array("typeName" => $itm["typeName"], "typeID" => $itm["typeID"], "charge" => true);
@@ -295,6 +295,7 @@ function combineditems($md5, $items)
 	$itemList = array();
 	foreach($items as $itm)
 	{
+		if ($itm["inContainer"] == 1) $itm["flag"] = 0;
 		if (!isset($itm["flagName"])) $itm["flagName"] = Info::getFlagName($itm["flag"]);
 		for ($i = 0; $i <= 1; $i++) {
 			$mItem = $itm;
