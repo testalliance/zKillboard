@@ -129,8 +129,7 @@ class Kills
 		$victim = Db::queryRow("select * from zz_participants where killID = :killID and isVictim = 1", array(":killID" => $killID));
 		$kill = $victim;
 		$involved = Db::query("select * from zz_participants where killID = :killID and isVictim = 0 order by damage desc", array(":killID" => $killID));
-		$items = Db::query("select * from zz_items where killID = :killID order by insertOrder", array(":killID" => $killID));
-$items = Kills::getItems($killID);
+		$items = Kills::getItems($killID);
 
 		Info::addInfo($kill);
 		Info::addInfo($victim);
@@ -146,8 +145,6 @@ $items = Kills::getItems($killID);
 
 	public static function getItems($killID)
 	{
-		Db::execute("insert ignore into zz_item_price_lookup select typeID, dttm, price from zz_items i left join zz_participants p on (i.killID = p.killID) where i.killID = $killID");
-
 		$json = Db::queryField("select kill_json from zz_killmails where killID = :killID", "kill_json", array(":killID" => $killID));
 		$killArray = json_decode($json, true);
 		$killTime = $killArray["killTime"];

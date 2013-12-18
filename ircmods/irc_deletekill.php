@@ -35,7 +35,6 @@ class irc_deletekill implements ircCommand {
 		Stats::calcStats($killID, false);
 		// Remove it from the kill tables
 		Db::execute("delete from zz_participants where killID = :killID", array(":killID" => $killID));
-		Db::execute("delete from zz_items where killID = :killID", array(":killID" => $killID));
 		// Mark the kill as deleted
 		Db::execute("update zz_killmails set processed = 2 where killID = :killID", array(":killID" => $killID));
 		irc_out("killID |g|$killID|n| has been deleted.");

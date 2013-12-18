@@ -639,7 +639,6 @@ class Parser
 		$maxTime = 65 * 1000 ;
 
 		Db::execute("set session wait_timeout = 120000");
-		Db::execute("create temporary table if not exists zz_items_temporary select * from zz_items where 1 = 0");
 		Db::execute("create temporary table if not exists zz_participants_temporary select * from zz_participants where 1 = 0");
 
 		$numKills = 0;
@@ -649,7 +648,6 @@ class Parser
 				self::removeTempTables();
 				return;
 			}
-			Db::execute("delete from zz_items_temporary");
 			Db::execute("delete from zz_participants_temporary");
 
 			//Log::log("Fetching kills for processing...");
@@ -697,10 +695,8 @@ class Parser
 			}
 			while (Db::queryField("show session status like 'Not_flushed_delayed_rows'", "Value", array(), 0) > 0) usleep(50000);
 			if (sizeof($cleanupKills)) {
-				Db::execute("delete from zz_items where killID in (" . implode(",", $cleanupKills) . ")");
 				Db::execute("delete from zz_participants where killID in (" . implode(",", $cleanupKills) . ")");
 			}
-			Db::execute("insert into zz_items select * from zz_items_temporary");
 			Db::execute("insert into zz_participants select * from zz_participants_temporary");
 			if (sizeof($processedKills)) Db::execute("update zz_killmails set processed = 1 where killID in (" . implode(",", $processedKills) . ")");
 			foreach($processedKills as $killID) {
@@ -731,7 +727,6 @@ class Parser
 	private static function removeTempTables()
 	{
 		Db::execute("drop table if exists zz_participants_temporary");
-		Db::execute("drop table if exists zz_items_temporary");
 	}
 
 	private static function validKill(&$kill)
@@ -867,22 +862,6 @@ class Parser
 		}
 
 		Db::execute("insert ignore into zz_item_price_lookup (typeID, priceDate, price) values (:typeID, now(), :price)", array(":typeID" => $item["typeID"], ":price" => $price));
-		Db::execute("
-				insert into zz_items_temporary
-				(killID, typeID, flag, qtyDropped, qtyDestroyed, insertOrder, price, singleton, inContainer)
-				values
-				(:killID, :typeID, :flag, :qtyDropped, :qtyDestroyed, :insertOrder, :price, :singleton, :inContainer)",
-				(array(
-					   ":killID" => $killID,
-					   ":typeID" => $item["typeID"],
-					   ":flag" => ($isCargo ? $parentContainerFlag : $item["flag"]),
-					   ":qtyDropped" => $item["qtyDropped"],
-					   ":qtyDestroyed" => $item["qtyDestroyed"],
-					   ":insertOrder" => $itemInsertOrder,
-					   ":price" => $price,
-					   ":singleton" => $item["singleton"],
-					   ":inContainer" => ($isCargo ? 1 : 0),
-					  )));
 
 		return ($price * ($item["qtyDropped"] + $item["qtyDestroyed"]));
 	}

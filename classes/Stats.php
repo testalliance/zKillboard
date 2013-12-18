@@ -228,7 +228,6 @@ class Stats
 
 		if ($modifier == -1) {
 			Db::execute("delete from zz_participants where killID = :killID", array(":killID" => $killID));
-			Db::execute("delete from zz_items where killID = :killID", array(":killID" => $killID));
 		}
 	}
 
