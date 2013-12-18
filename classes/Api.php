@@ -108,6 +108,7 @@ class Api
 
 
 		Log::ircAdmin("API: $keyID has been added.  Type: $keyType ($ip)");
+		Log::log("API: $keyID has been added.  Type: $keyType ($ip)");
 		return "Success, your $keyType key has been added.";
 	}
 
