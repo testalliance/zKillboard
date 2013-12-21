@@ -49,8 +49,7 @@ $timer = new Timer();
 $app = new \Slim\Slim($config);
 
 // Session
-//ini_set("session.save_path", $baseDir."cache/sessions/");
-ini_set("session.save_path", "/dev/shm/zkillboard/");
+ini_set("session.save_path", "/dev/shm/");
 session_cache_limiter(false);
 session_start();
 
