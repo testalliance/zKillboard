@@ -22,7 +22,7 @@ if (@!is_array($input)) $input = array();
 @$id = $input[1];
 @$pageType = $input[2];
 
-$validPageTypes = array("overview", "kills", "losses", "top", "solo", "history");
+$validPageTypes = array("overview", "kills", "losses", "top", "topalltime", "solo", "history");
 if ($key == "alliance")
 {
 	$validPageTypes[] = "api";
@@ -84,14 +84,16 @@ $soloPages = ceil($soloCount / $limit);
 $solo = Kills::mergeKillArrays($soloKills, array(), $limit, $columnName, $id);
 
 $topLists = array();
-if ($pageType == "top") {
+if ($pageType == "top" || $pageType == "topalltime") {
 	$topParameters = $parameters; // array("limit" => 10, "kills" => true, "$columnName" => $id);
 	$topParameters["limit"] = 10;
-	if(!isset($topParameters["year"]))
-		$topParameters["year"] = date("Y");
-	if(!isset($topParameters["month"]))
-		$topParameters["month"] = date("m");
-	
+	if($pageType != "topalltime")
+	{
+		if(!isset($topParameters["year"]))
+			$topParameters["year"] = date("Y");
+		if(!isset($topParameters["month"]))
+			$topParameters["month"] = date("m");
+	}
 	if (!array_key_exists("kills", $topParameters) && !array_key_exists("losses", $topParameters)) $topParameters["kills"] = true;
 
 	$topLists[] = array("type" => "character", "data" => Stats::getTopPilots($topParameters, true));
