@@ -56,7 +56,7 @@ class cli_stompReceive implements cliCommand
 				$topics[] = $topic;
 			}
 		}
-		if (sizeof($topics) == 0) return; // Nothing to fetch...
+		if (sizeof($topics) == 0) $topics[] =  "/topic/kills";
 
 		try {
 			$stomp = new Stomp($stompServer, $stompUser, $stompPassword);
