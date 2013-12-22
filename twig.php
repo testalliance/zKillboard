@@ -71,8 +71,12 @@ $twig->addGlobal("mobilebottomad", zKillboard::mobileBottom());
 $twig->addGlobal("igbtopad", zKillboard::igbTop());
 $twig->addGlobal("igbbottomad", zKillboard::igbBottom());
 $twig->addGlobal("analytics", zKillboard::analytics());
-$twig->addGlobal("disqusShortName", $disqusShortName);
-$twig->addglobal("disqus", Disqus::init());
+$twig->addGlobal("disqusLoad", $disqus);
+if($disqus)
+{
+    $twig->addGlobal("disqusShortName", $disqusShortName);
+    $twig->addglobal("disqus", Disqus::init());
+}
 
 $detect = new Mobile_Detect();
 $twig->addGlobal("isMobile", ($detect->isMobile() ? true : false));

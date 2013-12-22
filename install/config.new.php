@@ -75,6 +75,7 @@ $cfUser = "";
 $cfKey = "";
 
 // Disqus
+$disqus = false;
 $disqusShortName = "";
 $disqusSecretKey = "";
 $disqusPublicKey = "";

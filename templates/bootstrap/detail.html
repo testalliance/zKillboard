@@ -99,7 +99,9 @@
 <div class="col-lg-4">
 	<ul class="nav nav-tabs">
 		<li class="active"><a href="#details" data-toggle="tab">Details</a></li>
+		{% if disqusLoad %}
 		<li><a href="#comment" data-toggle="tab">Comments</a></li>
+		{% endif %}
 		<li><a href="#shiptypes" data-toggle="tab">Ship Types</a></li>
 	</ul>
 	<div class="tab-content">
@@ -113,7 +115,7 @@
 			<div style="margin: 0px;">{% include 'components/attackers.html' %}</div>
 			</div>
 		</div>
-
+{% if disqusLoad %}
 		<div class="tab-pane fade" id="comment">
 			<div id="disqus_thread"></div>
 			<script type="text/javascript">
@@ -128,7 +130,7 @@
 			<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 			<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 		</div>
-
+{% endif %}
 		<div class="tab-pane fade" id="shiptypes">
 			<table class="table table-condensed table-striped">
 				<thead>

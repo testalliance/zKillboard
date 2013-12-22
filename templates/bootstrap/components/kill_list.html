@@ -100,8 +100,10 @@
                 </a>
 				<br/>
 				<small class="pull-right">{{ formatIsk(kill.info.total_price) }}</small>
+        {% if disqusLoad %}
         <br>
         <small class="pull-right"> <a href="/detail/{{ kill.info.killID }}/#comments" data-disqus-identifier="{{ kill.info.commentID }}"></a></small>
+        {% endif %}
             </td>
         </tr>
         {% endfor %}
