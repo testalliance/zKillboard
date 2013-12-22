@@ -35,11 +35,11 @@ class Cache
 
 		if ($cache == null)
 		{
-			if(extension_loaded("Memcached") && (isset($memcacheServer) && isset($memcachePort)))
+			if(extension_loaded("Memcached") && (!empty($memcacheServer) && !empty($memcachePort)))
 			{
 				$cache = new MemcachedCache();
 			}
-			else if(extension_loaded("Memcache") && (isset($memcacheServer) && isset($memcachePort)))
+			else if(extension_loaded("Memcache") && (!empty($memcacheServer) && !empty($memcachePort)))
 			{
 				$cache = new MemcacheCache();
 			}
