@@ -472,7 +472,7 @@ class Parser
 		}
 
 		// Insert ignore allows us to "pretend" to insert dupes
-		Db::execute("insert ignore into zz_manual_mails (hash, rawText) values (:hash, :rawText)", array(":hash" => $hash, ":rawText" => $rawMail));
+		Db::execute("insert ignore into zz_manual_mails (hash) values (:hash)", array(":hash" => $hash));
 		// Look up the manualKillID from the hash (good for those dupe inserts)
 		$mKillID = Db::queryField("select mKillID from zz_manual_mails where hash = :hash order by mKillID desc limit 1", "mKillID", array(":hash" => $hash), 0);
 
@@ -672,6 +672,7 @@ class Parser
 					continue;
 				}
 				$killID = $kill["killID"];
+				Db::execute("insert ignore into zz_killid values(:killID, 0)", array(":killID" => $killID));
 
 				// Cleanup if we're reparsing
 				$cleanupKills[] = $killID;
