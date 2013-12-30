@@ -38,6 +38,8 @@ if($_POST)
 		if(!$check)
 		{
 			Db::execute("INSERT INTO zz_tickets_replies (userid, belongsTo, name, reply, moderator) VALUES (:userid, :belongsTo, :name, :reply, :moderator)", array(":userid" => $info["id"], ":belongsTo" => $id, ":name" => $name, ":reply" => $reply, ":moderator" => $moderator));
+			global $baseAddr;
+			if (!$moderator) Log::ircAdmin("Ticket response from $name: https://$baseAddr/moderator/tickets/$id/");
 			$app->redirect("/tickets/view/$id/");
 		}
 	}
