@@ -3,16 +3,16 @@ DROP TABLE IF EXISTS `zz_participants`;
 CREATE TABLE `zz_participants` (
   `killID` int(32) NOT NULL,
   `solarSystemID` int(16) NOT NULL,
-  `regionID` int(16) DEFAULT NULL,
+  `regionID` int(16) NOT NULL DEFAULT '0',
   `dttm` datetime NOT NULL,
   `total_price` decimal(16,2) NOT NULL DEFAULT '0.00',
   `points` mediumint(4) NOT NULL,
   `number_involved` smallint(4) NOT NULL,
   `isVictim` tinyint(1) NOT NULL,
-  `shipTypeID` int(16) NOT NULL,
-  `groupID` int(16) NOT NULL,
-  `vGroupID` int(16) DEFAULT NULL,
-  `weaponTypeID` int(16) NOT NULL,
+  `shipTypeID` mediumint(8) unsigned NOT NULL,
+  `groupID` mediumint(8) unsigned NOT NULL,
+  `vGroupID` mediumint(8) unsigned NOT NULL,
+  `weaponTypeID` mediumint(8) unsigned NOT NULL,
   `shipPrice` decimal(16,2) NOT NULL,
   `damage` int(8) NOT NULL,
   `factionID` int(16) NOT NULL,
@@ -53,7 +53,7 @@ CREATE TABLE `zz_participants` (
   KEY `groupID_number_involved` (`groupID`,`number_involved`),
   KEY `vGroupID_number_involved` (`vGroupID`,`number_involved`),
   KEY `weaponTypeID_number_involved` (`weaponTypeID`,`number_involved`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPRESSED
 /*!50100 PARTITION BY RANGE (year(dttm))
 (PARTITION y2007 VALUES LESS THAN (2008) ENGINE = InnoDB,
  PARTITION y2008 VALUES LESS THAN (2009) ENGINE = InnoDB,
