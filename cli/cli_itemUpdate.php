@@ -86,23 +86,7 @@ class cli_itemUpdate implements cliCommand
 				Db::execute("update ccp_invTypes set typeName = :name where typeID = :id", array(":name" => $name, ":id" => $id));
 				if ($currentName != "" && $name != "Unknown Type") {
 					Log::log("$count/$size $id $currentName -> $name");
-					if (Util::startsWith($currentName, "TypeID")) Log::irc("New item: $name (typeID: $id)");
-					else Log::log("Item renamed: '$currentName' -> '$name'");
-				}
-				if ($currentName == "Unknown Type") {
-					$zofu = file_get_contents("https://zofu.no-ip.de/hist?type=${id}&mode=json");
-					$zofu = json_decode($zofu, true);
-					$latestData = null;
-					if (sizeof($zofu)) {
-						foreach($zofu as $release) {
-							if (isset($release[1]["typeID"]) && $release[1]["typeID"] != null ) $latestData = $release;
-						}
-						$latestName = $latestData[1]["typeName"];
-						$latestDscr = $latestData[1]["description"];
-						$msg = "Deleted item detected - updating $id to $latestName";
-						Db::execute("update ccp_invTypes set typeName = :name, description = :dscr where typeID = :id", array(":name" => $latestName, ":dscr" => $latestDscr, ":id" => $id));
-						Log::log($msg);
-					}
+					Log::ircAdmin("$count/$size $id $currentName -> $name");
 				}
 			}
 		}
