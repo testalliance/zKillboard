@@ -73,7 +73,7 @@ class cli_stompSend implements cliCommand
 					}
 
 					$data = json_decode($kill["kill_json"], true);
-					$json = json_encode(array("solarSystemID" => $data["solarSystemID"], "killID" => $data["killID"], "shipTypeID" => $data["victim"]["shipTypeID"], "killTime" => $data["killTime"]));
+					$json = json_encode(array("solarSystemID" => $data["solarSystemID"], "killID" => $data["killID"], "characterID" => $data["victim"]["characterID"], "corporationID" => $data["victim"]["corporationID"], "allianceID" => $data["victim"]["allianceID"], "shipTypeID" => $data["victim"]["shipTypeID"], "killTime" => $data["killTime"]));
 					$stomp->send("/topic/starmap.systems.active", $json);
 				}
 			}
