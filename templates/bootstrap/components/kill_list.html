@@ -60,7 +60,7 @@
 			</td>
             <td>
                 <a href="/system/{{ kill.info.solarSystemID }}/">{{ kill.info.solarSystemName }}</a> <span style="color: {{ kill.info.systemColorCode }}">{{ "%1.1f"|format(kill.info.solarSystemSecurity) }}</span> <br/>
-                <a href="/region/{{ kill.info.regionID }}/">{{ kill.info.regionName }}</a>
+                <a href="/region/{{ kill.info.regionID }}/">{{ shortString(kill.info.regionName, 17) }}</a>
             </td>
             <td class="icon hidden-xs" style="text-align: center; vertical-align: middle;">
                 {% include 'components/image_ship.html' %}
