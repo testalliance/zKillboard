@@ -65,7 +65,7 @@ class cli_stompReceive implements cliCommand
 				$stomp->subscribe($topic, array("id" => "zkb-".$baseAddr, "persistent" => "true", "ack" => "client", "prefetch-count" => 1));
 			}
 
-			Log::log("StompReceive started - " . sizeof($topics) . " subscriptions");
+			Log::log("StompReceive started - " . sizeof($topics) . " subscription(s)");
 
 			$stompCount = 0;
 			$timer = new Timer();
