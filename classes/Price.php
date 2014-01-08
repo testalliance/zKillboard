@@ -115,7 +115,7 @@ class Price
 			}
 		}
 		try {
-			$xml = new SimpleXMLElement($result);
+			@$xml = new SimpleXMLElement($result);
 			@$sellMedian = (double)$xml->marketstat->type->sell->median;
 			@$allMedian = (double)$xml->marketstat->type->all->median;
 			if ($allMedian == 0) $allMedian = 0.00001;
