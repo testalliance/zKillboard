@@ -25,7 +25,7 @@ class FileCache extends AbstractCache
 	 * @param $cacheDir the default cache dir
 	 * @param $cacheTime the default cache time (5 minutes)
 	 */
-	
+
 	var $cacheDir = "cache/queryCache/";
 	var $cacheTime = 300;
 
@@ -37,7 +37,7 @@ class FileCache extends AbstractCache
 
 	/**
 	 * Gets the data
-	 * 
+	 *
 	 * @param $key
 	 * @return array
 	 */
@@ -52,7 +52,7 @@ class FileCache extends AbstractCache
 			if($age <= $time)
 			{
 				@unlink($this->cacheDir.sha1($key));
-				return false;	
+				return false;
 			}
 			return $data;
 		}
@@ -62,11 +62,11 @@ class FileCache extends AbstractCache
 
 	/**
 	 * Sets data
-	 * 
+	 *
 	 * @param $key
 	 * @param $value
 	 * @param $timeout
-	 * 
+	 *
 	 * return bool
 	 */
 	public function set($key, $value, $timeout)
@@ -76,7 +76,7 @@ class FileCache extends AbstractCache
 
 	/**
 	 * Replaces data
-	 * 
+	 *
 	 * @param $key
 	 * @param $value
 	 * @param $timeout
@@ -96,7 +96,7 @@ class FileCache extends AbstractCache
 
 	/**
 	 * Deletes a key
-	 * 
+	 *
 	 * @param $key
 	 * @return bool
 	 */
@@ -115,7 +115,7 @@ class FileCache extends AbstractCache
 
 	/**
 	 * Increments value
-	 * 
+	 *
 	 * @param $key
 	 * @return bool
 	 */
@@ -137,7 +137,7 @@ class FileCache extends AbstractCache
 
 	/**
 	 * Decrements value
-	 * 
+	 *
 	 * @param $key
 	 * @return bool
 	 */
@@ -171,11 +171,11 @@ class FileCache extends AbstractCache
 
 	/**
 	 * Sets data to cache file
-	 * 
+	 *
 	 * @param $key
 	 * @param $value
 	 * @param $timeout
-	 * 
+	 *
 	 * return bool
 	 */
 	private function setData($key, $value, $timeout = NULL)
@@ -186,7 +186,7 @@ class FileCache extends AbstractCache
 		try
 		{
 			// fix, so timeout will be timestamp based
-			$timeout= time() + $timeout;
+			$timeout = time() + $timeout;
 
 			$data = $timeout."%".json_encode($value);
 			file_put_contents($this->cacheDir.sha1($key), $data);
@@ -200,7 +200,7 @@ class FileCache extends AbstractCache
 
 	/**
 	 * Gets the data from the cache
-	 * 
+	 *
 	 * @param $key
 	 * @return array
 	 */
