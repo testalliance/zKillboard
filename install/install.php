@@ -204,6 +204,11 @@ if(strtolower(prompt("|g|Do you want to migrate kills from an existing EDK insta
 	}
 }
 
+out("|g|Creating cache directories");
+@mkdir($baseDir."cache/");
+@mkdir($baseDir."cache/sessions/");
+@mkdir($baseDir."cache/pheal/");
+
 out("|g|Enjoy your new installation of zKillboard, you may browse to it here: http://" . $settings["baseaddr"] . "\n");
 exit;
 
