@@ -5,7 +5,6 @@ CREATE TABLE `zz_manual_mails` (
   `hash` varchar(64) NOT NULL,
   `killID` int(11) DEFAULT NULL,
   `eveKillID` int(11) DEFAULT NULL,
-  `rawText` mediumtext NOT NULL,
   PRIMARY KEY (`mKillID`),
   UNIQUE KEY `hash` (`hash`),
   KEY `killID` (`killID`),

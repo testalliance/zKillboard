@@ -22,7 +22,7 @@ if (@!is_array($input)) $input = array();
 @$id = $input[1];
 @$pageType = $input[2];
 
-$validPageTypes = array("overview", "kills", "losses", "top", "solo", "history");
+$validPageTypes = array("overview", "kills", "losses", "top", "topalltime", "solo", "history");
 if ($key == "alliance")
 {
 	$validPageTypes[] = "api";
@@ -84,10 +84,17 @@ $soloPages = ceil($soloCount / $limit);
 $solo = Kills::mergeKillArrays($soloKills, array(), $limit, $columnName, $id);
 
 $topLists = array();
-$onlyTop = array("character", "corporation", "alliance");
-if ($pageType == "top" && in_array($key, $onlyTop)) {
+if ($pageType == "top" || $pageType == "topalltime") {
 	$topParameters = $parameters; // array("limit" => 10, "kills" => true, "$columnName" => $id);
 	$topParameters["limit"] = 10;
+
+	if($pageType != "topalltime")
+	{
+		if(!isset($topParameters["year"]))
+			$topParameters["year"] = date("Y");
+		if(!isset($topParameters["month"]))
+			$topParameters["month"] = date("m");
+	}
 	if (!array_key_exists("kills", $topParameters) && !array_key_exists("losses", $topParameters)) $topParameters["kills"] = true;
 
 	$topLists[] = array("type" => "character", "data" => Stats::getTopPilots($topParameters, true));
@@ -111,9 +118,26 @@ if ($pageType == "api") $corpList = Info::getCorps($id);
 $corpStats = array();
 if ($pageType == "corpstats") $corpStats = Info::getCorpStats($id, $parameters);
 
-if ($pageType == "history" && in_array($key, $onlyTop)) {
+$onlyHistory = array("character", "corporation", "alliance");
+if ($pageType == "history" && in_array($key, $onlyHistory)) {
 	$detail["history"] = Summary::getMonthlyHistory($columnName, $id);
 } else $detail["history"] = array();
+
+// Figure out if the character or corporation has any API keys in the database
+$apiVerified = false;
+if(in_array($key, array("character", "corporation")))
+{
+	if($key == "character")
+	{
+		$count = Db::queryField("SELECT count(1) count FROM zz_api_characters WHERE characterID = :characterID", "count", array(":characterID" => $id));
+		$apiVerified = $count > 0 ? 1 : 0;
+	}
+	else
+	{
+		$count = Db::queryField("select count(1) count from zz_api_characters where isDirector = 'T' and corporationID = :corpID", "count", array(":corpID" => $id));
+		$apiVerified = $count > 0 ? 1 : 0;
+	}
+}
 
 $cnt = 0;
 $cnid = 0;
@@ -133,7 +157,7 @@ if ($mixedKills) $kills = Kills::mergeKillArrays($mixed, array(), $limit, $colum
 
 $renderParams = array("pageName" => $pageName, "kills" => $kills, "losses" => $losses, "detail" => $detail, "page" => $page,
 		"mixed" => $mixedKills, "key" => $key, "id" => $id, "pageType" => $pageType, "solo" => $solo, "topLists" => $topLists,
-		"corps" => $corpList, "corpStats" => $corpStats, "summaryTable" => $stats, "pager" => true, "datepicker" => true);
+		"corps" => $corpList, "corpStats" => $corpStats, "summaryTable" => $stats, "pager" => true, "datepicker" => true, "apiVerified" => $apiVerified);
 
 //$app->etag(md5(serialize($renderParams)));
 //$app->expires("+5 minutes");

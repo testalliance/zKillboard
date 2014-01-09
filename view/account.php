@@ -50,21 +50,21 @@ if($_POST)
 	// delete a session
 	if(isset($deletesessionid))
 		User::deleteSession($userID, $deletesessionid);
-	
+
 	// Delete an apikey
 	if(isset($deletekeyid) && !isset($deleteentity))
 		$error = Api::deleteKey($deletekeyid);
-    
+
 	// Theme stuff
 	if(isset($viewtheme))
 	{
 		UserConfig::set("viewtheme", $viewtheme);
 		$app->redirect($_SERVER["REQUEST_URI"]);
 	}
-	
+
 	if(isset($theme))
 		UserConfig::set("theme", $theme);
-	
+
 	// Password
 	if(isset($orgpw) && isset($password) && isset($password2))
 	{
@@ -103,7 +103,7 @@ if($_POST)
 		$entitymetadata = json_decode($entitymetadata, true);
 		$entities = UserConfig::get("tracker_" . $entitymetadata['type']);
 		$entity = array('id' => $entitymetadata['id'], 'name' => $entitymetadata['name']);
-		
+
 		if(empty($entities) || !in_array($entity, $entities))
 		{
 			$entities[] = $entity;

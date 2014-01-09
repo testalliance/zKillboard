@@ -132,6 +132,7 @@
         <script type="text/javascript" src="/js/search.js"></script>
         <script type="text/javascript" src="/js/common.js"></script>
         <script type="text/javascript" src="/js/sclock1.js"></script>
+        {% if disqusLoad %}
         <script type="text/javascript">
         var disqus_shortname = 'zkillboard';
         (function () {
@@ -141,6 +142,7 @@
             (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
         }());
         </script>
+        {% endif %}
 	{% if showAds != false and not isMaintenance() %}
         <script type="text/javascript">
           (function() {

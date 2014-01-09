@@ -24,7 +24,7 @@ if($_POST)
         $password = $_POST["password"];
     if(isset($_POST["password2"]))
         $password2 = $_POST["password2"];
-    
+
     if(!$password || !$password2)
     {
         $message = "Password missing, try again..";

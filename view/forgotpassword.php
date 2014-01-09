@@ -21,7 +21,7 @@ if($_POST)
     $email = "";
     if(isset($_POST["email"]))
         $email = $_POST["email"];
-        
+
     if(isset($email))
     {
         $exists = Db::queryField("SELECT username FROM zz_users WHERE email = :email", "username", array(":email" => $email), 0);
@@ -29,7 +29,7 @@ if($_POST)
         {
             $date = date("Y-m-d H:i:s", strtotime("+24 hours"));
             $hash = sha1($date.$email);
-            
+
             $alreadySent = Db::queryField("SELECT change_hash FROM zz_users WHERE email = :email", "change_hash", array(":email" => $email), 0);
             if($alreadySent != NULL)
             {

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 class Password
-{	
+{
 	public static function genPassword($password)
 	{
 		return password_hash($password, PASSWORD_BCRYPT);

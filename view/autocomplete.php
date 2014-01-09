@@ -22,7 +22,7 @@ if ($app->request()->isPost())
 	$query = $app->request()->post('query');
 }
 
-//declare the base data/sql etc		
+//declare the base data/sql etc
 $entities = array(
 	/*array('type' => 'faction',     'query' => '',		   																												'image' => 'Alliance/%1$d_32.png'),*/
 	array('type' => 'alliance',    'query' => 'SELECT allianceID AS id, name FROM zz_alliances WHERE name LIKE :query OR ticker LIKE :query LIMIT 9',                  'image' => 'Alliance/%1$d_32.png'),

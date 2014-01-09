@@ -34,7 +34,7 @@ if($_POST)
 	$reason = "Default should change";
 	$report = NULL;
 	$delete = NULL;
-	
+
 	if(isset($_POST["status"]))
 		$status = $_POST["status"];
 	if(isset($_POST["reply"]))
@@ -57,7 +57,7 @@ if($_POST)
     $manualpull = $_POST["manualpull"];
   if(isset($_POST["deleteapi"]))
     $deleteapi = $_POST["deleteapi"];
-	
+
 	if(isset($status))
 	{
 		Db::execute("UPDATE zz_tickets SET status = :status WHERE id = :id", array(":status" => $status, ":id" => $id));

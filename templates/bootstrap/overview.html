@@ -18,7 +18,6 @@
 			<span class="icon-bar"></span>
 		</button>
 	</div>
-
 	<div class="collapse navbar-collapse navbar-sub">
 	<ul class="nav navbar-nav">
 		<li class="{{ isActive('Overview', pageType) }}"><a href="/{{ key }}/{{ id }}/">Overview</a></li>
@@ -28,9 +27,18 @@
 	{% if key == "ship" %}
 		<li class="{{ isActive('Description', pageType) }}"><a href="/item/{{ id }}/">Description</a></li>
 	{% endif %}
-		<li class="dropdown hidden-xs">
 	{% if key == "character" or key == "corporation" or key == "alliance" %}
-		<li class="{{ isActive('top', pageType) }} hidden-xs"><a href="/{{ key }}/{{ id }}/top/">Top</a></li>
+		<li class="dropdown hidden-xs">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">Top <b class="caret"></b></i></a>
+			<ul class="dropdown-menu">
+				<li class="{{ isActive('top', pageType) }} hidden-xs"><a href="/{{ key }}/{{ id }}/top/">Monthly Top</a></li>
+				<li class="{{ isActive('topalltime', pageType) }} hidden-xs"><a href="/{{ key }}/{{ id }}/topalltime/">All Time Top</a></li>
+			</ul>
+		</li>
+	{% else %}
+		<li class="{{ isActive('top', pageType) }} hidden-xs"><a href="/{{ key }}/{{ id }}/top/">Monthly Top</a></li>
+	{% endif %}
+	{% if key == "character" or key == "corporation" or key == "alliance" %}
 		<li class="{{ isActive('history', pageType) }} hidden-xs"><a href="/{{ key }}/{{ id }}/history/">History</a></li>
 	{% endif %}
 	{% if key == "alliance" %}
@@ -103,6 +111,9 @@
 {% elseif pageType == 'top' %}
 	{% set showImage = true %}
 	<div class="row centered"><input style="background: transparent; color: white; border: 0px; width:60px; height:35px;" type="text" name="datepicker" class="datepicker" value="{{ month }}/{{ year }}">&nbsp;<i class="fa fa-calendar-o"></i></div>
+	{% include 'components/top_list.html' %}
+{% elseif pageType == 'topalltime' %}
+	{% set showImage = true %}
 	{% include 'components/top_list.html' %}
 {% elseif pageType == 'corpstats' %}
 	{% include 'components/corpstats.html' %}

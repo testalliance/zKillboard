@@ -26,7 +26,7 @@ $allowed_types = array('factionID' => 'faction', 'allianceID' => 'alli', 'corpor
 foreach($flags as $flag) { 
 	//a numeric flag is a our targets id
 	if (is_numeric($flag)) { $id = $flag; }
-	
+
 	//if the flag is in our allowed_types - treat it as a type
 	if (array_key_exists($flag, $allowed_types)) { $type = $allowed_types[$flag]; }
 }
@@ -46,7 +46,7 @@ $stat_details = Db::query('SELECT groupID, destroyed AS countDestroyed, lost AS 
 //build our output data
 $output['totals'] = $stat_totals[0];
 foreach($stat_details as $detail) $output['groups'][array_shift($detail)] = $detail;
-		
+
 //set the headers to cache the request properly
 $app->etag(md5(serialize($output)));
 $app->expires("+1 hour");
@@ -58,9 +58,8 @@ header("Access-Control-Allow-Methods: GET");
 switch (strtolower($output_type))
 {
 	case 'json':
-	
 		$app->contentType("application/json; charset=utf-8");
-		
+
 		if(isset($_GET["callback"]) && Util::isValidCallback($_GET["callback"]) )
 		{
 			header("X-JSONP: true");
@@ -70,20 +69,16 @@ switch (strtolower($output_type))
 		{
 			echo json_encode($output, JSON_NUMERIC_CHECK);
 		}
-		
+
 	break;
 
 	case 'xml':
-	
 		$app->contentType("text/xml; charset=utf-8");
 		echo xmlOut($output);
-	
 	break;
-	
+
 	default:
-	
 		throw new Exception("Invalid return type.  Please read API Information.");
-	
 	break;
 }
 
@@ -91,13 +86,13 @@ function xmlOut($output)
 {
 	//define how long it should be cached for
 	$cachedUntil = date("Y-m-d H:i:s", strtotime("+1 hour"));
-	
+
 	//start building our xml document
 	$xml  = '<?xml version="1.0" encoding="UTF-8"?>';
 	$xml .= '<eveapi version="2" zkbapi="1">';
 	$xml .= '<currentTime>' . date('Y-m-d H:i:s') . '</currentTime>';
 	$xml .= '<result>';
-	
+
 	if(!empty($output))
 	{
 		//first send the totals
@@ -106,15 +101,15 @@ function xmlOut($output)
 			$xml .= '<row type="points" destroyed="' . (int) $output['totals']['pointsDestroyed'] . '" lost="' . (int) $output['totals']['pointsLost'] . '" />';
 			$xml .= '<row type="isk" destroyed="' . (float) $output['totals']['iskDestroyed'] . '" lost="' . (float) $output['totals']['iskLost'] . '" />';
 		$xml .= '</rowset>';
-			
+
 		//and now the groups
 		$xml .= '<rowset name="groups" key="groupID" columns="groupID,countDestroyed,countLost,pointsDestroyed,pointsLost,iskDestroyed,iskLost">';
-		
+
 		foreach($output['groups'] as $group_id => $group_details)
 		{
 			$xml .= '<row groupID="' . (int) $group_id . '" countDestroyed="' . (int) $group_details['countDestroyed'] . '" countLost="' . (int) $group_details['countLost'] . '" pointsDestroyed="' . (int) $group_details['pointsDestroyed'] . '" pointsLost="' . (int) $group_details['pointsLost'] . '" iskDestroyed="' . (float) $group_details['iskDestroyed'] . '" iskLost="' . (float) $group_details['iskLost'] . '" />';
 		}
-		
+
 		$xml .= '</rowset>';
 	}
 	else

@@ -47,14 +47,17 @@ class cli_populateCharacters implements cliCommand
 		$timer = new Timer();
 		$maxTime = 65 * 1000;
 
-		$apiCount = Db::queryField("select count(*) count from zz_api where errorCode not in (203, 220) and lastValidation <= date_add(now(), interval 1 minute)", "count", array(), 0);
+		// Reset 222's that are over a week old
+		Db::execute("update zz_api set errorCode = 0 where errorCode = 222 and lastValidation <= date_sub(now(), interval 7 day)");
+
+		$apiCount = Db::queryField("select count(*) count from zz_api where errorCode not in (203, 220, 222) and lastValidation <= date_add(now(), interval 1 minute)", "count", array(), 0);
 		if ($apiCount == 0) return;
 
 		$fetchesPerSecond = 25;
 		$iterationCount = 0;
 
 		while ($timer->stop() < $maxTime) {
-			$keyIDs = Db::query("select distinct keyID from zz_api where errorCode not in (203, 220) and lastValidation < date_sub(now(), interval 2 hour)
+			$keyIDs = Db::query("select distinct keyID from zz_api where errorCode not in (203, 220, 222) and lastValidation < date_sub(now(), interval 2 hour)
 					order by lastValidation, dateAdded desc limit 100", array(), 0);
 
 			foreach($keyIDs as $row) {

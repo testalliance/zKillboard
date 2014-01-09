@@ -27,7 +27,7 @@ class cli_twitterSearch implements cliCommand
 	{
 		return ""; // Space seperated list
 	}
-	
+
 	public function execute($parameters)
 	{
 		$message = array();

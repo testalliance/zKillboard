@@ -26,7 +26,6 @@ class Price
 	public static function updatePrice($killID, $tempTables = false)
 	{
 		$temp = $tempTables ? "_temporary" : "";
-		$items = Db::query("select typeID, qtyDropped, qtyDestroyed from zz_items$temp where killID = :killID", array(":killID" => $killID), 0);
 		$shipTypeID = Db::queryField("select shipTypeID from zz_participants$temp where isVictim = 1 and killID = :killID", "shipTypeID", array(":killID" => $killID), 0);
 
 		$total = $shipTypeID ? self::getItemPrice($shipTypeID) : 0;
@@ -34,8 +33,6 @@ class Price
 			$typeID = $item["typeID"];
 			$price = self::getItemPrice($typeID);
 			$total += $price * ($item["qtyDropped"] + $item["qtyDestroyed"]);
-			Db::execute("update zz_items$temp set price = :price where typeID = :typeID and killID = :killID",
-									array(":typeID" => $typeID, ":killID" => $killID, ":price" => $price));
 		}
 
 		Db::execute("update zz_participants$temp set total_price = :total where killID = :killID", array(":killID" => $killID, ":total" => $total));
@@ -118,7 +115,7 @@ class Price
 			}
 		}
 		try {
-			$xml = new SimpleXMLElement($result);
+			@$xml = new SimpleXMLElement($result);
 			@$sellMedian = (double)$xml->marketstat->type->sell->median;
 			@$allMedian = (double)$xml->marketstat->type->all->median;
 			if ($allMedian == 0) $allMedian = 0.00001;

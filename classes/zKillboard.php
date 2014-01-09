@@ -68,7 +68,7 @@ class zKillboard
 
 		return $html;
 	}
-	
+
 	public static function mobileTop()
 	{
 		$html = '<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>

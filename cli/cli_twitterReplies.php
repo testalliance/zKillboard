@@ -22,7 +22,7 @@ class cli_twitterReplies implements cliCommand
 	{
 		return "Finds the latest replies to ME. |w|Beware! This script requires an IRC bot to work.|n| |r|Don't run too often!|n| Usage: |g|twitterReplies";
 	}
-	
+
 	public function getAvailMethods()
 	{
 		return ""; // Space seperated list

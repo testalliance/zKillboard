@@ -14,7 +14,7 @@ if($_POST)
         $autologin = 1;
     if(isset($_POST["requesturi"]))
         $requesturi = $_POST["requesturi"];
-		
+
     if(!$username)
     {
         $error = "No username given";
@@ -24,7 +24,7 @@ if($_POST)
     {
         $error = "No password given";
         $app->render("dlogin.html", array("error" => $error));
-    }   
+    }
     elseif($username && $password)
     {
         $check = User::checkLogin($username, $password);

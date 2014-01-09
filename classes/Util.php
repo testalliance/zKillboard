@@ -165,7 +165,7 @@ class Util
 						if ($key == "systemID") $key = "solarSystemID";
 						else if ($key == "shipID") $key = "shipTypeID";
 						$exploded = explode(",", $value);
-						foreach($exploded as $aValue) {
+						if (Util::endsWith("ID", $key)) foreach($exploded as $aValue) {
 							if ($aValue != (int) $aValue || ((int) $aValue) == 0) throw new Exception("Invalid ID passed: $aValue");
 						}
 						if (sizeof($exploded) > 10) throw new Exception("Too many IDs! Max: 10");
@@ -205,7 +205,7 @@ class Util
 				case "xml":
 					$value = true;
 				default:
-					if (is_numeric($value) && $value < 0) throw new Exception("$value is not a valid entry for $key");
+					if (is_numeric($value) && $value < 0) continue; //throw new Exception("$value is not a valid entry for $key");
 					if ($key != "" && $value != "") $parameters[$key] = $value;
 			}
 			$currentIndex++;
@@ -342,7 +342,6 @@ class Util
 			Stats::calcStats($killID, false);
 			// Remove it from the kill tables
 			Db::execute("delete from zz_participants where killID = :killID", array(":killID" => $killID));
-			Db::execute("delete from zz_items where killID = :killID", array(":killID" => $killID));
 			// Mark the kill as deleted
 			Db::execute("update zz_killmails set processed = 2 where killID = :killID", array(":killID" => $killID));
 			return true;
@@ -368,5 +367,16 @@ class Util
 			if($val == "." || $val == "..")
 				unset($avail[$key]);
 		return $avail;
-	}	
+	}
+
+	public static function strposa($haystack, $needles=array(), $offset=0)
+	{
+	        $chr = array();
+	        foreach($needles as $needle) {
+	                $res = strpos($haystack, $needle, $offset);
+	                if ($res !== false) $chr[$needle] = $res;
+	        }
+	        if(empty($chr)) return false;
+	        return min($chr);
+	}
 }

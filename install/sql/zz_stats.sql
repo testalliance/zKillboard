@@ -13,6 +13,7 @@ CREATE TABLE `zz_stats` (
   UNIQUE KEY `type` (`type`,`typeID`,`groupID`),
   KEY `typeID_2` (`typeID`),
   KEY `groupID` (`groupID`),
-  KEY `typeID` (`typeID`,`groupID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1  ROW_FORMAT=DYNAMIC ;
+  KEY `typeID` (`typeID`,`groupID`),
+  KEY `type_2` (`type`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPRESSED ;
 

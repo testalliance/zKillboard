@@ -23,7 +23,7 @@ class Kills
 {
 	/**
 	 * Gets killmails
-	 * 
+	 *
 	 * @param $parameters an array of parameters to fetch mails for
 	 * @param $allTime gets all mails from the beginning of time or not
 	 * @return array
@@ -72,7 +72,7 @@ class Kills
 
 	/**
 	 * Gets details for kills
-	 * 
+	 *
 	 * @param $kills
 	 * @return array
 	 */
@@ -100,7 +100,7 @@ class Kills
 
 	/**
 	 * Merges killmail arrays
-	 * 
+	 *
 	 * @param $array1
 	 * @param $type
 	 * @param $array2
@@ -120,7 +120,7 @@ class Kills
 
 	/**
 	 * Gets details for a kill
-	 * 
+	 *
 	 * @param $killID the killID of the kill you want details for
 	 * @return array
 	 */
@@ -129,7 +129,7 @@ class Kills
 		$victim = Db::queryRow("select * from zz_participants where killID = :killID and isVictim = 1", array(":killID" => $killID));
 		$kill = $victim;
 		$involved = Db::query("select * from zz_participants where killID = :killID and isVictim = 0 order by damage desc", array(":killID" => $killID));
-		$items = Db::query("select * from zz_items where killID = :killID order by insertOrder", array(":killID" => $killID));
+		$items = Kills::getItems($killID);
 
 		Info::addInfo($kill);
 		Info::addInfo($victim);
@@ -143,9 +143,34 @@ class Kills
 		return array("info" => $kill, "victim" => $victim, "involved" => $infoInvolved, "items" => $infoItems);
 	}
 
+	public static function getItems($killID)
+	{
+		$json = Db::queryField("select kill_json from zz_killmails where killID = :killID", "kill_json", array(":killID" => $killID));
+		$killArray = json_decode($json, true);
+		$killTime = $killArray["killTime"];
+		$items = array();
+		Kills::addItems($items, $killArray["items"], $killTime);
+		return $items;
+	}
+
+	public static function addItems(&$itemArray, $items, $killTime, $inContainer = 0, $parentFlag = 0) {
+		foreach ($items as $item) {
+			$typeID = $item["typeID"];
+			$priceLookup = Db::queryRow("select * from zz_item_price_lookup where typeID = :typeID and priceDate = date(:date)", array(":typeID" => $typeID, ":date" => $killTime), 0);
+			$item["price"] = $priceLookup["price"];
+			$item["inContainer"] = $inContainer;
+			if ($inContainer) $item["flag"] = $parentFlag;
+			unset($item["_stringValue"]);
+			$itemArray[] = $item;
+			$subItems = isset($item["items"]) ? $item["items"] : null;
+			unset($item["items"]);
+			if ($subItems != null) Kills::addItems($itemArray, $subItems, $killTime, 1, $item["flag"]);
+		}
+	}
+
 	/**
 	 * Merges two kill arrays together
-	 * 
+	 *
 	 * @param $array1
 	 * @param $array2
 	 * @param $maxSize
@@ -169,7 +194,7 @@ class Kills
 
 	/**
 	 * Returns an array of the kill
-	 * 
+	 *
 	 * @param $killID the ID of the kill
 	 * @return array
 	 */
@@ -183,7 +208,7 @@ class Kills
 
 	/**
 	 * Returns json of the kill
-	 * 
+	 *
 	 * @param $killID the ID of the kill
 	 * @return json
 	 */
@@ -196,7 +221,7 @@ class Kills
 
 	/**
 	 * Returns a raw mail, that it gets from the getArray function
-	 * 
+	 *
 	 * @static
 	 * @param $killID the ID of the kill
 	 * @return text

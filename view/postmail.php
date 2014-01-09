@@ -24,7 +24,7 @@ if($_POST && !User::isRevoked())
 	@$vcode = trim($_POST["vcode"]);
 	@$killmail = $_POST["killmail"];
 	$label = "";
-		
+
 	// Apikey stuff
 	if($keyid || $vcode)
 	{
@@ -38,7 +38,7 @@ if($_POST && !User::isRevoked())
 			$error = array($check);
 		}
 	}
-	
+
 	if($killmail)
 	{
 		$u = User::getUserInfo();

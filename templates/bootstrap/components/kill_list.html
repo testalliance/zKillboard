@@ -17,7 +17,7 @@
         <tr>
             <th style="width: 124px;">Time</th>
             <th style="width:115px;">Place</th>
-            <th class="hidden-xs" style="width: 58px; text-align: center;">Ship</th>
+            <th class="hidden-xs" style="width: 50px; text-align: center;">Ship</th>
             <th class="hidden-sm hidden-xs" colspan="2" style="text-align: center;">Victim</th>
             <th class="hidden-lg hidden-md" style="text-align: center;">Victim</th>
             <th class="hidden-xs">Final Blow</th>
@@ -49,7 +49,8 @@
       </tr> 
 	  {% endif %} 
         {% set imageSize = 64 %}
-        {% set resizeImage = 48 %}
+	{% set resizeImage = 40 %}
+	
         {% set field = kill.victim %}
         {% set lossDisplay = '' %}
         {% if kill.displayAsLoss == true and key != 'system' and key != 'region' %}{% set lossDisplay = 'error' %}{% endif %}
@@ -58,13 +59,13 @@
 			{% if timeago == "true" %}<abbr class="timeago" title="{{ kill.info.ISO8601 }}">{{ kill.info.ISO8601}}</abbr>{% else %}{{ kill.info.killTime }}{% endif %}
 			</td>
             <td>
-                <a href="/system/{{ kill.info.solarSystemID }}/">{{ kill.info.solarSystemName }}</a> <span style="color: {{ kill.info.systemColorCode }}">{{ "%1.1f"|format(kill.info.solarSystemSecurity) }}</span> <br/>
-                <a href="/region/{{ kill.info.regionID }}/">{{ kill.info.regionName }}</a>
+                <a href="/system/{{ kill.info.solarSystemID }}/">{{ shortString(kill.info.solarSystemName, 13) }}</a> <span style="color: {{ kill.info.systemColorCode }}">{{ "%1.1f"|format(kill.info.solarSystemSecurity) }}</span> <br/>
+                <a href="/region/{{ kill.info.regionID }}/">{{ shortString(kill.info.regionName, 17) }}</a>
             </td>
             <td class="icon hidden-xs" style="text-align: center; vertical-align: middle;">
                 {% include 'components/image_ship.html' %}
             </td>
-            <td class="hidden-xs hidden-sm" style="width: 164px; vertical-align: middle;">
+            <td class="hidden-xs hidden-sm" style="width: 145px; vertical-align: middle;">
                 {% include 'components/image_char.html' %}
                 {% include 'components/image_corp.html' %}
                 {% include 'components/image_alli.html' %}
@@ -99,8 +100,10 @@
                 </a>
 				<br/>
 				<small class="pull-right">{{ formatIsk(kill.info.total_price) }}</small>
+        {% if disqusLoad %}
         <br>
         <small class="pull-right"> <a href="/detail/{{ kill.info.killID }}/#comments" data-disqus-identifier="{{ kill.info.commentID }}"></a></small>
+        {% endif %}
             </td>
         </tr>
         {% endfor %}

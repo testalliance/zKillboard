@@ -56,8 +56,8 @@ class cli_help implements cliCommand
 			{
 				if($entry != "." && $entry != ".." && $entry != "base.php")
 				{
-					$s1 = split("cli_", $entry);
-					$s2 = split(".php", $s1[1]);
+					$s1 = explode("cli_", $entry);
+					$s2 = explode(".php", $s1[1]);
 					if(sizeof($s2) == 2)
 					{
 						require_once "$dir/$entry";

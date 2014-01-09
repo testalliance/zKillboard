@@ -37,7 +37,7 @@ if($_POST && !User::isRevoked())
 		$report = $_POST["report"];
 	if(isset($_POST["characterID"]))
 		$characterID = $_POST["characterID"];
-	
+
 	if (isset($report))
 	{
 		if($id < 0)
@@ -51,7 +51,6 @@ if($_POST && !User::isRevoked())
 			$app->redirect("/detail/$id/");
 		}
 	}
-	
 }
 
 if($_POST && User::isRevoked())
@@ -183,7 +182,7 @@ function eftarray($md5, $items, $victimID = 0)
 	foreach($items as $itm)
 	{
 
-		if ($victimID >= 2000000000 && $victimID <= 2999999999) $itm["flagName"] = Info::getGroupName(Info::getGroupID($itm["typeID"]));
+		if ($victimID >= 2100000000 && $victimID <= 2999999999) $itm["flagName"] = Info::getGroupName(Info::getGroupID($itm["typeID"]));
 		else if (!isset($itm["flagName"])) $itm["flagName"] = Info::getFlagName($itm["flag"]);
 
 		if ($itm["flagName"] == "Infantry Modules") $itm["flagName"] = "Mid Slots";
@@ -199,7 +198,7 @@ function eftarray($md5, $items, $victimID = 0)
 		$key = $itm["typeName"] . "|" . $itm["flagName"];
 		if(isset($itm["flagName"]))
 		{
-			if($itm["fittable"]) // not ammo or whatever
+			if($itm["fittable"] && $itm["inContainer"] == 0) // not ammo or whatever
 			{
 				$repeats = $itm["qtyDropped"] + $itm["qtyDestroyed"];
 				$i = 0;
@@ -268,7 +267,7 @@ function eftarray($md5, $items, $victimID = 0)
 
 	// Ammo shit
 	foreach($items as $itm) {
-		if(!$itm["fittable"] && isset($itm["flagName"])) // possibly ammo
+		if($itm["inContainer"] == 0 && !$itm["fittable"] && isset($itm["flagName"])) // possibly ammo
 		{
 			if($itm["flagName"] == "High Slots") // high slot ammo
 				$eftarray["high"][$itm["flag"]][] = array("typeName" => $itm["typeName"], "typeID" => $itm["typeID"], "charge" => true);
@@ -289,12 +288,13 @@ function eftarray($md5, $items, $victimID = 0)
 function combineditems($md5, $items)
 {
 	$Cache = Cache::get($md5."combineditems");
-	if($Cache) return $Cache;
+	//if($Cache) return $Cache;
 
 	// Create the new item array with combined items and whatnot
 	$itemList = array();
 	foreach($items as $itm)
 	{
+		if ($itm["inContainer"] == 1) $itm["flag"] = 0;
 		if (!isset($itm["flagName"])) $itm["flagName"] = Info::getFlagName($itm["flag"]);
 		for ($i = 0; $i <= 1; $i++) {
 			$mItem = $itm;

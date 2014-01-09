@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 $base = __DIR__;
 require_once( "config.php" );
 
@@ -36,7 +36,7 @@ function zkbautoload($class_name)
     $baseDir = dirname(__FILE__);
     $fileName = "$baseDir/classes/$class_name.php";
     if (file_exists($fileName))
-    {  
+    {
         require_once $fileName;
         return;
     }

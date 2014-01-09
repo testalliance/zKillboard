@@ -71,7 +71,6 @@ class cli_hourly implements cliCommand
 
 		Db::execute("delete from zz_api_log where requestTime < date_sub(now(), interval 2 hour)");
 		//Db::execute("update zz_killmails set kill_json = '' where processed = 2 and killID < 0 and kill_json != ''");
-		Db::execute("update zz_manual_mails set rawText = '' where killID > 0 and rawText != ''");
 		Db::execute("delete from zz_errors where date < date_sub(now(), interval 1 day)");
 
 		$fileCache = new FileCache();
@@ -87,7 +86,7 @@ class cli_hourly implements cliCommand
 		$count = 0;
 		foreach ($tables as $table) {
 			$count++;
-continue;
+			continue;
 			if (Util::isMaintenanceMode()) continue;
 			$result = Db::queryRow("analyze table $table");
 			if (!in_array($result["Msg_text"], $tableIsGood)) Log::ircAdmin("|r|Error analyzing table |g|$table|r|: " . $result["Msg_text"]);

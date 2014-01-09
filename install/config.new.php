@@ -23,6 +23,7 @@ $dbUser = "%dbuser%";
 $dbPassword = "%dbpassword%";
 $dbName = "%dbname%";
 $dbHost = "%dbhost%";
+$dbSocket = null;
 $dbExplain = false;
 
 // External Servers
@@ -75,6 +76,7 @@ $cfUser = "";
 $cfKey = "";
 
 // Disqus
+$disqus = false;
 $disqusShortName = "";
 $disqusSecretKey = "";
 $disqusPublicKey = "";

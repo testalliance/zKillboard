@@ -275,7 +275,7 @@ class Parser
 						if (strpos($value, $flagType) !== false) {
 							$flag = $flagID;
 							$value = trim(str_replace($flagType, "", $value));
-						} 
+						}
 					}
 
 					$isBlueprintCopy = false;
@@ -378,18 +378,18 @@ class Parser
 					707, // Jump Bridges
 					709, // Scanning Arrays
 					837, // Neut Batteries
-					838, // Cynosural Generator Array    
-					839, // Cynosural System Jammer      
-					1003, // Territorial Claim Unit       
-					1003, // QA Territorial Claim Unit    
-					1005, // Sovereignty Blockade Unit    
-					1005, // QA Sovereignty Blockade Unit 
-					1012, // QA Infrastructure Hub        
-					1012, // Infrastructure Hub           
-					1025, // Customs Office               
-					1025, // Orbital Command Center       
-					1025, // Interbus Customs Office      
-					1106, // Customs Office Gantry        
+					838, // Cynosural Generator Array
+					839, // Cynosural System Jammer
+					1003, // Territorial Claim Unit
+					1003, // QA Territorial Claim Unit
+					1005, // Sovereignty Blockade Unit
+					1005, // QA Sovereignty Blockade Unit
+					1012, // QA Infrastructure Hub
+					1012, // Infrastructure Hub
+					1025, // Customs Office
+					1025, // Orbital Command Center
+					1025, // Interbus Customs Office
+					1106, // Customs Office Gantry
 					1012, // IHUBS
 					);
 
@@ -452,6 +452,7 @@ class Parser
 		$victimGroupID = Info::getGroupID($killMail["victim"]["shipTypeID"]);
 		// Ships with specialized bays
 		$bayShips = array(
+			28, // Industrials
 			30, // Titans
 			659, // Supercarriers
 			485, // Dreads
@@ -463,13 +464,7 @@ class Parser
 			941, // Industrial Command Ships
 			883, // Captial Industiral Ships
 		);
-		if (in_array($victimGroupID, $bayShips)) $errors[] = "The victim ship has bays which are not displayed on manual killmails, please use API to post the kill";
-		$specialIterons = array(
-			32811, // Iteron Mark IV Amastris Edition
-			4363, // Iteron Mark IV Quafe Ultra Edition
-			4388, // Iteron Mark IV Quafe Ultramarine Edition
-		);
-		if (in_array($killMail["victim"]["shipTypeID"], $specialIterons)) $errors[] = "The victim ship has bays which are not displayed on manual killmails, please use API to post the kill";
+		if (in_array($victimGroupID, $bayShips)) $errors[] = "The victim ship has bays which are not displayed properly on manual killmails, please use API to post the kill";
 
 		// We're done with sanity checks, if we have any errors return them
 		if (sizeof($errors)) {
@@ -477,7 +472,7 @@ class Parser
 		}
 
 		// Insert ignore allows us to "pretend" to insert dupes
-		Db::execute("insert ignore into zz_manual_mails (hash, rawText) values (:hash, :rawText)", array(":hash" => $hash, ":rawText" => $rawMail));
+		Db::execute("insert ignore into zz_manual_mails (hash) values (:hash)", array(":hash" => $hash));
 		// Look up the manualKillID from the hash (good for those dupe inserts)
 		$mKillID = Db::queryField("select mKillID from zz_manual_mails where hash = :hash order by mKillID desc limit 1", "mKillID", array(":hash" => $hash), 0);
 
@@ -644,7 +639,6 @@ class Parser
 		$maxTime = 65 * 1000 ;
 
 		Db::execute("set session wait_timeout = 120000");
-		Db::execute("create temporary table if not exists zz_items_temporary select * from zz_items where 1 = 0");
 		Db::execute("create temporary table if not exists zz_participants_temporary select * from zz_participants where 1 = 0");
 
 		$numKills = 0;
@@ -654,7 +648,6 @@ class Parser
 				self::removeTempTables();
 				return;
 			}
-			Db::execute("delete from zz_items_temporary");
 			Db::execute("delete from zz_participants_temporary");
 
 			//Log::log("Fetching kills for processing...");
@@ -679,6 +672,7 @@ class Parser
 					continue;
 				}
 				$killID = $kill["killID"];
+				Db::execute("insert ignore into zz_killid values(:killID, 0)", array(":killID" => $killID));
 
 				// Cleanup if we're reparsing
 				$cleanupKills[] = $killID;
@@ -702,10 +696,8 @@ class Parser
 			}
 			while (Db::queryField("show session status like 'Not_flushed_delayed_rows'", "Value", array(), 0) > 0) usleep(50000);
 			if (sizeof($cleanupKills)) {
-				Db::execute("delete from zz_items where killID in (" . implode(",", $cleanupKills) . ")");
 				Db::execute("delete from zz_participants where killID in (" . implode(",", $cleanupKills) . ")");
 			}
-			Db::execute("insert into zz_items select * from zz_items_temporary");
 			Db::execute("insert into zz_participants select * from zz_participants_temporary");
 			if (sizeof($processedKills)) Db::execute("update zz_killmails set processed = 1 where killID in (" . implode(",", $processedKills) . ")");
 			foreach($processedKills as $killID) {
@@ -736,7 +728,6 @@ class Parser
 	private static function removeTempTables()
 	{
 		Db::execute("drop table if exists zz_participants_temporary");
-		Db::execute("drop table if exists zz_items_temporary");
 	}
 
 	private static function validKill(&$kill)
@@ -871,22 +862,7 @@ class Parser
 			$price = $price / 100;
 		}
 
-		Db::execute("
-				insert into zz_items_temporary
-				(killID, typeID, flag, qtyDropped, qtyDestroyed, insertOrder, price, singleton, inContainer)
-				values
-				(:killID, :typeID, :flag, :qtyDropped, :qtyDestroyed, :insertOrder, :price, :singleton, :inContainer)",
-				(array(
-					   ":killID" => $killID,
-					   ":typeID" => $item["typeID"],
-					   ":flag" => ($isCargo ? $parentContainerFlag : $item["flag"]),
-					   ":qtyDropped" => $item["qtyDropped"],
-					   ":qtyDestroyed" => $item["qtyDestroyed"],
-					   ":insertOrder" => $itemInsertOrder,
-					   ":price" => $price,
-					   ":singleton" => $item["singleton"],
-					   ":inContainer" => ($isCargo ? 1 : 0),
-					  )));
+		Db::execute("insert ignore into zz_item_price_lookup (typeID, priceDate, price) values (:typeID, now(), :price)", array(":typeID" => $item["typeID"], ":price" => $price));
 
 		return ($price * ($item["qtyDropped"] + $item["qtyDestroyed"]));
 	}
