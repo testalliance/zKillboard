@@ -26,7 +26,7 @@ class Moderator
 	 *
 	 * @static
 	 * @param $userID the userid of the user to query
-	 * @return The array with the userinfo in it 
+	 * @return The array with the userinfo in it
 	 */
 	public static function getUserInfo($userID){
 		if (!User::isModerator() and !User::isAdmin()) throw new Exception("Invalid Access!");
@@ -35,7 +35,7 @@ class Moderator
 	}
 
 	/**
-	 * Unrevokes the users access 
+	 * Unrevokes the users access
 	 *
 	 * @static
 	 * @param $userID the userid to change

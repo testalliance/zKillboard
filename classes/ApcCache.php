@@ -54,10 +54,9 @@ class APCCache extends AbstractCache
 		apc_add($key, 0, $timeout);
 		return apc_dec($key, $step);
 	}
-	
+
 	public function flush()
 	{
 		return apc_clear_cache();
 	}
  }
- 

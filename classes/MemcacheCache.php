@@ -26,7 +26,7 @@ class MemcacheCache extends AbstractCache
 	function __construct()
 	{
 		global $memcacheServer, $memcachePort;
-	
+
 		$this->mc = new Memcache();
 		$this->mc->connect($memcacheServer, $memcachePort);
 	}

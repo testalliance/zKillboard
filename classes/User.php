@@ -113,13 +113,13 @@ class User
 		$info = self::getUserInfo();
 		return $info["admin"] == 1;
 	}
-	
+
 	public static function isRevoked()
 	{
 		$info = self::getUserInfo();
 		return $info["revoked"] == 1;
 	}
-	
+
 	public static function getRevokeReason()
 	{
 		$reason = Db::queryField("SELECT revoked_reason FROM zz_users WHERE id = :id", "revoked_reason", array(":id" => self::getUserID()));

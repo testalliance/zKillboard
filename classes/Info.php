@@ -116,7 +116,7 @@ class Info
 
 	/**
 	 * Retrieves the name of a corporation ID
-	 * 
+	 *
 	 * @param $name
 	 * @return int The corporationID of a corporation
 	 */

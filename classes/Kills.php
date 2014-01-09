@@ -23,7 +23,7 @@ class Kills
 {
 	/**
 	 * Gets killmails
-	 * 
+	 *
 	 * @param $parameters an array of parameters to fetch mails for
 	 * @param $allTime gets all mails from the beginning of time or not
 	 * @return array
@@ -72,7 +72,7 @@ class Kills
 
 	/**
 	 * Gets details for kills
-	 * 
+	 *
 	 * @param $kills
 	 * @return array
 	 */
@@ -100,7 +100,7 @@ class Kills
 
 	/**
 	 * Merges killmail arrays
-	 * 
+	 *
 	 * @param $array1
 	 * @param $type
 	 * @param $array2
@@ -120,7 +120,7 @@ class Kills
 
 	/**
 	 * Gets details for a kill
-	 * 
+	 *
 	 * @param $killID the killID of the kill you want details for
 	 * @return array
 	 */
@@ -170,7 +170,7 @@ class Kills
 
 	/**
 	 * Merges two kill arrays together
-	 * 
+	 *
 	 * @param $array1
 	 * @param $array2
 	 * @param $maxSize
@@ -194,7 +194,7 @@ class Kills
 
 	/**
 	 * Returns an array of the kill
-	 * 
+	 *
 	 * @param $killID the ID of the kill
 	 * @return array
 	 */
@@ -208,7 +208,7 @@ class Kills
 
 	/**
 	 * Returns json of the kill
-	 * 
+	 *
 	 * @param $killID the ID of the kill
 	 * @return json
 	 */
@@ -221,7 +221,7 @@ class Kills
 
 	/**
 	 * Returns a raw mail, that it gets from the getArray function
-	 * 
+	 *
 	 * @static
 	 * @param $killID the ID of the kill
 	 * @return text

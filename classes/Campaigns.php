@@ -44,7 +44,7 @@ class Campaigns
 
 	/**
 	 * Follows a campaign
-	 * 
+	 *
 	 * @static
 	 * @param $userID The ID of the user.
 	 * @param $campaignID The ID of the campaign
@@ -56,7 +56,7 @@ class Campaigns
 
 	/**
 	 * Unfollows a campaign
-	 * 
+	 *
 	 * @static
 	 * @param $userID The ID of the user.
 	 * @param $campaignID The id of the campaign
@@ -68,7 +68,7 @@ class Campaigns
 
 	/**
 	 * Creates a campaign
-	 * 
+	 *
 	 * @static
 	 * @param $userID The ID of the user.
 	 * @return array
@@ -79,7 +79,7 @@ class Campaigns
 
 	/**
 	 * Deletes a campaign
-	 * 
+	 *
 	 * @static
 	 * @param $userID The ID of the user.
 	 * @param $campaignID The ID of the campaign
@@ -91,7 +91,7 @@ class Campaigns
 
 	/**
 	 * End a campaign
-	 * 
+	 *
 	 * @static
 	 * @param $userID The ID of the user.
 	 * @param $campaignID The ID of the campaign
@@ -103,7 +103,7 @@ class Campaigns
 
 	/**
 	 * Adds an entity to the campaign
-	 * 
+	 *
 	 * @static
 	 * @param $userID The ID of the user.
 	 * @param $campaignID The ID of the campaign
@@ -116,7 +116,7 @@ class Campaigns
 
 	/**
 	 * Removes an entity from the campaign
-	 * 
+	 *
 	 * @static
 	 * @param $userID The ID of the user.
 	 * @param $campaignID The ID of the campaign

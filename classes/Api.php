@@ -179,7 +179,7 @@ class Api
 
 	/**
 	 * API exception handling
-	 * 
+	 *
 	 * @static
 	 * @param $keyID
 	 * @param $charID
@@ -379,12 +379,12 @@ class Api
 
 			$json = json_encode($kill->toArray());
 			$hash = Util::getKillHash(null, $kill);
-try {
-			$mKillID = Db::queryField("select killID from zz_killmails where killID < 0 and processed = 1 and hash = :hash", "killID", array(":hash" => $hash), 0);
-} catch (Exception $ex) {
-$mKillID = 0;
-	//Log::log("Error: $keyID " . $ex->getMessage());
-}
+			try {
+						$mKillID = Db::queryField("select killID from zz_killmails where killID < 0 and processed = 1 and hash = :hash", "killID", array(":hash" => $hash), 0);
+			} catch (Exception $ex) {
+			$mKillID = 0;
+				//Log::log("Error: $keyID " . $ex->getMessage());
+			}
 			if ($mKillID) Kills::cleanDupe($mKillID, $killID);
 			$added = Db::execute("insert ignore into zz_killmails (killID, hash, source, kill_json) values (:killID, :hash, :source, :json)",
 					array(":killID" => $killID, ":hash" => $hash, ":source" => "keyID:$keyID", ":json" => $json));

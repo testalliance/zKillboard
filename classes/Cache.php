@@ -62,7 +62,7 @@ class Cache
 
 	/**
 	 * Sets data to the cache
-	 * 
+	 *
 	 * @param $key
 	 * @param $value
 	 * @param $timeout
@@ -76,7 +76,7 @@ class Cache
 
 	/**
 	 * Gets data from the cache
-	 * 
+	 *
 	 * @param $key
 	 * @return array
 	 */
@@ -88,7 +88,7 @@ class Cache
 
 	/**
 	 * Deletes data from the cache
-	 * 
+	 *
 	 * @param $key
 	 * @return bool
 	 */
@@ -114,7 +114,7 @@ class Cache
 
 	/**
 	 * Increment a value
-	 * 
+	 *
 	 * @param $key
 	 * @param $timeout (This only works for Memcached, file cache flat out ignores it)
 	 * @return new value on success, else false
@@ -137,7 +137,7 @@ class Cache
 		$cache = Cache::getCache();
 		return $cache->decrement($key, 1, $timeout);
 	}
-	
+
 	/**
 	 * Flush the Cache
 	 *

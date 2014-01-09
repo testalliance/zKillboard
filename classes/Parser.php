@@ -275,7 +275,7 @@ class Parser
 						if (strpos($value, $flagType) !== false) {
 							$flag = $flagID;
 							$value = trim(str_replace($flagType, "", $value));
-						} 
+						}
 					}
 
 					$isBlueprintCopy = false;
@@ -378,18 +378,18 @@ class Parser
 					707, // Jump Bridges
 					709, // Scanning Arrays
 					837, // Neut Batteries
-					838, // Cynosural Generator Array    
-					839, // Cynosural System Jammer      
-					1003, // Territorial Claim Unit       
-					1003, // QA Territorial Claim Unit    
-					1005, // Sovereignty Blockade Unit    
-					1005, // QA Sovereignty Blockade Unit 
-					1012, // QA Infrastructure Hub        
-					1012, // Infrastructure Hub           
-					1025, // Customs Office               
-					1025, // Orbital Command Center       
-					1025, // Interbus Customs Office      
-					1106, // Customs Office Gantry        
+					838, // Cynosural Generator Array
+					839, // Cynosural System Jammer
+					1003, // Territorial Claim Unit
+					1003, // QA Territorial Claim Unit
+					1005, // Sovereignty Blockade Unit
+					1005, // QA Sovereignty Blockade Unit
+					1012, // QA Infrastructure Hub
+					1012, // Infrastructure Hub
+					1025, // Customs Office
+					1025, // Orbital Command Center
+					1025, // Interbus Customs Office
+					1106, // Customs Office Gantry
 					1012, // IHUBS
 					);
 
