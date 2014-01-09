@@ -204,14 +204,17 @@ class FileCache extends AbstractCache
 	 * @param $key
 	 * @return array
 	 */
-	private function getData($key)
+	private function getData($key, $sha = true)
 	{
 		// @todo real error handling, not just surpression.
-		$data = @file_get_contents($this->cacheDir.sha1($key));
+		if($sha == true)
+			$data = @file_get_contents($this->cacheDir.sha1($key));
+		else
+			$data = @file_get_contents($this->cacheDir.$key);
 		$f = explode("%", $data);
 		$age = array_shift($f);
 		$data = implode($f);
-		return array("age" => $age, "data" => $data);
+		return array("age" => (int) $age, "data" => $data);
 	}
 
 	/**
@@ -224,7 +227,7 @@ class FileCache extends AbstractCache
 		{
 			if($file != "." && $file != "..")
 			{
-				$data = self::getData($file);
+				$data = self::getData($file, false);
 				$age = $data["age"];
 				$time = time();
 				if($age <= $time)
