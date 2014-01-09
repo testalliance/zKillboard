@@ -23,6 +23,7 @@ $dbUser = "%dbuser%";
 $dbPassword = "%dbpassword%";
 $dbName = "%dbname%";
 $dbHost = "%dbhost%";
+$dbSocket = null;
 $dbExplain = false;
 
 // External Servers
