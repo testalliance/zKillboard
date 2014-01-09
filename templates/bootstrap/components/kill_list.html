@@ -59,7 +59,7 @@
 			{% if timeago == "true" %}<abbr class="timeago" title="{{ kill.info.ISO8601 }}">{{ kill.info.ISO8601}}</abbr>{% else %}{{ kill.info.killTime }}{% endif %}
 			</td>
             <td>
-                <a href="/system/{{ kill.info.solarSystemID }}/">{{ kill.info.solarSystemName }}</a> <span style="color: {{ kill.info.systemColorCode }}">{{ "%1.1f"|format(kill.info.solarSystemSecurity) }}</span> <br/>
+                <a href="/system/{{ kill.info.solarSystemID }}/">{{ shortString(kill.info.solarSystemName, 13) }}</a> <span style="color: {{ kill.info.systemColorCode }}">{{ "%1.1f"|format(kill.info.solarSystemSecurity) }}</span> <br/>
                 <a href="/region/{{ kill.info.regionID }}/">{{ shortString(kill.info.regionName, 17) }}</a>
             </td>
             <td class="icon hidden-xs" style="text-align: center; vertical-align: middle;">
