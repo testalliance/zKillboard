@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 $ip = substr(IP::get(), 0, 64);
 $uri = substr($_SERVER["REQUEST_URI"], 0, 256);
 if ($uri != "/killslasthour/") Db::execute("insert into zz_analytics values (:ip, :uri, now())", array(":ip" => $ip, ":uri" => $uri));

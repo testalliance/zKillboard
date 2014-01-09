@@ -22,7 +22,7 @@ class cli_smsReceive implements cliCommand
 	{
 		return "Receives the latest SMS messages from bulkSMS. |w|Beware! This requires a bulkSMS account AND an IRC bot|n|. Usage: |g|smsReceive";
 	}
-	
+
 	public function getAvailMethods()
 	{
 		return ""; // Space seperated list
@@ -60,7 +60,7 @@ class cli_smsReceive implements cliCommand
 			if ($name != null) $num = $name;
 
 			$maxID = max($maxID, $id);
-			
+
 			$out = "SMS from |g|$num|n|: $msg";
 			Log::irc($out);
 		}

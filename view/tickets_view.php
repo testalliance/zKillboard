@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 $message = array();
 $info = User::getUserInfo();
 $ticket = Db::query("SELECT * FROM zz_tickets WHERE id = :id", array(":id" => $id), 0);
@@ -23,13 +23,13 @@ if($ticket[0]["status"] == 0)
 	$message = array("status" => "error", "message" => "Ticket has been closed, you cannot post, only view it");
 elseif($ticket[0]["userid"] != $info["id"])
 	$app->notFound();
-	
+
 if($_POST)
 {
 	$reply = "";
 	if(isset($_POST["reply"]))
 		$reply = $_POST["reply"];
-	
+
 	if($reply && $ticket[0]["status"] != 0)
 	{
 		$name = $info["username"];
@@ -48,7 +48,7 @@ if($_POST)
 		$message = array("status" => "error", "message" => "No...");
 	}
 }
-	
+
 $replies = Db::query("SELECT * FROM zz_tickets_replies WHERE belongsTo = :id", array(":id" => $id), 0);
 
 $userInfo = User::getUserInfo();

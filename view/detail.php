@@ -37,7 +37,7 @@ if($_POST && !User::isRevoked())
 		$report = $_POST["report"];
 	if(isset($_POST["characterID"]))
 		$characterID = $_POST["characterID"];
-	
+
 	if (isset($report))
 	{
 		if($id < 0)
@@ -51,7 +51,6 @@ if($_POST && !User::isRevoked())
 			$app->redirect("/detail/$id/");
 		}
 	}
-	
 }
 
 if($_POST && User::isRevoked())

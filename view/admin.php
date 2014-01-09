@@ -131,15 +131,15 @@ elseif($req == "email")
     $info = array();
 }
 elseif($req == "susers" )
-{  
-  if(isset($id)){ 
+{
+  if(isset($id)){
     $info = Admin::getUserInfo($id);
     if(!isset($info[0])){
       $req = "users";
       $message = "No user found with id ".$id;
-      $info = Admin::getUsers(); 
+      $info = Admin::getUsers();
     }else{
-      $api =  Api::getKeys($id);    
+      $api =  Api::getKeys($id);
       $info["api"]=$api;
     }
   }else{

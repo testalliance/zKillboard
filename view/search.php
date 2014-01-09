@@ -15,12 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 $entities = array();
 
 if($_POST)
 	$app->redirect("/search/".urlencode($_POST["searchbox"])."/");
-   
+
 if($search)
 {
 	$entities = Info::findEntity($search);

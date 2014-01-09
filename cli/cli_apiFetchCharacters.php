@@ -52,7 +52,7 @@ class cli_apiFetchCharacters implements cliCommand
 
 		$key = $apiKeyInfo->key;
 		$accessMask = $key->accessMask;
-		$characterIDs = array();            
+		$characterIDs = array();
 		if (Api::hasBits($accessMask)) {
 			foreach ($apiKeyInfo->key->characters as $character) {
 				$characterID = $character->characterID;
@@ -61,7 +61,7 @@ class cli_apiFetchCharacters implements cliCommand
 
 				$isDirector = $apiKeyInfo->key->type == "Corporation" ? "T" : "F";
 				$count = Db::queryField("select count(*) count from zz_api_characters where keyID = :keyID and isDirector = :isDirector and characterID = :characterID and corporationID = :corporationID", "count", array(":keyID" => $keyID, ":characterID" => $characterID, ":corporationID" => $corporationID, ":isDirector" => $isDirector), 0);
-				
+
 				if ($count == 0) {
 					Db::execute("replace into zz_api_characters (keyID, characterID, corporationID, isDirector, cachedUntil) values (:keyID, :characterID, :corporationID, :isDirector, 0)", array(":keyID" => $keyID, ":characterID" => $characterID, ":corporationID" => $corporationID, ":isDirector" => $isDirector));
 

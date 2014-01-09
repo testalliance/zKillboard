@@ -22,7 +22,7 @@ if($_POST)
     $password = "";
     $password2 = "";
     $email = "";
-    
+
     if(isset($_POST["username"]))
         $username = $_POST["username"];
     if(isset($_POST["password"]))

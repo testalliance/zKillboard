@@ -22,7 +22,7 @@ class cli_list implements cliCommand
 	{
 		return "Lists all the commands available via the CLI interface. Usage: |g|list";
 	}
-	
+
 	public function getAvailMethods()
 	{
 		return " "; // Space seperated list
