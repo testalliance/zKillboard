@@ -369,7 +369,8 @@ class Util
 		return $avail;
 	}
 
-	public static function strposa($haystack, $needles=array(), $offset=0) {
+	public static function strposa($haystack, $needles=array(), $offset=0)
+	{
 	        $chr = array();
 	        foreach($needles as $needle) {
 	                $res = strpos($haystack, $needle, $offset);
