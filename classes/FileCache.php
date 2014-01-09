@@ -211,7 +211,7 @@ class FileCache extends AbstractCache
 			$data = @file_get_contents($this->cacheDir.sha1($key));
 		else
 			$data = @file_get_contents($this->cacheDir.$key);
-		$f = explode("%", $data);
+		$f = explode("%", $data, 2); // We only want the first occurance of % exploded, not everything else aswell.
 		$age = array_shift($f);
 		$data = implode($f);
 		return array("age" => (int) $age, "data" => $data);
