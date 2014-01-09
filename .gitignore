@@ -11,3 +11,5 @@ www.pid
 public/www.pid
 public/report.html
 cache/sessions
+.tags
+.tags_sorted_by_file
