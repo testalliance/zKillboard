@@ -83,8 +83,9 @@ if ($pageType != "solo" || $key == "faction") {
 $soloPages = ceil($soloCount / $limit);
 $solo = Kills::mergeKillArrays($soloKills, array(), $limit, $columnName, $id);
 
+$validAllTimePages = array("character", "corporation", "alliance");
 $topLists = array();
-if ($pageType == "top" || $pageType == "topalltime") {
+if ($pageType == "top" || ($pageType == "topalltime" && in_array($key, $validAllTimePages))) {
 	$topParameters = $parameters; // array("limit" => 10, "kills" => true, "$columnName" => $id);
 	$topParameters["limit"] = 10;
 
