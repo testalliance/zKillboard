@@ -156,7 +156,7 @@ class Kills
 	public static function addItems(&$itemArray, $items, $killTime, $inContainer = 0, $parentFlag = 0) {
 		foreach ($items as $item) {
 			$typeID = $item["typeID"];
-			$priceLookup = Db::queryRow("select * from zz_item_price_lookup where typeID = :typeID and priceDate = date(:date)", array(":typeID" => $typeID, ":date" => $killTime), 0);
+			$priceLookup = Db::queryRow("select * from zz_item_price_lookup where typeID = :typeID and priceDate = date(:date)", array(":typeID" => $typeID, ":date" => $killTime), 3600);
 			$item["price"] = $priceLookup["price"];
 			$item["inContainer"] = $inContainer;
 			if ($inContainer) $item["flag"] = $parentFlag;

@@ -30,7 +30,7 @@ class Info
 	public static function getSystemID($systemName)
 	{
 		return Db::queryField("select solarSystemID from ccp_systems where solarSystemName = :name", "solarSystemID",
-				array(":name" => $systemName), 30);
+				array(":name" => $systemName), 3600);
 	}
 
 	/**
@@ -41,14 +41,14 @@ class Info
 	public static function getSystemInfo($systemID)
 	{
 		return Db::queryRow("select solarSystemName, security, sunTypeID from ccp_systems where solarSystemID = :systemID",
-				array(":systemID" => $systemID), 30);
+				array(":systemID" => $systemID), 3600);
 	}
 
 	public static function getWormholeSystemInfo($systemID)
 	{
 		if ($systemID < 3100000) return;
 		return Db::queryRow("select * from ccp_zwormhole_info where solarSystemID = :systemID",
-				array(":systemID" => $systemID), 30);
+				array(":systemID" => $systemID), 3600);
 	}
 
 	/**
@@ -81,7 +81,7 @@ class Info
 	public static function getItemName($typeID)
 	{
 		$name = Db::queryField("select typeName from ccp_invTypes where typeID = :typeID", "typeName",
-				array(":typeID" => $typeID), 30);
+				array(":typeID" => $typeID), 3600);
 		if ($name === null) {
 			if ($typeID >= 500000) return "TypeID $typeID"; //throw new Exception("hey now");
 			Db::execute("insert ignore into ccp_invTypes (typeID, typeName) values (:typeID, :typeName)",
@@ -98,7 +98,7 @@ class Info
 	public static function getItemID($itemName)
 	{
 		return Db::queryField("select typeID from ccp_invTypes where typeName = :typeName", "typeID",
-				array(":typeName" => $itemName), 30);
+				array(":typeName" => $itemName), 3600);
 	}
 
 	/**
@@ -111,7 +111,7 @@ class Info
 	public static function getEffectID($typeID)
 	{
 		return Db::queryField("select effectID from ccp_dgmTypeEffects where typeID = :typeID and effectID in (11, 12, 13, 2663, 3772)", "effectID",
-				array(":typeID" => $typeID), 30);
+				array(":typeID" => $typeID), 3600);
 	}
 
 	/**
@@ -123,7 +123,7 @@ class Info
 	public static function getCorpID($name)
 	{
 		$id = Db::queryField("select corporationID from zz_corporations where name = :name order by memberCount desc limit 1", "corporationID",
-				array(":name" => $name), 30);
+				array(":name" => $name), 3600);
 
 		if ($id == null || $id == 0) {
 			try {
@@ -227,7 +227,7 @@ class Info
 	public static function getAlliName($id)
 	{
 		return Db::queryField("select name from zz_alliances where allianceID = :id order by memberCount desc limit 1", "name",
-				array(":id" => $id), 30);
+				array(":id" => $id), 3600);
 	}
 
 	public static function getFactionTicker($ticker) //The function name obv. isn't right, since it'll return an id and name
@@ -264,34 +264,34 @@ class Info
 	public static function getRegionName($id)
 	{
 		$data = Db::queryField("select regionName from ccp_regions where regionID = :id", "regionName",
-				array(":id" => $id), 30);
+				array(":id" => $id), 3600);
 		return $data;
 	}
 
 	public static function getRegionID($name)
 	{
 		return Db::queryField("select regionID from ccp_regions where regionName = :name", "regionID",
-				array(":name" => $name), 30);
+				array(":name" => $name), 3600);
 	}
 
 	public static function getRegionIDFromSystemID($systemID)
 	{
 		$regionID = Db::queryField("select regionID from ccp_systems where solarSystemID = :systemID", "regionID",
-				array(":systemID" => $systemID), 30);
+				array(":systemID" => $systemID), 3600);
 		return $regionID;
 	}
 
 	public static function getRegionInfoFromSystemID($systemID)
 	{
 		$regionID = Db::queryField("select regionID from ccp_systems where solarSystemID = :systemID", "regionID",
-				array(":systemID" => $systemID), 30);
-		return Db::queryRow("select * from ccp_regions where regionID = :regionID", array(":regionID" => $regionID), 30);
+				array(":systemID" => $systemID), 3600);
+		return Db::queryRow("select * from ccp_regions where regionID = :regionID", array(":regionID" => $regionID), 3600);
 	}
 
 	public static function getShipId($name)
 	{
 		$shipID = Db::queryField("select typeID from ccp_invTypes where typeName = :name", "typeID",
-				array(":name" => $name), 30);
+				array(":name" => $name), 3600);
 		return $shipID;
 	}
 
@@ -305,7 +305,7 @@ class Info
 	public static function getCorpName($id)
 	{
 		$name = Db::queryField("select name from zz_corporations where corporationID = :id", "name",
-				array(":id" => $id), 30);
+				array(":id" => $id), 3600);
 		if ($name != null) return $name;
 
 		$pheal = Util::getPheal();
@@ -322,14 +322,14 @@ class Info
 	public static function getAlliID($name)
 	{
 		return Db::queryField("select allianceID from zz_alliances where name = :name order by memberCount desc limit 1", "allianceID",
-				array(":name" => $name), 30);
+				array(":name" => $name), 3600);
 	}
 
 	public static function getCharID($name)
 	{
 		if (Bin::get("s:$name", null) != null) return Bin::get("s:$name", null);
 		$id = (int)Db::queryField("select characterID from zz_characters where name = :name order by corporationID desc", "characterID",
-				array(":name" => $name), 30);
+				array(":name" => $name), 3600);
 		if ($id == 0 || $id == NULL) {
 			try {
 					$pheal = Util::getPheal();
@@ -371,7 +371,7 @@ class Info
 	 */
 	public static function getCharName($id)
 	{
-		$name = Db::queryField("select name from zz_characters where characterID = :id", "name", array(":id" => $id), 30);
+		$name = Db::queryField("select name from zz_characters where characterID = :id", "name", array(":id" => $id), 3600);
 		if ($name != null) return $name;
 		if ($id < 39999999) return ""; // Don't try to look up invalid characterID's
 
@@ -393,7 +393,7 @@ class Info
 	public static function getGroupID($id)
 	{
 		$groupID = Db::queryField("select groupID from ccp_invTypes where typeID = :id", "groupID",
-				array(":id" => $id), 30);
+				array(":id" => $id), 3600);
 		if ($groupID === null) return 0;
 		return $groupID;
 	}
@@ -401,7 +401,7 @@ class Info
 	public static function getGroupIdFromName($id)
 	{
 		$groupID = Db::queryField("select groupID from ccp_invGroups where groupName = :id", "groupID",
-				array(":id" => $id), 30);
+				array(":id" => $id), 3600);
 		if ($groupID === null) return 0;
 		return $groupID;
 	}
@@ -416,13 +416,13 @@ class Info
 	public static function getGroupName($groupID)
 	{
 		$name = Db::queryField("select groupName from ccp_invGroups where groupID = :id", "groupName",
-				array(":id" => $groupID), 30);
+				array(":id" => $groupID), 3600);
 		return $name;
 	}
 
 	private static function findEntitySearch(&$resultArray, $type, $query, $search)
 	{
-		$results = Db::query("${query}", array(":search" => $search), 30);
+		$results = Db::query("${query}", array(":search" => $search), 3600);
 		Info::addResults($resultArray, $type, $results);
 	}
 
@@ -492,7 +492,7 @@ class Info
 
 	public static function getPilotDetails($id)
 	{
-		$data = Db::queryRow("select characterID, corporationID, allianceID, factionID from zz_participants where characterID = :id and dttm >= date_sub(now(), interval 7 day) order by killID desc limit 1", array(":id" => $id), 30);
+		$data = Db::queryRow("select characterID, corporationID, allianceID, factionID from zz_participants where characterID = :id and dttm >= date_sub(now(), interval 7 day) order by killID desc limit 1", array(":id" => $id), 3600);
 		if (sizeof($data) == 0) {
 			$data = Db::queryRow("select characterID, corporationID, allianceID, 0 factionID from zz_characters where characterID = :id", array(":id" => $id));
 		}
@@ -510,10 +510,10 @@ class Info
 
 	public static function getCorpDetails($id, $parameters = array())
 	{
-		$data = Db::queryRow("select corporationID, allianceID, factionID from zz_participants where corporationID = :id  and dttm >= date_sub(now(), interval 7 day) order by killID desc limit 1",  array(":id" => $id), 30);
-		if (sizeof($data) == 0) $data = Db::queryRow("select corporationID, allianceID, 0 factionID from zz_corporations where corporationID = :id", array(":id" => $id), 30);
+		$data = Db::queryRow("select corporationID, allianceID, factionID from zz_participants where corporationID = :id  and dttm >= date_sub(now(), interval 7 day) order by killID desc limit 1",  array(":id" => $id), 3600);
+		if (sizeof($data) == 0) $data = Db::queryRow("select corporationID, allianceID, 0 factionID from zz_corporations where corporationID = :id", array(":id" => $id), 3600);
 		if (sizeof($data) == 0) $data["corporationID"] == $id;
-		$moreData = Db::queryRow("select * from zz_corporations where corporationID = :id", array(":id" => $id), 30);
+		$moreData = Db::queryRow("select * from zz_corporations where corporationID = :id", array(":id" => $id), 3600);
 		if ($moreData) {
 			$data["memberCount"] = $moreData["memberCount"];
 			$data["cticker"] = $moreData["ticker"];
@@ -525,10 +525,10 @@ class Info
 
 	public static function getAlliDetails($id, $parameters = array())
 	{
-		$data = Db::queryRow("select allianceID, factionID from zz_participants where allianceID = :id and dttm >= date_sub(now(), interval 7 day) order by killID desc limit 1", array(":id" => $id), 30);
+		$data = Db::queryRow("select allianceID, factionID from zz_participants where allianceID = :id and dttm >= date_sub(now(), interval 7 day) order by killID desc limit 1", array(":id" => $id), 3600);
 		if (sizeof($data) == 0) $data["allianceID"] = $id;
 		// Add membercount, etc.
-		$moreData = Db::queryRow("select * from zz_alliances where allianceID = :id", array(":id" => $id), 30);
+		$moreData = Db::queryRow("select * from zz_alliances where allianceID = :id", array(":id" => $id), 3600);
 		if ($moreData) {
 			$data["memberCount"] = $moreData["memberCount"];
 			$data["aticker"] = $moreData["ticker"];
@@ -577,7 +577,7 @@ class Info
 
 	public static function getSystemsInRegion($id)
 	{
-		$result = Db::query("select solarSystemID from ccp_systems where regionID = :id", array(":id" => $id), 30);
+		$result = Db::query("select solarSystemID from ccp_systems where regionID = :id", array(":id" => $id), 3600);
 		$data = array();
 		foreach ($result as $row) $data[] = $row["solarSystemID"];
 		return $data;
@@ -609,7 +609,7 @@ class Info
 				case "groupID":
 					global $loadGroupShips; // ugh
 					if (!isset($element["groupName"])) $element["groupName"] = Info::getGroupName($value);
-					if ($loadGroupShips && !isset($element["groupShips"]) && !isset($element["noRecursion"])) $element["groupShips"] = Db::query("select typeID as shipTypeID, typeName as shipName, raceID, 1 as noRecursion from ccp_invTypes where groupID = :id and (groupID = 29 or (published = 1 and marketGroupID is not null)) order by raceID, marketGroupID, typeName", array (":id" => $value), 30);
+					if ($loadGroupShips && !isset($element["groupShips"]) && !isset($element["noRecursion"])) $element["groupShips"] = Db::query("select typeID as shipTypeID, typeName as shipName, raceID, 1 as noRecursion from ccp_invTypes where groupID = :id and (groupID = 29 or (published = 1 and marketGroupID is not null)) order by raceID, marketGroupID, typeName", array (":id" => $value), 3600);
 					break;
 				case "executorCorpID":
 					$element["executorCorpName"] = Info::getCorpName($value);
@@ -665,7 +665,7 @@ class Info
 					break;
 				case "addDetail":
 					$info = Db::queryRow("select corporationID, allianceID from zz_participants where characterID = :c order by killID desc limit 1",
-							array(":c" => $value), 30);
+							array(":c" => $value), 3600);
 					if (sizeof($info)) {
 						$element["corporationID"] = $info["corporationID"];
 						if ($info["allianceID"]) $element["allianceID"] = $info["allianceID"];
