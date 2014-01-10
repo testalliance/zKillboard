@@ -85,7 +85,7 @@ class Summary
 			//$stats = array();*/
 		} else {
 			if ($type == "system" || $type == "region") $stats = Db::query("select groupID, lost destroyed, 0 lost, pointsLost pointsDestroyed, 0 pointsLost, iskLost iskDestroyed, 0 iskLost from zz_stats where type='$type' and typeID = $id", array(":id" => $id), 300);
-			else $stats = Db::query("select groupID, destroyed, lost, pointsDestroyed, pointsLost, iskDestroyed, iskLost from zz_stats where type='$type' and typeID = $id", array(":id" => $id), 300);
+			else $stats = Db::query("select groupID, destroyed, lost, pointsDestroyed, pointsLost, iskDestroyed, iskLost from zz_stats where type='$type' and typeID = :id", array(":id" => $id), 0);
 		}
 
 		$infoStats = array();
