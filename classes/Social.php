@@ -71,7 +71,8 @@ class Social
 		$url = "https://zkillboard.com/detail/$killID/";
 		if ($totalPrice >= $twitMin) $url = Twit::shortenUrl($url);
 		$message = "|g|" . $victimInfo["shipName"] . "|n| worth |r|" . Util::formatIsk($totalPrice) . " ISK|n| was destroyed! $url";
-		if (strlen($victimInfo["characterName"]) < 25 && $victimInfo["characterID"] != 0) {
+		if (!isset($victimInfo["characterName"])) $victimInfo["characterName"] = $victimInfo["corporationName"];
+		if (strlen($victimInfo["characterName"]) < 25) {
 			$name = $victimInfo["characterName"];
 			if (Util::endsWith($name, "s")) $name .= "'";
 			else $name .= "'s";
