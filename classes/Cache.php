@@ -35,11 +35,11 @@ class Cache
 
 		if ($cache == null)
 		{
-			if(extension_loaded("Memcached") && (!empty($memcacheServer) && !empty($memcachePort)))
+			if(extension_loaded("Memcached") && (!empty($memcacheServer)))
 			{
 				$cache = new MemcachedCache();
 			}
-			else if(extension_loaded("Memcache") && (!empty($memcacheServer) && !empty($memcachePort)))
+			else if(extension_loaded("Memcache") && (!empty($memcacheServer)))
 			{
 				$cache = new MemcacheCache();
 			}
@@ -56,7 +56,6 @@ class Cache
 				$cache = new FileCache();
 			}
 		}
-
 		return $cache;
 	}
 
