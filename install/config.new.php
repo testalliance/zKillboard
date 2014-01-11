@@ -44,6 +44,9 @@ $debug = true;
 // Logfile
 $logfile = "%logfile%";
 
+// Sessions
+$sessionUse = ""; // set to memcached to use memcached
+
 // Memcache
 $memcacheServer = "%memcache%";
 $memcachePort = "%memcacheport%";

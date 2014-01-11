@@ -49,7 +49,19 @@ $timer = new Timer();
 $app = new \Slim\Slim($config);
 
 // Session
-ini_set("session.save_path", $baseDir."cache/sessions/");
+if($sessionUse == "memcached")
+{
+	ini_set("session.save_handler", "memcached");
+	if(substr($memcacheServer, 0, 7) == "unix://")
+		ini_set("session.save_path", "unix://".$memcacheServer);
+	else
+		ini_set("session.save_path", "$memcacheServer:$memcachePort");
+}
+else
+{
+	ini_set("session.save_handler", "files");
+	ini_set("session.save_path", $baseDir."cache/sessions/");
+}
 session_cache_limiter(false);
 session_start();
 
