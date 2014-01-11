@@ -162,7 +162,7 @@ $app->get("/item/:id/", function($id) use ($app) {
 });
 
 // Give list of character id's to evewho
-$app->get("/evewhoc/", function() use ($app) { include("view/evewhoc.php");});
+$app->get("/evewhoc/:page/", function($page) use ($app) { include("view/evewhoc.php");});
 
 // StackTrace
 $app->get("/stacktrace/:hash/", function($hash) use ($app) {
