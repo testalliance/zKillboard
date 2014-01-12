@@ -391,9 +391,8 @@ class Api
 			$count += $added;
 		}
 		if ($maxKillID != $insertedMaxKillID) {
-			Db::execute("insert into zz_api_characters (keyID, characterID, maxKillID) values (:keyID, :charID, :maxKillID)
-					on duplicate key update maxKillID = :maxKillID",
-					array(":keyID" => $keyID, ":charID" => $charID, "maxKillID" => $insertedMaxKillID));
+			Db::execute("INSERT INTO zz_api_characters (keyID, characterID, maxKillID) VALUES (:keyID, :characterID, :maxKillID) ON DUPLICATE KEY UPDATE maxKillID = :maxKillID",
+				array(":keyID" => $keyID, ":characterID" => $charID, ":maxKillID" => $insertedMaxKillID));
 		}
 		return $count;
 	}
