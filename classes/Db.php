@@ -23,35 +23,6 @@ class Db
 	 */
 	protected static $queryCount = 0;
 
-	private $pdo = null;
-
-	protected static $instance = null;
-
-	private static function getInstance() {
-		if (Db::$instance == null) Db::$instance = new Db();
-		return Db::$instance;
-	}
-
-	function __destruct()
-	{
-		$this->pdo = null;
-	}
-
-
-	/**
-	 * @static
-	 * @param string $query The query.
-	 * @param array $parameters The parameters
-	 * @return string The query and parameters as a hashed value.
-	 */
-	public static function getKey($query, $parameters)
-	{
-		foreach ($parameters as $k => $v) {
-			$query .= "|$k|$v";
-		}
-		return "Db:" . md5($query);
-	}
-
 	/**
 	 * Creates and returns a PDO object.
 	 *
@@ -60,58 +31,260 @@ class Db
 	 */
 	protected static function getPDO()
 	{
-		global $dbUser, $dbPassword, $dbName, $dbHost;
+		global $dbUser, $dbPassword, $dbName, $dbHost, $dbSocket;
 
-		if (Db::getInstance()->pdo != null) return Db::getInstance()->pdo;
+		if($dbSocket)
+			$dsn = "mysql:dbname=$dbName;unix_socket=$dbSocket";
+		else
+			$dsn = "mysql:dbname=$dbName;host=$dbHost";
 
-		$dsn = "mysql:dbname=$dbName;host=$dbHost";
-
-		try {
-			Db::getInstance()->pdo = new PDO($dsn, $dbUser, $dbPassword,
-					array(
-						PDO::ATTR_PERSISTENT => true,
-						PDO::ATTR_EMULATE_PREPARES => true,
-						PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
-						PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-						)
-					);
-		} catch (Exception $ex) {
-			Log::log("Unable to connect to database: " . $ex->getMessage());
-			echo $ex->getMessage();
-			die();
+		try
+		{
+			$pdo = new PDO($dsn, $dbUser, $dbPassword, array(
+				PDO::ATTR_PERSISTENT => true, // Keep the connection open, so it can be reused
+				PDO::ATTR_EMULATE_PREPARES => false, // Use native prepares, since they and the execution plan is cached in MySQL, and thus generate faster queries, but more garbled errors if we make any.
+				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, // Error mode
+				PDO::MYSQL_ATTR_INIT_COMMAND => 'SET time_zone = \'+00:00\'' // Default to using UTC as timezone for all queries.. Since EVE is UTC, so should we be!
+				)
+			);
 		}
-		return Db::getInstance()->pdo;
+		catch (Exception $e)
+		{
+			Log::log("Unable to connect to the database: " . $e->getMessage());
+			$pdo = null;
+		}
+
+		return $pdo;
 	}
 
 	/**
-	 * Logs a query, its parameters, and the amount of time it took to execute.
-	 * The original query is modified through simple search and replace to create
-	 * the query as close to the execution as PDO would have the query.	This
-	 * logging function doesn't take any care to escape any parameters, so take
-	 * caution if you attempt to execute any logged queries.
+	 * Executes an SQL query, returns the full result
 	 *
-	 * @param string $query The query.
-	 * @param array $parameters A key/value array of parameters
-	 * @param int $duration The length of time it took for the query to execute.
+	 * @static
+	 * @param string $query The query to be executed.
+	 * @param array $params (optional) A key/value array of parameters.
+	 * @param int $cacheTime The time, in seconds, to cache the result of the query.	Default: 30
+	 * @return Returns the full resultset as an array.
+	 */
+	public static function query($query, $parameters = array(), $cacheTime = 30)
+	{
+		global $dbExplain;
+
+		// Sanity check
+		if(strpos($query, ";") !== false)
+			throw new Exception("Semicolons are not allowed in queryes. Use parameters instead.");
+
+		// Disallow update, insert etc. with this, they have to use execute
+		$contain = array("UPDATE", "INSERT");
+		if(Util::strposa($query, $contain))
+			throw new Exception("You are not to use Db::query with update or insert queries. Use Db::execute for that");
+
+		// Cache time of 0 seconds means skip all caches. and just do the query
+		$key = self::getKey($query, $parameters);
+
+		// If cache time is above 0 seconds, lets try and get it from that.
+		if($cacheTime > 0)
+		{
+			// Try the cache system
+			$result = Cache::get($key);
+			if($result !== FALSE)
+				return $result;
+		}
+
+		try
+		{
+			// Start the timer
+			$timer = new Timer();
+			// Increment the queryCounter
+			self::$queryCount++;
+			// Open the databse connection
+			$pdo = self::getPDO();
+			// Make sure PDO is set
+			if($pdo == NULL)
+				return;
+			// Prepare the query
+			$stmt = $pdo->prepare($query);
+			// Execute the query, with the parameters
+			$stmt->execute($parameters);
+
+			// Check for errors
+			if($stmt->errorCode() != 0)
+				self::processError($stmt, $query, $parameters);
+
+			// Fetch an associative array
+			$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+			// Close the cursor
+			$stmt->closeCursor();
+			// Close the PDO object
+			$pdo = null;
+			// Stop the timer
+			$duration = $timer->stop();
+
+			// If cache time is above 0 seconds, lets store it in the cache.
+			if($cacheTime > 0)
+				Cache::set($key, $result, min(3600, $cacheTime)); // Store it in the cache system
+
+			// If dbExplain is enabled, we need to pass the query to the explain system
+			if($dbExplain && !strpos($query, "explain"))
+				if(stripos($query, "SELECT") !== FALSE)
+					self::explainQuery($query, $parameters, $duration);
+
+			// If the duration of the query was more than 5000 seconds, we need to log it..
+			if($duration > 5000)
+				self::log($query, $parameters, $duration);
+
+			// now to return the result
+			return $result;
+		}
+		catch (Exception $e)
+		{
+			// There was some sort of nasty nasty nasty error..
+			throw $e;
+		}
+	}
+
+	/**
+	 * Executes an SQL query, and returns a single row
+	 *
+	 * @static
+	 * @param string $query The query to be executed
+	 * @param array $parameters (optional) A key/value array of parameters
+	 * @param int $cacheTime The time, in seconds, to cache the result of the query.	Default: 30
+	 * @return Returns the first row of the result set. Returns null if there are no rows.
+	 */
+	public static function queryRow($query, $parameters = array(), $cacheTime = 30)
+	{
+		// Get the result
+		$result = self::query($query, $parameters, $cacheTime);
+		// Figure out if it has more than one result and return it
+		if(sizeof($result) >= 1)
+			return $result[0];
+
+		// No results at all
+		return null;
+	}
+
+	/**
+	 * Executes an SQL query, and returns a single result
+	 *
+	 * @static
+	 * @param string $query The query to be executed
+	 * @param string $field The name of the field to return
+	 * @param array $parameters (optional) A key/value array of parameters
+	 * @param int $cacheTime The time, in seconds, to cache the result of the query.	Default: 30
+	 * @return null Returns the value of $field in the first row of the resultset. Returns null if there are no rows.
+	 */
+	public static function queryField($query, $field, $parameters = array(), $cacheTime = 30)
+	{
+		// Get the result
+		$result = self::query($query, $parameters, $cacheTime);
+		// Figure out if it has no results
+		if(sizeof($result) == 0)
+			return null;
+
+		// Bind the first result to $resultRow
+		$resultRow = $result[0];
+
+		// Return the result + the field requested
+		return $resultRow[$field];
+	}
+
+	/**
+	 * Executes an SQL command and returns the number of rows affected.
+	 * Good for inserts, updates, deletes, etc.
+	 *
+	 * @static
+	 * @param string $query The query to be executed.
+	 * @param array $parameters (optional) A key/value array of parameters.
+	 * @param boolean $reportErrors Log the query and throw an exception if the query fails. Default: true
+	 * @return int The number of rows affected by the sql query.
+	 */
+	public static function execute($query, $parameters = array(), $reportErrors = true)
+	{
+		// Sanity check
+		if(strpos($query, ";") !== false)
+			throw new Exception("Semicolons are not allowed in queryes. Use parameters instead.");
+
+		// Start the timer
+		$timer = new Timer();
+		// Increment the queryCounter
+		self::$queryCount++;
+		// Open the databse connection
+		$pdo = self::getPDO();
+		// Make sure PDO is actually set
+		if($pdo == NULL)
+			return;
+		// Begin the transaction
+		$pdo->beginTransaction();
+		// Prepare the query
+		$stmt = $pdo->prepare($query);
+		// Execute the query, with the parameters
+		$stmt->execute($parameters);
+
+		// An error happened
+		if($stmt->errorCode() != 0)
+		{
+			// Report the error
+			if($reportErrors) self::processError($stmt, $query, $parameters);
+			// Rollback the query
+			$pdo->rollBack();
+			// Return false
+			return $false;
+		}
+
+		// No error, time to commit
+		$pdo->commit();
+		// Stop the timer
+		$duration = $timer->stop();
+		// If the duration of the query was more than 5000 seconds, we need to log it..
+		if($duration > 5000)
+			self::log($query, $parameters, $duration);
+
+		// Get the amount of rows that was altered
+		$rowCount = $stmt->rowCount();
+		// Close the cursor
+		$stmt->closeCursor();
+		// Unset the PDO object
+		$pdo = null;
+
+		// Return the amount of rows that was altered
+		return $rowCount;
+	}
+
+	/**
+	 * Retrieve the number of queries executed so far.
+	 *
+	 * @static
+	 * @return int Number of queries executed so far
+	 */
+	public static function getQueryCount()
+	{
+		return self::$queryCount;
+	}
+
+	/**
+	 * @static
+	 * @throws Exception
+	 * @param	$statement
+	 * @param	string $query
+	 * @param	array $parameters
 	 * @return void
 	 */
-	public static function log($query, $parameters = array(), $duration = 0)
+	public static function processError($statement, $query, $parameters = array())
 	{
-		global $baseAddr;
-		foreach ($parameters as $k => $v) {
-			$query = str_replace($k, "'" . $v . "'", $query);
-		}
-		$uri = isset($_SERVER["REQUEST_URI"]) ? "Query page: https://$baseAddr" . $_SERVER["REQUEST_URI"] . "\n": "";
-		Log::log(($duration != 0 ? number_format($duration / 1000, 3) . "s " : "") . " Query: \n$query;\n$uri");
+		$errorCode = $statement->errorCode();
+		$errorInfo = $statement->errorInfo();
+		self::log("$errorCode - " . $errorInfo[2] . "\n$query", $parameters);
+		throw new Exception($errorInfo[0] . " - " . $errorInfo[1] . " - " . $errorInfo[2]);
 	}
 
 	/**
 	 * Takes a query, and explains it, and drops it into a db table for later perusal..
-	 * 
+	 *
 	 * @param string $query
 	 * @return void
 	 */
-	public static function explainQuery($query, $param, $duration)
+	public static function explainQuery($query, $parameters = array(), $duration = 0)
 	{
 		$query = "explain ". $query;
 		$hash = md5($query);
@@ -151,173 +324,42 @@ class Db
 		$stmt = $pdo->prepare($insertQuery);
 		$stmt->execute($parameters);
 		$stmt->closeCursor();
+		$pdo = null;
 	}
+
 	/**
-	 * @static
-	 * @throws Exception
-	 * @param	$statement
-	 * @param	string $query
-	 * @param	array $parameters
+	 * Logs a query, its parameters, and the amount of time it took to execute.
+	 * The original query is modified through simple search and replace to create
+	 * the query as close to the execution as PDO would have the query.	This
+	 * logging function doesn't take any care to escape any parameters, so take
+	 * caution if you attempt to execute any logged queries.
+	 *
+	 * @param string $query The query.
+	 * @param array $parameters A key/value array of parameters
+	 * @param int $duration The length of time it took for the query to execute.
 	 * @return void
 	 */
-	private static function processError($statement, $query, $parameters)
+	public static function log($query, $parameters = array(), $duration = 0)
 	{
-		$errorCode = $statement->errorCode();
-		$errorInfo = $statement->errorInfo();
-		self::log("$errorCode - " . $errorInfo[2] . "\n$query", $parameters);
-		throw new Exception($errorInfo[0] . " - " . $errorInfo[1] . " - " . $errorInfo[2]);
-	}
-
-	private static $horribleQueryMutexArray = array();
-
-	/**
-	 * @static
-	 * @param string $query The query to be executed.
-	 * @param array $params (optional) A key/value array of parameters.
-	 * @param int $cacheTime The time, in seconds, to cache the result of the query.	Default: 30
-	 * @return Returns the full resultset as an array.
-	 */
-	public static function query($query, $params = array(), $cacheTime = 30)
-	{
-		global $dbExplain;
-		// Basic sanity check.
-		if (strpos($query, ";") !== false) throw new Exception("Semicolons are not allowed in queries.  Use parameters instead.");
-
-		// cacheTime of 0 or less means skip all caches and just do the query
-		$key = self::getKey($query, $params);
-		// Horrible but temporary mutex solution to ensure a single version of a
-		// query is being executed once, and only once at a given moment
-		// yes , this is perfect, atm I don't care -- Squizz
-		// (karbowiak made me do it)
-		// TODO implement this properly
-		// 
-		// the mysql functions GET_LOCK / IS_FREE_LOCK and RELEASE_LOCK could replace the mutex solution we're using here?
-		while (array_key_exists($key, self::$horribleQueryMutexArray)) sleep(100);
-
-		if ($cacheTime > 0) {
-
-			// First, check our local storage bin
-			$result = Bin::get($key, FALSE);
-			if ($result !== FALSE) return $result;
-
-			// Second, check MemCache
-			$result = Cache::get($key);
-			if ($result !== FALSE) return $result;
+		global $baseAddr;
+		foreach ($parameters as $k => $v) {
+			$query = str_replace($k, "'" . $v . "'", $query);
 		}
-
-		self::$horribleQueryMutexArray[$key] = true;
-
-		try {
-			self::$queryCount++;
-
-			// OK, hit up the database, but let's time it too
-			$timer = new Timer();
-			$pdo = self::getPDO();
-			$stmt = $pdo->prepare($query);
-			$stmt->execute($params);
-			if ($stmt->errorCode() != 0) self::processError($stmt, $query, $params);
-
-			$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-			$stmt->closeCursor();
-			$duration = $timer->stop();
-
-			if ($cacheTime > 0) {
-				Bin::set($key, $result);
-				Cache::set($key, $result, min(3600, $cacheTime));
-			}
-			if($dbExplain && !strpos($query, "explain"))
-			{
-				if(strpos($query, "select") !== FALSE)
-					self::explainQuery($query, $params, $duration);
-			}
-			if ($duration > 5000) self::log($query, $params, $duration);
-
-			unset(self::$horribleQueryMutexArray[$key]);
-
-			return $result;
-		} catch (Exception $ex) {
-			unset(self::$horribleQueryMutexArray[$key]);
-
-			throw $ex;
-
-		}
+		$uri = isset($_SERVER["REQUEST_URI"]) ? "Query page: https://$baseAddr" . $_SERVER["REQUEST_URI"] . "\n": "";
+		Log::log(($duration != 0 ? number_format($duration / 1000, 3) . "s " : "") . " Query: \n$query;\n$uri");
 	}
 
 	/**
 	 * @static
-	 * @param string $query The query to be executed
-	 * @param array $parameters (optional) A key/value array of parameters
-	 * @param int $cacheTime The time, in seconds, to cache the result of the query.	Default: 30
-	 * @return Returns the first row of the result set. Returns null if there are no rows.
+	 * @param string $query The query.
+	 * @param array $parameters The parameters
+	 * @return string The query and parameters as a hashed value.
 	 */
-	public static function queryRow($query, $parameters = array(), $cacheTime = 30)
+	public static function getKey($query, $parameters = array())
 	{
-		$result = self::query($query, $parameters, $cacheTime);
-		if (sizeof($result) >= 1) return $result[0];
+		foreach($parameters as $key => $value)
+			$query .= "|$key|$value";
 
-		return null;
-	}
-
-	/**
-	 * @static
-	 * @param string $query The query to be executed
-	 * @param string $field The name of the field to return
-	 * @param array $parameters (optional) A key/value array of parameters
-	 * @param int $cacheTime The time, in seconds, to cache the result of the query.	Default: 30
-	 * @return null Returns the value of $field in the first row of the resultset. Returns null if there are no rows.
-	 */
-	public static function queryField($query, $field, $parameters = array(), $cacheTime = 30)
-	{
-		$result = self::query($query, $parameters, $cacheTime);
-		if (sizeof($result) == 0) return null;
-		$resultRow = $result[0];
-
-		return $resultRow[$field];
-	}
-
-
-	/**
-	 * Executes a SQL command and returns the number of rows affected.
-	 * Good for inserts, updates, deletes, etc.
-	 *
-	 * @static
-	 * @param string $query The query to be executed.
-	 * @param array $parameters (optional) A key/value array of parameters.
-	 * @param boolean $reportErrors Log the query and throw an exception if the query fails. Default: true
-	 * @return int The number of rows affected by the sql query.
-	 */
-	public static function execute($query, $parameters = array(), $reportErrors = true)
-	{
-		// Basic sanity check.
-		if (strpos($query, ";") !== false) throw new Exception("Semicolons are not allowed in queries.  Use parameters instead.");
-
-		$timer = new Timer();
-		self::$queryCount++;
-		$pdo = self::getPDO();
-		$statement = $pdo->prepare($query);
-		$statement->execute($parameters);
-
-		if ($statement->errorCode() != 0) {
-			if ($reportErrors) self::processError($statement, $query, $parameters);
-			return FALSE;
-		}
-		$duration = $timer->stop();
-		if ($duration > 5000) self::log($query, $parameters, $duration);
-
-		$rowCount = $statement->rowCount();
-		$statement->closeCursor();
-
-		return $rowCount;
-	}
-
-	/**
-	 * Retrieve the number of queries executed so far.
-	 *
-	 * @static
-	 * @return int Number of queries executed so far
-	 */
-	public static function getQueryCount()
-	{
-		return self::$queryCount;
+		return "Db:" . md5($query);
 	}
 }

@@ -57,7 +57,6 @@ session_start();
 // Check if the user has autologin turned on
 if(!User::isLoggedIn()) User::autoLogin();
 
-
 // Theme
 $viewtheme = null;
 if(User::isLoggedIn())
