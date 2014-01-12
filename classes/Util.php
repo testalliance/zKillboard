@@ -34,7 +34,7 @@ class Util
 		PhealConfig::getInstance()->http_user_agent = "API Fetcher for http://$baseAddr";
 		if(!empty($ipsAvailable))
 		{
-			$max = count($ipsAvailable);
+			$max = count($ipsAvailable)-1;
 			$ipID = mt_rand(0, $max);
 			if($debug)
 				Log::log("Pheal is using: ". $ipsAvailable[$ipID] . " for API requests");
