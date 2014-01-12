@@ -67,9 +67,8 @@ class cli_apiFetchKillLog implements cliCommand
 				else $result = $pheal->KillMails($params);
 
 				$cachedUntil = $result->cached_until;
-				if ($cachedUntil == "") $cachedUntil = 0;
-				Db::execute("update zz_api_characters set cachedUntil = if(:cachedUntil = 0, date_add(now(), interval 1 hour), :cachedUntil), errorCount = 0, errorCode = '0' where apiRowID = :id", array(":id" => $apiRowID, ":cachedUntil" => $cachedUntil));
-
+				if ($cachedUntil == "" || !$cachedUntil) $cachedUntil = date("Y-m-d H:i:s", time()+3600);
+				Db::execute("UPDATE zz_api_characters SET cachedUntil = :cachedUntil, errorCount = 0, errorCode = 0 WHERE apiRowID = :id", array(":id" => $apiRowID, ":cachedUntil" => $cachedUntil));
 				$keyID = trim($keyID);
 				$file = "/var/killboard/zkb_killlogs/{$keyID}_{$charID}_$beforeKillID.xml";
 				@unlink($file);
