@@ -279,7 +279,7 @@ class Util
 	public static function scrapeCheck()
 	{
 		global $apiWhiteList;
-		$maxRequestsPerDay = 8640;
+		$maxRequestsPerDay = 86400;
 
 		$ip = substr(IP::get(), 0, 64);
 		if(!in_array($ip, $apiWhiteList))
@@ -312,7 +312,6 @@ class Util
 				header("Retry-After: " . $cachedUntil . " GMT");
 				header("HTTP/1.1 429 Too Many Requests");
 				header("Etag: ".(md5(serialize($data))));
-				header("+".$apiTimeBetweenAccess." seconds");
 				echo $data;
 				die();
 			}
