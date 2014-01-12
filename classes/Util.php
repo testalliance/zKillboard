@@ -29,10 +29,14 @@ class Util
 
 	public static function getPheal($keyID = null, $vCode = null)
 	{
-		global $phealCacheLocation, $apiServer, $baseAddr;
-
+		global $phealCacheLocation, $apiServer, $baseAddr, $ipsAvailable;
 		PhealConfig::getInstance()->http_method = "curl";
 		PhealConfig::getInstance()->http_user_agent = "API Fetcher for http://$baseAddr";
+		if(!empty($ipsAvailable))
+		{
+			$ipID = mt_rand(0, 1);
+			PhealConfig::getInstance()->http_interface_ip = $ipsAvailable[$ipID];
+		}
 		PhealConfig::getInstance()->http_post = false;
 		PhealConfig::getInstance()->http_keepalive = true; // default 15 seconds
 		PhealConfig::getInstance()->http_keepalive = 10; // KeepAliveTimeout in seconds

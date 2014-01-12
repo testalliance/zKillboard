@@ -26,6 +26,9 @@ $dbHost = "%dbhost%";
 $dbSocket = null;
 $dbExplain = false;
 
+// IPs available
+$ipsAvailable = array(); // Set it to the external IP(s) you have available
+
 // External Servers
 $apiServer = "%apiserver%";
 $imageServer = "%imageserver%";
