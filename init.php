@@ -49,13 +49,14 @@ $timer = new Timer();
 $app = new \Slim\Slim($config);
 
 // Session
-ini_set("session.save_handler", $sessionUse);
-ini_set("session.save_path", $sessionPath);
+$session = new zKBSession();
+session_set_save_handler($session, true);
 session_cache_limiter(false);
 session_start();
 
 // Check if the user has autologin turned on
 if(!User::isLoggedIn()) User::autoLogin();
+
 
 // Theme
 $viewtheme = null;

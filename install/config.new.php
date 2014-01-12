@@ -44,12 +44,6 @@ $debug = true;
 // Logfile
 $logfile = "%logfile%";
 
-// Sessions
-$sessionUse = "files";
-$sessionPath = $baseDir."cache/sessions/";
-//$sessionUse = "memcached";
-//$sessionPath = "127.0.0.1";
-
 // Memcache
 $memcacheServer = "%memcache%";
 $memcachePort = "%memcacheport%";
