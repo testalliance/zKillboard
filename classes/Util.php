@@ -29,13 +29,15 @@ class Util
 
 	public static function getPheal($keyID = null, $vCode = null)
 	{
-		global $phealCacheLocation, $apiServer, $baseAddr, $ipsAvailable;
+		global $phealCacheLocation, $apiServer, $baseAddr, $ipsAvailable, $debug;
 		PhealConfig::getInstance()->http_method = "curl";
 		PhealConfig::getInstance()->http_user_agent = "API Fetcher for http://$baseAddr";
 		if(!empty($ipsAvailable))
 		{
 			$max = count($ipsAvailable);
 			$ipID = mt_rand(0, $max);
+			if($debug)
+				Log::log("Pheal is using: ". $ipsAvailable[$ipID] . " for API requests");
 			PhealConfig::getInstance()->http_interface_ip = $ipsAvailable[$ipID];
 		}
 		PhealConfig::getInstance()->http_post = false;
