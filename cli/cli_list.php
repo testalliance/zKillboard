@@ -28,8 +28,9 @@ class cli_list implements cliCommand
 		return " "; // Space seperated list
 	}
 
-	public function execute($parameters)
+	public function execute($parameters, $db)
 	{
+		var_dump($db);
 		$commands = array();
 		$dir = __DIR__;
 

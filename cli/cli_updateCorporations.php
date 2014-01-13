@@ -35,16 +35,16 @@ class cli_updateCorporations implements cliCommand
 		);
 	}
 
-	public function execute($parameters)
+	public function execute($parameters, $db)
 	{
-				self::updateCorporations();
+				self::updateCorporations($db);
 	}
 
-	private static function updateCorporations()
+	private static function updateCorporations($db)
 	{
-		Db::execute("delete from zz_corporations where corporationID = 0");
-		Db::execute("insert ignore into zz_corporations (corporationID) select executorCorpID from zz_alliances where executorCorpID > 0");
-		$result = Db::query("select corporationID, name, memberCount, ticker from zz_corporations where lastUpdated < date_sub(now(), interval 1 week) and corporationID >= 1000001 order by lastUpdated limit 100", array(), 0);
+		$db->execute("delete from zz_corporations where corporationID = 0");
+		$db->execute("insert ignore into zz_corporations (corporationID) select executorCorpID from zz_alliances where executorCorpID > 0");
+		$result = $db->query("select corporationID, name, memberCount, ticker from zz_corporations where lastUpdated < date_sub(now(), interval 1 week) and corporationID >= 1000001 order by lastUpdated limit 100", array(), 0);
 		foreach($result as $row) {
 			$id = $row["corporationID"];
 			$oMemberCount = $row["memberCount"];
@@ -62,11 +62,11 @@ class cli_updateCorporations implements cliCommand
 				if ($ceoID == 1) $ceoID = 0;
 				$dscr = $corpInfo->description;
 				//CLI::out("|g|$id|n| $name");
-				if ($name != "") Db::execute("update zz_corporations set name = :name, ticker = :ticker, memberCount = :memberCount, ceoID = :ceoID, description = :dscr, lastUpdated = now() where corporationID = :id",
+				if ($name != "") $db->execute("update zz_corporations set name = :name, ticker = :ticker, memberCount = :memberCount, ceoID = :ceoID, description = :dscr, lastUpdated = now() where corporationID = :id",
 						array(":id" => $id, ":name" => $name, ":ticker" => $ticker, ":memberCount" => $memberCount, ":ceoID" => $ceoID, ":dscr" => $dscr));
 
 			} catch (Exception $ex) {
-				Db::execute("update zz_corporations set lastUpdated = now(), name = :name where corporationID = :id", array(":id" => $id, ":name" => "Corporation $id"));
+				$db->execute("update zz_corporations set lastUpdated = now(), name = :name where corporationID = :id", array(":id" => $id, ":name" => "Corporation $id"));
 				if ($ex->getCode() != 503) Log::log("ERROR Validating Corp $id: " . $ex->getMessage());
 			}
 			usleep(100000); // Try not to spam the API servers (pauses 1/10th of a second)

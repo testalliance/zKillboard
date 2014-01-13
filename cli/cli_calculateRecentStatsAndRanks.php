@@ -35,7 +35,7 @@ class cli_calculateRecentStatsAndRanks implements cliCommand
 		);
 	}
 
-	public function execute($parameters)
+	public function execute($parameters, $db)
 	{
 		if (Util::isMaintenanceMode()) return;
 		if (sizeof($parameters) == 0 || $parameters[0] == "") CLI::out("Usage: |g|recentStatsAndRanks <type>|n| To see a list of commands, use: |g|methods recentStatsAndRanks", true);
@@ -44,26 +44,26 @@ class cli_calculateRecentStatsAndRanks implements cliCommand
 		switch($command)
 		{
 			case "all":
-				self::stats();
-				self::ranks();
+				self::stats($db);
+				self::ranks($db);
 			break;
 
 			case "ranks":
-				self::ranks();
+				self::ranks($db);
 			break;
 
 			case "stats":
-				self::stats();
+				self::stats($db);
 			break;
 
 		}
 	}
 
-	private static function ranks()
+	private static function ranks($db)
 	{
 		CLI::out("|g|Ranks calculation started");
-		Db::execute("drop table if exists zz_ranks_temporary");
-		Db::execute("create table zz_ranks_temporary like zz_ranks_recent");
+		$db->execute("drop table if exists zz_ranks_temporary");
+		$db->execute("create table zz_ranks_temporary like zz_ranks_recent");
 
 		$types = array("faction", "alli", "corp", "pilot", "ship", "group", "system", "region");
 		$indexed = array();
@@ -71,17 +71,17 @@ class cli_calculateRecentStatsAndRanks implements cliCommand
 		foreach($types as $type) {
 			CLI::out("Calculating ranks for $type");
 			Log::log("Calcing ranks for $type");
-			Db::execute("truncate zz_ranks_temporary");
+			$db->execute("truncate zz_ranks_temporary");
 			$exclude = $type == "corp" ? "and typeID > 1100000" : "";
-			Db::execute("insert into zz_ranks_temporary select * from (select type, typeID, sum(destroyed) shipsDestroyed, null sdRank, sum(lost) shipsLost, null slRank, null shipEff, sum(pointsDestroyed) pointsDestroyed, null pdRank, sum(pointsLost) pointsLost, null plRank, null pointsEff, sum(iskDestroyed) iskDestroyed, null idRank, sum(iskLost) iskLost, null ilRank, null iskEff, null overallRank from zz_stats_recent where type = '$type' $exclude group by type, typeID) as f");
+			$db->execute("insert into zz_ranks_temporary select * from (select type, typeID, sum(destroyed) shipsDestroyed, null sdRank, sum(lost) shipsLost, null slRank, null shipEff, sum(pointsDestroyed) pointsDestroyed, null pdRank, sum(pointsLost) pointsLost, null plRank, null pointsEff, sum(iskDestroyed) iskDestroyed, null idRank, sum(iskLost) iskLost, null ilRank, null iskEff, null overallRank from zz_stats_recent where type = '$type' $exclude group by type, typeID) as f");
 
 			if ($type == "system" or $type == "region") {
-				Db::execute("update zz_ranks_temporary set shipsDestroyed = shipsLost, pointsDestroyed = pointsLost, iskDestroyed = iskLost");
-				Db::execute("update zz_ranks_temporary set shipsLost = 0, pointsLost = 0, iskLost = 0");
+				$db->execute("update zz_ranks_temporary set shipsDestroyed = shipsLost, pointsDestroyed = pointsLost, iskDestroyed = iskLost");
+				$db->execute("update zz_ranks_temporary set shipsLost = 0, pointsLost = 0, iskLost = 0");
 			}
 
 			// Calculate efficiences
-			Db::execute("update zz_ranks_temporary set shipEff = (100*(shipsDestroyed / (shipsDestroyed + shipsLost))), pointsEff = (100*(pointsDestroyed / (pointsDestroyed + pointsLost))), iskEff = (100*(iskDestroyed / (iskDestroyed + iskLost)))");
+			$db->execute("update zz_ranks_temporary set shipEff = (100*(shipsDestroyed / (shipsDestroyed + shipsLost))), pointsEff = (100*(pointsDestroyed / (pointsDestroyed + pointsLost))), iskEff = (100*(iskDestroyed / (iskDestroyed + iskLost)))");
 
 			// Calculate Ranks for each type
 			$rankColumns = array();
@@ -98,72 +98,72 @@ class cli_calculateRecentStatsAndRanks implements cliCommand
 
 				if (!in_array($typeColumn, $indexed)) {
 					$indexed[] = $typeColumn;
-					Db::execute("alter table zz_ranks_temporary add index($typeColumn, $rank)");
+					$db->execute("alter table zz_ranks_temporary add index($typeColumn, $rank)");
 				}
 
-				Db::execute("insert into zz_ranks_temporary (type, typeID, $rank) (SELECT type, typeID, @rownum:=@rownum+1 AS $rank FROM (SELECT type, typeID FROM zz_ranks_temporary ORDER BY $typeColumn desc, typeID ) u, (SELECT @rownum:=0) r) on duplicate key update $rank = values($rank)");
+				$db->execute("insert into zz_ranks_temporary (type, typeID, $rank) (SELECT type, typeID, @rownum:=@rownum+1 AS $rank FROM (SELECT type, typeID FROM zz_ranks_temporary ORDER BY $typeColumn desc, typeID ) u, (SELECT @rownum:=0) r) on duplicate key update $rank = values($rank)");
 
-				$dupRanks = Db::query("select * from (select $typeColumn n, min($rank) r, count(*) c from zz_ranks_temporary where type = '$type' group by 1) f where c > 1");
+				$dupRanks = $db->query("select * from (select $typeColumn n, min($rank) r, count(*) c from zz_ranks_temporary where type = '$type' group by 1) f where c > 1");
 				foreach($dupRanks as $dupRank) {
 					$num = $dupRank["n"];
 					$newRank = $dupRank["r"];
 					CLI::out("|g|$type |r|$typeColumn |g|$num $rank |n|->|g| $newRank");
-					Db::execute("update zz_ranks_temporary set $rank = $newRank where $typeColumn = $num and type = '$type'");
+					$db->execute("update zz_ranks_temporary set $rank = $newRank where $typeColumn = $num and type = '$type'");
 				}
 			}
 
 			// Overall ranking
-			Db::execute("update zz_ranks_temporary set shipEff = 0 where shipEff is null");
-			Db::execute("update zz_ranks_temporary set pointsEff = 0 where pointsEff is null");
-			Db::execute("update zz_ranks_temporary set iskEff = 0 where iskEff is null");
-			Db::execute("insert into zz_ranks_temporary (type, typeID, overallRank) (SELECT type, typeID, @rownum:=@rownum+1 AS overallRanking FROM (SELECT type, typeID, (if (shipsDestroyed = 0, 10000000000000, ((shipsDestroyed / (pointsDestroyed + 1)) * (sdRank + idRank + pdRank))) * (1 + (1 - ((shipEff + pointsEff + iskEff) / 300)))) k, (slRank + ilRank + plRank) l from zz_ranks_temporary order by 3, 4 desc, typeID) u, (SELECT @rownum:=0) r) on duplicate key update overallRank = values(overallRank)");
-			Db::execute("delete from zz_ranks_recent where type = '$type'");
-			Db::execute("insert into zz_ranks_recent select * from zz_ranks_temporary");
+			$db->execute("update zz_ranks_temporary set shipEff = 0 where shipEff is null");
+			$db->execute("update zz_ranks_temporary set pointsEff = 0 where pointsEff is null");
+			$db->execute("update zz_ranks_temporary set iskEff = 0 where iskEff is null");
+			$db->execute("insert into zz_ranks_temporary (type, typeID, overallRank) (SELECT type, typeID, @rownum:=@rownum+1 AS overallRanking FROM (SELECT type, typeID, (if (shipsDestroyed = 0, 10000000000000, ((shipsDestroyed / (pointsDestroyed + 1)) * (sdRank + idRank + pdRank))) * (1 + (1 - ((shipEff + pointsEff + iskEff) / 300)))) k, (slRank + ilRank + plRank) l from zz_ranks_temporary order by 3, 4 desc, typeID) u, (SELECT @rownum:=0) r) on duplicate key update overallRank = values(overallRank)");
+			$db->execute("delete from zz_ranks_recent where type = '$type'");
+			$db->execute("insert into zz_ranks_recent select * from zz_ranks_temporary");
 		}
-		Db::execute("drop table zz_ranks_temporary");
+		$db->execute("drop table zz_ranks_temporary");
 	}
 
-	private static function stats()
+	private static function stats($db)
 	{
 		CLI::out("|g|Stats calculation started");
-		Db::execute("set session wait_timeout = 600");
+		$db->execute("set session wait_timeout = 600");
 
 		// Fix unknown group ID's
 		echo "Updating groups...\n";
-		$result = Db::query("select distinct shipTypeID from zz_participants where groupID = 0 and shipTypeID != 0");
+		$result = $db->query("select distinct shipTypeID from zz_participants where groupID = 0 and shipTypeID != 0");
 		foreach ($result as $row) {
 			$shipTypeID = $row["shipTypeID"];
 			$groupID = Info::getGroupID($shipTypeID);
 			if ($groupID == null) $groupID = 0;
 			if ($groupID == 0) continue;
 			echo "Updating $shipTypeID to $groupID\n";
-			Db::execute("update zz_participants set groupID = $groupID where groupID = 0 and shipTypeID = $shipTypeID");
+			$db->execute("update zz_participants set groupID = $groupID where groupID = 0 and shipTypeID = $shipTypeID");
 		}
 		echo "Finished updating groups...\n";
 
-		Db::execute("create table if not exists zz_stats_recent like zz_stats");
-		Db::execute("truncate zz_stats_recent");
+		$db->execute("create table if not exists zz_stats_recent like zz_stats");
+		$db->execute("truncate zz_stats_recent");
 
 		try {
-			self::recalc('faction', 'factionID');
-			self::recalc('alli', 'allianceID');
-			self::recalc('corp', 'corporationID');
-			self::recalc('pilot', 'characterID');
-			self::recalc('group', 'groupID');
-			self::recalc('ship', 'shipTypeID');
-			self::recalc('system', 'solarSystemID', false);
-			self::recalc('region', 'regionID', false);
+			self::recalc('faction', 'factionID', true, $db);
+			self::recalc('alli', 'allianceID', true, $db);
+			self::recalc('corp', 'corporationID', true, $db);
+			self::recalc('pilot', 'characterID', true, $db);
+			self::recalc('group', 'groupID', true, $db);
+			self::recalc('ship', 'shipTypeID', true, $db);
+			self::recalc('system', 'solarSystemID', false, $db);
+			self::recalc('region', 'regionID', false, $db);
 		} catch (Exception $e) {
 			print_r($e);
 		}
 	}
 
-	private static function recalc($type, $column, $calcKills = true)
+	private static function recalc($type, $column, $calcKills = true, $db)
 	{
 			Log::log("Starting recent stat calculations for $type");
 
-			Db::execute("drop table if exists zz_stats_temporary");
-			Db::execute("
+			$db->execute("drop table if exists zz_stats_temporary");
+			$db->execute("
 					CREATE TABLE `zz_stats_temporary` (
 						`killID` int(16) NOT NULL,
 						`groupName` varchar(16) NOT NULL,
@@ -177,17 +177,17 @@ class cli_calculateRecentStatsAndRanks implements cliCommand
 			$exclude = "$column != 0";
 
 			echo " losses ";
-			Db::execute("insert ignore into zz_stats_temporary select killID, '$type', $column, groupID, points, total_price from zz_participants where $exclude and isVictim = 1 and dttm > date_sub(now(), interval 90 day)");
-			Db::execute("insert into zz_stats_recent (type, typeID, groupID, lost, pointsLost, iskLost) select groupName, groupNum, groupID, count(killID), sum(points), sum(price) from zz_stats_temporary group by 1, 2, 3");
+			$db->execute("insert ignore into zz_stats_temporary select killID, '$type', $column, groupID, points, total_price from zz_participants where $exclude and isVictim = 1 and dttm > date_sub(now(), interval 90 day)");
+			$db->execute("insert into zz_stats_recent (type, typeID, groupID, lost, pointsLost, iskLost) select groupName, groupNum, groupID, count(killID), sum(points), sum(price) from zz_stats_temporary group by 1, 2, 3");
 
 			if ($calcKills) {
 				echo " kills ";
-				Db::execute("truncate table zz_stats_temporary");
-				Db::execute("insert ignore into zz_stats_temporary select killID, '$type', $column, vGroupID, points, total_price from zz_participants where $exclude and isVictim = 0 and dttm > date_sub(now(), interval 90 day)");
-				Db::execute("insert into zz_stats_recent (type, typeID, groupID, destroyed, pointsDestroyed, iskDestroyed) (select groupName, groupNum, groupID, count(killID), sum(points), sum(price) from zz_stats_temporary group by 1, 2, 3) on duplicate key update destroyed = values(destroyed), pointsDestroyed = values(pointsDestroyed), iskDestroyed = values(iskDestroyed)");
+				$db->execute("truncate table zz_stats_temporary");
+				$db->execute("insert ignore into zz_stats_temporary select killID, '$type', $column, vGroupID, points, total_price from zz_participants where $exclude and isVictim = 0 and dttm > date_sub(now(), interval 90 day)");
+				$db->execute("insert into zz_stats_recent (type, typeID, groupID, destroyed, pointsDestroyed, iskDestroyed) (select groupName, groupNum, groupID, count(killID), sum(points), sum(price) from zz_stats_temporary group by 1, 2, 3) on duplicate key update destroyed = values(destroyed), pointsDestroyed = values(pointsDestroyed), iskDestroyed = values(iskDestroyed)");
 			}
 
-			Db::execute("drop table if exists zz_stats_temporary");
+			$db->execute("drop table if exists zz_stats_temporary");
 
 			echo "done!\n";
 			Log::log("Finished stat calculations for $type");

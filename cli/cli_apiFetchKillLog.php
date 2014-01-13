@@ -28,20 +28,20 @@ class cli_apiFetchKillLog implements cliCommand
 		return ""; // Space seperated list
 	}
 
-	public function execute($parameters)
+	public function execute($parameters, $db)
 	{
 		if (Util::isMaintenanceMode()) return;
 		@$apiRowID = $parameters[0];
 
 		$notRecentKillID = Storage::retrieve("notRecentKillID", 0);
-		$apiRow = Db::queryRow("select * from zz_api_characters where apiRowID = :id", array(":id" => $apiRowID), 0);
+		$apiRow = $db->queryRow("select * from zz_api_characters where apiRowID = :id", array(":id" => $apiRowID), 0);
 		$maxKillID = $apiRow["maxKillID"];
 		$beforeKillID = 0;
 
 		if (!$apiRow) CLI::out("|r|No such apiRowID: $apiRowID", true);
 
 		$keyID = trim($apiRow["keyID"]);
-		$vCode = Db::queryField("select vCode from zz_api where keyID = :keyID", "vCode", array(":keyID" => $keyID));
+		$vCode = $db->queryField("select vCode from zz_api where keyID = :keyID", "vCode", array(":keyID" => $keyID));
 		$isDirector = $apiRow["isDirector"];
 		$charID = $apiRow["characterID"];
 
@@ -56,7 +56,7 @@ class cli_apiFetchKillLog implements cliCommand
 				$result = null;
 
 				// Update last checked
-				Db::execute("update zz_api_characters set errorCode = 0, lastChecked = now() where apiRowID = :id", array(":id" => $apiRowID));
+				$db->execute("update zz_api_characters set errorCode = 0, lastChecked = now() where apiRowID = :id", array(":id" => $apiRowID));
 
 				$params = array();
 				if ($isDirector != "T") $params['characterID'] = $charID;
@@ -68,7 +68,7 @@ class cli_apiFetchKillLog implements cliCommand
 
 				$cachedUntil = $result->cached_until;
 				if ($cachedUntil == "" || !$cachedUntil) $cachedUntil = date("Y-m-d H:i:s", time()+3600);
-				Db::execute("UPDATE zz_api_characters SET cachedUntil = :cachedUntil, errorCount = 0, errorCode = 0 WHERE apiRowID = :id", array(":id" => $apiRowID, ":cachedUntil" => $cachedUntil));
+				$db->execute("UPDATE zz_api_characters SET cachedUntil = :cachedUntil, errorCount = 0, errorCode = 0 WHERE apiRowID = :id", array(":id" => $apiRowID, ":cachedUntil" => $cachedUntil));
 				$keyID = trim($keyID);
 				$file = "/var/killboard/zkb_killlogs/{$keyID}_{$charID}_$beforeKillID.xml";
 				@unlink($file);
@@ -85,14 +85,14 @@ class cli_apiFetchKillLog implements cliCommand
 					if ($beforeKillID == 0) $beforeKillID = $killID;
 					else $beforeKillID = min($beforeKillID, $killID);
 				}
-				if ($beforeKillID < $notRecentKillID) Db::execute("update zz_api_characters set cachedUntil = date_add(cachedUntil, interval 2 hour) where apiRowID = :id", array(":id" => $apiRowID));
+				if ($beforeKillID < $notRecentKillID) $db->execute("update zz_api_characters set cachedUntil = date_add(cachedUntil, interval 2 hour) where apiRowID = :id", array(":id" => $apiRowID));
 				$hour = date("H");
 				if ($hour >= 12 && $hour <= 15) @error_log($pheal->xml, 3, $file); // Write all files once a day
 				else if ($aff > 0) @error_log($pheal->xml, 3, $file);
 			} while ($aff > 25 || ($beforeKillID > 0 && $maxKillID == 0));
 		} catch (Exception $ex) {
 			$errorCode = $ex->getCode();
-			Db::execute("update zz_api_characters set cachedUntil = date_add(now(), interval 1 hour), errorCount = errorCount + 1, errorCode = :code where apiRowID = :id", array(":id" => $apiRowID, ":code" => $errorCode));
+			$db->execute("update zz_api_characters set cachedUntil = date_add(now(), interval 1 hour), errorCount = errorCount + 1, errorCode = :code where apiRowID = :id", array(":id" => $apiRowID, ":code" => $errorCode));
 			switch($errorCode) {
 				case 119:
 				case 120:
@@ -103,10 +103,10 @@ class cli_apiFetchKillLog implements cliCommand
 				case 221: // Invalid access, delete the toon from the char list until later re-verification
 				case 220: // Invalid Corporation Key. Key owner does not fullfill role requirements anymore.
 				case 403: // New error code for invalid API
-					Db::execute("delete from zz_api_characters where apiRowID = :id", array(":id" => $apiRowID));
+					$db->execute("delete from zz_api_characters where apiRowID = :id", array(":id" => $apiRowID));
 					break;
 				case 1001:
-					Db::execute("update zz_api_characters set cachedUntil = date_add(now(), interval 10 minute) where apiRowID = :id", array(":id" => $apiRowID));
+					$db->execute("update zz_api_characters set cachedUntil = date_add(now(), interval 10 minute) where apiRowID = :id", array(":id" => $apiRowID));
 					break;
 				default:
 					Log::log($keyID . " " . $ex->getCode() . " " . $ex->getMessage());

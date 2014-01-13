@@ -35,7 +35,7 @@ class cli_feedEDK implements cliCommand
 		);
 	}
 
-	public function execute($parameters)
+	public function execute($parameters, $db)
 	{
 		if (sizeof($parameters) == 0 || $parameters[0] == "") CLI::out("Usage: |g|help <command>|n| To see a list of commands, use: |g|list", true);
 		$command = $parameters[0];
@@ -92,7 +92,7 @@ class cli_feedEDK implements cliCommand
 
 				if(filter_var($url, FILTER_VALIDATE_URL))
 				{
-					Db::execute("INSERT INTO zz_feeds (url, edkStyle) VALUES (:url, 1)", array(":url" => $url));
+					$db->execute("INSERT INTO zz_feeds (url, edkStyle) VALUES (:url, 1)", array(":url" => $url));
 					CLI::out("Now inserting |g|$url|n| to the database.", true);
 				}
 				else
@@ -110,16 +110,16 @@ class cli_feedEDK implements cliCommand
 					CLI::out("|r|ID needs to be an int..|n|");
 				else
 				{
-					$url = Db::queryField("SELECT url FROM zz_feeds WHERE id = :id AND edkStyle = 1", "url", array(":id" => $id));
+					$url = $db->queryField("SELECT url FROM zz_feeds WHERE id = :id AND edkStyle = 1", "url", array(":id" => $id));
 					if(is_null($url))
 						CLI::out("|r|Feed is already removed.", true);
 					CLI::out("Removing feed: |g|$url");
-					Db::execute("DELETE FROM zz_feeds WHERE id = :id", array(":id" => $id));
+					$db->execute("DELETE FROM zz_feeds WHERE id = :id", array(":id" => $id));
 				}
 			break;
 
 			case "list":
-				$list = Db::query("SELECT * FROM zz_feeds WHERE edkStyle = 1");
+				$list = $db->query("SELECT * FROM zz_feeds WHERE edkStyle = 1");
 				foreach($list as $url)
 					CLI::out($url["id"]."::|g|".$url["url"]);
 			break;
@@ -129,7 +129,7 @@ class cli_feedEDK implements cliCommand
 				$doSleep = false;
 				$size = 1;
 				$count = 1;
-				$feeds = Db::query("SELECT id, url, lastFetchTime FROM zz_feeds WHERE edkStyle IS true", array(), 0);
+				$feeds = $db->query("SELECT id, url, lastFetchTime FROM zz_feeds WHERE edkStyle IS true", array(), 0);
 				if(sizeof($feeds) > 1)
 				{
 					$doSleep = true;
@@ -151,8 +151,8 @@ class cli_feedEDK implements cliCommand
 							$data = self::fetchUrl($url);
 							$xml = new SimpleXMLElement($data);
 							$result = new PhealResult($xml);
-							$insertCount = self::processAPI($result);
-							Db::execute("UPDATE zz_feeds SET lastFetchTime = :time WHERE url = :url", array(":time" => date("Y-m-d H:i:s"), ":url" => $url));
+							$insertCount = self::processAPI($result, $db);
+							$db->execute("UPDATE zz_feeds SET lastFetchTime = :time WHERE url = :url", array(":time" => date("Y-m-d H:i:s"), ":url" => $url));
 							if($insertCount > 0)
 							{
 								CLI::out("Inserted |g|$insertCount|n| new kills from |g|$url|n|");
@@ -200,7 +200,7 @@ class cli_feedEDK implements cliCommand
         return $result;
 	}
 
-	private static function processAPI($data)
+	private static function processAPI($data, $db)
 	{
 		$count = 0;
 
@@ -231,18 +231,18 @@ class cli_feedEDK implements cliCommand
 			$hash = Util::getKillHash(null, $kill);
 			$source = "EDK Feed Fetch";
 
-			$mKillID = Db::queryField("select killID from zz_killmails where killID < 0 and processed = 1 and hash = :hash", "killID", array(":hash" => $hash), 0);
+			$mKillID = $db->queryField("select killID from zz_killmails where killID < 0 and processed = 1 and hash = :hash", "killID", array(":hash" => $hash), 0);
 			if ($mKillID) Kills::cleanDupe($mKillID, $killID);
 
 			// If the killID is negative at this point, we need to create a raw mail, and use that to insert it into the zz_manual_mails table, so we can get a manual mail id
 			if($killID < 0)
 			{
 				$rawText = Kills::getRawMail(null, Info::addInfo($killArray));
-				Db::execute("INSERT IGNORE INTO zz_manual_mails (hash, rawText) VALUES (:hash, :rawText)", array(":hash" => $hash, ":rawText" => $rawText));
-				$killID = Db::queryField("SELECT mKillID FROM zz_manual_mails WHERE hash = :hash ORDER BY mKillID DESC LIMIT 1", array(":hash" => $hash), 0);
+				$db->execute("INSERT IGNORE INTO zz_manual_mails (hash, rawText) VALUES (:hash, :rawText)", array(":hash" => $hash, ":rawText" => $rawText));
+				$killID = $db->queryField("SELECT mKillID FROM zz_manual_mails WHERE hash = :hash ORDER BY mKillID DESC LIMIT 1", array(":hash" => $hash), 0);
 			}
 
-			$added = Db::execute("insert ignore into zz_killmails (killID, hash, source, kill_json) values (:killID, :hash, :source, :json)",
+			$added = $db->execute("insert ignore into zz_killmails (killID, hash, source, kill_json) values (:killID, :hash, :source, :json)",
 					array(":killID" => $killID, ":hash" => $hash, ":source" => $source, ":json" => $json));
 			$count += $added;
 		}

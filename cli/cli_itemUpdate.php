@@ -35,11 +35,11 @@ class cli_itemUpdate implements cliCommand
 		);
 	}
 
-	public function execute($parameters)
+	public function execute($parameters, $db)
 	{
-		//Db::execute("insert ignore into ccp_invTypes (typeID, typeName) select distinct shipTypeID, concat('TypeID ', shipTypeID) from zz_participants");
-		//Db::execute("insert ignore into ccp_invTypes (typeID, typeName) select distinct typeID, concat('TypeID ', typeID) from zz_items");
-		$rows = Db::query("select typeID from ccp_invTypes order by typeID", array(), 0);
+		//$db->execute("insert ignore into ccp_invTypes (typeID, typeName) select distinct shipTypeID, concat('TypeID ', shipTypeID) from zz_participants");
+		//$db->execute("insert ignore into ccp_invTypes (typeID, typeName) select distinct typeID, concat('TypeID ', typeID) from zz_items");
+		$rows = $db->query("select typeID from ccp_invTypes order by typeID", array(), 0);
 		$ids = array();
 		foreach($rows as $row) {
 			$ids[] = $row['typeID'];
@@ -77,13 +77,13 @@ class cli_itemUpdate implements cliCommand
 			foreach ($xml->result->rowset->row as $row) {
 				$count++;
 				$id = $row["typeID"];
-				$currentName = trim(Db::queryField("select typeName from ccp_invTypes where typeID = :typeID", "typeName", array(":typeID" => $id), 0));
+				$currentName = trim($db->queryField("select typeName from ccp_invTypes where typeID = :typeID", "typeName", array(":typeID" => $id), 0));
 				$name = trim($row["typeName"]);
 				if ($currentName === $name && $currentName != "Unknown Type") continue;
 				if (strlen($name) == 0) {
 					continue;  // CCP removed an item and cleared the name, we'll keep the name around though
 				}
-				Db::execute("update ccp_invTypes set typeName = :name where typeID = :id", array(":name" => $name, ":id" => $id));
+				$db->execute("update ccp_invTypes set typeName = :name where typeID = :id", array(":name" => $name, ":id" => $id));
 				if ($currentName != "" && $name != "Unknown Type") {
 					Log::log("$count/$size $id $currentName -> $name");
 					Log::ircAdmin("$count/$size $id $currentName -> $name");

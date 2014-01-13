@@ -28,13 +28,13 @@ class cli_twitterReplies implements cliCommand
 		return ""; // Space seperated list
 	}
 
-	public function execute($parameters)
+	public function execute($parameters, $db)
 	{
 		$message = array();
 		$url = "https://twitter.com/eve_kill/status/";
 		$storageName = "twitterLatestRepliesID";
 
-		$latest = Db::queryField("SELECT contents FROM zz_storage WHERE locker = '$storageName'", "contents", array(), 0);
+		$latest = $db->queryField("SELECT contents FROM zz_storage WHERE locker = '$storageName'", "contents", array(), 0);
 		if ($latest == null) $latest = 0;
 		$maxID = $latest;
 		$twitter = Twit::getMessages(25);
@@ -58,7 +58,7 @@ class cli_twitterReplies implements cliCommand
 		ksort($messages);
 		foreach($messages as $id=>$msg) Log::irc($msg, "");
 		if (sizeof($twitter)) {
-			Db::execute("INSERT INTO zz_storage (contents, locker) VALUES (:contents, :locker) ON DUPLICATE KEY UPDATE contents = :contents", array(":locker" => $storageName, ":contents" => $maxID));
+			$db->execute("INSERT INTO zz_storage (contents, locker) VALUES (:contents, :locker) ON DUPLICATE KEY UPDATE contents = :contents", array(":locker" => $storageName, ":contents" => $maxID));
 		}
 	}
 }

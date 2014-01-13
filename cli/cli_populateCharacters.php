@@ -35,12 +35,12 @@ class cli_populateCharacters implements cliCommand
 		);
 	}
 
-	public function execute($parameters)
+	public function execute($parameters, $db)
 	{
-		self::populateCharacters();
+		self::populateCharacters($db);
 	}
 
-	private static function populateCharacters()
+	private static function populateCharacters($db)
 	{
 		global $baseDir;
 
@@ -48,23 +48,23 @@ class cli_populateCharacters implements cliCommand
 		$maxTime = 65 * 1000;
 
 		// Reset 222's that are over a week old
-		Db::execute("update zz_api set errorCode = 0 where errorCode = 222 and lastValidation <= date_sub(now(), interval 7 day)");
+		$db->execute("update zz_api set errorCode = 0 where errorCode = 222 and lastValidation <= date_sub(now(), interval 7 day)");
 
-		$apiCount = Db::queryField("select count(*) count from zz_api where errorCode not in (203, 220, 222) and lastValidation <= date_add(now(), interval 1 minute)", "count", array(), 0);
+		$apiCount = $db->queryField("select count(*) count from zz_api where errorCode not in (203, 220, 222) and lastValidation <= date_add(now(), interval 1 minute)", "count", array(), 0);
 		if ($apiCount == 0) return;
 
 		$fetchesPerSecond = 25;
 		$iterationCount = 0;
 
 		while ($timer->stop() < $maxTime) {
-			$keyIDs = Db::query("select distinct keyID from zz_api where errorCode not in (203, 220, 222) and lastValidation < date_sub(now(), interval 2 hour)
+			$keyIDs = $db->query("select distinct keyID from zz_api where errorCode not in (203, 220, 222) and lastValidation < date_sub(now(), interval 2 hour)
 					order by lastValidation, dateAdded desc limit 100", array(), 0);
 
 			foreach($keyIDs as $row) {
 				if (Util::isMaintenanceMode()) return;
 				$keyID = $row["keyID"];
 				$m = $iterationCount % $fetchesPerSecond;
-				Db::execute("update zz_api set lastValidation = date_add(lastValidation, interval 5 minute) where keyID = :keyID", array(":keyID" => $keyID));
+				$db->execute("update zz_api set lastValidation = date_add(lastValidation, interval 5 minute) where keyID = :keyID", array(":keyID" => $keyID));
 				$command = "flock -w 60 $baseDir/cache/locks/populate.$m zkillboard apiFetchCharacters " . escapeshellarg($keyID);
 				//Log::log("$command");
 				exec("$command >/dev/null 2>/dev/null &");

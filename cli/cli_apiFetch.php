@@ -35,7 +35,7 @@ class cli_apiFetch implements cliCommand
 		);
 	}
 
-	public function execute($parameters)
+	public function execute($parameters, $db)
 	{
 		if (Util::isMaintenanceMode()) return;
 		Api::fetchApis();

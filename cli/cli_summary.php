@@ -35,17 +35,17 @@ class cli_summary implements cliCommand
 		);
 	}
 
-	public function execute($parameters)
+	public function execute($parameters, $db)
 	{
-		$lastActualKills = Db::queryField("select contents count from zz_storage where locker = 'actualKills'", "count", array(), 0);
-		$actualKills = Db::queryField("select count(*) count from zz_killmails where processed = 1", "count", array(), 0);
+		$lastActualKills = $db->queryField("select contents count from zz_storage where locker = 'actualKills'", "count", array(), 0);
+		$actualKills = $db->queryField("select count(*) count from zz_killmails where processed = 1", "count", array(), 0);
 
-		$lastTotalKills = Db::queryField("select contents count from zz_storage where locker = 'totalKills'", "count", array(), 0);
-		$totalKills = Db::queryField("select count(*) count from zz_killmails", "count", array(), 0);
+		$lastTotalKills = $db->queryField("select contents count from zz_storage where locker = 'totalKills'", "count", array(), 0);
+		$totalKills = $db->queryField("select count(*) count from zz_killmails", "count", array(), 0);
 
-		Db::execute("replace into zz_storage (locker, contents) values ('totalKills', $totalKills)");
-		Db::execute("replace into zz_storage (locker, contents) values ('actualKills', $actualKills)");
-		Db::execute("delete from zz_storage where locker like '%KillsProcessed'");
+		$db->execute("replace into zz_storage (locker, contents) values ('totalKills', $totalKills)");
+		$db->execute("replace into zz_storage (locker, contents) values ('actualKills', $actualKills)");
+		$db->execute("delete from zz_storage where locker like '%KillsProcessed'");
 
 		$actualDifference = number_format($actualKills - $lastActualKills, 0);
 		$totalDifference = number_format($totalKills - $lastTotalKills, 0);

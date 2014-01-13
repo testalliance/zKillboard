@@ -28,7 +28,7 @@ class cli_apiErrorList implements cliCommand
 		return ""; // Space seperated list
 	}
 
-	public function execute($parameters)
+	public function execute($parameters, $db)
 	{
 		try {
 			$pheal = Util::getPheal();
@@ -38,7 +38,7 @@ class cli_apiErrorList implements cliCommand
 				$errorCode = $error["errorCode"];
 				$errorText = $error["errorText"];
 				$key = "api_error:$errorCode";
-				Db::execute("replace into zz_storage (locker, contents) values (:c, :t)", array(":c" => $key, ":t" => $errorText));
+				$db->execute("replace into zz_storage (locker, contents) values (:c, :t)", array(":c" => $key, ":t" => $errorText));
 			}
 		} catch (Exception $ex) {
 			print_r($ex);

@@ -28,11 +28,11 @@ class cli_pinger implements cliCommand
 		return ""; // Space seperated list
 	}
 
-	public function execute($parameters)
+	public function execute($parameters, $db)
 	{
 		try
 		{
-			Db::query("select now()", array(), 0);
+			$db->query("select now()", array(), 0);
 		} catch (Exception $ex)
 		{
 			Log::irc("|r|Unable to connect to the database: " . $ex->getMessage());

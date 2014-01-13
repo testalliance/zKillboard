@@ -28,20 +28,20 @@ class cli_fightFinder implements cliCommand
 		return ""; // Space seperated list
 	}
 
-	public function execute($parameters)
+	public function execute($parameters, $db)
 	{
-		Db::execute("delete from zz_social where insertTime < date_sub(now(), interval 23 hour)");
+		$db->execute("delete from zz_social where insertTime < date_sub(now(), interval 23 hour)");
 		$minPilots = 100;
 		$minWrecks = 100;
-		$result = Db::query("select * from (select solarSystemID, count(distinct characterID) count, count(distinct killID) kills from zz_participants where characterID != 0 and killID > 0 and dttm > date_sub(now(), interval 1 hour) group by 1 order by 2 desc) f where count >= $minPilots and kills > $minWrecks");
+		$result = $db->query("select * from (select solarSystemID, count(distinct characterID) count, count(distinct killID) kills from zz_participants where characterID != 0 and killID > 0 and dttm > date_sub(now(), interval 1 hour) group by 1 order by 2 desc) f where count >= $minPilots and kills > $minWrecks");
 		foreach($result as $row) {
 			$systemID = $row["solarSystemID"];
 			$key = ($row["solarSystemID"] * 100) + date("H");
 			$key2 = ($row["solarSystemID"] * 100) + date("H", time() + 3600);
 
 			// Have we already reported this battle to the masses?
-			$socailCount = Db::queryField("select count(*) count from zz_social where killID = :killID", "count", array(":killID" => $key), 0);
-			Db::execute("insert ignore into zz_social (killID) values (:k1), (:k2)", array(":k1" => $key, ":k2" => $key2));
+			$socailCount = $db->queryField("select count(*) count from zz_social where killID = :killID", "count", array(":killID" => $key), 0);
+			$db->execute("insert ignore into zz_social (killID) values (:k1), (:k2)", array(":k1" => $key, ":k2" => $key2));
 
 			Info::addInfo($row);
 			$wrecks = number_format($row['kills'], 0);
@@ -51,7 +51,7 @@ class cli_fightFinder implements cliCommand
 			$link = "https://zkillboard.com/related/$systemID/$date/";
 
 			// Insert into (or update) zz_battles
-			Db::execute("REPLACE INTO zz_battles (solarSystemID, solarSystemName, timestamp, involved, kills) VALUES (:solarSystemID, :solarSystemName, :timestamp, :involved, :kills)",
+			$db->execute("REPLACE INTO zz_battles (solarSystemID, solarSystemName, timestamp, involved, kills) VALUES (:solarSystemID, :solarSystemName, :timestamp, :involved, :kills)",
 					array(":solarSystemID" => $systemID, ":solarSystemName" => $system, ":timestamp" => $date, ":involved" => $involved, ":kills" => $wrecks));
 
 

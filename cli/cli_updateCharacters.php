@@ -35,27 +35,27 @@ class cli_updateCharacters implements cliCommand
 		);
 	}
 
-	public function execute($parameters)
+	public function execute($parameters, $db)
 	{
-		self::updateCharacters();
+		self::updateCharacters($db);
 	}
 
-	private static function updateCharacters()
+	private static function updateCharacters($db)
 	{
 		$minute = (int) date("i");
 		if ($minute == 0) {
-			Db::execute("insert ignore into zz_characters (characterID) select ceoID from zz_corporations");
-			Db::execute("insert ignore into zz_characters (characterID) select characterID from zz_api_characters where characterID != 0");
+			$db->execute("insert ignore into zz_characters (characterID) select ceoID from zz_corporations");
+			$db->execute("insert ignore into zz_characters (characterID) select characterID from zz_api_characters where characterID != 0");
 		}
-		Db::execute("delete from zz_characters where characterID < 9000000");
-		Db::execute("update zz_characters set lastUpdated = now() where characterID >= 30000000 and characterID <= 31004590");
-		Db::execute("update zz_characters set lastUpdated = now() where characterID >= 40000000 and characterID <= 41004590");
-		$result = Db::query("select characterID, name from zz_characters where lastUpdated < date_sub(now(), interval 7 day) and corporationID != 1000001 order by lastUpdated limit 600", array(), 0);
+		$db->execute("delete from zz_characters where characterID < 9000000");
+		$db->execute("update zz_characters set lastUpdated = now() where characterID >= 30000000 and characterID <= 31004590");
+		$db->execute("update zz_characters set lastUpdated = now() where characterID >= 40000000 and characterID <= 41004590");
+		$result = $db->query("select characterID, name from zz_characters where lastUpdated < date_sub(now(), interval 7 day) and corporationID != 1000001 order by lastUpdated limit 600", array(), 0);
 		foreach ($result as $row) {
 			if (Util::isMaintenanceMode()) return;
 			$id = $row["characterID"];
 			$oName = $row["name"];
-			Db::execute("update zz_characters set lastUpdated = now() where characterID = :id", array(":id" => $id));
+			$db->execute("update zz_characters set lastUpdated = now() where characterID = :id", array(":id" => $id));
 
 			$pheal = Util::getPheal();
 			$pheal->scope = "eve";
@@ -66,14 +66,14 @@ class cli_updateCharacters implements cliCommand
 				$corpID = $charInfo->corporationID;
 				$alliID = $charInfo->allianceID;
 				//CLI::out("|g|$name|n| $id $corpID $alliID");
-				if ($name != "") Db::execute("update zz_characters set name = :name, corporationID = :corpID, allianceID = :alliID where characterID = :id", array(":id" => $id, ":name" => $name, ":corpID" => $corpID, ":alliID" => $alliID));
+				if ($name != "") $db->execute("update zz_characters set name = :name, corporationID = :corpID, allianceID = :alliID where characterID = :id", array(":id" => $id, ":name" => $name, ":corpID" => $corpID, ":alliID" => $alliID));
 			}
 			catch (Exception $ex)
 			{
 				// Is this name even a participant?
-				$count = Db::queryField("select count(*) count from zz_participants where characterID = :id", "count", array(":id" => $id));
+				$count = $db->queryField("select count(*) count from zz_participants where characterID = :id", "count", array(":id" => $id));
 				if ($count == 0)
-					Db::execute("delete from zz_characters where characterID = :id", array(":id" => $id));
+					$db->execute("delete from zz_characters where characterID = :id", array(":id" => $id));
 				elseif ($ex->getCode() != 503)
 					Log::log("ERROR Validating Character $id" . $ex->getMessage());
 			}

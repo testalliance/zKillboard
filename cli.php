@@ -72,7 +72,8 @@ try
 	if(!is_a($class, "cliCommand")) CLI::out("|r| Module $command does not implement interface cliCommand", true);
 	$base = __DIR__;
 	Db::execute("set session wait_timeout = 600");
-	$class->execute($argv);
+	$db = new Db();
+	$class->execute($argv, $db);
 }
 catch (Exception $ex)
 {
@@ -82,7 +83,7 @@ catch (Exception $ex)
 interface cliCommand {
 	public function getDescription();
 	public function getAvailMethods();
-	public function execute($parameters);
+	public function execute($parameters, $db);
 }
 
 function listCommands()
@@ -103,7 +104,7 @@ function listCommands()
 					require_once "$dir/$entry";
 					$command = $s2[0];
 					$className = "cli_$command";
-					$class = new $className();;
+					$class = new $className();
 					if(is_a($class, "cliCommand"))
 					{
 						$commands[] = $command;

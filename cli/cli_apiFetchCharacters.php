@@ -28,15 +28,15 @@ class cli_apiFetchCharacters implements cliCommand
 		return ""; // Space seperated list
 	}
 
-	public function execute($parameters)
+	public function execute($parameters, $db)
 	{
 		$keyID = (int) $parameters[0];
-		$vCode = Db::queryField("select vCode from zz_api where keyID = :keyID", "vCode", array(":keyID" => $keyID), 0);
+		$vCode = $db->queryField("select vCode from zz_api where keyID = :keyID", "vCode", array(":keyID" => $keyID), 0);
 
 		if ($keyID == 0 && strlen($vCode) == 0) return;
 
 		// Update lastValidation
-		Db::execute("update zz_api set lastValidation = now() where keyID = :keyID", array(":keyID" => $keyID));
+		$db->execute("update zz_api set lastValidation = now() where keyID = :keyID", array(":keyID" => $keyID));
 
 		$pheal = Util::getPheal($keyID, $vCode);
 		try {
@@ -48,7 +48,7 @@ class cli_apiFetchCharacters implements cliCommand
 		}
 
 		// Clear the error code
-		Db::execute("update zz_api set errorCode = 0 where keyID = :keyID", array(":keyID" => $keyID));
+		$db->execute("update zz_api set errorCode = 0 where keyID = :keyID", array(":keyID" => $keyID));
 
 		$key = $apiKeyInfo->key;
 		$accessMask = $key->accessMask;
@@ -60,14 +60,14 @@ class cli_apiFetchCharacters implements cliCommand
 				$corporationID = $character->corporationID;
 
 				$isDirector = $apiKeyInfo->key->type == "Corporation" ? "T" : "F";
-				$count = Db::queryField("select count(*) count from zz_api_characters where keyID = :keyID and isDirector = :isDirector and characterID = :characterID and corporationID = :corporationID", "count", array(":keyID" => $keyID, ":characterID" => $characterID, ":corporationID" => $corporationID, ":isDirector" => $isDirector), 0);
+				$count = $db->queryField("select count(*) count from zz_api_characters where keyID = :keyID and isDirector = :isDirector and characterID = :characterID and corporationID = :corporationID", "count", array(":keyID" => $keyID, ":characterID" => $characterID, ":corporationID" => $corporationID, ":isDirector" => $isDirector), 0);
 
 				if ($count == 0) {
-					Db::execute("replace into zz_api_characters (keyID, characterID, corporationID, isDirector, cachedUntil) values (:keyID, :characterID, :corporationID, :isDirector, 0)", array(":keyID" => $keyID, ":characterID" => $characterID, ":corporationID" => $corporationID, ":isDirector" => $isDirector));
+					$db->execute("replace into zz_api_characters (keyID, characterID, corporationID, isDirector, cachedUntil) values (:keyID, :characterID, :corporationID, :isDirector, 0)", array(":keyID" => $keyID, ":characterID" => $characterID, ":corporationID" => $corporationID, ":isDirector" => $isDirector));
 
 					$charName = Info::getCharName($characterID, true);
 					$corpName = Info::getCorpName($corporationID, true);
-					$allianceID = Db::queryField("select allianceID from zz_corporations where corporationID = :corpID", "allianceID", array(":corpID" => $corporationID));
+					$allianceID = $db->queryField("select allianceID from zz_corporations where corporationID = :corpID", "allianceID", array(":corpID" => $corporationID));
 					$alliName = $allianceID > 0 ? "/ " . Info::getAlliName($allianceID) : "";
 					$type = $isDirector == "T" ? "corp" : "char";
 					while (strlen($keyID) < 8) $keyID = " " . $keyID;
@@ -76,8 +76,8 @@ class cli_apiFetchCharacters implements cliCommand
 			}
 		}
 		// Clear entries that are no longer tied to this account
-		if (sizeof($characterIDs) == 0) Db::execute("delete from zz_api_characters where keyID = :keyID", array(":keyID" => $keyID));
-		else Db::execute("delete from zz_api_characters where keyID = :keyID and characterID not in (" . implode(",", $characterIDs) . ")",
+		if (sizeof($characterIDs) == 0) $db->execute("delete from zz_api_characters where keyID = :keyID", array(":keyID" => $keyID));
+		else $db->execute("delete from zz_api_characters where keyID = :keyID and characterID not in (" . implode(",", $characterIDs) . ")",
 				array(":keyID" => $keyID));
 	}
 }

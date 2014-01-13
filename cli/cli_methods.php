@@ -28,7 +28,7 @@ class cli_methods implements cliCommand
 		return ""; // Space seperated list
 	}
 
-	public function execute($parameters)
+	public function execute($parameters, $db)
 	{
 		if (sizeof($parameters) == 0 || $parameters[0] == "") CLI::out("Usage: |g|methods <command>", true);
 		$command = $parameters[0];

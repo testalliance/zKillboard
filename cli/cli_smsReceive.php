@@ -28,12 +28,12 @@ class cli_smsReceive implements cliCommand
 		return ""; // Space seperated list
 	}
 
-	public function execute($parameters)
+	public function execute($parameters, $db)
 	{
 		$message = array();
 		$storageName = "smsLatestID";
 
-		$latest = Db::queryField("SELECT contents FROM zz_storage WHERE locker = '$storageName'", "contents", array(), 0);
+		$latest = $db->queryField("SELECT contents FROM zz_storage WHERE locker = '$storageName'", "contents", array(), 0);
 		if ($latest == null) $latest = 0;
 		$maxID = $latest;
 
@@ -56,7 +56,7 @@ class cli_smsReceive implements cliCommand
 			$num = $line[1];
 			$msg = $line[2];
 
-			$name = Db::queryField("select name from zz_irc_mobile where mobilenumber = :number", "name", array(":number" => $num));
+			$name = $db->queryField("select name from zz_irc_mobile where mobilenumber = :number", "name", array(":number" => $num));
 			if ($name != null) $num = $name;
 
 			$maxID = max($maxID, $id);
@@ -65,7 +65,7 @@ class cli_smsReceive implements cliCommand
 			Log::irc($out);
 		}
 		if (sizeof($msgs)) {
-			Db::execute("INSERT INTO zz_storage (contents, locker) VALUES (:contents, :locker) ON DUPLICATE KEY UPDATE contents = :contents", array(":locker" => $storageName, ":contents" => $maxID));
+			$db->execute("INSERT INTO zz_storage (contents, locker) VALUES (:contents, :locker) ON DUPLICATE KEY UPDATE contents = :contents", array(":locker" => $storageName, ":contents" => $maxID));
 		}
 	}
 }

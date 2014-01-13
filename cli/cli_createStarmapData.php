@@ -51,7 +51,7 @@ class cli_createStarmapData implements cliCommand
      * @param  array $parameters The paramater passed to the command
      * @return void
      */
-    public function execute($parameters) {
+    public function execute($parameters, $db) {
         global $base;
 
         //set the base path (this really should be injected)
@@ -65,12 +65,12 @@ class cli_createStarmapData implements cliCommand
                 break;
 
                 case 'systems':
-                    $this->generateSystemDataFile();
+                    $this->generateSystemDataFile($db);
                 break;
 
                 case 'all':
-                    $this->generateShipDataFile();
-                    $this->generateSystemDataFile();
+                    $this->generateShipDataFile($db);
+                    $this->generateSystemDataFile($db);
                 break;
 
                 default:
@@ -105,11 +105,11 @@ class cli_createStarmapData implements cliCommand
      * Creates a json file of systems to be used on the star map page
      * @return void
      */
-    public function generateSystemDataFile() {
+    public function generateSystemDataFile($db) {
         CLI::out('|g|Loading ships|n|');
 
         //get a list of all non-wormhole systems
-        $systems_result = Db::query('SELECT solarSystemID, solarSystemName, security, x, y, z FROM ccp_systems WHERE regionID < 11000000');
+        $systems_result = $db->query('SELECT solarSystemID, solarSystemName, security, x, y, z FROM ccp_systems WHERE regionID < 11000000');
         $systems = array();
 
         foreach($systems_result as $system) {
@@ -124,11 +124,11 @@ class cli_createStarmapData implements cliCommand
      * Creates a json file of ships to be used on the star map page
      * @return [type] [description]
      */
-    public function generateShipDataFile() {
+    public function generateShipDataFile($db) {
         CLI::out('|g|Loading ships|n|');
 
         //get a list of all the published ships
-        $ships_results = Db::query('SELECT ccp_invTypes.typeID, typeName, groupName, COALESCE(valueInt, valueFloat) AS metaLevel FROM ccp_invTypes INNER JOIN ccp_invGroups ON ccp_invGroups.groupID = ccp_invTypes.groupID INNER JOIN ccp_dgmTypeAttributes ON ccp_dgmTypeAttributes.typeID = ccp_invTypes.typeID AND ccp_dgmTypeAttributes.attributeID = 633 WHERE (categoryID IN (6, 23, 40) AND ccp_invTypes.published = 1 AND ccp_invGroups.published = 1 OR ccp_invTypes.groupID = 29)');
+        $ships_results = $db->query('SELECT ccp_invTypes.typeID, typeName, groupName, COALESCE(valueInt, valueFloat) AS metaLevel FROM ccp_invTypes INNER JOIN ccp_invGroups ON ccp_invGroups.groupID = ccp_invTypes.groupID INNER JOIN ccp_dgmTypeAttributes ON ccp_dgmTypeAttributes.typeID = ccp_invTypes.typeID AND ccp_dgmTypeAttributes.attributeID = 633 WHERE (categoryID IN (6, 23, 40) AND ccp_invTypes.published = 1 AND ccp_invGroups.published = 1 OR ccp_invTypes.groupID = 29)');
         $ships = array();
 
         foreach($ships_results as $ship) {

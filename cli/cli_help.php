@@ -28,7 +28,7 @@ class cli_help implements cliCommand
 		return self::listCommands(); // Space seperated list
 	}
 
-	public function execute($parameters)
+	public function execute($parameters, $db)
 	{
 		if (sizeof($parameters) == 0 || $parameters[0] == "") CLI::out("Usage: |g|help <command>|n| To see a list of commands, use: |g|list", true);
 		$command = $parameters[0];

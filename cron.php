@@ -36,7 +36,7 @@ function zkbautoload($class_name)
 interface cliCommand {
     public function getDescription();
     public function getAvailMethods();
-    public function execute($parameters);
+    public function execute($parameters, $db);
 }
 
 $curTime = time();
@@ -102,7 +102,7 @@ function runCron($command, $interval, $args)
         return;
     }
 
-    //Log::log("Cron $cronName running at ".date($dateFormat, $curTime));
+    Log::log("Cron $cronName running at ".date($dateFormat, $curTime));
 
     Storage::store($locker, $curTime);
 

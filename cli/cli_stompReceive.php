@@ -33,7 +33,7 @@ class cli_stompReceive implements cliCommand
 		return class_exists("Stomp") ? array(0 => "") : array();
 	}
 
-	public function execute($parameters)
+	public function execute($parameters, $db)
 	{
 		global $stompServer, $stompUser, $stompPassword, $baseAddr;
 
@@ -43,8 +43,8 @@ class cli_stompReceive implements cliCommand
 		}
 
 		// Build the topic from Admin's tracker list
-		$adminID = Db::queryField("select id from zz_users where username = 'admin'", "id", array(), 0);
-		$trackers = Db::query("select locker, content from zz_users_config where locker like 'tracker_%' and id = :id", array(":id" => $adminID), array(), 0);
+		$adminID = $db->queryField("select id from zz_users where username = 'admin'", "id", array(), 0);
+		$trackers = $db->query("select locker, content from zz_users_config where locker like 'tracker_%' and id = :id", array(":id" => $adminID), array(), 0);
 		$topics = array();
 		foreach ($trackers as $row) {
 			$entityTopic = "";
@@ -78,13 +78,13 @@ class cli_stompReceive implements cliCommand
 					if(!empty($killdata))
 					{
 						$killID = $killdata["killID"];
-						$count = Db::queryField("SELECT count(1) AS count FROM zz_killmails WHERE killID = :killID LIMIT 1", "count", array(":killID" => $killID), 0);
+						$count = $db->queryField("SELECT count(1) AS count FROM zz_killmails WHERE killID = :killID LIMIT 1", "count", array(":killID" => $killID), 0);
 						if($count == 0)
 						{
 							if($killID > 0)
 							{
 								$hash = Util::getKillHash(null, json_decode($frame->body));
-								Db::execute("INSERT IGNORE INTO zz_killmails (killID, hash, source, kill_json) values (:killID, :hash, :source, :json)",
+								$db->execute("INSERT IGNORE INTO zz_killmails (killID, hash, source, kill_json) values (:killID, :hash, :source, :json)",
 										array("killID" => $killID, ":hash" => $hash, ":source" => "stompQueue", ":json" => json_encode($killdata)));
 								$stomp->ack($frame->headers["message-id"]);
 								$stompCount++;

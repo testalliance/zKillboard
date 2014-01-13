@@ -35,17 +35,17 @@ class cli_feedzKB implements cliCommand
 		);
 	}
 
-	public function execute($parameters)
+	public function execute($parameters, $db)
 	{
 		if (Util::isMaintenanceMode()) return;
 
-		$feeds = Db::query("SELECT * FROM zz_feeds where edkStyle = '0' and lastFetchTime <= date_sub(now(), interval 1 hour) order by lastFetchTime", array(), 0);
+		$feeds = $db->query("SELECT * FROM zz_feeds where edkStyle = '0' and lastFetchTime <= date_sub(now(), interval 1 hour) order by lastFetchTime", array(), 0);
 
 		$totalCount = 0;
 
 		// Build the feeds from Admin's tracker list
-		$adminID = Db::queryField("select id from zz_users where username = 'admin'", "id", array(), 0);
-		$trackers = Db::query("select locker, content from zz_users_config where locker like 'tracker_%' and id = :id", array(":id" => $adminID), array(), 0    );
+		$adminID = $db->queryField("select id from zz_users where username = 'admin'", "id", array(), 0);
+		$trackers = $db->query("select locker, content from zz_users_config where locker like 'tracker_%' and id = :id", array(":id" => $adminID), array(), 0    );
 		$feeds = array();
 		foreach ($trackers as $row) {
 			$entityTopic = "";
@@ -58,11 +58,11 @@ class cli_feedzKB implements cliCommand
 				$feed["entityType"] = $entityType;
 
 				$locker = "feed.$entityType.$id.lastFetchTime";
-				$dontFetchThis = Db::queryField("select count(*) count from zz_users_config where locker = :locker and id = :adminID and content >= date_sub(now(), interval 1 hour)", "count", array(":locker" => $locker, ":adminID" => $adminID), 0);
+				$dontFetchThis = $db->queryField("select count(*) count from zz_users_config where locker = :locker and id = :adminID and content >= date_sub(now(), interval 1 hour)", "count", array(":locker" => $locker, ":adminID" => $adminID), 0);
 				if ($dontFetchThis) continue;
 
 				$locker = "feed.$entityType.$id.lastKillTime";
-				$lastKillTime = Db::queryField("select content from zz_users_config where locker = :locker and id = :adminID", "content", array(":locker" => $locker, ":adminID" => $adminID), 0);
+				$lastKillTime = $db->queryField("select content from zz_users_config where locker = :locker and id = :adminID", "content", array(":locker" => $locker, ":adminID" => $adminID), 0);
 
 				if ($lastKillTime == "") $lastKillTime = null;
 				$feed["lastKillTime"] = $lastKillTime;
@@ -109,13 +109,13 @@ class cli_feedzKB implements cliCommand
 					$lastKillTime = $kill->killTime;
 					//echo "$killID $lastKillTime\n";
 
-					$insertCount += Db::execute("INSERT IGNORE INTO zz_killmails (killID, hash, source, kill_json) VALUES (:killID, :hash, :source, :kill_json)", array(":killID" => $killID, ":hash" => $hash, ":source" => $source, ":kill_json" => $json));
+					$insertCount += $db->execute("INSERT IGNORE INTO zz_killmails (killID, hash, source, kill_json) VALUES (:killID, :hash, :source, :kill_json)", array(":killID" => $killID, ":hash" => $hash, ":source" => $source, ":kill_json" => $json));
 				}
 
 				$locker = "feed.$entityType.$id.lastKillTime";
-				Db::execute("replace into zz_users_config values (:adminID, :locker, :content)", array(":adminID" => $adminID, ":locker" => $locker, ":content" => $lastKillTime));
+				$db->execute("replace into zz_users_config values (:adminID, :locker, :content)", array(":adminID" => $adminID, ":locker" => $locker, ":content" => $lastKillTime));
 				$locker = "feed.$entityType.$id.lastFetchTime";
-				Db::execute("replace into zz_users_config values (:adminID, :locker, now())", array(":adminID" => $adminID, ":locker" => $locker));
+				$db->execute("replace into zz_users_config values (:adminID, :locker, now())", array(":adminID" => $adminID, ":locker" => $locker));
 
 				$totalCount += $insertCount;
 				CLI::out("Inserted |g|$insertCount|n|/|g|" . sizeof($data) . "|n| kills...");

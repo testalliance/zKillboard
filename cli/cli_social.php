@@ -28,7 +28,7 @@ class cli_social implements cliCommand
 		return ""; // Space seperated list
 	}
 
-	public function execute($parameters)
+	public function execute($parameters, $db)
 	{
 		Social::findConversations();
 	}

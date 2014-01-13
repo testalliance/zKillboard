@@ -35,7 +35,7 @@ class cli_parseKills implements cliCommand
 		);
 	}
 
-	public function execute($parameters)
+	public function execute($parameters, $db)
 	{
 		Parser::parseKills();
 	}

@@ -35,7 +35,7 @@ class cli_hourly implements cliCommand
 		);
 	}
 
-	public function execute($parameters)
+	public function execute($parameters, $db)
 	{
 		$p = array();
 		$p["limit"] = 5;
@@ -48,8 +48,8 @@ class cli_hourly implements cliCommand
 		Storage::store("TopIsk", json_encode(Stats::getTopIsk(array("pastSeconds" => (3*86400), "limit" => 5))));
 		Storage::store("TopPods", json_encode(Stats::getTopIsk(array("groupID" => 29, "pastSeconds" => (3*86400), "limit" => 5))));
 		Storage::store("TopPoints", json_encode(Stats::getTopPoints("killID", array("losses" => true, "pastSeconds" => (3*86400), "limit" => 5))));
-		Storage::store("KillCount", Db::queryField("select count(*) count from zz_killmails", "count"));
-		Storage::store("ActualKillCount", Db::queryField("select count(*) count from zz_killmails where processed = 1", "count"));
+		Storage::store("KillCount", $db->queryField("select count(*) count from zz_killmails", "count"));
+		Storage::store("ActualKillCount", $db->queryField("select count(*) count from zz_killmails where processed = 1", "count"));
 
 		$actualKills = Storage::retrieve("ActualKillCount");
 		$iteration = 0;
@@ -64,19 +64,19 @@ class cli_hourly implements cliCommand
 			}
 		}
 
-		$highKillID = Db::queryField("select max(killID) highKillID from zz_killmails", "highKillID");
+		$highKillID = $db->queryField("select max(killID) highKillID from zz_killmails", "highKillID");
 		if ($highKillID > 2000000) Storage::store("notRecentKillID", ($highKillID - 2000000));
 
-		self::apiPercentage();
+		self::apiPercentage($db);
 
-		Db::execute("delete from zz_api_log where requestTime < date_sub(now(), interval 2 hour)");
-		//Db::execute("update zz_killmails set kill_json = '' where processed = 2 and killID < 0 and kill_json != ''");
-		Db::execute("delete from zz_errors where date < date_sub(now(), interval 1 day)");
+		$db->execute("delete from zz_api_log where requestTime < date_sub(now(), interval 2 hour)");
+		//$db->execute("update zz_killmails set kill_json = '' where processed = 2 and killID < 0 and kill_json != ''");
+		$db->execute("delete from zz_errors where date < date_sub(now(), interval 1 day)");
 
 		$fileCache = new FileCache();
 		$fileCache->cleanup();
 
-		$tableQuery = Db::query("show tables");
+		$tableQuery = $db->query("show tables");
 		$tables = array();
 		foreach($tableQuery as $row) {
 			foreach($row as $column) $tables[] = $column;
@@ -88,16 +88,16 @@ class cli_hourly implements cliCommand
 			$count++;
 			continue;
 			if (Util::isMaintenanceMode()) continue;
-			$result = Db::queryRow("analyze table $table");
+			$result = $db->queryRow("analyze table $table");
 			if (!in_array($result["Msg_text"], $tableIsGood)) Log::ircAdmin("|r|Error analyzing table |g|$table|r|: " . $result["Msg_text"]);
 		}
 
 	}
 
-	private static function apiPercentage()
+	private static function apiPercentage($db)
 	{
 		$percentage = Storage::retrieve("LastHourPercentage", 10);
-		$row = Db::queryRow("select sum(if(errorCode = 0, 1, 0)) good, sum(if(errorCode != 0, 1, 0)) bad from zz_api_characters");
+		$row = $db->queryRow("select sum(if(errorCode = 0, 1, 0)) good, sum(if(errorCode != 0, 1, 0)) bad from zz_api_characters");
 		$good = $row["good"];
 		$bad = $row["bad"];
 		if ($bad > (($bad + $good) * ($percentage / 100))) {

@@ -35,12 +35,12 @@ class cli_populateAlliances implements cliCommand
 		);
 	}
 
-	public function execute($parameters)
+	public function execute($parameters, $db)
 	{
-		self::populateAlliances();
+		self::populateAlliances($db);
 	}
 
-	private static function populateAlliances()
+	private static function populateAlliances($db)
 	{
 		//CLI::out("Repopulating the alliance table");
 		Log::log("Repopulating alliance tables.");
@@ -57,8 +57,8 @@ class cli_populateAlliances implements cliCommand
 			$exception = $ex;
 		}
 		if ($list != null && sizeof($list->alliances) > 0) {
-			Db::execute("update zz_alliances set memberCount = 0");
-			Db::execute("update zz_corporations set allianceID = 0");
+			$db->execute("update zz_alliances set memberCount = 0");
+			$db->execute("update zz_corporations set allianceID = 0");
 			foreach ($list->alliances as $alliance) {
 				$allianceCount++;
 				$allianceID = $alliance['allianceID'];
@@ -68,14 +68,14 @@ class cli_populateAlliances implements cliCommand
 				$memberCount = $alliance['memberCount'];
 				$parameters = array(":alliID" => $allianceID, ":shortName" => $shortName, ":name" => $name,
 						":execID" => $executorCorpID, ":memberCount" => $memberCount);
-				Db::execute("insert into zz_alliances (allianceID, ticker, name, executorCorpID, memberCount, lastUpdated) values
+				$db->execute("insert into zz_alliances (allianceID, ticker, name, executorCorpID, memberCount, lastUpdated) values
 						(:alliID, :shortName, :name, :execID, :memberCount, now())
 						on duplicate key update memberCount = :memberCount, ticker = :shortName, name = :name,
 						executorCorpID = :execID, lastUpdated = now()", $parameters);
 				$corporationCount += sizeof($alliance->memberCorporations);
 				foreach($alliance->memberCorporations as $corp) {
 					$corpID = $corp->corporationID;
-					Db::execute("update zz_corporations set allianceID = :alliID where corporationID = :corpID",
+					$db->execute("update zz_corporations set allianceID = :alliID where corporationID = :corpID",
 							array(":alliID" => $allianceID, ":corpID" => $corpID));
 				}
 			}

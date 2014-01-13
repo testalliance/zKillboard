@@ -35,13 +35,13 @@ class cli_daily implements cliCommand
 		);
 	}
 
-	public function execute($parameters)
+	public function execute($parameters, $db)
 	{
 		// Allow non-published items to be searchable if they show up on a killmail
-		$nonPublishedItems = Db::query("select * from (select distinct shipTypeID, typeName, published from ccp_invTypes i left join zz_participants p on (i.typeID = p.shipTypeID) where published = 0) as foo where shipTypeID is not null"); // This query sucks but returns magnitudes quicker than the proper way to write it
+		$nonPublishedItems = $db->query("select * from (select distinct shipTypeID, typeName, published from ccp_invTypes i left join zz_participants p on (i.typeID = p.shipTypeID) where published = 0) as foo where shipTypeID is not null"); // This query sucks but returns magnitudes quicker than the proper way to write it
 		foreach($nonPublishedItems as $row) {
 			$typeID = $row["shipTypeID"];
-			Db::execute("update ccp_invTypes set published = 1 where typeID = :typeID", array(":typeID" => $typeID));
+			$db->execute("update ccp_invTypes set published = 1 where typeID = :typeID", array(":typeID" => $typeID));
 		}
 	}
 }

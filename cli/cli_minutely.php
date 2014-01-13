@@ -35,7 +35,7 @@ class cli_minutely implements cliCommand
 		);
 	}
 
-	public function execute($parameters)
+	public function execute($parameters, $db)
 	{
 		global $base;
 		chdir($base);
@@ -45,9 +45,9 @@ class cli_minutely implements cliCommand
 		switch($command)
 		{
 			case "all":
-				$killsLastHour = Db::queryField("select count(*) count from zz_killmails where insertTime > date_sub(now(), interval 1 hour)", "count");
+				$killsLastHour = $db->queryField("select count(*) count from zz_killmails where insertTime > date_sub(now(), interval 1 hour)", "count");
 				Storage::store("KillsLastHour", $killsLastHour);
-				Db::execute("delete from zz_analytics where dttm < date_sub(now(), interval 24 hour)");
+				$db->execute("delete from zz_analytics where dttm < date_sub(now(), interval 24 hour)");
 
 				$fc = new FileCache;
 				$fc->cacheDir = "$base/cache/queryCache/";
@@ -55,7 +55,7 @@ class cli_minutely implements cliCommand
 			break;
 
 			case "killsLastHour":
-				$killsLastHour = Db::queryField("select count(*) count from zz_killmails where insertTime > date_sub(now(), interval 1 hour)", "count");
+				$killsLastHour = $db->queryField("select count(*) count from zz_killmails where insertTime > date_sub(now(), interval 1 hour)", "count");
 				Storage::store("KillsLastHour", $killsLastHour);
 			break;
 

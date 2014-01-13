@@ -28,7 +28,7 @@ class cli_<namehere> implements cliCommand
 		return ""; // Space seperated list
 	}
 
-	public function execute($parameters)
+	public function execute($parameters, $db)
 	{
 		CLI::out("|r|noooo");
 	}
