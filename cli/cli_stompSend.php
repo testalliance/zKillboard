@@ -52,7 +52,7 @@ class cli_stompSend implements cliCommand
 		$stompCount = 0;
 
 		$timer = new Timer();
-		while ($timer->stop() < 65000)
+		while ($timer->stop() < 60000)
 		{
 			if (Util::isMaintenanceMode()) return;
 			$time = $timer->stop();
@@ -62,7 +62,7 @@ class cli_stompSend implements cliCommand
 				$lastFetch = max($lastFetch, $kill["insertTime"]);
 				if(!empty($kill["kill_json"]))
 				{
-					if($kill["killID"] > 0) 
+					if($kill["killID"] > 0)
 					{
 						$stompCount++;
 						$destinations = self::getDestinations($kill["kill_json"]);

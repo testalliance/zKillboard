@@ -96,6 +96,7 @@ function runCron($command, $interval, $args)
     $lastRun = (int)Storage::retrieve($locker, 0);
 
     $dateFormat = "D M j G:i:s T Y";
+
     if($curTime - $lastRun < $interval)
     {
 		// No need to say we're not running...

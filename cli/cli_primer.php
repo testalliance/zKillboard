@@ -28,6 +28,16 @@ class cli_primer implements cliCommand
 		return ""; // Space seperated list
 	}
 
+	public function getCronInfo()
+	{
+		$cache = new Cache();
+		if(get_class($cache) != "apc")
+			return array(60 => "");
+		else
+			return array();
+
+	}
+
 	public function execute($parameters, $db)
 	{
 		CLI::out("Priming the cache");

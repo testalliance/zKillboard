@@ -37,7 +37,7 @@ class cli_updateCorporations implements cliCommand
 
 	public function execute($parameters, $db)
 	{
-				self::updateCorporations($db);
+		self::updateCorporations($db);
 	}
 
 	private static function updateCorporations($db)
