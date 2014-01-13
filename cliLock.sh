@@ -20,5 +20,5 @@ lockFile="$locks/$*.lock"
 IFS="$OIFS"
 
 # Execute!
-echo $base/cli.php
+#echo $base/cli.php
 flock -w 63 $lockFile php $base/cli.php "$@"
