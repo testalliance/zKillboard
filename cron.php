@@ -94,7 +94,6 @@ function runCron($command, $interval, $args)
     $cronName = implode(".", $args);
     $locker = "lastCronRun.$cronName";
     $lastRun = (int)Storage::retrieve($locker, 0);
-
     $dateFormat = "D M j G:i:s T Y";
 
     if($curTime - $lastRun < $interval)

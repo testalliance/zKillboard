@@ -30,9 +30,8 @@ class cli_primer implements cliCommand
 
 	public function getCronInfo()
 	{
-		$cache = new Cache();
-		if(get_class($cache) != "apc")
-			return array(60 => "");
+		if(Cache::getClass() != "apc")
+			return array(3600 => "");
 		else
 			return array();
 

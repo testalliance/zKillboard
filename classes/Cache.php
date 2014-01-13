@@ -60,6 +60,16 @@ class Cache
 	}
 
 	/**
+	 * Get the type of cache used
+	 *
+	 * @return string
+	 */
+	public static function getClass()
+	{
+		return get_class(Cache::getCache());
+	}
+
+	/**
 	 * Sets data to the cache
 	 *
 	 * @param $key
