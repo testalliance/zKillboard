@@ -10,7 +10,7 @@ base=$(dirname $0)
 cd $base
 
 # Create the locks directory
-locks=$base/cache/locks/
+locks=$base/cache/locks
 mkdir -p $locks 2>/dev/null
 
 # Determine the lock file
@@ -20,4 +20,5 @@ lockFile="$locks/$*.lock"
 IFS="$OIFS"
 
 # Execute!
+echo $base/cli.php
 flock -w 63 $lockFile php $base/cli.php "$@"
