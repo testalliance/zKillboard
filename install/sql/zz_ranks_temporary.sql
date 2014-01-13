@@ -21,5 +21,5 @@ CREATE TABLE `zz_ranks_temporary` (
   `overallRank` mediumint(16) NOT NULL,
   PRIMARY KEY (`type`,`typeID`),
   KEY `shipsDestroyed` (`shipsDestroyed`,`sdRank`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPRESSED ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
 

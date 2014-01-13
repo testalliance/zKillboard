@@ -15,5 +15,5 @@ CREATE TABLE `zz_stats` (
   KEY `groupID` (`groupID`),
   KEY `typeID` (`typeID`,`groupID`),
   KEY `type_2` (`type`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPRESSED ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
 
