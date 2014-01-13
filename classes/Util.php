@@ -278,8 +278,11 @@ class Util
 
 	public static function scrapeCheck()
 	{
-		global $apiWhiteList;
-		$maxRequestsPerDay = 8640;
+		global $apiWhiteList, $apiRequestsPrDay;
+		if(!$apiRequestsPrDay)
+			$maxRequestsPerDay = 17280;
+		else
+			$maxRequestsPerDay = $apiRequestsPrDay;
 
 		$ip = substr(IP::get(), 0, 64);
 		if(!in_array($ip, $apiWhiteList))

@@ -65,8 +65,7 @@ $cookie_time = (3600 * 24 * 30); // 30 days
 $cookie_secret = "%cookiesecret%";
 
 // API
-$apiBinAttempts = 10; // 10 seconds of bin alive time
-$apiTimeBetweenAccess = 10; // 6 seconds between each bin of requests
+$apiRequestsPrDay = 17280 // Once every 5 seconds
 $apiWhiteList = array();
 
 // Stomp
