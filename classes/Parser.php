@@ -636,7 +636,7 @@ class Parser
 
 		$timer = new Timer();
 
-		$maxTime = 65 * 1000 ;
+		$maxTime = 60 * 1000 ;
 
 		Db::execute("set session wait_timeout = 120000");
 		Db::execute("create temporary table if not exists zz_participants_temporary select * from zz_participants where 1 = 0");
