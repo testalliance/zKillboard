@@ -72,11 +72,6 @@ $app->get("/related/:system/:time/", function($system, $time) use ($app) {
     include( "view/related.php" );
 });
 
-//killmap
-$app->get("/map/", function() use ($app) {
-	$app->render("map.html");
-});
-
 // View top
 $app->get("/top/lasthour/", function() use ($app) {
     include( "view/lasthour.php" );
