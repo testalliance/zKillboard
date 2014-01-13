@@ -31,7 +31,7 @@ class cli_calculateRecentStatsAndRanks implements cliCommand
 	public function getCronInfo()
 	{
 		return array(
-			86400 => "stats"
+			86400 => "all"
 		);
 	}
 
