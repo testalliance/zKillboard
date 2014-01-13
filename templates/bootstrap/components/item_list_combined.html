@@ -13,7 +13,13 @@
 	{% for flag, flagName in flags %}
 		{% include 'components/flag_list_combined.html' %}
 	{% endfor %}
-	<tr><th colspan="6"><h5>Ship</h5></th></tr>
+	<tr>
+		{% if killdata.victim.characterID >= 2100000000 and killdata.victim.characterID <= 2999999999 %}
+		<th colspan="6"><h5>Dropsuit</h5></th>
+		{% else %}
+		<th colspan="6"><h5>Ship</h5></th>
+		{% endif %}
+	</tr>
 	<tr>
 	{% set imageSize = 32 %}
 	{% set field = killdata.victim %}
