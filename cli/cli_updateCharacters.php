@@ -47,15 +47,15 @@ class cli_updateCharacters implements cliCommand
 			$db->execute("insert ignore into zz_characters (characterID) select ceoID from zz_corporations");
 			$db->execute("insert ignore into zz_characters (characterID) select characterID from zz_api_characters where characterID != 0");
 		}
-		$db->execute("delete from zz_characters where characterID < 9000000");
-		$db->execute("update zz_characters set lastUpdated = now() where characterID >= 30000000 and characterID <= 31004590");
-		$db->execute("update zz_characters set lastUpdated = now() where characterID >= 40000000 and characterID <= 41004590");
 		$result = $db->query("select characterID, name from zz_characters where lastUpdated < date_sub(now(), interval 7 day) and corporationID != 1000001 order by lastUpdated limit 600", array(), 0);
 		foreach ($result as $row) {
 			if (Util::isMaintenanceMode()) return;
 			$id = $row["characterID"];
 			$oName = $row["name"];
 			$db->execute("update zz_characters set lastUpdated = now() where characterID = :id", array(":id" => $id));
+			if ($id >= 2100000000 && $id < 2199999999) continue; // Dust Characters
+			if ($id >= 30000000 && $id <= 31004590) continue; // NPC's
+			if ($id >= 40000000 && $id <= 41004590) continue; // NPC's
 
 			$pheal = Util::getPheal();
 			$pheal->scope = "eve";
