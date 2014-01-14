@@ -65,8 +65,6 @@ class cli_stompReceive implements cliCommand
 				$stomp->subscribe($topic, array("id" => "zkb-".$baseAddr, "persistent" => "true", "ack" => "client", "prefetch-count" => 1));
 			}
 
-			Log::log("StompReceive started - " . sizeof($topics) . " subscription(s)");
-
 			$stompCount = 0;
 			$timer = new Timer();
 			while($timer->stop() < 60000)
@@ -104,7 +102,7 @@ class cli_stompReceive implements cliCommand
 					}
 				}
 			}
-			Log::log("StompReceive Ended - Received $stompCount kills");
+			if ($stompCount > 0) Log::log("StompReceive Ended - Received $stompCount kills");
 		} catch (Exception $ex) {
 			$e = print_r($ex, true);
 			Log::log("StompReceive ended with the error:\n$e\n");
