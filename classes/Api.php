@@ -308,19 +308,16 @@ class Api
 	{
 		global $baseDir;
 
-		$fetchesPerSecond = 30;
+		Db::execute("delete from zz_api_characters where isDirector = ''"); // Minor cleanup
+		$fetchesPerSecond = (int) Storage::retrieve("APIFetchesPerSecond", 30);
 		$timer = new Timer();
 		$preFetched = array();
-
-		$apiCount = Db::queryField("select count(*) count from zz_api_characters where errorCount < 10 and cachedUntil < date_add(now(), interval 60 second)", "count", array(), 0);
-		if ($apiCount == 0) return;
 
 		$maxTime = 60 * 1000;
 		while ($timer->stop() < $maxTime) {
 			if (Util::isMaintenanceMode()) return;
-			Db::execute("delete from zz_api_characters where isDirector = ''");
 
-			$allChars = Db::query("select apiRowID, cachedUntil from zz_api_characters where errorCount < 10 and cachedUntil < date_sub(now(), interval 30 second) order by cachedUntil, keyID, characterID limit 1000", array(), 0);
+			$allChars = Db::query("select apiRowID, cachedUntil from zz_api_characters where errorCount < 10 and cachedUntil < date_sub(now(), interval 10 second) order by cachedUntil, keyID, characterID limit $fetchesPerSecond", array(), 0);
 
 			$total = sizeof($allChars);
 			$corpsToSkip = array();
