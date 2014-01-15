@@ -368,12 +368,13 @@ class Util
 
 	public static function bootstrapThemes()
 	{
-		$dir = "public/css/themes/";
-		$avail = scandir($dir);
-		foreach($avail as $key => $val)
-			if($val == "." || $val == "..")
-				unset($avail[$key]);
-		return $avail;
+		$json = json_decode(self::download("http://api.bootswatch.com/3/"));
+
+		$available = array();
+		foreach($json->themes as $theme)
+			$available[] = strtolower($theme->name);
+
+		return $available;
 	}
 
 	public static function strposa($haystack, $needles=array(), $offset=0)
@@ -385,5 +386,20 @@ class Util
 	        }
 	        if(empty($chr)) return false;
 	        return min($chr);
+	}
+
+	public static function download($url, $cacheTime = 3600)
+	{
+		$md5 = md5($url);
+		$data = Cache::get($md5);
+
+		if(!$data)
+		{
+			$data = file_get_contents($url);
+			Cache::set($md5, $data, $cacheTime);
+			return $data;
+		}
+		return $data;
+
 	}
 }
