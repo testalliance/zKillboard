@@ -15,7 +15,7 @@
 </tr>
 {% for month in history %}
 	{% if currentYear != month.year %}
-		<tr><th colspan="7">{{ month.year }}</th></tr>
+		<tr><th colspan="8">{{ month.year }}</th></tr>
 		{% set currentYear = month.year %}
 	{% endif %}
 	<tr>
