@@ -374,6 +374,7 @@ class Util
 		foreach($json->themes as $theme)
 			$available[] = strtolower($theme->name);
 
+		$available[] = "default";
 		return $available;
 	}
 
