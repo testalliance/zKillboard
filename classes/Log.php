@@ -66,6 +66,7 @@ class Log
 		"|blk|" => "\x0301", // black
 		"|c|" => "\x0310", // cyan
 		"|y|" => "\x0308", // yellow
+		"|o|" => "\x0307", // orange
 		"|n|" => "\x03", // reset
 	);
 
