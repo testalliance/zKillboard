@@ -56,7 +56,7 @@ class cli_twitterSearch implements cliCommand
 
 			$message = array("message" => $text[0], "postedAt" => $createdAt[0], "postedBy" => $postedBy[0], "screenName" => $screenName[0], "url" => $url.$id[0]);
 			$url = "https://twitter.com/".$screenName[0]."/status/".$id;
-			$msg = "|o|@|n|". $screenName[0] ." (|o|". $message["postedBy"] ."|n|) / |g|". $message["message"] ."|n| / |g|". $url;
+			$msg = "|o|@|n|". $screenName[0] ." (|o|". $message["postedBy"] ."|n|) |g|/|n| ". date("H:i:s", strtotime($message["postedAt"])) ." |g|/|n| ". Twit::shortenUrl($url) ." |g|/|n| |o|". $message["message"];
 			//$msg = "|g|" . $message["postedBy"] . "|n| (|g|@". $screenName[0] ."|n|) / |g|" . date("Y-m-d H:i:s", strtotime($message["postedAt"])) . " Message:|n| " . $message["message"];
 			$messages[$id] = $msg;
 		}
