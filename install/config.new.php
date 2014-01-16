@@ -46,6 +46,8 @@ $debug = true;
 
 // Logfile
 $logfile = "%logfile%";
+$ircLogFile = "";
+$ircAdminLogFile = "";
 
 // Memcache
 $memcacheServer = "%memcache%";
