@@ -27,21 +27,19 @@
 <h4>Reply</h4>
 <div>
 	<form name="tickets" method="post" action="/moderator/tickets/{{ id }}/">
-			<textarea id="reply" name="reply" type="text" required placeholder="Reply" rows="8" style="width: 600px;"></textarea>
-			<button type="submit" class="btn btn-large btn-primary" style="margin-left: 30px;" >Post Reply</button>
+		<div><textarea id="reply" name="reply" type="text" required placeholder="Reply" rows="8" style="width: 600px;"></textarea></div>
+		<div><button type="submit" class="btn btn-large btn-primary" style="margin-top: 2px;">Post Reply</button></div>
+	</form>
+</div>
+<div style="margin-top: 3px;">
+	<form name="statusform" method="post" action="/moderator/tickets/{{ id }}/">
+		{% if info.ticket.0.status != 0 %}
+			<input id="status" name="status" value="0" type="hidden">
+			<button type="submit" class="btn btn-large btn-warning">Close Ticket</button>
+		{% else %}
+			<input id="status" name="status" value="1" type="hidden">
+			<button type="submit" class="btn btn-large btn-primary">Open Ticket</button>
+		{% endif %}
 	</form>
 </div>
 {% endif %}
-
-<br/><br/>
-<div>
-<form name="statusform" method="post" action="/moderator/tickets/{{ id }}/">
-	{% if info.ticket.0.status != 0 %}
-	<input id="status" name="status" value="0" type="hidden">
-	<button type="submit" class="btn btn-large btn-warning">Close Ticket</button>
-	{% else %}
-	<input id="status" name="status" value="1" type="hidden">
-	<button type="submit" class="btn btn-large btn-primary">Open Ticket</button>
-	{% endif %}
-</form>
-</div>
