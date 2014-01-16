@@ -50,9 +50,8 @@ if($_POST)
 	}
 	else
 	{
-		die("no");
+		$message = array("type" => "error", "message" => "Ticket was not posted, there was an error");
 	}
-	die();
 }
 
 $tickets = Db::query("SELECT * FROM zz_tickets WHERE userid = :userid ORDER BY datePosted DESC", array(":userid" => User::getUserID()), 0);
