@@ -49,6 +49,10 @@ class Parser
 			$mail = str_ireplace("Alliance: Federation Navy", "Faction: Gallente Federation", $mail);
 		}
 
+		// Fix an error that has happened a few times, where Involved parties: and Name: are on the same line
+		if(stristr($mail, "Involved parties:Name:"))
+			$mail = str_replace("Involved parties:Name:", "Involved parties:\n\nName:", $mail);
+
 		// Fix unicode and random CCP localization problems.
 		$mail = utf8_decode($mail);
 		$mail = preg_replace('/: (\d+),00/', ': $1', $mail);
