@@ -34,14 +34,10 @@ if($_POST)
     $grantadmin = $_POST["grantadmin"];
   if(isset($_POST["grantmoderator"]))
     $grantmoderator = $_POST["grantmoderator"];
-  if(isset($_POST["grantaccess"]))
-    $grantaccess = $_POST["grantaccess"];
   if(isset($_POST["revokeadmin"]))
     $revokeadmin = $_POST["revokeadmin"];
   if(isset($_POST["revokemoderator"]))
     $revokemoderator = $_POST["revokemoderator"];
-  if(isset($_POST["revokeaccess"]))
-    $revokeaccess = $_POST["revokeaccess"];
   if(isset($_POST["reason"]))
     $reason = $_POST["reason"];
   if(isset($_POST["userID"]))
@@ -82,16 +78,6 @@ if($_POST)
     Admin::setMod($userID,0);
 		$message = "User has had moderator access revoked";
 	}
-	if(isset($grantaccess) && isset($userID))
-	{
-		Admin::setUnRevoked($userID);
-    $message = "User has been granted access to the site";
-	}
-	if(isset($revokeaccess) && isset($userID) && isset($reason))
-	{
-		Admin::setRevoked($userID,$reason);
-    $message = "User has had access to the site revoked";
-	}
   if(isset($email) && isset($userID))
   {
     Admin::setEmail($userID,$email);
@@ -109,10 +95,6 @@ if($_POST)
 if($req == "users")
 {
   $info = Admin::getUsers();
-}
-elseif($req == "revokes")
-{
-  $info = Db::query("SELECT id, username, email, revoked_reason FROM zz_users WHERE revoked = 1 ORDER BY id DESC", array(), 0);
 }
 elseif($req == "irc")
 {

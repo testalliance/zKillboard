@@ -29,8 +29,6 @@ if($_POST)
 {
 	$status = NULL;
 	$reply = NULL;
-	$revokeaccess = NULL;
-	$grantaccess = NULL;
 	$reason = "Default should change";
 	$report = NULL;
 	$delete = NULL;
@@ -41,10 +39,6 @@ if($_POST)
 		$reply = $_POST["reply"];
 	if(isset($_POST["report"]))
 		$report = $_POST["report"];
-    if(isset($_POST["revokeaccess"]))
-		$revokeaccess = $_POST["revokeaccess"];
-    if(isset($_POST["grantaccess"]))
-		$grantaccess = $_POST["grantaccess"];
 	if(isset($_POST["reason"]))
 		$reason = $_POST["reason"];
 	if(isset($_POST["userID"]))
@@ -98,16 +92,6 @@ if($_POST)
 				$message = "Error, kill could not be deleted";
 		}
 		$message = "Error, kill is positive, and thus api verified.. something is wrong!";
-	}
-	if(isset($grantaccess) && isset($userID))
-	{
-		Moderator::setUnRevoked($userID);
-    $message = "User has been granted access to the site";
-	}
-	if(isset($revokeaccess) && isset($userID) && isset($reason))
-	{
-    Moderator::setRevoked($userID,$reason);
-		$message = "User has had access to the site revoked";
 	}
   if(isset($manualpull) )
   {

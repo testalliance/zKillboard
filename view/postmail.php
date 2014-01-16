@@ -18,7 +18,7 @@
 
 $error = "";
 
-if($_POST && !User::isRevoked())
+if($_POST)
 {
 	@$keyid = trim($_POST["keyid"]);
 	@$vcode = trim($_POST["vcode"]);
@@ -56,7 +56,4 @@ if($_POST && !User::isRevoked())
 			$error = array("Sorry, you need to be logged in to post manual killmails");
 	}
 }
-if($_POST && User::isRevoked())
-	$app->render("revoked.html");
-else
-	$app->render("postmail.html", array("message" => $error));
+$app->render("postmail.html", array("message" => $error));

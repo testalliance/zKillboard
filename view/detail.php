@@ -29,7 +29,7 @@ $userID = $info["id"];
 $email = $info["email"];
 
 
-if($_POST && !User::isRevoked())
+if($_POST)
 {
 	$characterID = "";
 	$report = "";
@@ -51,12 +51,6 @@ if($_POST && !User::isRevoked())
 			$app->redirect("/detail/$id/");
 		}
 	}
-}
-
-if($_POST && User::isRevoked())
-{
-	$app->render("revoked.html");
-	$app->stop();
 }
 
 if ($id < 0) {

@@ -198,11 +198,6 @@ $app->post("/post/", function() use ($app) {
 	include( "view/postmail.php" );
 });
 
-// Revoke
-$app->get("/revoke/", function() use ($app) {
-	$app->render("revoked_reason.html");
-});
-
 // Autocomplete
 $app->map("/autocomplete/", function() use ($app) {
 	include( "view/autocomplete.php" );

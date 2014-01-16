@@ -35,8 +35,6 @@ class UserGlobals extends Twig_Extension
 
 			foreach($config as $key => $val) $this->addGlobal($result, $key, $val);
 
-			$this->addGlobal($result, "sessionrevoked", User::isRevoked());
-			$this->addGlobal($result, "sessionrevokereason", User::getRevokeReason());
 			$this->addGlobal($result, "sessionusername", $u["username"]);
 			$this->addGlobal($result, "sessionuserid", $u["id"]);
 			$this->addGlobal($result, "sessionadmin", (bool)$u["admin"]);
