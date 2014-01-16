@@ -52,7 +52,9 @@ class cli_twitterReplies implements cliCommand
 			$maxID = max($id, $maxID);
 
 			$message = array("message" => $text[0], "postedAt" => $createdAt[0], "postedBy" => $postedBy[0], "screenName" => $screenName[0], "url" => $url.$id[0]);
-			$msg = "Twitter: ($id) |g|" . $message["postedBy"] . "|n| (|g|@". $screenName[0] ."|n|) / |g|" . date("Y-m-d H:i:s", strtotime($message["postedAt"])) . " Message:|n| " . $message["message"];
+			$url = "https://twitter.com/".$screenName[0]."/status/".$id;
+			$msg = "@". $screenName[0] ." (|y|". $message["postedBy"] ."|n|) |g|/|n| ". $message ." |g|/|n| ". $url;
+			//$msg = "Twitter: ($id) |g|" . $message["postedBy"] . "|n| (|g|@". $screenName[0] ."|n|) / |g|" . date("Y-m-d H:i:s", strtotime($message["postedAt"])) . " Message:|n| " . $message["message"];
 			$messages[$id] = $msg;
 		}
 		ksort($messages);

@@ -55,7 +55,9 @@ class cli_twitterSearch implements cliCommand
 			if (strpos($text[0], "@eve_kill") !== false) continue;
 
 			$message = array("message" => $text[0], "postedAt" => $createdAt[0], "postedBy" => $postedBy[0], "screenName" => $screenName[0], "url" => $url.$id[0]);
-			$msg = "Twitter: ($id) |g|" . $message["postedBy"] . "|n| (|g|@". $screenName[0] ."|n|) / |g|" . date("Y-m-d H:i:s", strtotime($message["postedAt"])) . " Message:|n| " . $message["message"];
+			$url = "https://twitter.com/".$screenName[0]."/status/".$id;
+			$msg = "@". $screenName[0] ." (|y|". $message["postedBy"] ."|n|) |g|/|n| ". $message ." |g|/|n| ". $url;
+			//$msg = "|g|" . $message["postedBy"] . "|n| (|g|@". $screenName[0] ."|n|) / |g|" . date("Y-m-d H:i:s", strtotime($message["postedAt"])) . " Message:|n| " . $message["message"];
 			$messages[$id] = $msg;
 		}
 		ksort($messages);
