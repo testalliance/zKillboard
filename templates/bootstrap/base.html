@@ -96,10 +96,6 @@
                 </div>
                 {% endif %}
 
-    			{% if sessionrevoked %}
-    				<div class="alert alert-info fade in" data-dismiss="alert"><button type="button" class="close" data-dismiss="alert">&times;</button>You have had access revoked to certain parts of the site</a><br/>Reason: {{ sessionrevokereason }}</div>
-    			{% endif %}
-
                 {% block header %}
                 {% endblock %}
 
