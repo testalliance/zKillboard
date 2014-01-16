@@ -14,7 +14,6 @@
 		<div class="collapse navbar-collapse navbar-sub">
 			<ul class="nav navbar-nav">
         <li class="{{ isActive('users', key) }}"><a href="/{{url}}/users/">Users</a></li>
-        <li class="{{ isActive('revokes', key) }}"><a href="/{{url}}/revokes/">Revokes</a></li>
 				{% block modonly %}
           <li class="{{ isActive('reportedkills', key) }}"><a href="/{{url}}/reportedkills/">Reported Kills</a></li>
 		      <li class="{{ isActive('Tickets', key) }}"><a href ="/{{url}}/tickets/" >Tickets</a></li>
@@ -28,8 +27,6 @@
 		{% include url~"/ticket_view.html" %}
 	{% elseif key == 'tickets' %}
     {% include url~"/tickets.html" %}
-	{% elseif key == 'revokes' %}
-		{% include url~"/revokes.html" %}
 	{% elseif key == 'users' %}
 		{% include url~"/users.html" %} 
 	{% elseif key == 'reportedkills' and id != 0 %}
