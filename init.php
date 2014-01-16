@@ -81,7 +81,6 @@ if($debug)
 	ChromePhp::log("Cache Used: ". Cache::getClass());
 	ChromePhp::log("Queries: ". Db::getQueryCount());
 	ChromePhp::log("IP Server sees: ". IP::get());
-	ChromePhp::log(UserConfig::getAll());
 	ChromePhp::log("Page generation time (Minus queries): ". Util::pageTimer());
 }
 
