@@ -16,7 +16,6 @@
 	<div class="navbar navbar-default">
 		<div class="collapse navbar-collapse navbar-sub">
 			<ul class="nav navbar-nav">
-				<li class="{{ isActive('users', key) }}"><a href="/{{url}}/users/">Users</a></li>
 				<li class="{{ isActive('reportedkills', key) }}"><a href="/{{url}}/reportedkills/">Reported Kills</a></li>
 				<li class="{{ isActive('Tickets', key) }}"><a href ="/{{url}}/tickets/" >Tickets</a></li>
 			</ul>
@@ -26,8 +25,6 @@
 		{% include url~"/ticket_view.html" %}
 	{% elseif key == 'tickets' %}
 		{% include url~"/tickets.html" %}
-	{% elseif key == 'users' %}
-		{% include url~"/users.html" %}
 	{% elseif key == 'reportedkills' and id != 0 %}
 		{% include url~"/reportedkills_view.html" %}
 	{% elseif key == 'reportedkills' %}

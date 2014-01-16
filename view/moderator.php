@@ -116,7 +116,9 @@ if($req == "tickets" && $id)
 }
 elseif($req == "tickets")
 {
-	$info = Db::query("SELECT * FROM zz_tickets WHERE killID = 0 ORDER BY status DESC, datePosted DESC", array(),0);
+	$limit = 30;
+	$offset = ($page - 1) * $limit;
+	$info = Db::query("SELECT * FROM zz_tickets WHERE killID = 0 ORDER BY status DESC, datePosted DESC LIMIT $offset, $limit", array(), 0);
 	foreach($info as $key => $val)
 	{
 		if($val["tags"])
@@ -125,11 +127,7 @@ elseif($req == "tickets")
 }
 elseif($req == "users")
 {
-	$info = Moderator::getUsers();
-}
-elseif($req == "revokes")
-{
-	$info = Db::query("SELECT id, username, email, revoked_reason FROM zz_users WHERE revoked = 1 ORDER BY id DESC", array(), 0);
+	$info = Moderator::getUsers($page);
 }
 if($req == "reportedkills" && $id)
 {
@@ -138,34 +136,14 @@ if($req == "reportedkills" && $id)
 }
 elseif($req == "reportedkills")
 {
-	$info = Db::query("SELECT * FROM zz_tickets WHERE killID != 0 ORDER BY status DESC", array(),0);
+	$limit = 30;
+	$offset = ($page - 1) * $limit;
+	$info = Db::query("SELECT * FROM zz_tickets WHERE killID != 0 ORDER BY status DESC LIMIT $offset, $limit", array(), 0);
 	foreach($info as $key => $val)
 	{
 		if($val["tags"])
 			$info[$key]["tags"] = explode(",", $val["tags"]);
 	}
 }
-elseif ($req == "susers"){
-if(isset($id)){
-    $info = Moderator::getUserInfo($id);
-    if(!isset($info[0])){
-      $req = "users";
-      $message = "No user found with and if of".$id;
-    }else{
-      if( $info[0]["admin"] == 1 or $info[0]["moderator"] == 1){
-        $req = "users";
-        $message = "No editing other Mod/ Admins ";
-        $id = NULL;
-        $info = Moderator::getUsers();
-      }else{
-        $api =  Api::getKeys($id);
-        $info["api"]=$api;
-      }
-    }
-  }else{
-  $app->redirect("/moderator/users/");
 
-  }
-
-}
-$app->render("moderator/moderator.html", array("id" => $id, "info" => $info, "key" => $req, "url"=>"moderator", "message" => $message));
+$app->render("moderator/moderator.html", array("id" => $id, "info" => $info, "key" => $req, "url"=>"moderator", "message" => $message, "page" => $page));

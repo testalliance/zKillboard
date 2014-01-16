@@ -139,13 +139,13 @@ $app->map("/account(/:req)(/:reqid)/", function($req = NULL, $reqid = NULL) use 
 })->via("GET", "POST");
 
 // Moderator
-$app->map("/moderator(/:req)(/:id)/", function ($req = NULL, $id = NULL) use ($app) {
+$app->map("/moderator(/:req)(/:id)(/page/:page)/", function ($req = NULL, $id = NULL, $page = 1) use ($app) {
     global $cookie_name, $cookie_time;
     include( "view/moderator.php" );
 })->via("GET", "POST");
 
 // Admin
-$app->map("/admin(/:req)(/:id)/", function ($req = NULL,$id=NULL) use ($app) {
+$app->map("/admin(/:req)(/:id)/", function ($req = NULL, $id=NULL) use ($app) {
     global $cookie_name, $cookie_time;
     include( "view/admin.php" );
 })->via("GET", "POST");
