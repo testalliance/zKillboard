@@ -50,13 +50,11 @@
 <h4>Reply</h4>
 <div class="pull-left">
 	<form name="reports" method="post" action="/moderator/reportedkills/{{ id }}/">
-		<div class="row">
-			<div class="span12">
-				<textarea id="reply" name="reply" type="text" required placeholder="Reply" style="width: 100%;" rows="12"></textarea>
-				<input type="hidden" id="report" name="report" value="report">
-			</div>
-			<button type="submit" class="btn btn-large btn-primary" style="margin-left: 30px;" >Post Reply</button>
+		<div class="span12">
+			<textarea id="reply" name="reply" type="text" required placeholder="Reply" style="width: 100%;" rows="12"></textarea>
+			<input type="hidden" id="report" name="report" value="report">
 		</div>
+		<button type="submit" class="btn btn-large btn-primary" style="margin-left: 30px;" >Post Reply</button>
 	</form>
 </div>
 {% endif %}

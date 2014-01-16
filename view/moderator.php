@@ -45,12 +45,12 @@ if($_POST)
 		$userID = $_POST["userID"];
 	if(isset($_POST["delete"]))
 		$delete = $_POST["delete"];
-	  if(isset($_POST["userID"]))
-    $userID = $_POST["userID"];
-  if(isset($_POST["manualpull"]))
-    $manualpull = $_POST["manualpull"];
-  if(isset($_POST["deleteapi"]))
-    $deleteapi = $_POST["deleteapi"];
+	if(isset($_POST["userID"]))
+		$userID = $_POST["userID"];
+	if(isset($_POST["manualpull"]))
+		$manualpull = $_POST["manualpull"];
+	if(isset($_POST["deleteapi"]))
+		$deleteapi = $_POST["deleteapi"];
 
 	if(isset($status))
 	{
