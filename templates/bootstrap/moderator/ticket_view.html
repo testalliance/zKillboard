@@ -40,12 +40,10 @@
 
 {% if info.ticket.0.status %}
 <h4>Reply</h4>
-<div class="pull-left">
+<div class="col-lg-12 pull-left">
 	<form name="reports" method="post" action="/moderator/tickets/{{ id }}/">
-		<div class="col-lg-12">
-			<textarea id="reply" name="reply" type="text" required placeholder="Reply" style="width: 700px;" rows="12"></textarea>
-		</div>
-		<button type="submit" class="btn btn-large btn-primary" style="margin-left: 30px;" >Post Reply</button>
+		<textarea id="reply" name="reply" type="text" required placeholder="Reply" class="col-lg-12" rows="12"></textarea>
+		<p><button type="submit" class="btn btn-large btn-primary">Post Reply</button></p>
 	</form>
 </div>
 {% endif %}
