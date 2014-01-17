@@ -65,7 +65,6 @@ class Social
 		}
 
 		Info::addInfo($victimInfo);
-		$emizeko = Db::queryField("select count(1) count from zz_participants where characterID = 1389468720 and killID = $killID and isVictim = 0", "count");
 
 		$url = "https://zkillboard.com/detail/$killID/";
 		if ($totalPrice >= $twitMin) $url = Twit::shortenUrl($url);
