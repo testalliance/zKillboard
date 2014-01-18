@@ -121,9 +121,6 @@ if($_POST)
 
     if(isset($useSummaryAccordion))
     	UserConfig::set("useSummaryAccordion", $useSummaryAccordion);
-
-    if(isset($showSnowstorm))
-    	UserConfig::set("showSnowstorm", $showSnowstorm);
 }
 
 $data["entities"] = Account::getUserTrackerData();
@@ -141,6 +138,5 @@ $data["ddcombine"] = UserConfig::get("ddcombine");
 $data["ddmonthyear"] = UserConfig::get("ddmonthyear");
 $data["useSummaryAccordion"] = UserConfig::get("useSummaryAccordion");
 $data["sessions"] = User::getSessions($userID);
-$data["showSnowstorm"] = UserConfig::get("showSnowstorm");
 
 $app->render("account.html", array("data" => $data, "message" => $error, "key" => $key, "reqid" => $reqid));
