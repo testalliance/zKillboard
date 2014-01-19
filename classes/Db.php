@@ -200,7 +200,7 @@ class Db
 	 * @param boolean $reportErrors Log the query and throw an exception if the query fails. Default: true
 	 * @return int The number of rows affected by the sql query.
 	 */
-	public static function execute($query, $parameters = array(), $reportErrors = true)
+	public static function execute($query, $parameters = array(), $reportErrors = true, $returnID = false)
 	{
 		// Sanity check
 		if(strpos($query, ";") !== false)
@@ -233,6 +233,10 @@ class Db
 			return $false;
 		}
 
+		// return the last inserted id
+		if($returnID)
+			$lastInsertID = $pdo->lastInsertId();
+
 		// No error, time to commit
 		$pdo->commit();
 		// Stop the timer
@@ -245,8 +249,12 @@ class Db
 		$rowCount = $stmt->rowCount();
 		// Close the cursor
 		$stmt->closeCursor();
+
 		// Unset the PDO object
 		$pdo = null;
+
+		if($returnID)
+			return $lastInsertID;
 
 		// Return the amount of rows that was altered
 		return $rowCount;
