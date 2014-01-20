@@ -81,8 +81,20 @@ catch (Exception $ex)
 }
 
 interface cliCommand {
+
+	/**
+	 * @return string
+	 */
 	public function getDescription();
+
+	/**
+	 * @return string
+	 */
 	public function getAvailMethods();
+
+	/**
+	 * @return void
+	 */
 	public function execute($parameters, $db);
 }
 

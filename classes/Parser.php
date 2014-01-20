@@ -539,7 +539,7 @@ class Parser
 
 	/**
 	 * Translates a killmail
-	 * @param $mail the killmail that needs translation
+	 * @param string $mail the killmail that needs translation
 	 * @return text
 	 */
 	private static function Translate($mail)
@@ -757,6 +757,9 @@ class Parser
 		return true;
 	}
 
+	/**
+	 * @param boolean $isNpcVictim
+	 */
 	private static function processVictim(&$kill, $killID, &$victim, $isNpcVictim)
 	{
 		$shipPrice = Price::getItemPrice($victim["shipTypeID"]);
@@ -832,6 +835,9 @@ class Parser
 		Info::addAlli($attacker["allianceID"], $attacker["allianceName"]);
 	}
 
+	/**
+	 * @param integer $itemInsertOrder
+	 */
 	private static function processItems(&$kill, &$killID, &$items, &$itemInsertOrder, $isCargo = false, $parentFlag = 0)
 	{
 		$totalCost = 0;

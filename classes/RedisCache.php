@@ -120,7 +120,6 @@ class RedisCache extends AbstractCache
 	 * to integers when performing an atomic increment operation.
 	 *
 	 * @param string $key Key of numeric cache item to increment
-	 * @param integer $offset Offset to increment - defaults to 1
 	 * @return Closure Function returning item's new value on successful increment, else `false`
 	 */
 	public function increment($key, $step = 1, $timeout = 0)
@@ -140,7 +139,7 @@ class RedisCache extends AbstractCache
 	 *
 	 * @param string $key Key of numeric cache item to decrement
 	 * @param integer $step Offset to decrement - defaults to 1
-	 * @param string $timeout A strtotime() compatible cache time.
+	 * @param integer $timeout A strtotime() compatible cache time.
 	 * @return Closure Function returning item's new value on successful decrement, else `false`
 	 */
 	public function decrement($key, $step = 1, $timeout = 0)
@@ -154,7 +153,7 @@ class RedisCache extends AbstractCache
 	/**
 	 * Clears user-space cache
 	 *
-	 * @return boolean
+	 * @return boolean|null
 	 */
 	public function flush()
 	{

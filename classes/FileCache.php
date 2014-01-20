@@ -65,7 +65,7 @@ class FileCache extends AbstractCache
 	 *
 	 * @param $key
 	 * @param $value
-	 * @param $timeout
+	 * @param string $timeout
 	 *
 	 * return bool
 	 */
@@ -79,8 +79,8 @@ class FileCache extends AbstractCache
 	 *
 	 * @param $key
 	 * @param $value
-	 * @param $timeout
-	 * @return array
+	 * @param string $timeout
+	 * @return boolean
 	 */
 	public function replace($key, $value, $timeout)
 	{

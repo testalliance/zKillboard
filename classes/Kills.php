@@ -102,7 +102,7 @@ class Kills
 	 * Merges killmail arrays
 	 *
 	 * @param $array1
-	 * @param $type
+	 * @param string $type
 	 * @param $array2
 	 * @return array
 	 */
@@ -210,7 +210,7 @@ class Kills
 	 * Returns json of the kill
 	 *
 	 * @param $killID the ID of the kill
-	 * @return json
+	 * @return string
 	 */
 	public static function getJson($killID)
 	{
@@ -224,7 +224,7 @@ class Kills
 	 *
 	 * @static
 	 * @param $killID the ID of the kill
-	 * @return text
+	 * @return string
 	 */
 	public static function getRawMail($killID, $array = array(), $edk = true)
 	{
