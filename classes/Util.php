@@ -58,6 +58,9 @@ class Util
 		else return $string . "es";
 	}
 
+	/**
+	 * @param string $needle
+	 */
 	public static function startsWith($haystack, $needle)
 	{
 		$length = strlen($needle);
@@ -378,6 +381,9 @@ class Util
 		return $available;
 	}
 
+	/**
+	 * @param string $haystack
+	 */
 	public static function strposa($haystack, $needles=array(), $offset=0)
 	{
 	        $chr = array();
@@ -389,6 +395,9 @@ class Util
 	        return min($chr);
 	}
 
+	/**
+	 * @param string $url
+	 */
 	public static function download($url, $cacheTime = 3600)
 	{
 		$md5 = md5($url);

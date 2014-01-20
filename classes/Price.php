@@ -65,7 +65,7 @@ class Price
 	/**
 	 * @static
 	 * @param	$typeID int
-	 * @return double The price of the typeID, if found.	Zero if not found.
+	 * @return null|integer The price of the typeID, if found.	Zero if not found.
 	 */
 	protected static function getDatabasePrice($typeID)
 	{
@@ -138,7 +138,7 @@ class Price
 	 *
 	 * @static
 	 * @param	$typeID
-	 * @param	$price
+	 * @param	null|double $price
 	 * @return void
 	 */
 	protected static function storeItemPrice($typeID, $price)

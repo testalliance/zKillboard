@@ -82,6 +82,7 @@ class cli_createStarmapData implements cliCommand
 
     /**
      * Creates the JSON file for the map or the known universe
+     * @param string $file_name
      * @return void
      */
     public function writeStaticData($file_name, $data_array) {

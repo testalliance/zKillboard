@@ -162,6 +162,10 @@ class cli_calculateAllTimeStatsAndRanks implements cliCommand
 		Log::irc("|g|Stat recalculations have completed, leaving Maintenance mode and now reverting to business as usual...");
 	}
 
+	/**
+	 * @param string $type
+	 * @param string $column
+	 */
 	private static function recalc($type, $column, $calcKills = true, $db)
 	{
 		//CLI::out("|g|Calculating stats for $type");

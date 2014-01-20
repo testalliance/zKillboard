@@ -200,6 +200,9 @@ class cli_feedEDK implements cliCommand
         return $result;
 	}
 
+	/**
+	 * @param PhealResult $data
+	 */
 	private static function processAPI($data, $db)
 	{
 		$count = 0;

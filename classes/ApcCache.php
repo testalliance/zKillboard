@@ -26,11 +26,17 @@ class APCCache extends AbstractCache
 		return apc_fetch($key);
 	}
 
+	/**
+	 * @param string $timeout
+	 */
 	public function set($key, $value, $timeout)
 	{
 		return apc_store($key, $value, $timeout);
 	}
 
+	/**
+	 * @param string $timeout
+	 */
 	public function replace($key, $value, $timeout)
 	{
 		if(!apc_exists($key))

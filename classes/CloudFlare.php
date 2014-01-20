@@ -54,6 +54,7 @@ class CloudFlare {
 
     /**
      * Stats
+     * @param string $domain
      */
     public function stats($domain, $interval = 20) {
         $data['a']        = "stats";
@@ -66,6 +67,8 @@ class CloudFlare {
      * Developer Mode - This function allows you to toggle Development Mode on or off for a particular domain. 
      * When Development Mode is on the cache is bypassed. Development mode remains on for 3 hours or 
      * until when it is toggled back off.
+     * @param integer $mode
+     * @param string $domain
      */
     public function devmode($mode, $domain) {
         $data['a'] = "devmode";
@@ -87,6 +90,8 @@ class CloudFlare {
 
 	/**
 	 * Purge file - this function will purge a single file from CloudFlare
+	 * @param string $url
+	 * @param string $domain
 	 */
 	public function purge_file($url, $domain) {
 		$data['a'] = "zone_file_purge";

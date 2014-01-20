@@ -181,9 +181,9 @@ class Api
 	 * API exception handling
 	 *
 	 * @static
-	 * @param $keyID
+	 * @param integer $keyID
 	 * @param $charID
-	 * @param $exception
+	 * @param Exception $exception
 	 * @return void
 	 */
 	public static function handleApiException($keyID, $charID, $exception)
@@ -362,6 +362,9 @@ class Api
 		Log::irc("|g|$actualDifference|n| mails processed | |g|$totalDifference|n| kills added");
 	}
 
+	/**
+	 * @param string $keyID
+	 */
 	public static function processRawApi($keyID, $charID, $killlog)
 	{
 		$count = 0;

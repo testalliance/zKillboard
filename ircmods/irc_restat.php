@@ -40,6 +40,10 @@ class irc_restat implements ircCommand {
 
         public function isHidden() { return false; }
 
+        /**
+         * @param string $column
+         * @param integer $id
+         */
         private static function recalc($type, $column, $id, $calcKills = true)
         {
                 Db::execute("drop table if exists zz_stats_temporary");

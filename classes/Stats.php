@@ -91,6 +91,9 @@ class Stats
 		return Stats::getTop("regionID", $parameters, $allTime);
 	}
 
+	/**
+	 * @param string $groupByColumn
+	 */
 	public static function getTopPoints($groupByColumn, $parameters = array(), $allTime = false)
 	{
 		$whereClauses = array();
@@ -129,6 +132,9 @@ class Stats
 
 	private static $extendedGroupColumns = array("characterID"); //, "corporationID"); //, "allianceID");
 
+	/**
+	 * @param string $groupByColumn
+	 */
 	private static function getTop($groupByColumn, $parameters = array(), $allTime = false)
 	{
 		$whereClauses = array();
@@ -231,6 +237,9 @@ class Stats
 		}
 	}
 
+	/**
+	 * @param string $type
+	 */
 	private static function statLost($type, $typeID, $groupID, $modifier, $points, $isk)
 	{
 		if ($typeID == 0) return;
@@ -239,6 +248,9 @@ class Stats
 					array(":type" => $type, ":typeID" => $typeID, ":groupID" => $groupID, ":modifier" => $modifier, ":points" => $points, ":isk" => $isk));
 	}
 
+	/**
+	 * @param string $type
+	 */
 	private static function statDestroyed($type, $typeID, $groupID, $modifier, $points, $isk)
 	{
 		if ($typeID == 0) return;

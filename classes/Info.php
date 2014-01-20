@@ -420,6 +420,9 @@ class Info
 		return $name;
 	}
 
+	/**
+	 * @param string $search
+	 */
 	private static function findEntitySearch(&$resultArray, $type, $query, $search)
 	{
 		$results = Db::query("${query}", array(":search" => $search), 3600);
@@ -777,6 +780,10 @@ class Info
 		return $slotArray;
 	}
 
+	/**
+	 * @param string $title
+	 * @param string $field
+	 */
 	public static function doMakeCommon($title, $field, $array) {
 		$retArray = array();
 		$retArray["type"] = str_replace("ID", "", $field);

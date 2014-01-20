@@ -98,7 +98,7 @@ class Cache
 	/**
 	 * Deletes data from the cache
 	 *
-	 * @param $key
+	 * @param string $key
 	 * @return bool
 	 */
 	public static function delete($key)
