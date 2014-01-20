@@ -28,7 +28,7 @@ class Api
 	 * @static
 	 * @param $keyID The keyID to be checked.
 	 * @param $vCode The vCode to be checked
-	 * @return string A message, Success on success, otherwise an error.
+	 * @return string|null A message, Success on success, otherwise an error.
 	 */
 	public static function checkAPI($keyID, $vCode)
 	{
@@ -42,7 +42,6 @@ class Api
 		}
 
 		$pheal = Util::getPheal($keyID, $vCode);
-		//$pheal = new Pheal($keyID, $vCode);
 		try
 		{
 			$result = $pheal->accountScope->APIKeyInfo();
@@ -71,8 +70,8 @@ class Api
 	 * Adds a key to the database.
 	 *
 	 * @static
-	 * @param $keyID
-	 * @param $vCode
+	 * @param $keyID int
+	 * @param $vCode string
 	 * @param null $label
 	 * @return string
 	 */
@@ -100,10 +99,7 @@ class Api
 
 		if ($keyType == "Account") $keyType = "Character";
 
-		if (isset($_SERVER["HTTP_CF_CONNECTING_IP"])) $ip = $_SERVER["HTTP_CF_CONNECTING_IP"];
-		elseif (isset($_SERVER["HTTP_X_FORWARDED_FOR"])) $ip = $_SERVER["HTTP_X_FORWARDED_FOR"];
-		else $ip = $_SERVER['REMOTE_ADDR'];
-
+		$ip = IP::get();
 
 		Log::ircAdmin("API: $keyID has been added.  Type: $keyType ($ip)");
 		Log::log("API: $keyID has been added.  Type: $keyType ($ip)");
@@ -114,7 +110,7 @@ class Api
 	 * Deletes a key owned by the currently logged in user.
 	 *
 	 * @static
-	 * @param $keyID
+	 * @param $keyID int
 	 * @return string
 	 */
 	public static function deleteKey($keyID)
@@ -129,11 +125,14 @@ class Api
 	 * Returns a list of keys owned by the currently logged in user.
 	 *
 	 * @static
-	 * @return Returns
+	 * @param $userID int
+	 * @return array Returns
 	 */
 	public static function getKeys($userID)
 	{
-		$userID = user::getUserID();
+		if(!isset($userID))
+			$userID = user::getUserID();
+
 		$result = Db::query("SELECT keyID, vCode, label, lastValidation, errorCode FROM zz_api WHERE userID = :userID order by keyID", array(":userID" => $userID), 0);
 		return $result;
 	}
@@ -142,7 +141,8 @@ class Api
 	 * Returns an array of charactery keys.
 	 *
 	 * @static
-	 * @return Returns
+	 * @param $userID int
+	 * @return array Returns
 	 */
 	public static function getCharacterKeys($userID)
 	{
@@ -154,6 +154,7 @@ class Api
 	 * Returns an array of the characters assigned to this user.
 	 *
 	 * @static
+	 * @param $userID int
 	 * @return array
 	 */
 	public static function getCharacters($userID)
@@ -167,7 +168,7 @@ class Api
 	 * Tests the access mask for KillLog access
 	 *
 	 * @static
-	 * @param $accessMask
+	 * @param int $accessMask
 	 * @return bool
 	 */
 	public static function hasBits($accessMask)
@@ -180,7 +181,7 @@ class Api
 	 *
 	 * @static
 	 * @param integer $keyID
-	 * @param $charID
+	 * @param int $charID
 	 * @param Exception $exception
 	 * @return void
 	 */
@@ -358,6 +359,8 @@ class Api
 
 	/**
 	 * @param string $keyID
+	 * @param int $charID
+	 * @param string $killlog
 	 */
 	public static function processRawApi($keyID, $charID, $killlog)
 	{
