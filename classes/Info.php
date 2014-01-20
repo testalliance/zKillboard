@@ -807,11 +807,11 @@ class Info
 			$checkID = -1 * $checkID;
 		$okID = Db::queryRow("SELECT mKillID, killID, eveKillID FROM zz_manual_mails WHERE (mKillID = :mKillID OR killID = :killID)", array(":mKillID" => $checkID, ":killID" => $checkID));
 
-		if($okID["eveKillID"])
+		if(isset($okID["eveKillID"]))
 			$commentID = $okID["eveKillID"];
-		elseif($okID["mKillID"])
+		elseif(isset($okID["mKillID"]))
 			$commentID = $okID["mKillID"];
-		elseif($okID["killID"])
+		elseif(isset($okID["killID"]))
 			$commentID = $okID["killID"];
 		else
 			$commentID = $id;
