@@ -19,7 +19,7 @@
 /**
  * APC Cache Class
  */
-class APCCache extends AbstractCache
+class ApcCache extends AbstractCache
 {
 	public function get($key)
 	{
