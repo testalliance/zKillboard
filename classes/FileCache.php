@@ -97,7 +97,7 @@ class FileCache extends AbstractCache
 	/**
 	 * Deletes a key
 	 *
-	 * @param $key
+	 * @param string $key
 	 * @return bool
 	 */
 	public function delete($key)
@@ -174,7 +174,7 @@ class FileCache extends AbstractCache
 	 *
 	 * @param $key
 	 * @param $value
-	 * @param $timeout
+	 * @param string $timeout
 	 *
 	 * return bool
 	 */
