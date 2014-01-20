@@ -65,7 +65,7 @@ class Db
 	 * @param string $query The query to be executed.
 	 * @param array $parameters (optional) A key/value array of parameters.
 	 * @param int $cacheTime The time, in seconds, to cache the result of the query.	Default: 30
-	 * @return Returns the full resultset as an array.
+	 * @return array Returns the full resultset as an array.
 	 */
 	public static function query($query, $parameters = array(), $cacheTime = 30)
 	{
@@ -151,7 +151,7 @@ class Db
 	 * @param string $query The query to be executed
 	 * @param array $parameters (optional) A key/value array of parameters
 	 * @param int $cacheTime The time, in seconds, to cache the result of the query.	Default: 30
-	 * @return Returns the first row of the result set. Returns null if there are no rows.
+	 * @return array Returns the first row of the result set. Returns null if there are no rows.
 	 */
 	public static function queryRow($query, $parameters = array(), $cacheTime = 30)
 	{
@@ -162,7 +162,7 @@ class Db
 			return $result[0];
 
 		// No results at all
-		return null;
+		return array();
 	}
 
 	/**
@@ -173,7 +173,7 @@ class Db
 	 * @param string $field The name of the field to return
 	 * @param array $parameters (optional) A key/value array of parameters
 	 * @param int $cacheTime The time, in seconds, to cache the result of the query.	Default: 30
-	 * @return null Returns the value of $field in the first row of the resultset. Returns null if there are no rows.
+	 * @return array Returns the value of $field in the first row of the resultset. Returns an empty array if there are no results
 	 */
 	public static function queryField($query, $field, $parameters = array(), $cacheTime = 30)
 	{
@@ -181,7 +181,7 @@ class Db
 		$result = self::query($query, $parameters, $cacheTime);
 		// Figure out if it has no results
 		if(sizeof($result) == 0)
-			return null;
+			return array();
 
 		// Bind the first result to $resultRow
 		$resultRow = $result[0];
