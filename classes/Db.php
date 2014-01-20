@@ -299,7 +299,7 @@ class Db
 		$hash = md5($query);
 		$find = array();
 		$replace = array();
-		foreach($param as $key => $value)
+		foreach($parameters as $key => $value)
 		{
 			$find[] = $key;
 			$replace[] = "'".$value."'";
