@@ -41,8 +41,8 @@ class Api
 			return "Invalid keyID.  Did you get the keyID and vCode mixed up?";
 		}
 
-		$pheal = Util::getPheal();
-		$pheal = new Pheal($keyID, $vCode);
+		$pheal = Util::getPheal($keyID, $vCode);
+		//$pheal = new Pheal($keyID, $vCode);
 		try
 		{
 			$result = $pheal->accountScope->APIKeyInfo();
@@ -56,7 +56,6 @@ class Api
 
 		$key = $result->key;
 		$accessMask = $key->accessMask;
-		$keyType = $key->type;
 		$hasBits = self::hasBits($accessMask);
 
 		if (!$hasBits) {
@@ -200,10 +199,10 @@ class Api
 			case 904:
 				$msg = "Error 904 detected using key $keyID";
 				Log::log($msg);
-				$msg = "|r|$msg";
-				$lastTime = Storage::retrieve("Last904Time", 0);
-				$time = time();
-				Storage::store("Last904Time", $time);
+				//$msg = "|r|$msg";
+				//$lastTime = Storage::retrieve("Last904Time", 0);
+				//$time = time();
+				//Storage::store("Last904Time", $time);
 				// Only announce 904's every 5 minutes
 				//if ($lastTime > ($time - 300)) {
 				//	Log::irc($msg);
@@ -311,7 +310,6 @@ class Api
 		Db::execute("delete from zz_api_characters where isDirector = ''"); // Minor cleanup
 		$fetchesPerSecond = (int) Storage::retrieve("APIFetchesPerSecond", 30);
 		$timer = new Timer();
-		$preFetched = array();
 
 		$maxTime = 60 * 1000;
 		while ($timer->stop() < $maxTime) {
@@ -320,7 +318,6 @@ class Api
 			$allChars = Db::query("select apiRowID, cachedUntil from zz_api_characters where errorCount < 10 and cachedUntil < date_sub(now(), interval 10 second) order by cachedUntil, keyID, characterID limit $fetchesPerSecond", array(), 0);
 
 			$total = sizeof($allChars);
-			$corpsToSkip = array();
 			$iterationCount = 0;
 
 			if ($total == 0) sleep(1);
@@ -329,8 +326,6 @@ class Api
 				if ($timer->stop() > $maxTime) return;
 
 				$apiRowID = $char["apiRowID"];
-				$cachedUntil = $char["cachedUntil"];
-
 				Db::execute("update zz_api_characters set cachedUntil = date_add(if(cachedUntil=0, now(), cachedUntil), interval 5 minute), lastChecked = now() where apiRowID = :id", array(":id" => $apiRowID));
 
 				$m = $iterationCount % $fetchesPerSecond;

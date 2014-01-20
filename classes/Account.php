@@ -21,7 +21,6 @@ class Account
 	public static function getUserTrackerData()
 	{
 		$entities = array("character", "corporation", "alliance", "faction", "ship", "item", "system", "region");
-		$entitylist = array();
 
 		foreach($entities as $ent)
 		{
