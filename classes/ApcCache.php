@@ -44,6 +44,9 @@ class APCCache extends AbstractCache
 		apc_store($key, $value, $timeout);
 	}
 
+	/**
+	 * @param string $key
+	 */
 	public function delete($key)
 	{
 		return apc_delete($key);

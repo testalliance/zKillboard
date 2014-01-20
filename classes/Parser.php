@@ -851,6 +851,9 @@ class Parser
 		return $totalCost;
 	}
 
+	/**
+	 * @param integer $itemInsertOrder
+	 */
 	private static function processItem(&$kill, &$killID, &$item, $itemInsertOrder, $isCargo = false, $parentContainerFlag = -1)
 	{
 		global $itemNames;

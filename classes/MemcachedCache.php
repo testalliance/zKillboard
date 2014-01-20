@@ -55,6 +55,9 @@ class MemcachedCache extends AbstractCache
 		return $this->mc->replace($key, $value, $timeout);
 	}
 
+	/**
+	 * @param string $key
+	 */
 	public function delete($key)
 	{
 		return $this->mc->delete($key);
