@@ -93,8 +93,7 @@ class Api
 			return "keyID $keyID is already in the database...";
 		}
 
-		$pheal = Util::getPheal();
-		$pheal = new Pheal($keyID, $vCode);
+		$pheal = Util::getPheal($keyID, $vCode);
 		$result = $pheal->accountScope->APIKeyInfo();
 		$key = $result->key;
 		$keyType = $key->type;
