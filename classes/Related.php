@@ -63,6 +63,9 @@ class Related
 
 	}
 
+	/**
+	 * @param string $typeColumn
+	 */
 	private static function findLosers($kills, $typeColumn)
 	{
 		$involvedArray = array();

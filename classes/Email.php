@@ -18,6 +18,9 @@
 
 class Email
 {
+	/**
+	 * @param string $subject
+	 */
 	public static function send($email, $subject, $body)
 	{
 		global $emailsmtp, $emailport, $emailusername, $emailpassword, $sentfromemail, $sentfromdomain, $baseDir;

@@ -81,6 +81,9 @@ class irc_who implements ircCommand {
 		}
 	}
 
+	/**
+	 * @param string $url
+	 */
 	private function fetch($url)
 	{
 		$userAgent = "ESCBot IRC Lookup";

@@ -59,6 +59,10 @@ class Summary
 		return Summary::getSummary('system', 'solarSystemID', $data, $id, $parameters);
 	}
 
+	/**
+	 * @param string $type
+	 * @param string $column
+	 */
 	private static function getSummary($type, $column, &$data, $id, $parameters = array())
 	{
 		$key = "summary:$type:$column:$id:" . json_encode($parameters);
@@ -293,6 +297,10 @@ class Summary
 		else if (sizeof($chars)) Summary::filterKills($kills, $teamB, $teamA, "characterID", $chars, "P");
 	}
 
+	/**
+	 * @param string $key
+	 * @param string $type
+	 */
 	private static function filterKills(&$kills, &$array1, &$array2, $key, $keyArray, $type)
 	{
 		$valueArray = array();

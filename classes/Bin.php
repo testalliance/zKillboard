@@ -28,7 +28,7 @@ class Bin
 	 *
 	 * @static
 	 * @param $name
-	 * @param null $default
+	 * @param boolean|null $default
 	 * @return null
 	 */
 	public static function get($name, $default = null)

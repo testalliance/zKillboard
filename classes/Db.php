@@ -63,7 +63,7 @@ class Db
 	 *
 	 * @static
 	 * @param string $query The query to be executed.
-	 * @param array $params (optional) A key/value array of parameters.
+	 * @param array $parameters (optional) A key/value array of parameters.
 	 * @param int $cacheTime The time, in seconds, to cache the result of the query.	Default: 30
 	 * @return Returns the full resultset as an array.
 	 */
@@ -266,7 +266,7 @@ class Db
 	/**
 	 * @static
 	 * @throws Exception
-	 * @param	$statement
+	 * @param	PDOStatement $statement
 	 * @param	string $query
 	 * @param	array $parameters
 	 * @return void

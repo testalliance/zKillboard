@@ -36,11 +36,17 @@ class MemcacheCache extends AbstractCache
 		return $this->mc->get($key);
 	}
 
+	/**
+	 * @param string $timeout
+	 */
 	public function set($key, $value, $timeout)
 	{
 		return $this->mc->set($key, $value, 0, $timeout);
 	}
 
+	/**
+	 * @param string $timeout
+	 */
 	public function replace($key, $value, $timeout)
 	{
 		return $this->mc->replace($key, $value, 0, $timeout);

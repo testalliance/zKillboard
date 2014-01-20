@@ -35,6 +35,9 @@ class CLI
 		if($die) die();
 	}
 
+	/**
+	 * @param string $prompt
+	 */
 	public static function prompt($prompt, $default = "") {
 		$colors = array(
 			"|w|" => "1;37", //White

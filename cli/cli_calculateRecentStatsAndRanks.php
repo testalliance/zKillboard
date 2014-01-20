@@ -158,6 +158,10 @@ class cli_calculateRecentStatsAndRanks implements cliCommand
 		}
 	}
 
+	/**
+	 * @param string $type
+	 * @param string $column
+	 */
 	private static function recalc($type, $column, $calcKills = true, $db)
 	{
 			Log::log("Starting recent stat calculations for $type");

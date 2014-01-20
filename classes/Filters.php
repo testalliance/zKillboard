@@ -26,6 +26,9 @@ class Filters
 		return $retValue;
 	}
 
+	/**
+	 * @param string $table
+	 */
 	private static function buildWhere(&$tables, &$whereClauses, $table, $column, $parameters)
 	{
 		$array = Filters::grabParameters($parameters, $column);

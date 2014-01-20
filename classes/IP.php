@@ -18,6 +18,9 @@
 
 class IP
 {
+	/**
+	 * @return string
+	 */
 	public static function get()
 	{
 		if (isset($_SERVER["HTTP_CF_CONNECTING_IP"])) $ip = $_SERVER["HTTP_CF_CONNECTING_IP"];

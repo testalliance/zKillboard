@@ -97,8 +97,24 @@ function irc_out($text) {
 }
 
 interface ircCommand {
+
+	/**
+	 * @return integer
+	 */
 	public function getRequiredAccessLevel();
+
+	/**
+	 * @return string
+	 */
 	public function getDescription();
+
+	/**
+	 * @return void
+	 */
 	public function execute($nick, $uhost, $channel, $command, $parameters, $nickAccessLevel);
+
+	/**
+	 * @return boolean
+	 */
 	public function isHidden();
 }
