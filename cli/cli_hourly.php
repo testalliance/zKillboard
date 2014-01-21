@@ -37,6 +37,8 @@ class cli_hourly implements cliCommand
 
 	public function execute($parameters, $db)
 	{
+		global $enableAnalyze;
+
 		$p = array();
 		$p["limit"] = 5;
 		$p["pastSeconds"] = 3 * 86400;
@@ -82,16 +84,20 @@ class cli_hourly implements cliCommand
 			foreach($row as $column) $tables[] = $column;
 		}
 
-		$tableisgood = array("OK", "Table is already up to date", "The storage engine for the table doesn't support check");
-		$count = 0;
-		foreach ($tables as $table) {
-			$count++;
+		if($enableAnalyze)
+		{
+			$tableisgood = array("OK", "Table is already up to date", "The storage engine for the table doesn't support check");
+			$count = 0;
+			foreach ($tables as $table)
+			{
+				$count++;
 
-			if (Util::isMaintenanceMode())
-				continue;
+				if (Util::isMaintenanceMode())
+					continue;
 
-			$result = $db->queryRow("analyze table $table");
-			if (!in_array($result["Msg_text"], $tableisgood)) Log::ircAdmin("|r|Error analyzing table |g|$table|r|: " . $result["Msg_text"]);
+				$result = $db->queryRow("analyze table $table");
+				if (!in_array($result["Msg_text"], $tableisgood)) Log::ircAdmin("|r|Error analyzing table |g|$table|r|: " . $result["Msg_text"]);
+			}
 		}
 
 	}

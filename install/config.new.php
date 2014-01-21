@@ -25,6 +25,7 @@ $dbName = "%dbname%";
 $dbHost = "%dbhost%";
 $dbSocket = null;
 $dbExplain = false;
+$enableAnalyze = false;
 
 // IPs available
 $ipsAvailable = array(); // Set it to the external IP(s) you have available
