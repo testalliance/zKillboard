@@ -1,3 +1,5 @@
+[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/EVE-KILL/zKillboard/badges/quality-score.png?s=b2d7078f70f6d3bd691e47db89eb455ec4c6002b)](https://scrutinizer-ci.com/g/EVE-KILL/zKillboard/)
+
 # zKillboard
 zKillboard is a killboard created for EVE-Online, for use on EVE-KILL.net, but can also be used for single entities.
 
