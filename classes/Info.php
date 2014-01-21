@@ -18,13 +18,11 @@
 
 class Info
 {
-	private static $maxGroupNameSize = 25;
-
 	/**
 	 * Retrieve the system id of a solar system.
 	 *
 	 * @static
-	 * @param	$systemName
+	 * @param string $systemName
 	 * @return int The solarSystemID
 	 */
 	public static function getSystemID($systemName)
@@ -35,7 +33,7 @@ class Info
 
 	/**
 	 * @static
-	 * @param	$systemID
+	 * @param int $systemID
 	 * @return array Returns an array containing the solarSystemName and security of a solarSystemID
 	 */
 	public static function getSystemInfo($systemID)
@@ -44,6 +42,11 @@ class Info
 				array(":systemID" => $systemID), 3600);
 	}
 
+	/**
+	 * Fetches information for a wormhole system
+	 * @param  int $systemID
+	 * @return array
+	 */
 	public static function getWormholeSystemInfo($systemID)
 	{
 		if ($systemID < 3100000) return;
@@ -53,7 +56,7 @@ class Info
 
 	/**
 	 * @static
-	 * @param	$systemID
+	 * @param int $systemID
 	 * @return string The system name of a solarSystemID
 	 */
 	public static function getSystemName($systemID)
@@ -64,7 +67,7 @@ class Info
 
 	/**
 	 * @static
-	 * @param	int $systemID
+	 * @param int $systemID
 	 * @return double The system secruity of a solarSystemID
 	 */
 	public static function getSystemSecurity($systemID)
@@ -75,7 +78,7 @@ class Info
 
 	/**
 	 * @static
-	 * @param	$typeID
+	 * @param int $typeID
 	 * @return string The item name.
 	 */
 	public static function getItemName($typeID)
@@ -92,7 +95,7 @@ class Info
 	}
 
 	/**
-	 * @param	$itemName
+	 * @param string $itemName
 	 * @return int The typeID of an item.
 	 */
 	public static function getItemID($itemName)
@@ -105,7 +108,7 @@ class Info
 	 * Retrieves the effectID of an item.	This is useful for determining if an item is fitted into a low,
 	 * medium, high, rig, or t3 slot.
 	 *
-	 * @param	$typeID
+	 * @param int $typeID
 	 * @return int The effectID of an item.
 	 */
 	public static function getEffectID($typeID)
@@ -117,7 +120,7 @@ class Info
 	/**
 	 * Retrieves the name of a corporation ID
 	 *
-	 * @param $name
+	 * @param string $name
 	 * @return int The corporationID of a corporation
 	 */
 	public static function getCorpID($name)
@@ -150,7 +153,7 @@ class Info
 	}
 
 	/**
-	 * @param $allianceID
+	 * @param int $allianceID
 	 * @return array
 	 */
 	public static function getCorps($allianceID)
@@ -188,15 +191,20 @@ class Info
 		return $retList;
 	}
 
+	/**
+	 * Gets corporation stats
+	 * @param  int $allianceID
+	 * @param  array $parameters
+	 * @return array
+	 */
 	public static function getCorpStats($allianceID, $parameters)
 	{
 		$corpList = Db::query("SELECT * FROM zz_corporations WHERE allianceID = :alliID ORDER BY name", array(":alliID" => $allianceID));
 		$statList = array();
 		foreach($corpList as $corp)
 		{
-			$p = $parameters;
-			$p["corporationID"] = $corp["corporationID"];
-			$data = self::getCorpDetails($corp["corporationID"], $p);
+			$parameters["corporationID"] = $corp["corporationID"];
+			$data = self::getCorpDetails($corp["corporationID"], $parameters);
 			$statList[$corp["name"]]["corporationName"] = $data["corporationName"];
 			$statList[$corp["name"]]["corporationID"] = $data["corporationID"];
 			$statList[$corp["name"]]["ticker"] = $data["cticker"];
@@ -216,6 +224,11 @@ class Info
 		return $statList;
 	}
 
+	/**
+	 * Adds an alliance
+	 * @param int $id
+	 * @param string $name
+	 */
 	public static function addAlli($id, $name)
 	{
 		if ($id <= 0) return;
@@ -223,13 +236,23 @@ class Info
 				array(":id" => $id, ":name" => $name));
 	}
 
+	/**
+	 * Gets an alliance name
+	 * @param  int $id
+	 * @return string
+	 */
 	public static function getAlliName($id)
 	{
 		return Db::queryField("select name from zz_alliances where allianceID = :id order by memberCount desc limit 1", "name",
 				array(":id" => $id), 3600);
 	}
 
-	public static function getFactionTicker($ticker) //The function name obv. isn't right, since it'll return an id and name
+	/**
+	 * [getFactionTicker description]
+	 * @param  string $ticker
+	 * @return string|null
+	 */
+	public static function getFactionTicker($ticker)
 	{
 		$data = array(
 			"caldari"	=> array("factionID" => "500001", "name" => "Caldari State"), 
@@ -242,6 +265,11 @@ class Info
 		return null;
 	}
 
+	/**
+	 * [getFactionID description]
+	 * @param  string $name
+	 * @return string|bool
+	 */
 	public static function getFactionID($name)
 	{
 		$factions = array("Caldari State" => 500001, "Minmatar Republic" => 500002, "Amarr Empire" => 500003, "Gallente Federation" => 500004);
@@ -251,6 +279,11 @@ class Info
 		return false;
 	}
 
+	/**
+	 * [getFactionName description]
+	 * @param  int $id
+	 * @return string|bool
+	 */
 	public static function getFactionName($id)
 	{
 		$factions = array(500001 => "Caldari State", 500002 => "Minmatar Republic", 500003 => "Amarr Empire", 500004 => "Gallente Federation");
@@ -260,6 +293,11 @@ class Info
 		return false;
 	}
 
+	/**
+	 * [getRegionName description]
+	 * @param  int $id
+	 * @return string
+	 */
 	public static function getRegionName($id)
 	{
 		$data = Db::queryField("select regionName from ccp_regions where regionID = :id", "regionName",
@@ -267,12 +305,22 @@ class Info
 		return $data;
 	}
 
+	/**
+	 * [getRegionID description]
+	 * @param  string $name
+	 * @return string
+	 */
 	public static function getRegionID($name)
 	{
 		return Db::queryField("select regionID from ccp_regions where regionName = :name", "regionID",
 				array(":name" => $name), 3600);
 	}
 
+	/**
+	 * [getRegionIDFromSystemID description]
+	 * @param  int $systemID
+	 * @return int
+	 */
 	public static function getRegionIDFromSystemID($systemID)
 	{
 		$regionID = Db::queryField("select regionID from ccp_systems where solarSystemID = :systemID", "regionID",
@@ -280,6 +328,11 @@ class Info
 		return $regionID;
 	}
 
+	/**
+	 * [getRegionInfoFromSystemID description]
+	 * @param  int $systemID
+	 * @return array
+	 */
 	public static function getRegionInfoFromSystemID($systemID)
 	{
 		$regionID = Db::queryField("select regionID from ccp_systems where solarSystemID = :systemID", "regionID",
@@ -287,6 +340,11 @@ class Info
 		return Db::queryRow("select * from ccp_regions where regionID = :regionID", array(":regionID" => $regionID), 3600);
 	}
 
+	/**
+	 * [getShipId description]
+	 * @param  string $name
+	 * @return int
+	 */
 	public static function getShipId($name)
 	{
 		$shipID = Db::queryField("select typeID from ccp_invTypes where typeName = :name", "typeID",
@@ -298,7 +356,7 @@ class Info
 	 * Attempt to find the name of a corporation in the corporations table.	If not found then attempt to pull the name via an API lookup.
 	 *
 	 * @static
-	 * @param	$id
+	 * @param int $id
 	 * @return string The name of the corp if found, null otherwise.
 	 */
 	public static function getCorpName($id)
@@ -318,12 +376,22 @@ class Info
 		return $name;
 	}
 
+	/**
+	 * [getAlliID description]
+	 * @param  string $name
+	 * @return string
+	 */
 	public static function getAlliID($name)
 	{
 		return Db::queryField("select allianceID from zz_alliances where name = :name order by memberCount desc limit 1", "allianceID",
 				array(":name" => $name), 3600);
 	}
 
+	/**
+	 * [getCharID description]
+	 * @param  string $name
+	 * @return int
+	 */
 	public static function getCharID($name)
 	{
 		if (Bin::get("s:$name", null) != null) return Bin::get("s:$name", null);
@@ -354,6 +422,11 @@ class Info
 		return $id;
 	}
 
+	/**
+	 * [addChar description]
+	 * @param int $id
+	 * @param string $name
+	 */
 	public static function addChar($id, $name)
 	{
 		if ($id <= 0) return;
@@ -365,7 +438,7 @@ class Info
 	 * Attempt to find the name of a character in the characters table.	If not found then attempt to pull the name via an API lookup.
 	 *
 	 * @static
-	 * @param	$id
+	 * @param int $id
 	 * @return string The name of the corp if found, null otherwise.
 	 */
 	public static function getCharName($id)
@@ -389,6 +462,11 @@ class Info
 		return $name;
 	}
 
+	/**
+	 * [getGroupID description]
+	 * @param  int $id
+	 * @return int
+	 */
 	public static function getGroupID($id)
 	{
 		$groupID = Db::queryField("select groupID from ccp_invTypes where typeID = :id", "groupID",
@@ -397,6 +475,11 @@ class Info
 		return $groupID;
 	}
 
+	/**
+	 * [getGroupIdFromName description]
+	 * @param  int $id
+	 * @return int
+	 */
 	public static function getGroupIdFromName($id)
 	{
 		$groupID = Db::queryField("select groupID from ccp_invGroups where groupName = :id", "groupID",
@@ -428,6 +511,12 @@ class Info
 		self::addResults($resultArray, $type, $results);
 	}
 
+	/**
+	 * [addResults description]
+	 * @param array $resultArray
+	 * @param string $type
+	 * @param array $results
+	 */
 	private static function addResults(&$resultArray, $type, $results)
 	{
 		foreach ($results as $result) {
@@ -438,6 +527,10 @@ class Info
 		}
 	}
 
+	/**
+	 * [$entities description]
+	 * @var array
+	 */
 	private static $entities = array(
 			array("alliance", "SELECT allianceID FROM zz_alliances WHERE name "),
 			array("alliance", "SELECT allianceID FROM zz_alliances WHERE ticker "),
@@ -476,6 +569,11 @@ class Info
 		return $retValue;
 	}
 
+	/**
+	 * [findNames description]
+	 * @param  string $search
+	 * @return array
+	 */
 	public static function findNames($search)
 	{
 		$array = self::findEntity($search);
@@ -492,6 +590,11 @@ class Info
 		return $retValue;
 	}
 
+	/**
+	 * Gets a pilots details
+	 * @param  int $id
+	 * @return array
+	 */
 	public static function getPilotDetails($id)
 	{
 		$data = Db::queryRow("select characterID, corporationID, allianceID, factionID from zz_participants where characterID = :id and dttm >= date_sub(now(), interval 7 day) order by killID desc limit 1", array(":id" => $id), 3600);
@@ -503,6 +606,11 @@ class Info
 		return Summary::getPilotSummary($data, $id);
 	}
 
+	/**
+	 * [addCorp description]
+	 * @param int $id
+	 * @param string $name
+	 */
 	public static function addCorp($id, $name)
 	{
 		if ($id <= 0) return;
@@ -510,6 +618,12 @@ class Info
 				array(":id" => $id, ":name" => $name));
 	}
 
+	/**
+	 * [getCorpDetails description]
+	 * @param  int $id
+	 * @param  array  $parameters
+	 * @return array
+	 */
 	public static function getCorpDetails($id, $parameters = array())
 	{
 		$data = Db::queryRow("select corporationID, allianceID, factionID from zz_participants where corporationID = :id  and dttm >= date_sub(now(), interval 7 day) order by killID desc limit 1",  array(":id" => $id), 3600);
@@ -525,6 +639,12 @@ class Info
 		return Summary::getCorpSummary($data, $id, $parameters);
 	}
 
+	/**
+	 * [getAlliDetails description]
+	 * @param  int $id
+	 * @param  array  $parameters
+	 * @return array
+	 */
 	public static function getAlliDetails($id, $parameters = array())
 	{
 		$data = Db::queryRow("select allianceID, factionID from zz_participants where allianceID = :id and dttm >= date_sub(now(), interval 7 day) order by killID desc limit 1", array(":id" => $id), 3600);
@@ -540,6 +660,11 @@ class Info
 		return Summary::getAlliSummary($data, $id, $parameters);
 	}
 
+	/**
+	 * [getFactionDetails description]
+	 * @param  int $id
+	 * @return array
+	 */
 	public static function getFactionDetails($id)
 	{
 		$data["factionID"] = $id;
@@ -547,6 +672,11 @@ class Info
 		return Summary::getFactionSummary($data, $id);
 	}
 
+	/**
+	 * [getSystemDetails description]
+	 * @param  int $id
+	 * @return array
+	 */
 	public static function getSystemDetails($id)
 	{
 		$data = array("solarSystemID" => $id);
@@ -554,6 +684,11 @@ class Info
 		return Summary::getSystemSummary($data, $id);
 	}
 
+	/**
+	 * [getRegionDetails description]
+	 * @param  int $id
+	 * @return array
+	 */
 	public static function getRegionDetails($id)
 	{
 		$data = array("regionID" => $id);
@@ -561,6 +696,11 @@ class Info
 		return Summary::getRegionSummary($data, $id);
 	}
 
+	/**
+	 * [getGroupDetails description]
+	 * @param  int $id
+	 * @return array
+	 */
 	public static function getGroupDetails($id)
 	{
 		$data = array("groupID" => $id);
@@ -568,6 +708,11 @@ class Info
 		return Summary::getGroupSummary($data, $id);
 	}
 
+	/**
+	 * [getShipDetails description]
+	 * @param  int $id
+	 * @return array
+	 */
 	public static function getShipDetails($id)
 	{
 		$data = array("shipTypeID" => $id);
@@ -576,7 +721,11 @@ class Info
 		return Summary::getShipSummary($data, $id);
 	}
 
-
+	/**
+	 * [getSystemsInRegion description]
+	 * @param  int $id
+	 * @return array
+	 */
 	public static function getSystemsInRegion($id)
 	{
 		$result = Db::query("select solarSystemID from ccp_systems where regionID = :id", array(":id" => $id), 3600);
@@ -585,6 +734,10 @@ class Info
 		return $data;
 	}
 
+	/**
+	 * [addInfo description]
+	 * @param array $element
+	 */
 	public static function addInfo(&$element)
 	{
 		if ($element == null) return;
@@ -678,6 +831,11 @@ class Info
 		return $element;
 	}
 
+	/**
+	 * [getSystemColorCode description]
+	 * @param  int $securityLevel
+	 * @return string
+	 */
 	public static function getSystemColorCode($securityLevel)
 	{
 		$sec = number_format($securityLevel, 1);
@@ -709,6 +867,10 @@ class Info
 		return "";
 	}
 
+	/**
+	 * [$effectToSlot description]
+	 * @var array
+	 */
 	public static $effectToSlot = array(
 			"12" => "High Slots",
 			"13" => "Mid Slots",
@@ -733,6 +895,10 @@ class Info
 			"155" => "Fleet Hangar",
 			);
 
+	/**
+	 * [$infernoFlags description]
+	 * @var array
+	 */
 	private static $infernoFlags = array(
 			4 => array(116, 121),
 			12 => array(27, 34), // Highs
@@ -742,6 +908,11 @@ class Info
 			3772 => array(125, 132), // Subs
 			);
 
+	/**
+	 * [getFlagName description]
+	 * @param  string $flag
+	 * @return string
+	 */
 	public static function getFlagName($flag)
 	{
 		// Assuming Inferno Flags
@@ -758,6 +929,11 @@ class Info
 		return self::$effectToSlot["$flagGroup"];
 	}
 
+	/**
+	 * [getSlotCounts description]
+	 * @param  int $shipTypeID
+	 * @return array
+	 */
 	public static function getSlotCounts($shipTypeID)
 	{
 		$result = Db::query("select attributeID, valueInt, valueFloat from ccp_dgmTypeAttributes where typeID = :typeID and attributeID in (12, 13, 14, 1137)",
@@ -782,6 +958,7 @@ class Info
 	/**
 	 * @param string $title
 	 * @param string $field
+	 * @param array $array
 	 */
 	public static function doMakeCommon($title, $field, $array) {
 		$retArray = array();
@@ -798,6 +975,11 @@ class Info
 		return $retArray;
 	}
 
+	/**
+	 * [commentID description]
+	 * @param  int $id
+	 * @return int
+	 */
 	public static function commentID($id)
 	{
 		// Find the old killID or EVE-KILL ID
