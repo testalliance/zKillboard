@@ -19,41 +19,65 @@
 class Summary
 {
 
+	/**
+	 * @param integer $id
+	 */
 	public static function getPilotSummary(&$data, $id, $parameters = array())
 	{
 		return self::getSummary('pilot', 'characterID', $data, $id, $parameters);
 	}
 
+	/**
+	 * @param integer $id
+	 */
 	public static function getCorpSummary(&$data, $id, $parameters = array())
 	{
 		return self::getSummary('corp', 'corporationID', $data, $id, $parameters);
 	}
 
+	/**
+	 * @param integer $id
+	 */
 	public static function getAlliSummary(&$data, $id, $parameters = array())
 	{
 		return self::getSummary('alli', 'allianceID', $data, $id, $parameters);
 	}
 
+	/**
+	 * @param integer $id
+	 */
 	public static function getFactionSummary(&$data, $id, $parameters = array())
 	{
 		return self::getSummary('faction', 'factionID', $data, $id, $parameters);
 	}
 
+	/**
+	 * @param integer $id
+	 */
 	public static function getShipSummary(&$data, $id, $parameters = array())
 	{
 		return self::getSummary('ship', 'shipTypeID', $data, $id, $parameters);
 	}
 
+	/**
+	 * @param integer $id
+	 */
 	public static function getGroupSummary(&$data, $id, $parameters = array())
 	{
 		return self::getSummary('group', 'groupID', $data, $id, $parameters);
 	}
 
+	/**
+	 * @param integer $id
+	 */
 	public static function getRegionSummary(&$data, $id, $parameters = array())
 	{
 		return self::getSummary('region', 'regionID', $data, $id, $parameters);
 	}
 
+	/**
+	 * @param integer $id
+	 */
 	public static function getSystemSummary(&$data, $id, $parameters = array())
 	{
 		return self::getSummary('system', 'solarSystemID', $data, $id, $parameters);

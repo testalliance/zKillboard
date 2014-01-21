@@ -517,7 +517,7 @@ class Parser
 
 	/**
 	 * Initiates the attacker array
-	 * @return array
+	 * @return string
 	 */
 	private static function createAttacker() {
 		return array(

@@ -282,7 +282,7 @@ class Info
 	/**
 	 * [getFactionName description]
 	 * @param  int $id
-	 * @return string|bool
+	 * @return string|false
 	 */
 	public static function getFactionName($id)
 	{
