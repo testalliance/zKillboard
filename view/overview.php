@@ -73,12 +73,12 @@ $losses = $pageType == "losses"  ? Kills::getKills($parameters) : array();
 
 if ($pageType != "solo" || $key == "faction") {
 	$soloKills = array();
-	$soloCount = 0;
+	//$soloCount = 0;
 } else {
 	$soloParams = $parameters;
 	if (!isset($parameters["kills"]) || !isset($parameters["losses"])) $soloParams["mixed"] = true;
 	$soloKills = Kills::getKills($soloParams);
-	$soloCount = Db::queryField("select count(killID) count from zz_participants where " . $map[$key]["column"] . "ID = :id and isVictim = 1 and number_involved = 1", "count", array(":id" => $id), 3600);
+	//$soloCount = Db::queryField("select count(killID) count from zz_participants where " . $map[$key]["column"] . "ID = :id and isVictim = 1 and number_involved = 1", "count", array(":id" => $id), 3600);
 }
 //$soloPages = ceil($soloCount / $limit);
 $solo = Kills::mergeKillArrays($soloKills, array(), $limit, $columnName, $id);

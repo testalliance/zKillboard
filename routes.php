@@ -180,11 +180,6 @@ $app->get("/api/:input+", function($input) use ($app) {
     include( "view/api.php" );
 });
 
-// chart
-$app->get("/chart/:chartID/", function($chartID) use ($app) {
-    include( "view/chart.php" );
-});
-
 // Kills in the last hour
 $app->get("/killslasthour/", function() use ($app) {
     echo number_format(Storage::retrieve("KillsLastHour", null));

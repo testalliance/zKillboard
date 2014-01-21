@@ -56,7 +56,6 @@ class Social
 		$victimInfo = Db::queryRow("select * from zz_participants where killID = :killID and isVictim = 1 and dttm > date_sub(now(), interval 1 day)", array(":killID" => $killID));
 		if ($victimInfo == null) return;
 		$totalPrice = $victimInfo["total_price"];
-		$dttm = $victimInfo["dttm"];
 
 		if (!in_array($victimInfo["characterID"], $laugh)) { // If in laugh array, skip the checks
 			// Check the minimums, min. price and happened in last 12 hours

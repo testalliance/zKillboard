@@ -16,10 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+$alltime = false;
 // $time is an array
 if(!isset($time))
-	$alltime = false;
-
 	$parameters = array("limit" => 10, "kills" => true);
 	switch ($page) {
 		case "monthly":

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-$data = "";
+$date = "";
 $ek = Db::queryField("SELECT mKillID FROM zz_manual_mails WHERE eveKillID = :id", "mKillID", array(":id" => $id), 0);
 $time = Db::query("SELECT dttm, solarSystemID FROM zz_participants WHERE killID = :id", array(":id" => "-".$ek), 0);
 

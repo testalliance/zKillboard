@@ -93,7 +93,6 @@ class cli_feedzKB implements cliCommand
 					continue;
 				}
 
-				$data = array();
 				$data = json_decode($fetchedData);
 				$insertCount = 0;
 

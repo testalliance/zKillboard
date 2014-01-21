@@ -193,7 +193,7 @@ class Summary
 		return $retValue;
 	}
 
-	private static function getEntities(&$kills)
+	/*private static function getEntities(&$kills)
 	{
 		$retValue = array();
 		$retValue["chars"] = array();
@@ -212,7 +212,7 @@ class Summary
 		$retValue["allis"] = array_keys($retValue["allis"]);
 		$retValue["factions"] = array_keys($retValue["factions"]);
 		return $retValue;
-	}
+	}*/
 
 	private static function getStatsKillList(&$kills)
 	{
@@ -249,7 +249,6 @@ class Summary
 	{
 		$results = array();
 		foreach ($array as $hash => $kill) {
-			$pilot = $kill["pilot"];
 			$split = explode("|", $hash);
 			$row = array();
 			$row["shipTypeID"] = $split[0];

@@ -109,7 +109,7 @@ $total = sizeof($storage);
 echo "Records: $total\n";
 $inserts = 0;
 $toBeInserted = 0;
-$wheeStatements = array();
+$whereStatements = array();
 
 foreach($storage as $key=>$fields) {
 	$ids = explode("|", $key);
