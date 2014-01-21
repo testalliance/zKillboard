@@ -285,7 +285,7 @@ class CloudFlare {
     }
 
     public function zone_set($key, $zone, $resolve_to, $subdomains = array()) {
-        $sudomains = implode(",", $subdomains);
+        $subdomains = implode(",", $subdomains);
         $data['act']        = 'zone_set';
         $data['user_key']   = $key;
         $data['zone_name']  = $zone;

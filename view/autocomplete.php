@@ -17,7 +17,7 @@
  */
 
 $query = "";
-$result = array();
+$results = array();
 //get the query value
 if ($app->request()->isPost())
 {

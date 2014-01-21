@@ -28,8 +28,8 @@ class Related
 
 		// Determine which entity got on the most killmails
 		$involvedArray = self::findLosers($kills, $typeColumn = "allianceID");
-		if (sizeof($involvedArray) < 2) $involvedArray = self::checkCounts($kills, $typeColumn = "corporationID");
-		if (sizeof($involvedArray) < 2) $involvedArray = self::checkCounts($kills, $typeColumn = "characterID");
+		//if (sizeof($involvedArray) < 2) $involvedArray = self::checkCounts($kills, $typeColumn = "corporationID");
+		//if (sizeof($involvedArray) < 2) $involvedArray = self::checkCounts($kills, $typeColumn = "characterID");
 		// Sort the array
 		uasort($involvedArray, "Related::involvedArraySort");
 		reset($involvedArray);

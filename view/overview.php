@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-if (@!is_array($input)) $input = array();
+if (@!is_array($input) || !isset($input)) $input = array();
 
 @$key = $input[0];
 @$id = $input[1];

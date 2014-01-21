@@ -51,7 +51,6 @@ interface cliCommand {
     public function execute($parameters, $db);
 }
 
-$curTime = time();
 $cronInfo = array();
 
 $files = scandir("$base/cli");
@@ -94,7 +93,8 @@ foreach($cronInfo as $command => $info)
 
 function runCron($command, $interval, $args)
 {
-    global $base, $curTime;
+    global $base;
+    $curTime = time();
 
     if(is_array($args))
         array_unshift($args, $command);

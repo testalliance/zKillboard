@@ -30,6 +30,7 @@ if($_POST)
 	$reply = NULL;
 	$report = NULL;
 	$delete = NULL;
+	$depeteapi = NULL;
 
 	if(isset($_POST["status"]))
 		$status = $_POST["status"];
@@ -39,8 +40,6 @@ if($_POST)
 		$report = $_POST["report"];
 	if(isset($_POST["delete"]))
 		$delete = $_POST["delete"];
-	if(isset($_POST["userID"]))
-		$userID = $_POST["userID"];
 	if(isset($_POST["manualpull"]))
 		$manualpull = $_POST["manualpull"];
 	if(isset($_POST["deleteapi"]))

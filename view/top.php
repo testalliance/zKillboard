@@ -17,6 +17,7 @@
  */
 
 $alltime = false;
+$parameters = array();
 // $time is an array
 if(!isset($time))
 	$parameters = array("limit" => 10, "kills" => true);
