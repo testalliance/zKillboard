@@ -27,7 +27,7 @@ class MemcachedCache extends AbstractCache
 	{
 		global $memcacheServer, $memcachePort;
 
-		$this->mc = new Memcached();
+		$this->mc = new Memcached("zKB");
 		if(substr($memcacheServer, 0, 7) == "unix://")
 			$this->mc->addServer(substr($memcacheServer, 7), 0);
 		else
