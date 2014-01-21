@@ -58,7 +58,7 @@ class cli_hourly implements cliCommand
 			$actualKills -= 1000000;
 			if ($actualKills > 0 && Storage::retrieve("{$iteration}mAnnounced", null) == null) {
 				Storage::store("{$iteration}mAnnounced", true);
-				$message = "|g|Woohoo! |r|$iteration million kills surpassed!";
+				$message = "|g|Woohoo!|r| $iteration million kills surpassed!";
 				Log::irc($message);
 				Log::ircAdmin($message);
 			}
@@ -82,14 +82,16 @@ class cli_hourly implements cliCommand
 			foreach($row as $column) $tables[] = $column;
 		}
 
-		$tableIsGood = array("OK", "Table is already up to date", "The storage engine for the table doesn't support check");
+		$tableisgood = array("OK", "Table is already up to date", "The storage engine for the table doesn't support check");
 		$count = 0;
 		foreach ($tables as $table) {
 			$count++;
-			continue;
-			if (Util::isMaintenanceMode()) continue;
+
+			if (Util::isMaintenanceMode())
+				continue;
+
 			$result = $db->queryRow("analyze table $table");
-			if (!in_array($result["Msg_text"], $tableIsGood)) Log::ircAdmin("|r|Error analyzing table |g|$table|r|: " . $result["Msg_text"]);
+			if (!in_array($result["Msg_text"], $tableisgood)) Log::ircAdmin("|r|Error analyzing table |g|$table|r|: " . $result["Msg_text"]);
 		}
 
 	}
