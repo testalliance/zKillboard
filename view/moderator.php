@@ -75,25 +75,23 @@ if($_POST)
 	{
 		if($delete < 0)
 		{
-			if(Util::deleteKill($delete))
-			{
-				Db::execute("DELETE FROM zz_tickets WHERE id = :id", array(":id" => $id));
-				Db::execute("DELETE FROM zz_tickets_replies WHERE belongsTo = :belongsTo", array(":belongsTo" => $id));
-				$app->redirect("/moderator/reportedkills/");
-			}
-			else
-				$message = "Error, kill could not be deleted";
+			Util::deleteKill($delete);
+			Db::execute("DELETE FROM zz_tickets WHERE id = :id", array(":id" => $id));
+			Db::execute("DELETE FROM zz_tickets_replies WHERE belongsTo = :belongsTo", array(":belongsTo" => $id));
+			$app->redirect("/moderator/reportedkills/");
 		}
 		$message = "Error, kill is positive, and thus api verified.. something is wrong!";
 	}
-  if(isset($manualpull) )
-  {
-  	$message = "ah";
-  }
-  if(isset($deleteapi)){
-    Api::deleteKey($deleteapi);
-    $message = "The Api had been deleted";
-  }
+
+	if(isset($manualpull) )
+	{
+		$message = "ah";
+	}
+
+	if(isset($deleteapi)){
+		Api::deleteKey($deleteapi);
+		$message = "The Api had been deleted";
+	}
 
 }
 
