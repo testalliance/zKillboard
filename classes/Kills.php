@@ -66,7 +66,7 @@ class Kills
 		$cacheTime = max(120, $cacheTime);
 		if (array_key_exists("log", $parameters)) Db::log($query, array());
 		$kills = Db::query($query, array(), $cacheTime);
-		$merged = Kills::getKillsDetails($kills);
+		$merged = self::getKillsDetails($kills);
 		return $merged;
 	}
 
@@ -91,9 +91,9 @@ class Kills
 			$victims = Db::query("select * from zz_participants where killID in ($imploded) and isVictim = 1", array(), 300);
 			$finalBlows = Db::query("select * from zz_participants where killID in ($imploded) and finalBlow = 1", array(), 300);
 			$info = $victims;
-			$merged = Kills::killMerge($merged, "victim", $victims);
-			$merged = Kills::killMerge($merged, "finalBlow", $finalBlows);
-			$merged = Kills::killMerge($merged, "info", $info);
+			$merged = self::killMerge($merged, "victim", $victims);
+			$merged = self::killMerge($merged, "finalBlow", $finalBlows);
+			$merged = self::killMerge($merged, "info", $info);
 		}
 		return $merged;
 	}
@@ -129,7 +129,7 @@ class Kills
 		$victim = Db::queryRow("select * from zz_participants where killID = :killID and isVictim = 1", array(":killID" => $killID));
 		$kill = $victim;
 		$involved = Db::query("select * from zz_participants where killID = :killID and isVictim = 0 order by damage desc", array(":killID" => $killID));
-		$items = Kills::getItems($killID);
+		$items = self::getItems($killID);
 
 		Info::addInfo($kill);
 		Info::addInfo($victim);
@@ -149,7 +149,7 @@ class Kills
 		$killArray = json_decode($json, true);
 		$killTime = $killArray["killTime"];
 		$items = array();
-		Kills::addItems($items, $killArray["items"], $killTime);
+		self::addItems($items, $killArray["items"], $killTime);
 		return $items;
 	}
 
@@ -164,7 +164,7 @@ class Kills
 			$itemArray[] = $item;
 			$subItems = isset($item["items"]) ? $item["items"] : null;
 			unset($item["items"]);
-			if ($subItems != null) Kills::addItems($itemArray, $subItems, $killTime, 1, $item["flag"]);
+			if ($subItems != null) self::addItems($itemArray, $subItems, $killTime, 1, $item["flag"]);
 		}
 	}
 
@@ -234,7 +234,8 @@ class Kills
 
 		// Check if the mail has already been generated, then return it from the cache..
 		$Cache = Cache::get($cacheName);
-		//if($Cache) return $Cache;
+		if($Cache)
+			return $Cache;
 
 		// Find all groupIDs where they contain Deadspace
 		$deadspaceIDs = array();
@@ -383,6 +384,7 @@ class Kills
 
 		// Store the generated mail in cache
 		Cache::set($cacheName, $mail, 604800);
+
 		return $mail;
 	}
 

@@ -30,7 +30,6 @@ class cli_twitterSearch implements cliCommand
 
 	public function execute($parameters, $db)
 	{
-		$message = array();
 		$url = "https://twitter.com/eve_kill/status/";
 		$storageName = "twitterLatestSearchID";
 

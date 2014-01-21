@@ -30,7 +30,7 @@ if($_POST)
         $check = User::checkLogin($username, $password);
         if($check) // Success
         {
-            $message = User::setLogin($username, $password, $autologin);
+            User::setLogin($username, $password, $autologin);
 			$ignoreUris = array("/register/", "/login/", "/logout/");
             if (isset($requesturi) && !in_array($requesturi, $ignoreUris)) {
 				$app->redirect($requesturi);

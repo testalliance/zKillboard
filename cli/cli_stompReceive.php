@@ -47,7 +47,6 @@ class cli_stompReceive implements cliCommand
 		$trackers = $db->query("select locker, content from zz_users_config where locker like 'tracker_%' and id = :id", array(":id" => $adminID), array(), 0);
 		$topics = array();
 		foreach ($trackers as $row) {
-			$entityTopic = "";
 			$entityType = str_replace("tracker_", "", $row["locker"]);
 			$entities = json_decode($row["content"], true);
 			foreach($entities as $entity) {

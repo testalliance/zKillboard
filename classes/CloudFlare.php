@@ -284,9 +284,8 @@ class CloudFlare {
         return $this->http_post($data, 'HOST');
     }
 
-    public function zone_set($key, $zone, $resolve_to, $subdomains) {
-        if (is_array($subdomains))
-            $sudomains = implode(",", $subdomains);
+    public function zone_set($key, $zone, $resolve_to, $subdomains = array()) {
+        $sudomains = implode(",", $subdomains);
         $data['act']        = 'zone_set';
         $data['user_key']   = $key;
         $data['zone_name']  = $zone;
@@ -308,7 +307,7 @@ class CloudFlare {
     public function user_auth($email, $pass, $id = '') {
         $data['act']              = 'user_auth';
         $data['cloudflare_email'] = $email;
-        $data['cloudflare_pass']  = $password;
+        $data['cloudflare_pass']  = $pass;
         $data['unique_id']        = $id;
         return $this->http_post($data, 'HOST');
     }

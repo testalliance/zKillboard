@@ -736,7 +736,6 @@ class Parser
 
 	private static function validKill(&$kill)
 	{
-		$killID = $kill["killID"];
 		$victimCorp = $kill["victim"]["corporationID"] < 1000999 ? 0 : $kill["victim"]["corporationID"];
 		$victimAlli = $kill["victim"]["allianceID"];
 

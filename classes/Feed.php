@@ -59,7 +59,6 @@ class Feed
 
 		if (array_key_exists("limit", $parameters) && $parameters["limit"] < 200) {
 			$limit = $parameters["limit"];
-			$page = 1;
 			$offset = 0;
 		} else {
 			$limit = 200; // Hardcoded, yes. This number should never change. -- Squizz
@@ -88,7 +87,6 @@ class Feed
 	public static function getJSON($kills, $parameters, $orderDirection)
 	{
 		$retValue = array();
-		$killIDS = array();
 
 		foreach ($kills as $kill) {
 			$killID = $kill["killID"];

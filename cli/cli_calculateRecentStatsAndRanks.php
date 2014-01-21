@@ -94,7 +94,6 @@ class cli_calculateRecentStatsAndRanks implements cliCommand
 			foreach($rankColumns as $rankColumn) {
 				$typeColumn = $rankColumn[0];
 				$rank = $rankColumn[1];
-				$rankOrder = $rankColumn[2];
 
 				if (!in_array($typeColumn, $indexed)) {
 					$indexed[] = $typeColumn;

@@ -70,7 +70,6 @@ try
 	$class = new $className();
 
 	if(!is_a($class, "cliCommand")) CLI::out("|r| Module $command does not implement interface cliCommand", true);
-	$base = __DIR__;
 	Db::execute("set session wait_timeout = 600");
 	$db = new Db();
 	$class->execute($argv, $db);

@@ -51,7 +51,6 @@ class cli_updateCharacters implements cliCommand
 		foreach ($result as $row) {
 			if (Util::isMaintenanceMode()) return;
 			$id = $row["characterID"];
-			$oName = $row["name"];
 			$db->execute("update zz_characters set lastUpdated = now() where characterID = :id", array(":id" => $id));
 			if ($id >= 2100000000 && $id < 2199999999) continue; // Dust Characters
 			if ($id >= 30000000 && $id <= 31004590) continue; // NPC's

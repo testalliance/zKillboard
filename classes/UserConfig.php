@@ -22,11 +22,11 @@ class UserConfig
 
 	private static function loadUserConfig($id)
 	{
-		if (UserConfig::$userConfig != null) return;
-		UserConfig::$userConfig = array();
+		if (self::$userConfig != null) return;
+		self::$userConfig = array();
 		$result = Db::query("select * from zz_users_config where id = :id", array(":id" => $id), 0);
 		foreach ($result as $row) {
-			UserConfig::$userConfig[$row["locker"]] = $row["content"];
+			self::$userConfig[$row["locker"]] = $row["content"];
 		}
 	}
 
@@ -34,9 +34,9 @@ class UserConfig
 	{
 		if (!User::isLoggedIn()) return $defaultValue;
 		$id = User::getUserID();
-		UserConfig::loadUserConfig($id);
+		self::loadUserConfig($id);
 
-		$value = isset(UserConfig::$userConfig["$key"]) ? UserConfig::$userConfig["$key"] : null;
+		$value = isset(self::$userConfig["$key"]) ? self::$userConfig["$key"] : null;
 		if ($value === null) return $defaultValue;
 		$value = json_decode($value, true);
 		return $value;
@@ -47,19 +47,19 @@ class UserConfig
 		if (!user::isLoggedIn()) return null;
 
 		$id = User::getUserID();
-		UserConfig::loadUserConfig($id);
+		self::loadUserConfig($id);
 
-		foreach(UserConfig::$userConfig as $key => $value)
-			UserConfig::$userConfig[$key] = json_decode($value, true);
+		foreach(self::$userConfig as $key => $value)
+			self::$userConfig[$key] = json_decode($value, true);
 
-		return UserConfig::$userConfig;
+		return self::$userConfig;
 	}
 
 	public static function set($key, $value)
 	{
 		if (!User::isLoggedIn()) throw new Exception("User is not logged in.");
 		$id = User::getUserID();
-		UserConfig::$userConfig = null;
+		self::$userConfig = null;
 
 		if (is_null($value) || (is_string($value) && strlen(trim($value)) == 0)) {
 			// Just remove the row and let the defaults take over

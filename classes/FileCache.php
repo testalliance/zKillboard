@@ -213,7 +213,7 @@ class FileCache extends AbstractCache
 			$data = @file_get_contents($this->cacheDir.$key);
 		$f = explode("%", $data, 2); // We only want the first occurance of % exploded, not everything else aswell.
 		$age = array_shift($f);
-		$data = implode($f);
+		$data = implode($f, 1); // Only want a single piece
 		return array("age" => (int) $age, "data" => $data);
 	}
 

@@ -18,6 +18,8 @@
 
 if($_POST)
 {
+    $message = "";
+    $messagetype = "";
     $password = "";
     $password2 = "";
     if(isset($_POST["password"]))

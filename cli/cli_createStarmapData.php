@@ -61,7 +61,7 @@ class cli_createStarmapData implements cliCommand
         if (is_array($parameters)) {
             switch(@$parameters[0]) {
                 case 'ships':
-                    $this->generateShipDataFile();
+                    $this->generateShipDataFile($db);
                 break;
 
                 case 'systems':

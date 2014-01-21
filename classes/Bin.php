@@ -33,7 +33,7 @@ class Bin
 	 */
 	public static function get($name, $default = null)
 	{
-		if (isset(Bin::$bin[$name])) return Bin::$bin[$name];
+		if (isset(self::$bin[$name])) return self::$bin[$name];
 		return $default;
 	}
 
@@ -47,6 +47,6 @@ class Bin
 	 */
 	public static function set($name, $value)
 	{
-		Bin::$bin[$name] = $value;
+		self::$bin[$name] = $value;
 	}
 }

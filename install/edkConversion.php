@@ -40,20 +40,20 @@ $currentSubSlot = 125;
 $zkbDb = new mysqli($db_host, $db_user, $db_pass, $db_zkb_db);
 if($zkbDb->connect_errno)
 {
-	die("ZKB connect error");											  
-}															  
-															   
-$zkbDb->autocommit(false);												 
-															   
-$qry = DBFactory::getDBQuery();											    
-$qry->execute("select kll.kll_id from kb3_kills as kll order by kll.kll_id desc");					 
-															   
-$rows = array();													   
-while($row = $qry->getRow())											       
-	$rows[] = $row;												    
-															   
-foreach($rows as $row)												     
-{															  
+	die("ZKB connect error");
+}
+
+$zkbDb->autocommit(false);
+
+$qry = DBFactory::getDBQuery();
+$qry->execute("select kll.kll_id from kb3_kills as kll order by kll.kll_id desc");
+
+$rows = array();
+while($row = $qry->getRow())
+	$rows[] = $row;
+
+foreach($rows as $row)
+{
 	$edkKill = new Kill($row["kll_id"]);
 
 	$kill = array(

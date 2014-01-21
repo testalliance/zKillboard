@@ -23,24 +23,6 @@ class Price
 		return Db::execute("replace into zz_prices (typeID, price) values (:typeID, :price)", array(":typeID" => $typeID, ":price" => $price));
 	}
 
-	public static function updatePrice($killID, $tempTables = false)
-	{
-		$temp = $tempTables ? "_temporary" : "";
-		$shipTypeID = Db::queryField("select shipTypeID from zz_participants$temp where isVictim = 1 and killID = :killID", "shipTypeID", array(":killID" => $killID), 0);
-
-		$total = $shipTypeID ? self::getItemPrice($shipTypeID) : 0;
-		if ($items) foreach ($items as $item) {
-			$typeID = $item["typeID"];
-			$price = self::getItemPrice($typeID);
-			$total += $price * ($item["qtyDropped"] + $item["qtyDestroyed"]);
-		}
-
-		Db::execute("update zz_participants$temp set total_price = :total where killID = :killID", array(":killID" => $killID, ":total" => $total));
-
-		return $total;
-	}
-
-
 	/**
 	 * Obtain the price of an item.
 	 *
@@ -53,10 +35,10 @@ class Price
 		if (in_array($typeID, array(588, 596, 601, 670, 606, 33328))) return 10000; // Pods and noobships
 		if (in_array($typeID, array(25, 51, 29148, 3468))) return 1; // Male Corpse, Female Corpse, Bookmarks, Plastic Wrap
 
-		$price = Price::getDatabasePrice($typeID);
-		if ($price == 0) $price = Price::getMarketPrice($typeID);
-		if ($price == 0) $price = Price::getMarketPrice($typeID, false);
-		if ($price == 0) $price = Price::getItemBasePrice($typeID);
+		$price = self::getDatabasePrice($typeID);
+		if ($price == 0) $price = self::getMarketPrice($typeID);
+		if ($price == 0) $price = self::getMarketPrice($typeID, false);
+		if ($price == 0) $price = self::getItemBasePrice($typeID);
 		if ($price == 0) $price = 0.01; // Give up
 
 		return $price;
@@ -84,7 +66,7 @@ class Price
 	{
 		// Market failed, faction pricing failed, do we have a basePrice in the database?
 		$price = Db::queryField("select basePrice from ccp_invTypes where typeID = :typeID", "basePrice", array(":typeID" => $typeID));
-		Price::storeItemPrice($typeID, $price);
+		self::storeItemPrice($typeID, $price);
 		if ($price != null) return $price;
 	}
 
@@ -122,7 +104,7 @@ class Price
 			$price = $allMedian;
 			if ($price == 0 || ($sellMedian / $allMedian) > 2) $price = $sellMedian;
 			if ($price !== null && $price >= 0.01) {
-				Price::storeItemPrice($typeID, $price);
+				self::storeItemPrice($typeID, $price);
 				return $price;
 			}
 		} catch (Exception $ex) {

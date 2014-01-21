@@ -24,10 +24,9 @@ class Related
 
 		$key = "related:$key";
 		$mc = Cache::get($key);
-		//if ($mc) return $mc;
+		if ($mc) return $mc;
 
 		// Determine which entity got on the most killmails
-		$typeColumn = "";
 		$involvedArray = self::findLosers($kills, $typeColumn = "allianceID");
 		if (sizeof($involvedArray) < 2) $involvedArray = self::checkCounts($kills, $typeColumn = "corporationID");
 		if (sizeof($involvedArray) < 2) $involvedArray = self::checkCounts($kills, $typeColumn = "characterID");
@@ -40,7 +39,6 @@ class Related
 		$neutrals = array_keys($involvedArray);
 		while (sizeof($neutrals)) {
 			$entity = $neutrals[0];
-			$currentArray = null;
 			if (!in_array($entity, $teamB) && !in_array($entity, $teamB)) $currentArray = "B";
 			else if (in_array($entity, $teamB)) $currentArray = "B";
 			else $currentArray = "A";

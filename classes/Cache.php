@@ -66,7 +66,7 @@ class Cache
 	 */
 	public static function getClass()
 	{
-		return get_class(Cache::getCache());
+		return get_class(self::getCache());
 	}
 
 	/**
@@ -79,7 +79,7 @@ class Cache
 	 */
 	public static function set($key, $value, $timeout = '3600')
 	{
-		$cache = Cache::getCache();
+		$cache = self::getCache();
 		return $cache->set($key, $value, $timeout);
 	}
 
@@ -91,7 +91,7 @@ class Cache
 	 */
 	public static function get($key)
 	{
-		$cache = Cache::getCache();
+		$cache = self::getCache();
 		return $cache->get($key);
 	}
 
@@ -103,7 +103,7 @@ class Cache
 	 */
 	public static function delete($key)
 	{
-		$cache = Cache::getCache();
+		$cache = self::getCache();
 		return $cache->delete($key);
 	}
 
@@ -117,7 +117,7 @@ class Cache
 	 */
 	public static function replace($key, $value, $timeout = '3600')
 	{
-		$cache = Cache::getCache();
+		$cache = self::getCache();
 		return $cache->replace($key, $value, $timeout);
 	}
 
@@ -130,7 +130,7 @@ class Cache
 	 */
 	public static function increment($key, $timeout = 3600)
 	{
-		$cache = Cache::getCache();
+		$cache = self::getCache();
 		return $cache->increment($key, 1, $timeout);
 	}
 
@@ -143,7 +143,7 @@ class Cache
 	 */
 	public static function decrement($key, $timeout = 3600)
 	{
-		$cache = Cache::getCache();
+		$cache = self::getCache();
 		return $cache->decrement($key, 1, $timeout);
 	}
 
@@ -154,7 +154,7 @@ class Cache
 	 */
 	public static function flush()
 	{
-		$cache = Cache::getCache();
+		$cache = self::getCache();
 		return $cache->flush();
 	}
 }

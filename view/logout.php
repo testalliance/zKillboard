@@ -17,6 +17,7 @@
  */
 
 global $cookie_name;
+$requesturi = "";
 if(isset($_SERVER["HTTP_REFERER"])) $requesturi = $_SERVER["HTTP_REFERER"];
 $sessionCookie = $app->getEncryptedCookie($cookie_name, false);
 // remove the entry from the database

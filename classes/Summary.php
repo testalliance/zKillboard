@@ -21,42 +21,42 @@ class Summary
 
 	public static function getPilotSummary(&$data, $id, $parameters = array())
 	{
-		return Summary::getSummary('pilot', 'characterID', $data, $id, $parameters);
+		return self::getSummary('pilot', 'characterID', $data, $id, $parameters);
 	}
 
 	public static function getCorpSummary(&$data, $id, $parameters = array())
 	{
-		return Summary::getSummary('corp', 'corporationID', $data, $id, $parameters);
+		return self::getSummary('corp', 'corporationID', $data, $id, $parameters);
 	}
 
 	public static function getAlliSummary(&$data, $id, $parameters = array())
 	{
-		return Summary::getSummary('alli', 'allianceID', $data, $id, $parameters);
+		return self::getSummary('alli', 'allianceID', $data, $id, $parameters);
 	}
 
 	public static function getFactionSummary(&$data, $id, $parameters = array())
 	{
-		return Summary::getSummary('faction', 'factionID', $data, $id, $parameters);
+		return self::getSummary('faction', 'factionID', $data, $id, $parameters);
 	}
 
 	public static function getShipSummary(&$data, $id, $parameters = array())
 	{
-		return Summary::getSummary('ship', 'shipTypeID', $data, $id, $parameters);
+		return self::getSummary('ship', 'shipTypeID', $data, $id, $parameters);
 	}
 
 	public static function getGroupSummary(&$data, $id, $parameters = array())
 	{
-		return Summary::getSummary('group', 'groupID', $data, $id, $parameters);
+		return self::getSummary('group', 'groupID', $data, $id, $parameters);
 	}
 
 	public static function getRegionSummary(&$data, $id, $parameters = array())
 	{
-		return Summary::getSummary('region', 'regionID', $data, $id, $parameters);
+		return self::getSummary('region', 'regionID', $data, $id, $parameters);
 	}
 
 	public static function getSystemSummary(&$data, $id, $parameters = array())
 	{
-		return Summary::getSummary('system', 'solarSystemID', $data, $id, $parameters);
+		return self::getSummary('system', 'solarSystemID', $data, $id, $parameters);
 	}
 
 	/**
@@ -69,6 +69,7 @@ class Summary
 		$mc = Cache::get($key);
 		if ($mc) return $mc;
 
+		$stats = array();
 		$rank = Db::queryRow("select * from zz_ranks where type = :type and typeID = :id", array(":type" => $type, ":id" => $id), 300);
 		$recentRank = Db::queryField("select overallRank from zz_ranks_recent where type = :type and typeID = :id", "overallRank", array(":type" => $type, ":id" => $id), 300);
 		if (false && isset($parameters["year"]) && (isset($parameters["week"]) || isset($parameters["month"]))) {
@@ -132,7 +133,7 @@ class Summary
 
 		$key = "related:$key";
 		$mc = Cache::get($key);
-		//if ($mc) return $mc;
+		if ($mc) return $mc;
 
 		$teamAKills = array();
 		$teamBKills = array();
@@ -140,31 +141,31 @@ class Summary
 		$teamBList = array();
 		$killHash = array();
 
-		Summary::determineSides($kills, $teamAKills, $teamBKills);
+		self::determineSides($kills, $teamAKills, $teamBKills);
 		foreach ($kills as $kill) {
-			Summary::addRelatedPilots($killHash, $kill, $kill["victim"]);
+			self::addRelatedPilots($killHash, $kill, $kill["victim"]);
 		}
-		$teamAEntities = Summary::getEntities($teamAKills);
-		$teamBEntities = Summary::getEntities($teamBKills);
+		//$teamAEntities = self::getEntities($teamAKills);
+		//$teamBEntities = self::getEntities($teamBKills);
 		//$killHash = array_keys($killHash);
 
-		$teamATotals = Summary::getStatsKillList($teamAKills);
-		$teamBTotals = Summary::getStatsKillList($teamBKills);
+		$teamATotals = self::getStatsKillList($teamAKills);
+		$teamBTotals = self::getStatsKillList($teamBKills);
 
-		Summary::hashPilots($teamBKills, $teamAKills, $teamBList, $teamAList);
-		Summary::hashPilots($teamAKills, $teamBKills, $teamAList, $teamBList);
+		self::hashPilots($teamBKills, $teamAKills, $teamBList, $teamAList);
+		self::hashPilots($teamAKills, $teamBKills, $teamAList, $teamBList);
 
-		$teamATotals["pilotCount"] = Summary::getUniquePilotCount($teamAList);
-		$teamBTotals["pilotCount"] = Summary::getUniquePilotCount($teamBList);
+		$teamATotals["pilotCount"] = self::getUniquePilotCount($teamAList);
+		$teamBTotals["pilotCount"] = self::getUniquePilotCount($teamBList);
 
 		foreach ($teamAList as $a => $value) if (in_array($a, array_keys($teamBList))) unset($teamAList[$a]);
 		foreach ($teamBList as $b => $value) if (in_array($b, array_keys($teamAList))) unset($teamBList[$b]);
 
-		uksort($teamAList, "Summary::shipGroupSort");
-		uksort($teamBList, "Summary::shipGroupSort");
+		uksort($teamAList, "self::shipGroupSort");
+		uksort($teamBList, "self::shipGroupSort");
 
-		$teamAList = Summary::addInfo($teamAList, $killHash);
-		$teamBList = Summary::addInfo($teamBList, $killHash);
+		$teamAList = self::addInfo($teamAList, $killHash);
+		$teamBList = self::addInfo($teamBList, $killHash);
 
 
 		$retValue = array(
@@ -180,8 +181,8 @@ class Summary
 					),
 				);
 
-		$teamAScore = log($retValue["teamA"]["totals"]["total_price"] + 1) * (log($retValue["teamA"]["totals"]["total_points"]) + 1);
-		$teamBScore = log($retValue["teamB"]["totals"]["total_price"] + 1) * (log($retValue["teamA"]["totals"]["total_points"]) + 1);
+		//$teamAScore = log($retValue["teamA"]["totals"]["total_price"] + 1) * (log($retValue["teamA"]["totals"]["total_points"]) + 1);
+		//$teamBScore = log($retValue["teamB"]["totals"]["total_price"] + 1) * (log($retValue["teamA"]["totals"]["total_points"]) + 1);
 		/*if ($teamBScore > $teamAScore) {
 		  $temp = $retValue["teamB"];
 		  $retValue["teamB"] = $retValue["teamA"];
@@ -249,7 +250,6 @@ class Summary
 		$results = array();
 		foreach ($array as $hash => $kill) {
 			$pilot = $kill["pilot"];
-			$killID = $pilot["killID"];
 			$split = explode("|", $hash);
 			$row = array();
 			$row["shipTypeID"] = $split[0];
@@ -286,15 +286,15 @@ class Summary
 			$victim = $kill["victim"];
 			$price = $kill["info"]["total_price"];
 			$points = $kill["info"]["points"];
-			Summary::increment($chars, $victim["characterID"], $price, $points);
-			Summary::increment($corps, $victim["corporationID"], $price, $points);
-			Summary::increment($allis, $victim["allianceID"], $price, $points);
-			Summary::increment($factions, $victim["factionID"], $price, $points);
+			self::increment($chars, $victim["characterID"], $price, $points);
+			self::increment($corps, $victim["corporationID"], $price, $points);
+			self::increment($allis, $victim["allianceID"], $price, $points);
+			self::increment($factions, $victim["factionID"], $price, $points);
 		}
-		if (sizeof($factions) > 1) Summary::filterKills($kills, $teamB, $teamA, "factionID", $factions, "F");
-		else if (sizeof($allis)) Summary::filterKills($kills, $teamB, $teamA, "allianceID", $allis, "A");
-		else if (sizeof($corps)) Summary::filterKills($kills, $teamB, $teamA, "corporationID", $corps, "C");
-		else if (sizeof($chars)) Summary::filterKills($kills, $teamB, $teamA, "characterID", $chars, "P");
+		if (sizeof($factions) > 1) self::filterKills($kills, $teamB, $teamA, "factionID", $factions, "F");
+		else if (sizeof($allis)) self::filterKills($kills, $teamB, $teamA, "allianceID", $allis, "A");
+		else if (sizeof($corps)) self::filterKills($kills, $teamB, $teamA, "corporationID", $corps, "C");
+		else if (sizeof($chars)) self::filterKills($kills, $teamB, $teamA, "characterID", $chars, "P");
 	}
 
 	/**
@@ -351,13 +351,12 @@ class Summary
 		}
 
 		foreach ($kills as $killID => $kill) {
-			$detail = $kill['info'];
 			$victim = $kill['victim'];
 			$characterID = $victim["characterID"];
 			$shipTypeID = $victim["shipTypeID"];
 			if (($shipTypeID == 0 || $shipTypeID == 670) && in_array($characterID, $pilotsAdded)) continue;
 			if ($shipTypeID != 670 && $shipTypeID != 0) $pilotsAdded[] = $characterID;
-			Summary::addRelatedPilots($teamBs, $kill, $victim);
+			self::addRelatedPilots($teamBs, $kill, $victim);
 
 			$attackers = Db::query("select * from zz_participants where killID = :killID and isVictim = '0'",
 					array(":killID" => $killID), 3600);
@@ -368,11 +367,11 @@ class Summary
 				if ($attacker["allianceID"] != 0 && in_array($attacker["allianceID"], $validEntities["allis"])) continue;
 				if (in_array($attacker["corporationID"], $validEntities["corps"])) continue;
 
-				if ($shipTypeID != 0 && $shipTypeID != 670) Summary::addRelatedPilots($teamAs, $kill, $attacker);
+				if ($shipTypeID != 0 && $shipTypeID != 670) self::addRelatedPilots($teamAs, $kill, $attacker);
 				if (!in_array($attacker["characterID"], $pilotsAdded)) $pilotsAdded[] = $attacker["characterID"];
 			}
 			foreach ($attackers as $attacker) {
-				//if (!in_array($attacker["characterID"], $pilotsAdded)) Summary::addRelatedPilots($teamAs, $kill, $attacker);
+				//if (!in_array($attacker["characterID"], $pilotsAdded)) self::addRelatedPilots($teamAs, $kill, $attacker);
 			}
 		}
 	}

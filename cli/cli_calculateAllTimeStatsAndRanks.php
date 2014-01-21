@@ -92,7 +92,6 @@ class cli_calculateAllTimeStatsAndRanks implements cliCommand
 			foreach($rankColumns as $rankColumn) {
 				$typeColumn = $rankColumn[0];
 				$rank = $rankColumn[1];
-				$rankOrder = $rankColumn[2];
 
 				if (!in_array($typeColumn, $indexed)) {
 					$indexed[] = $typeColumn;
@@ -131,7 +130,7 @@ class cli_calculateAllTimeStatsAndRanks implements cliCommand
 			$groupID = Info::getGroupID($shipTypeID);
 			if($groupID == 0) continue;
 			Log::log("Updating $shipTypeID to group $groupID");
-			$affected = $db->execute("update zz_participants set groupID = $groupID where groupID = 0 and shipTypeID = $shipTypeID");
+			$db->execute("update zz_participants set groupID = $groupID where groupID = 0 and shipTypeID = $shipTypeID");
 		}
 
 		$db->execute("set session wait_timeout = 6000");

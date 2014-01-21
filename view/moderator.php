@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-$info = "";
 $message = "";
 if (!User::isLoggedIn()) {
     $app->render("login.html");
@@ -29,7 +28,6 @@ if($_POST)
 {
 	$status = NULL;
 	$reply = NULL;
-	$reason = "Default should change";
 	$report = NULL;
 	$delete = NULL;
 
@@ -39,10 +37,6 @@ if($_POST)
 		$reply = $_POST["reply"];
 	if(isset($_POST["report"]))
 		$report = $_POST["report"];
-	if(isset($_POST["reason"]))
-		$reason = $_POST["reason"];
-	if(isset($_POST["userID"]))
-		$userID = $_POST["userID"];
 	if(isset($_POST["delete"]))
 		$delete = $_POST["delete"];
 	if(isset($_POST["userID"]))
@@ -95,7 +89,7 @@ if($_POST)
 	}
   if(isset($manualpull) )
   {
-  $message = "ah";
+  	$message = "ah";
   }
   if(isset($deleteapi)){
     Api::deleteKey($deleteapi);

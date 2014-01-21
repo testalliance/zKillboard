@@ -40,7 +40,7 @@ class cli_fightFinder implements cliCommand
 			$key2 = ($row["solarSystemID"] * 100) + date("H", time() + 3600);
 
 			// Have we already reported this battle to the masses?
-			$socailCount = $db->queryField("select count(*) count from zz_social where killID = :killID", "count", array(":killID" => $key), 0);
+			$socialCount = $db->queryField("select count(*) count from zz_social where killID = :killID", "count", array(":killID" => $key), 0);
 			$db->execute("insert ignore into zz_social (killID) values (:k1), (:k2)", array(":k1" => $key, ":k2" => $key2));
 
 			Info::addInfo($row);

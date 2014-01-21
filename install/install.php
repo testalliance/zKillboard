@@ -186,8 +186,6 @@ if(strtolower(prompt("|g|Do you want to migrate kills from an existing EDK insta
 	$edkPath = prompt("Root path of your edk installation?");
 	if($edkPath)
 	{
-		$cmd = "";
-
 		if(defined("PHP_BINARY"))
 			$cmd = PHP_BINARY . " ";
 		else

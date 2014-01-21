@@ -116,8 +116,7 @@ class Db
 			$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 			// Close the cursor
 			$stmt->closeCursor();
-			// Close the PDO object
-			$pdo = null;
+
 			// Stop the timer
 			$duration = $timer->stop();
 
@@ -230,7 +229,7 @@ class Db
 			// Rollback the query
 			$pdo->rollBack();
 			// Return false
-			return $false;
+			return false;
 		}
 
 		// return the last inserted id
@@ -249,9 +248,6 @@ class Db
 		$rowCount = $stmt->rowCount();
 		// Close the cursor
 		$stmt->closeCursor();
-
-		// Unset the PDO object
-		$pdo = null;
 
 		if($returnID)
 			return $lastInsertID;
@@ -316,7 +312,7 @@ class Db
 		$parameters = array(
 				":hash" => $hash,
 				":query" => str_replace("explain", "", $query),
-				":params" => implode(", ", $param),
+				":params" => implode(", ", $parameters),
 				":selectType" => $explainResult[0]["select_type"],
 				":table" => $explainResult[0]["table"],
 				":queryType" => $explainResult[0]["type"],
@@ -333,7 +329,6 @@ class Db
 		$stmt = $pdo->prepare($insertQuery);
 		$stmt->execute($parameters);
 		$stmt->closeCursor();
-		$pdo = null;
 	}
 
 	/**

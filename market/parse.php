@@ -39,7 +39,6 @@ $fieldLocations = array();
 $typeRegionClear = array();
 $storage = array();
 $count1 = 0;
-$count2 = 0;
 
 array_shift($argv);
 
@@ -107,13 +106,10 @@ foreach($argv as $file) {
 
 $total = sizeof($storage);
 
-$pid = getmypid();
-
 echo "Records: $total\n";
 $inserts = 0;
 $toBeInserted = 0;
-$invTypesAdded = array();
-$whereStatements = array();
+$wheeStatements = array();
 
 foreach($storage as $key=>$fields) {
 	$ids = explode("|", $key);
@@ -147,7 +143,6 @@ foreach($storage as $key=>$fields) {
 	$typeID = $ids[0];
 	$regionID = $ids[1];
 	foreach($fields as $field) {
-		$stationID = $field[$fieldLocations["stationid"]]; 
 		$price = $field[$fieldLocations["price"]];
 		$bid = $field[$fieldLocations["bid"]];
 		if (strtolower($bid) == "true" || $bid == "1") $bid = 1;

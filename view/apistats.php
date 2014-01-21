@@ -18,6 +18,8 @@
 
 //make sure the requester is not being a naughty boy
 Util::scrapeCheck();
+$id = "";
+$type ="";
 
 //make sure the type is allowed - and map it to our internal string
 $allowed_types = array('factionID' => 'faction', 'allianceID' => 'alli', 'corporationID' => 'corp', 'characterID' => 'pilot', 'groupID' => 'group', 'shipID' => 'ship', 'systemID' => 'system', 'regionID' => 'region');

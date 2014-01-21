@@ -30,7 +30,6 @@ class cli_dupeFixer implements cliCommand
 
 	public function execute($parameters, $db)
 	{
-		$cleaned = array();
 		$result = $db->query("select b.hash, a.killID from zz_killmails a left join (select hash, count(*) as count from zz_killmails where processed = 1 group by 1 having count(*) >= 2) as b on (a.hash = b.hash) where b.hash is not null and a.killID < 0", array(), 0);
 		foreach ($result as $row) {
 			$hash = $row["hash"];

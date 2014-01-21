@@ -58,7 +58,7 @@ class Info
 	 */
 	public static function getSystemName($systemID)
 	{
-		$systemInfo = Info::getSystemInfo($systemID);
+		$systemInfo = self::getSystemInfo($systemID);
 		return $systemInfo['solarSystemName'];
 	}
 
@@ -69,7 +69,7 @@ class Info
 	 */
 	public static function getSystemSecurity($systemID)
 	{
-		$systemInfo = Info::getSystemInfo($systemID);
+		$systemInfo = self::getSystemInfo($systemID);
 		return $systemInfo['security'];
 	}
 
@@ -135,7 +135,6 @@ class Info
 					if ($id != 0) {
 						// Verify that this is indeed a character
 						$pheal->scope = "corp";
-						$corpInfo = $pheal->CorporationSheet(array("corporationid" => $id));
 						$name = $charInfo->corporationName;
 						// If not a corporation an error would have been thrown and caught by the catch
 						Db::execute("insert ignore into zz_corporations (corporationID, name) values (:id, :name)",
@@ -183,7 +182,7 @@ class Info
 				if ($percentage == 1) $corp["apiVerified"] = 1;
 				else if ($percentage > 0) $corp["apiPercentage"] = number_format($percentage * 100, 1);
 			}
-			Info::addInfo($corp);
+			self::addInfo($corp);
 			$retList[] = $corp;
 		}
 		return $retList;
@@ -197,7 +196,7 @@ class Info
 		{
 			$p = $parameters;
 			$p["corporationID"] = $corp["corporationID"];
-			$data = Info::getCorpDetails($corp["corporationID"], $p);
+			$data = self::getCorpDetails($corp["corporationID"], $p);
 			$statList[$corp["name"]]["corporationName"] = $data["corporationName"];
 			$statList[$corp["name"]]["corporationID"] = $data["corporationID"];
 			$statList[$corp["name"]]["ticker"] = $data["cticker"];
@@ -426,7 +425,7 @@ class Info
 	private static function findEntitySearch(&$resultArray, $type, $query, $search)
 	{
 		$results = Db::query("${query}", array(":search" => $search), 3600);
-		Info::addResults($resultArray, $type, $results);
+		self::addResults($resultArray, $type, $results);
 	}
 
 	private static function addResults(&$resultArray, $type, $results)
@@ -465,21 +464,21 @@ class Info
 		$names = array();
 		for ($i = 0; $i <= 1; $i++) {
 			$match = $i == 0 ? " = " : " like ";
-			foreach (Info::$entities as $entity) {
+			foreach (self::$entities as $entity) {
 				$type = $entity[0];
 				$query = $entity[1];
-				Info::findEntitySearch($names, $type, "$query $match :search limit 9", $search . ($i == 0 ? "" : "%"));
+				self::findEntitySearch($names, $type, "$query $match :search limit 9", $search . ($i == 0 ? "" : "%"));
 			}
 		}
 		$retValue = array();
 		foreach ($names as $id => $value) $retValue[] = $value;
-		Info::addInfo($retValue);
+		self::addInfo($retValue);
 		return $retValue;
 	}
 
 	public static function findNames($search)
 	{
-		$array = Info::findEntity($search);
+		$array = self::findEntity($search);
 		$retValue = array();
 		foreach ($array as $row) {
 			if (isset($row["characterName"])) $retValue[] = $row["characterName"];
@@ -500,7 +499,7 @@ class Info
 			$data = Db::queryRow("select characterID, corporationID, allianceID, 0 factionID from zz_characters where characterID = :id", array(":id" => $id));
 		}
 		if (sizeof($data) == 0) $data["characterID"] = $id;
-		Info::addInfo($data);
+		self::addInfo($data);
 		return Summary::getPilotSummary($data, $id);
 	}
 
@@ -522,7 +521,7 @@ class Info
 			$data["cticker"] = $moreData["ticker"];
 			$data["ceoID"] = $moreData["ceoID"];
 		}
-		Info::addInfo($data);
+		self::addInfo($data);
 		return Summary::getCorpSummary($data, $id, $parameters);
 	}
 
@@ -537,42 +536,42 @@ class Info
 			$data["aticker"] = $moreData["ticker"];
 			$data["executorCorpID"] = $moreData["executorCorpID"];
 		}
-		Info::addInfo($data);
+		self::addInfo($data);
 		return Summary::getAlliSummary($data, $id, $parameters);
 	}
 
 	public static function getFactionDetails($id)
 	{
 		$data["factionID"] = $id;
-		Info::addInfo($data);
+		self::addInfo($data);
 		return Summary::getFactionSummary($data, $id);
 	}
 
 	public static function getSystemDetails($id)
 	{
 		$data = array("solarSystemID" => $id);
-		Info::addInfo($data);
+		self::addInfo($data);
 		return Summary::getSystemSummary($data, $id);
 	}
 
 	public static function getRegionDetails($id)
 	{
 		$data = array("regionID" => $id);
-		Info::addInfo($data);
+		self::addInfo($data);
 		return Summary::getRegionSummary($data, $id);
 	}
 
 	public static function getGroupDetails($id)
 	{
 		$data = array("groupID" => $id);
-		Info::addInfo($data);
+		self::addInfo($data);
 		return Summary::getGroupSummary($data, $id);
 	}
 
 	public static function getShipDetails($id)
 	{
 		$data = array("shipTypeID" => $id);
-		Info::addInfo($data);
+		self::addInfo($data);
 		$data["shipTypeName"] = $data["shipName"];
 		return Summary::getShipSummary($data, $id);
 	}
@@ -590,7 +589,7 @@ class Info
 	{
 		if ($element == null) return;
 		foreach ($element as $key => $value) {
-			if (is_array($value)) $element[$key] = Info::addInfo($value);
+			if (is_array($value)) $element[$key] = self::addInfo($value);
 			else if ($value != 0) switch ($key) {
 				case "lastChecked":
 					$element["lastCheckedTime"] = $value;
@@ -605,66 +604,66 @@ class Info
 					$element["MonthDayYear"] = date("F j, Y", $dttm);
 					break;
 				case "shipTypeID":
-					if (!isset($element["shipName"])) $element["shipName"] = Info::getItemName($value);
-					if (!isset($element["groupID"])) $element["groupID"] = Info::getGroupID($value);
-					if (!isset($element["groupName"])) $element["groupName"] = Info::getGroupName($element["groupID"]);
+					if (!isset($element["shipName"])) $element["shipName"] = self::getItemName($value);
+					if (!isset($element["groupID"])) $element["groupID"] = self::getGroupID($value);
+					if (!isset($element["groupName"])) $element["groupName"] = self::getGroupName($element["groupID"]);
 					break;
 				case "groupID":
 					global $loadGroupShips; // ugh
-					if (!isset($element["groupName"])) $element["groupName"] = Info::getGroupName($value);
+					if (!isset($element["groupName"])) $element["groupName"] = self::getGroupName($value);
 					if ($loadGroupShips && !isset($element["groupShips"]) && !isset($element["noRecursion"])) $element["groupShips"] = Db::query("select typeID as shipTypeID, typeName as shipName, raceID, 1 as noRecursion from ccp_invTypes where groupID = :id and (groupID = 29 or (published = 1 and marketGroupID is not null)) order by raceID, marketGroupID, typeName", array (":id" => $value), 3600);
 					break;
 				case "executorCorpID":
-					$element["executorCorpName"] = Info::getCorpName($value);
+					$element["executorCorpName"] = self::getCorpName($value);
 					break;
 				case "ceoID":
-					$element["ceoName"] = Info::getCharName($value);
+					$element["ceoName"] = self::getCharName($value);
 					break;
 				case "characterID":
-					$element["characterName"] = Info::getCharName($value);
+					$element["characterName"] = self::getCharName($value);
 					break;
 				case "corporationID":
-					$element["corporationName"] = Info::getCorpName($value);
+					$element["corporationName"] = self::getCorpName($value);
 					break;
 				case "allianceID":
-					$element["allianceName"] = Info::getAlliName($value);
+					$element["allianceName"] = self::getAlliName($value);
 					break;
 				case "factionID":
-					$element["factionName"] = Info::getFactionName($value);
+					$element["factionName"] = self::getFactionName($value);
 					break;
 				case "weaponTypeID":
-					$element["weaponTypeName"] = Info::getItemName($value);
+					$element["weaponTypeName"] = self::getItemName($value);
 					break;
 				case "typeID":
-					if (!isset($element["typeName"])) $element["typeName"] = Info::getItemName($value);
-					$groupID = Info::getGroupID($value);
+					if (!isset($element["typeName"])) $element["typeName"] = self::getItemName($value);
+					$groupID = self::getGroupID($value);
 					if (!isset($element["groupID"])) $element["groupID"] = $groupID;
-					if (!isset($element["groupName"])) $element["groupName"] = Info::getGroupName($groupID);
+					if (!isset($element["groupName"])) $element["groupName"] = self::getGroupName($groupID);
 					if (Util::startsWith($element["groupName"], "Infantry ")) $element["fittable"] = true;
-					else if (!isset($element["fittable"])) $element["fittable"] = Info::getEffectID($value) != null;
+					else if (!isset($element["fittable"])) $element["fittable"] = self::getEffectID($value) != null;
 					break;
 				case "solarSystemID":
-					$info = Info::getSystemInfo($value);
+					$info = self::getSystemInfo($value);
 					$element["solarSystemName"] = $info["solarSystemName"];
 					$element["sunTypeID"] = $info["sunTypeID"];
 					$securityLevel = number_format($info["security"], 1);
 					if ($securityLevel == 0 && $info["security"] > 0) $securityLevel = 0.1;
 					$element["solarSystemSecurity"] = $securityLevel;
-					$element["systemColorCode"] = Info::getSystemColorCode($securityLevel);
-					$regionInfo = Info::getRegionInfoFromSystemID($value);
+					$element["systemColorCode"] = self::getSystemColorCode($securityLevel);
+					$regionInfo = self::getRegionInfoFromSystemID($value);
 					$element["regionID"] = $regionInfo["regionID"];
 					$element["regionName"] = $regionInfo["regionName"];
-					$wspaceInfo = Info::getWormholeSystemInfo($value);
+					$wspaceInfo = self::getWormholeSystemInfo($value);
 					if ($wspaceInfo) {
 						$element["systemClass"] = $wspaceInfo["class"];
 						$element["systemEffect"] = $wspaceInfo["effectName"];
 					}
 					break;
 				case "regionID":
-					$element["regionName"] = Info::getRegionName($value);
+					$element["regionName"] = self::getRegionName($value);
 					break;
 				case "flag":
-					$element["flagName"] = Info::getFlagName($value);
+					$element["flagName"] = self::getFlagName($value);
 					break;
 				case "addDetail":
 					$info = Db::queryRow("select corporationID, allianceID from zz_participants where characterID = :c order by killID desc limit 1",
@@ -747,16 +746,16 @@ class Info
 	{
 		// Assuming Inferno Flags
 		$flagGroup = 0;
-		foreach (Info::$infernoFlags as $infernoFlagGroup => $array) {
+		foreach (self::$infernoFlags as $infernoFlagGroup => $array) {
 			$low = $array[0];
 			$high = $array[1];
 			if ($flag >= $low && $flag <= $high) $flagGroup = $infernoFlagGroup;
-			if ($flagGroup != 0) return Info::$effectToSlot["$flagGroup"];
+			if ($flagGroup != 0) return self::$effectToSlot["$flagGroup"];
 		}
-		if ($flagGroup == 0 && array_key_exists($flag, Info::$effectToSlot)) return Info::$effectToSlot["$flag"];
+		if ($flagGroup == 0 && array_key_exists($flag, self::$effectToSlot)) return self::$effectToSlot["$flag"];
 		if ($flagGroup == 0 && $flag == 0) return "Corporate  Hangar";
 		if ($flagGroup == 0) return null;
-		return Info::$effectToSlot["$flagGroup"];
+		return self::$effectToSlot["$flagGroup"];
 	}
 
 	public static function getSlotCounts($shipTypeID)

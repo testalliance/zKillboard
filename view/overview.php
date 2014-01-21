@@ -61,8 +61,8 @@ $limit = 50;
 $parameters["limit"] = $limit;
 $parameters["page"] = $page;
 $detail = call_user_func($map[$key]["details"], $id, $parameters);
-$totalKills = isset($detail["shipsDestroyed"]) ? $detail["shipsDestroyed"] : 0;
-$totalLosses = isset($detail["shipsLost"]) ? $detail["shipsLost"] : 0;
+//$totalKills = isset($detail["shipsDestroyed"]) ? $detail["shipsDestroyed"] : 0;
+//$totalLosses = isset($detail["shipsLost"]) ? $detail["shipsLost"] : 0;
 $pageName = isset($detail[$map[$key]["column"] . "Name"]) ? $detail[$map[$key]["column"] . "Name"] : "???";
 $columnName = $map[$key]["column"] . "ID";
 $mixedKills = $pageType == "overview" && $map[$key]["mixed"] && UserConfig::get("mixKillsWithLosses", true);
@@ -80,7 +80,7 @@ if ($pageType != "solo" || $key == "faction") {
 	$soloKills = Kills::getKills($soloParams);
 	$soloCount = Db::queryField("select count(killID) count from zz_participants where " . $map[$key]["column"] . "ID = :id and isVictim = 1 and number_involved = 1", "count", array(":id" => $id), 3600);
 }
-$soloPages = ceil($soloCount / $limit);
+//$soloPages = ceil($soloCount / $limit);
 $solo = Kills::mergeKillArrays($soloKills, array(), $limit, $columnName, $id);
 
 $validAllTimePages = array("character", "corporation", "alliance");

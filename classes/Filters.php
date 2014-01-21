@@ -31,7 +31,7 @@ class Filters
 	 */
 	private static function buildWhere(&$tables, &$whereClauses, $table, $column, $parameters)
 	{
-		$array = Filters::grabParameters($parameters, $column);
+		$array = self::grabParameters($parameters, $column);
 		if ($array === null || !is_array($array) || sizeof($array) == 0) return "";
 		// Ensure SQL safe parameters
 		$cleanArray = array();
@@ -50,12 +50,15 @@ class Filters
 
 	public static function buildFilters(&$tables, &$combined, &$whereClauses, &$parameters, $allTime = true)
 	{
+		$year = "";
+		$month = "";
+		$week = "";
 		// zz_participants filters
 		$participants = "zz_participants p";
 		$filterColumns = array("allianceID", "characterID", "corporationID", "factionID", "shipTypeID", "groupID", "solarSystemID", "regionID");
 		foreach ($filterColumns as $filterColumn) {
-			Filters::buildWhere($tables, $combined, $participants, $filterColumn, $parameters);
-			Filters::buildWhere($tables, $combined, $participants, "!$filterColumn", $parameters);
+			self::buildWhere($tables, $combined, $participants, $filterColumn, $parameters);
+			self::buildWhere($tables, $combined, $participants, "!$filterColumn", $parameters);
 		}
 
 		if (array_key_exists("year", $parameters)) $year = (int)$parameters["year"]; // Optional

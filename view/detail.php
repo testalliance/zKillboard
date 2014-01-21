@@ -18,7 +18,6 @@
 
 $involved = array();
 $message = "";
-$pageID = "detail:$id";
 
 if($pageview == "comments")
 	$app->redirect("/detail/$id/#comment", 301);
@@ -31,12 +30,9 @@ $email = $info["email"];
 
 if($_POST)
 {
-	$characterID = "";
 	$report = "";
 	if(isset($_POST["report"]))
 		$report = $_POST["report"];
-	if(isset($_POST["characterID"]))
-		$characterID = $_POST["characterID"];
 
 	if (isset($report))
 	{
@@ -90,6 +86,7 @@ if (sizeof($killdata["involved"]) > 1){
 	}
 }
 
+$extra = array();
 // And now give all the arrays and whatnots to twig..
 if($pageview == "overview")
 {
@@ -161,7 +158,7 @@ function usdeurgbp($totalprice)
 function eftarray($md5, $items, $victimID = 0)
 {
 	$Cache = Cache::get($md5."eftarray");
-	//if ($Cache) return $Cache;
+	if ($Cache) return $Cache;
 
 	// EFT / Fitting Wheel
 	$eftarray["high"] = array(); // high
@@ -282,7 +279,7 @@ function eftarray($md5, $items, $victimID = 0)
 function combineditems($md5, $items)
 {
 	$Cache = Cache::get($md5."combineditems");
-	//if($Cache) return $Cache;
+	if($Cache) return $Cache;
 
 	// Create the new item array with combined items and whatnot
 	$itemList = array();

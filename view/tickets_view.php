@@ -53,5 +53,4 @@ if($_POST)
 
 $replies = Db::query("SELECT * FROM zz_tickets_replies WHERE belongsTo = :id", array(":id" => $id), 0);
 
-$userInfo = User::getUserInfo();
 $app->render("tickets_view.html", array("page" => $id, "message" => $message, "ticket" => $ticket, "replies" => $replies));

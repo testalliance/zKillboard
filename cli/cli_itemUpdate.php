@@ -68,7 +68,7 @@ class cli_itemUpdate implements cliCommand
 			$url = trim("http://api.eveonline.com/eve/typeName.xml.aspx?ids=$exploded");
 			$raw = file_get_contents($url);
 			try {
-				$xml = new SimpleXmlElement($raw);
+				$xml = new SimpleXmlElement($raw, null, false, "", false);
 			} catch (Exception $ex) {
 				print_r($ex);
 				Log::log("There was a problem retrieving the XML from $url\nThis could be because of the network, local server settings, CCP, etc.");

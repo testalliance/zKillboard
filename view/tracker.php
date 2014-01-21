@@ -18,6 +18,7 @@
 
 $parameters = array();
 $names = array();
+$z = array();
 
 getIDs("characterID", $parameters, UserConfig::get("tracker_character"));
 getIDs("corporationID", $parameters, UserConfig::get("tracker_corporation"));

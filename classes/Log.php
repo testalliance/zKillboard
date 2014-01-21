@@ -38,7 +38,7 @@ class Log
 	{
 		global $ircLogFile;
 		if (!isset($ircLogFile) || $ircLogFile == "") return;
-		$text = Log::addIRCColors($text);
+		$text = self::addIRCColors($text);
 		if (!is_writable($ircLogFile) && !is_writable(dirname($ircLogFile))) return;
 		error_log("\n${from}$text\n", 3, $ircLogFile);
 	}
@@ -48,7 +48,7 @@ class Log
 	{
 		global $ircAdminLogFile;
 		if (!isset($ircAdminLogFile) || $ircAdminLogFile == "") return;
-		$text = Log::addIRCColors($text);
+		$text = self::addIRCColors($text);
 		if (!is_writable($ircAdminLogFile) && !is_writable(dirname($ircAdminLogFile))) return; // Can't create the file
 		error_log("\n${from}$text\n", 3, $ircAdminLogFile);
 	}
@@ -72,7 +72,7 @@ class Log
 
 	public static function addIRCColors($msg)
 	{
-		foreach (Log::$colors as $color => $value) {
+		foreach (self::$colors as $color => $value) {
 			$msg = str_replace($color, $value, $msg);
 		}
 		return $msg;
@@ -80,7 +80,7 @@ class Log
 
 	public static function stripIRCColors($msg)
 	{
-		foreach (Log::$colors as $color => $value) {
+		foreach (self::$colors as $color => $value) {
 			$msg = str_replace($color, "", $msg);
 		}
 		return $msg;

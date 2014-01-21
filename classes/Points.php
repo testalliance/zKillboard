@@ -95,8 +95,8 @@ class Points
 
 	public static function getPoints($groupID)
 	{
-		if (!isset(Points::$pointsArray[$groupID])) return 0;
-		$arr = Points::$pointsArray[$groupID];
+		if (!isset(self::$pointsArray[$groupID])) return 0;
+		$arr = self::$pointsArray[$groupID];
 		if (!isset($arr[1])) return 0;
 		return $arr[1];
 	}
@@ -116,15 +116,14 @@ class Points
 		$kill = $victim;
 		$involved = Db::query("select * from zz_participants$temp where killID = :killID and isVictim = 0", array(":killID" => $killID), 0);
 
-		$vicGroupID = $victim["groupID"];
-		$vicpoints = Points::getPoints($victim["groupID"]);
+		$vicpoints = self::getPoints($victim["groupID"]);
 		$vicpoints += $kill["total_price"] / 10000000;
 		$maxpoints = round($vicpoints * 1.2);
 
 		$invpoints = 0;
 		foreach ($involved as $inv)
 		{
-			$invpoints += Points::getPoints($inv["groupID"]);
+			$invpoints += self::getPoints($inv["groupID"]);
 		}
 
 		if (($vicpoints + $invpoints) == 0) return 0;

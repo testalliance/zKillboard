@@ -139,7 +139,6 @@ class cli_feedEDK implements cliCommand
 				foreach($feeds as $feed)
 				{
 					$url = $feed["url"];
-					$source = "EDK:".$feed["id"];
 					$lastFetchTime = strtotime($feed["lastFetchTime"])+600;
 					$currentTime = time();
 					$insertCount = 0;
@@ -149,7 +148,7 @@ class cli_feedEDK implements cliCommand
 						try
 						{
 							$data = self::fetchUrl($url);
-							$xml = new SimpleXMLElement($data);
+							$xml = new SimpleXMLElement($data, null, false, "", false);
 							$result = new PhealResult($xml);
 							$insertCount = self::processAPI($result, $db);
 							$db->execute("UPDATE zz_feeds SET lastFetchTime = :time WHERE url = :url", array(":time" => date("Y-m-d H:i:s"), ":url" => $url));

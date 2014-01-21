@@ -40,7 +40,6 @@ class User
 		$p = Db::query("SELECT username, password FROM zz_users WHERE username = :username", array(":username" => $username), 0);
 		if(!empty($p[0]))
 		{
-			$user = $p[0]["username"];
 			$pw = $p[0]["password"];
 
 			if(Password::checkPassword($password, $pw))

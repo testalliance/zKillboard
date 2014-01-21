@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+$query = "";
+$result = array();
 //get the query value
 if ($app->request()->isPost())
 {

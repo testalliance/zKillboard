@@ -30,7 +30,6 @@ class cli_smsReceive implements cliCommand
 
 	public function execute($parameters, $db)
 	{
-		$message = array();
 		$storageName = "smsLatestID";
 
 		$latest = $db->queryField("SELECT contents FROM zz_storage WHERE locker = '$storageName'", "contents", array(), 0);

@@ -47,10 +47,6 @@ class cli_updateCorporations implements cliCommand
 		$result = $db->query("select corporationID, name, memberCount, ticker from zz_corporations where lastUpdated < date_sub(now(), interval 1 week) and corporationID >= 1000001 order by lastUpdated limit 100", array(), 0);
 		foreach($result as $row) {
 			$id = $row["corporationID"];
-			$oMemberCount = $row["memberCount"];
-			$oName = $row["name"];
-			$oTicker = $row["ticker"];
-
 			$pheal = Util::getPheal();
 			$pheal->scope = "corp";
 			try {

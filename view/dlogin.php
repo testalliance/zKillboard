@@ -4,7 +4,6 @@ if($_POST)
     $username = "";
     $password = "";
     $autologin = 0;
-    $requesturi = "";
 
     if(isset($_POST["username"]))
         $username = $_POST["username"];
@@ -12,8 +11,6 @@ if($_POST)
         $password = $_POST["password"];
     if(isset($_POST["autologin"]))
         $autologin = 1;
-    if(isset($_POST["requesturi"]))
-        $requesturi = $_POST["requesturi"];
 
     if(!$username)
     {
