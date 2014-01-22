@@ -6,7 +6,7 @@ CREATE TABLE `zz_users` (
   `moderator` tinyint(1) NOT NULL,
   `admin` tinyint(1) NOT NULL,
   `password` varchar(64) NOT NULL,
-  `autoLoginHash` varchar(256) NOT NULL DEFAULT NULL,
+  `autoLoginHash` varchar(256) DEFAULT NULL,
   `email` varchar(128) DEFAULT NULL,
   `dateCreated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `revoked` smallint(1) NOT NULL DEFAULT '0',
@@ -17,4 +17,3 @@ CREATE TABLE `zz_users` (
   UNIQUE KEY `email` (`email`),
   KEY `login_index` (`username`,`password`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
-
