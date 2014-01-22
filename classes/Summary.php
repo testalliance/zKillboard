@@ -86,6 +86,7 @@ class Summary
 	/**
 	 * @param string $type
 	 * @param string $column
+	 * @param integer $id
 	 */
 	private static function getSummary($type, $column, &$data, $id, $parameters = array())
 	{
