@@ -50,9 +50,9 @@ class Filters
 
 	public static function buildFilters(&$tables, &$combined, &$whereClauses, &$parameters, $allTime = true)
 	{
-		$year = date("Y");
-		$month = date("m");
-		$week = date("W");
+		$year = null;
+		$month = null;
+		$week = null;
 		// zz_participants filters
 		$participants = "zz_participants p";
 		$filterColumns = array("allianceID", "characterID", "corporationID", "factionID", "shipTypeID", "groupID", "solarSystemID", "regionID");
