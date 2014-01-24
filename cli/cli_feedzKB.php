@@ -30,9 +30,7 @@ class cli_feedzKB implements cliCommand
 
 	public function getCronInfo()
 	{
-		return array(
-			3600 => ""
-		);
+		return array(60 => "");
 	}
 
 	public function execute($parameters, $db)
