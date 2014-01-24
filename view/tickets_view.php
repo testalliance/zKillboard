@@ -19,11 +19,11 @@
 $message = array();
 $info = User::getUserInfo();
 $ticket = Db::queryRow("SELECT * FROM zz_tickets WHERE id = :id", array(":id" => $id), 0);
-if($ticket == NULL)
+if($ticket == NULL or sizeof($ticket) == 0)
 	$message = array("status" => "error", "message" => "Ticket does not exist.");
-elseif($ticket[0]["status"] == 0)
+elseif($ticket["status"] == 0)
 	$message = array("status" => "error", "message" => "Ticket has been closed, you cannot post, only view it");
-elseif($ticket[0]["userid"] != $info["id"])
+elseif($ticket["userid"] != $info["id"] && $info["moderator"] == 0 && $info["admin"] == 0)
 	$app->notFound();
 
 if($_POST)
