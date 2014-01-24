@@ -160,6 +160,7 @@ class Kills
 			$item["price"] = $priceLookup["price"];
 			$item["inContainer"] = $inContainer;
 			if ($inContainer) $item["flag"] = $parentFlag;
+			if ($inContainer && strpos(Info::getItemName($typeID), "Blueprint")) $item["singleton"] = 2;
 			unset($item["_stringValue"]);
 			$itemArray[] = $item;
 			$subItems = isset($item["items"]) ? $item["items"] : null;
