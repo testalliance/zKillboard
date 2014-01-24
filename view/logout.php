@@ -31,5 +31,5 @@ $twig->addGlobal("sessionadmin", "");
 $twig->addGlobal("sessionmoderator", "");
 setcookie($cookie_name, "", time()-$cookie_time, "/", $baseAddr);
 setcookie($cookie_name, "", time()-$cookie_time, "/", ".".$baseAddr);
-if (isset($requesturi)) $app->redirect($requesturi);
+if (isset($requesturi) && $requesturi != "") $app->redirect($requesturi);
 else $app->render("logout.html", array("message" => "You are now logged out"));
