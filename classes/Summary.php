@@ -97,11 +97,8 @@ class Summary
 		$stats = array();
 		$rank = Db::queryRow("select * from zz_ranks where type = :type and typeID = :id", array(":type" => $type, ":id" => $id), 300);
 		$recentRank = Db::queryField("select overallRank from zz_ranks_recent where type = :type and typeID = :id", "overallRank", array(":type" => $type, ":id" => $id), 300);
-		if (false && isset($parameters["year"]) && (isset($parameters["week"]) || isset($parameters["month"]))) {
-			/*$rank = $recentRank = array();
-			// Ensure that at least year/month or year/week are defined
-			//if (!isset($parameters["year"])) throw new Exception("Year must be passed");
-			//if (!isset($parameters["month"]) && !isset($parameters["week"])) throw new Exception("Week or Month must be passed.");
+		if (isset($parameters["solo"])) {
+			$rank = $recentRank = array();
 
 			$tables = array();
 			$whereClauses = array();
@@ -112,7 +109,6 @@ class Summary
 
 			$query = "select groupID, sum(if(isVictim, 0, 1)) destroyed, sum(if(isVictim, 0, total_price)) iskDestroyed, sum(if(isVictim, 0, points)) pointsDestroyed, sum(if(isVictim, 1, 0)) lost, sum(if(isVictim, total_price, 0)) iskLost, sum(if(isVictim, points, 0)) pointsLost from (select vGroupID groupID, isVictim, total_price, points from zz_participants p where $whereStatement group by killID) as foo group by groupID";
 			$stats = Db::query($query);
-			//$stats = array();*/
 		} else {
 			if ($type == "system" || $type == "region") $stats = Db::query("select groupID, lost destroyed, 0 lost, pointsLost pointsDestroyed, 0 pointsLost, iskLost iskDestroyed, 0 iskLost from zz_stats where type='$type' and typeID = $id", array(":id" => $id), 300);
 			else $stats = Db::query("select groupID, destroyed, lost, pointsDestroyed, pointsLost, iskDestroyed, iskLost from zz_stats where type='$type' and typeID = :id", array(":id" => $id), 0);

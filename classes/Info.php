@@ -595,7 +595,7 @@ class Info
 	 * @param  int $id
 	 * @return array
 	 */
-	public static function getPilotDetails($id)
+	public static function getPilotDetails($id, $parameters = array())
 	{
 		$data = Db::queryRow("select characterID, corporationID, allianceID, factionID from zz_participants where characterID = :id and dttm >= date_sub(now(), interval 7 day) order by killID desc limit 1", array(":id" => $id), 3600);
 		if (sizeof($data) == 0) {
@@ -603,7 +603,7 @@ class Info
 		}
 		if (sizeof($data) == 0) $data["characterID"] = $id;
 		self::addInfo($data);
-		return Summary::getPilotSummary($data, $id);
+		return Summary::getPilotSummary($data, $id, $parameters);
 	}
 
 	/**
