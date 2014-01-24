@@ -11,9 +11,11 @@ CREATE TABLE `zz_users` (
   `dateCreated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `revoked` smallint(1) NOT NULL DEFAULT '0',
   `change_hash` varchar(40) DEFAULT NULL,
-  `change_expiration` timestamp NULL DEFAULT '0000-00-00 00:00:00',
+  `change_expiration` timestamp NULL DEFAULT NULL,
+  `revoked_reason` varchar(64) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`),
-  KEY `login_index` (`username`,`password`)
+  KEY `login_index` (`username`,`password`),
+  KEY `revoked` (`revoked`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;

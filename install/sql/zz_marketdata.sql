@@ -27,5 +27,5 @@ CREATE TABLE `zz_marketdata` (
   KEY `typeID_2` (`typeID`,`regionID`),
   KEY `insert_dttm` (`insert_dttm`),
   KEY `pid` (`pid`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
