@@ -28,17 +28,8 @@ class cli_itemUpdate implements cliCommand
 		return ""; // Space seperated list
 	}
 
-	public function getCronInfo()
-	{
-		return array(
-			21600 => ""
-		);
-	}
-
 	public function execute($parameters, $db)
 	{
-		//$db->execute("insert ignore into ccp_invTypes (typeID, typeName) select distinct shipTypeID, concat('TypeID ', shipTypeID) from zz_participants");
-		//$db->execute("insert ignore into ccp_invTypes (typeID, typeName) select distinct typeID, concat('TypeID ', typeID) from zz_items");
 		$rows = $db->query("select typeID from ccp_invTypes order by typeID", array(), 0);
 		$ids = array();
 		foreach($rows as $row) {
