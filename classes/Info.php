@@ -181,7 +181,7 @@ class Info
 			else {
 				$count = Db::queryField("select count(*) count from zz_api_characters where corporationID = :corpID", "count",
 						array(":corpID" => $corp["corporationID"]));
-				$percentage = $count / $corp["memberCount"];
+				$percentage = $corp["memberCount"] == 0 ? 0 : $count / $corp["memberCount"];
 				if ($percentage == 1) $corp["apiVerified"] = 1;
 				else if ($percentage > 0) $corp["apiPercentage"] = number_format($percentage * 100, 1);
 			}
