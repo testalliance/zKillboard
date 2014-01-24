@@ -81,5 +81,9 @@ if (count($search_results) > 0)
 	array_multisort($sort_by, SORT_ASC, SORT_NATURAL, $search_results);	
 }
 
+// CORS headers
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET");
+
 //return the top 15 results as a json object
 echo json_encode(array_slice($search_results, 0, 15));
