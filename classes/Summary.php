@@ -210,7 +210,7 @@ class Summary
 		  $retValue["teamA"] = $temp;
 		  }*/
 
-		Cache::set($key, $retValue, 300);
+		Cache::set($key, $retValue, 900);
 		return $retValue;
 	}
 
