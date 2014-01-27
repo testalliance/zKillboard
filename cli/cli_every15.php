@@ -20,7 +20,7 @@ class cli_every15 implements cliCommand
 {
 	public function getDescription()
 	{
-		return "Tasks that needs to run every 15 minutes. |g|Usage: qtlyhourly";
+		return "Tasks that needs to run every 15 minutes. |g|Usage: every15";
 	}
 
 	public function getAvailMethods()
