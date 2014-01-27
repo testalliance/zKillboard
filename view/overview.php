@@ -18,7 +18,7 @@
 
 $key = $input[0];
 $id = $input[1];
-$pageType = $input[2];
+$pageType = @$input[2];
 
 $validPageTypes = array("overview", "kills", "losses", "top", "topalltime", "solo", "history");
 if ($key == "alliance")
