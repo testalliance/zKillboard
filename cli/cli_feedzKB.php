@@ -37,13 +37,11 @@ class cli_feedzKB implements cliCommand
 	{
 		if (Util::isMaintenanceMode()) return;
 
-		//$feeds = $db->query("SELECT * FROM zz_feeds where edkStyle = '0' and lastFetchTime <= date_sub(now(), interval 1 hour) order by lastFetchTime", array(), 0);
-
 		$totalCount = 0;
 		$data = "";
 		// Build the feeds from Admin's tracker list
-		$adminID = $db->queryField("select id from zz_users where username = 'admin'", "id", array(), 0);
-		$trackers = $db->query("select locker, content from zz_users_config where locker like 'tracker_%' and id = :id", array(":id" => $adminID), array(), 0    );
+		$adminID = Db::queryField("select id from zz_users where username = 'admin'", "id", array());
+		$trackers = Db::query("select locker, content from zz_users_config where locker like 'tracker_%' and id = :id", array(":id" => $adminID), 0);
 		$feeds = array();
 		foreach ($trackers as $row) {
 			$entityType = str_replace("tracker_", "", $row["locker"]);
