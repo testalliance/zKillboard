@@ -22,15 +22,16 @@ class Social
 	public static function findConversations()
 	{
 		$locker = "Social:lastSocialTime";
-		$now = time();
-		$lastSocialTime = Storage::retrieve($locker, (time() - (24 * 3600)));
-		$result = Db::query("select killID, unix_timestamp(insertTime) insertTime from zz_killmails where killID > 0 and processed = 1 and insertTime >= from_unixtime(:last) order by insertTime", array(":last" => $lastSocialTime), 0);
+		$lastSocialTime = Storage::retrieve($locker, null);
+		if ($lastSocialTime == null)
+			$result = Db::query("select killID, insertTime from zz_killmails where killID > 0 and processed = 1 and insertTime >= date_sub(now(), interval 10 minute)", array(), 0);
+		else 
+			$result = Db::query("select killID, insertTime from zz_killmails where killID > 0 and processed = 1 and insertTime >= :last", array(":last" => $lastSocialTime), 0);
 		foreach ($result as $row) {
 			$lastSocialTime = $row["insertTime"];
 			self::beSocial($row["killID"]);
-			Storage::store($locker, $lastSocialTime);
 		}
-		Storage::store($locker, $now);
+		Storage::store($locker, $lastSocialTime);
 	}
 
 	public static function beSocial($killID)
