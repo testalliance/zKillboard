@@ -99,7 +99,7 @@ class Summary
 		$recentRank = Db::queryField("select overallRank from zz_ranks_recent where type = :type and typeID = :id", "overallRank", array(":type" => $type, ":id" => $id), 300);
 		$idCount = 0;
 		foreach($parameters as $key => $value) if (Util::endsWith($key, "ID")) $idCount++;
-		if (isset($parameters["solo"]) || $idCount >= 2) {
+		if (false) { //isset($parameters["solo"]) || $idCount >= 2) {
 			$rank = $recentRank = array();
 
 			$tables = array();
