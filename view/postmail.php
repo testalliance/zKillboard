@@ -23,6 +23,7 @@ if($_POST)
 	@$keyid = trim($_POST["keyid"]);
 	@$vcode = trim($_POST["vcode"]);
 	@$killmail = $_POST["killmail"];
+	@$killmailurl = $_POST["killmailurl"];
 	$label = "";
 
 	// Apikey stuff
@@ -37,6 +38,14 @@ if($_POST)
 		{
 			$error = array($check);
 		}
+	}
+
+	if ($killmailurl)
+	{
+		$frag = explode("/", $killmailurl);
+		if (sizeof($frag) != 7) die("Invalid URL");
+		Db::execute("insert ignore into zz_crest_killmail (killID, hash) values (:killID, :hash)", array(":killID" => $frag[4], ":hash" => $frag[5]));
+		$error = "URL successfully submitted";
 	}
 
 	if($killmail)
