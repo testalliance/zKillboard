@@ -230,7 +230,7 @@ class Kills
 	public static function getRawMail($killID, $array = array(), $edk = true)
 	{
 		$cacheName = $killID;
-		$sem = sem_get($killID);
+		$sem = sem_get($killID % 101);
 		if (!sem_acquire($sem)) return "";
 		if($edk)
 			$cacheName = $killID."EDK";

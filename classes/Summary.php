@@ -152,7 +152,7 @@ class Summary
 	{
 		if ($kills == null || !is_array($kills) || sizeof($kills) == 0) return array();
 
-		$sem = sem_get($parameters["solarSystemID"]);
+		$sem = sem_get($parameters["solarSystemID"] % 101);
 		if (!sem_acquire($sem)) return array();
 
 		$key = "related:$key";
