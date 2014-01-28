@@ -46,6 +46,20 @@
 		</div>
 	</div>
 	<div class="col-lg-7">
+		<h3>Post Killmail URL</h3>
+		<form name="postkillmailurl" method="post" action="/post/" class="form">
+			<div class="form-group">
+				<input type="text" id="killmailurl" name="killmailurl" required placeholder="Killmail URL" class="form-control"/>
+			</div>
+			<div class="form-group">
+					<div class="col-lg-2">
+						<input type="submit" class="btn btn-primary">
+					</div>
+			</div>
+		</form>
+		<small><i>Killmail URL's exist in Rubicon 1.1 but the CREST endpoint has not been released yet.  Submitting now means we'll get the mail later when the endpoint does exist!</i></small>
+		<hr/>
+
 		<h3>Post Killmail</h3>
 		<div class="well">
 			{% if sessionusername == "" %}
@@ -60,7 +74,7 @@
 				<div class="alert alert-danger">You are not logged in, your killmail will not be accepted.</div>
 			{% endif %}
 				<div class="form-group">
-					<input type="submit" class="btn btn-large btn-primary" value="Post mail">
+					<input type="submit" class="btn btn-primary" value="Post mail">
 				</div>
 			</form>
 		</div>
