@@ -97,7 +97,9 @@ class Summary
 		$stats = array();
 		$rank = Db::queryRow("select * from zz_ranks where type = :type and typeID = :id", array(":type" => $type, ":id" => $id), 300);
 		$recentRank = Db::queryField("select overallRank from zz_ranks_recent where type = :type and typeID = :id", "overallRank", array(":type" => $type, ":id" => $id), 300);
-		if (isset($parameters["solo"])) {
+		$idCount = 0;
+		foreach($parameters as $key => $value) if (Util::endsWith($key, "ID")) $idCount++;
+		if (isset($parameters["solo"]) || $idCount >= 2) {
 			$rank = $recentRank = array();
 
 			$tables = array();

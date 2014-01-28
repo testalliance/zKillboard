@@ -665,11 +665,11 @@ class Info
 	 * @param  int $id
 	 * @return array
 	 */
-	public static function getFactionDetails($id)
+	public static function getFactionDetails($id, $parameters = array())
 	{
 		$data["factionID"] = $id;
 		self::addInfo($data);
-		return Summary::getFactionSummary($data, $id);
+		return Summary::getFactionSummary($data, $id, $parameters);
 	}
 
 	/**
@@ -677,11 +677,11 @@ class Info
 	 * @param  int $id
 	 * @return array
 	 */
-	public static function getSystemDetails($id)
+	public static function getSystemDetails($id, $parameters = array())
 	{
 		$data = array("solarSystemID" => $id);
 		self::addInfo($data);
-		return Summary::getSystemSummary($data, $id);
+		return Summary::getSystemSummary($data, $id, $parameters);
 	}
 
 	/**
@@ -689,11 +689,11 @@ class Info
 	 * @param  int $id
 	 * @return array
 	 */
-	public static function getRegionDetails($id)
+	public static function getRegionDetails($id, $parameters = array())
 	{
 		$data = array("regionID" => $id);
 		self::addInfo($data);
-		return Summary::getRegionSummary($data, $id);
+		return Summary::getRegionSummary($data, $id, $parameters);
 	}
 
 	/**
