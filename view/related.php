@@ -24,8 +24,16 @@ $regionName = Info::getRegionName(Info::getRegionIDFromSystemID($systemID));
 $unixTime = strtotime($relatedTime);
 $time = date("Y-m-d H:i", $unixTime);
 
-$parameters = array("solarSystemID" => $systemID, "relatedTime" => $relatedTime);
-$kills = Kills::getKills($parameters);
-$summary = Summary::buildSummary($kills, $parameters, "$systemName:$time");
+$exHours = (int) $exHours;
+if ($exHours < 1 || $exHours > 12) $exHours = 1;
 
-$app->render("related.html", array("summary" => $summary, "systemName" => $systemName, "regionName" => $regionName, "time" => $time));
+$key = "$systemID:$relatedTime:$exHours";
+$mc = Cache::get($key);
+if (!$mc) {
+	$parameters = array("solarSystemID" => $systemID, "relatedTime" => $relatedTime, "exHours" => $exHours);
+	$kills = Kills::getKills($parameters);
+	$summary = Summary::buildSummary($kills, $parameters, "$systemName:$time:$exHours");
+	$mc = array("summary" => $summary, "systemName" => $systemName, "regionName" => $regionName, "time" => $time, "exHours" => $exHours);
+	Cache::set($key, $mc, 900);
+}
+$app->render("related.html", $mc);

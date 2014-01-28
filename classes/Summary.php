@@ -97,7 +97,9 @@ class Summary
 		$stats = array();
 		$rank = Db::queryRow("select * from zz_ranks where type = :type and typeID = :id", array(":type" => $type, ":id" => $id), 300);
 		$recentRank = Db::queryField("select overallRank from zz_ranks_recent where type = :type and typeID = :id", "overallRank", array(":type" => $type, ":id" => $id), 300);
-		if (isset($parameters["solo"])) {
+		$idCount = 0;
+		foreach($parameters as $key => $value) if (Util::endsWith($key, "ID")) $idCount++;
+		if (isset($parameters["solo"]) || $idCount >= 2) {
 			$rank = $recentRank = array();
 
 			$tables = array();
@@ -152,9 +154,15 @@ class Summary
 	{
 		if ($kills == null || !is_array($kills) || sizeof($kills) == 0) return array();
 
+		$sem = sem_get($parameters["solarSystemID"] % 101);
+		if (!sem_acquire($sem)) return array();
+
 		$key = "related:$key";
 		$mc = Cache::get($key);
-		if ($mc) return $mc;
+		if ($mc) {
+			sem_release($sem);
+			return $mc;
+		}
 
 		$teamAKills = array();
 		$teamBKills = array();
@@ -210,7 +218,8 @@ class Summary
 		  $retValue["teamA"] = $temp;
 		  }*/
 
-		Cache::set($key, $retValue, 300);
+		sem_release($sem);
+		Cache::set($key, $retValue, 900);
 		return $retValue;
 	}
 
@@ -311,7 +320,7 @@ class Summary
 			self::increment($allis, $victim["allianceID"], $price, $points);
 			self::increment($factions, $victim["factionID"], $price, $points);
 		}
-		if (sizeof($factions) > 1) self::filterKills($kills, $teamB, $teamA, "factionID", $factions, "F");
+		if (false && sizeof($factions) > 1) self::filterKills($kills, $teamB, $teamA, "factionID", $factions, "F");
 		else if (sizeof($allis)) self::filterKills($kills, $teamB, $teamA, "allianceID", $allis, "A");
 		else if (sizeof($corps)) self::filterKills($kills, $teamB, $teamA, "corporationID", $corps, "C");
 		else if (sizeof($chars)) self::filterKills($kills, $teamB, $teamA, "characterID", $chars, "P");

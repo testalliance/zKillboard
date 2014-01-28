@@ -41,87 +41,93 @@ class zKillboard
 		return $html;
 	}
 
-	public static function top()
-	{
-		$html = '<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-			<ins class="adsbygoogle"
-			style="display:inline-block;width:728px;height:90px"
-			data-ad-client="ca-pub-8111276931546791"
-			data-ad-slot="3776014371"></ins>
-			<script>
-			(adsbygoogle = window.adsbygoogle || []).push({});
-			</script>';
+        public static function top()
+        {
+                $html = '<script type="text/javascript">
+                google_ad_client = "ca-pub-8111276931546791";
+                /* eve-kill */
+                google_ad_slot = "3776014371";
+                google_ad_width = 728;
+                google_ad_height = 90;
+                </script>
+                <script type="text/javascript" src="//pagead2.googlesyndication.com/pagead/show_ads.js"></script>';
+                return $html;
+        }
 
-		return $html;
-	}
+        public static function bottom()
+        {
+                $html = '<script type="text/javascript">
+                google_ad_client = "ca-pub-8111276931546791";
+                /* eve-kill */
+                google_ad_slot = "5039094775";
+                google_ad_width = 728;
+                google_ad_height = 90;
+                </script>
+                <script type="text/javascript" src="//pagead2.googlesyndication.com/pagead/show_ads.js"></script>';
+                return $html;
+        }
 
-	public static function bottom()
-	{
-		$html = '<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-			<ins class="adsbygoogle"
-			style="display:inline-block;width:728px;height:90px"
-			data-ad-client="ca-pub-8111276931546791"
-			data-ad-slot="5039094775"></ins>
-			<script>
-			(adsbygoogle = window.adsbygoogle || []).push({});
-			</script>';
+        public static function mobileTop()
+        {
+                $html = '<script type="text/javascript"><!--
+                google_ad_client = "ca-pub-8111276931546791";
+                /* zkb mobile top */
+                google_ad_slot = "9932221977";
+                google_ad_width = 320;
+                google_ad_height = 50;
+                //-->
+                </script>
+                <script type="text/javascript"
+                src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+                </script>';
+                return $html;
+        }
 
-		return $html;
-	}
+        public static function mobileBottom()
+        {
+                $html = '<script type="text/javascript"><!--
+                google_ad_client = "ca-pub-8111276931546791";
+                /* zkb mobile bottom */
+                google_ad_slot = "2408955178";
+                google_ad_width = 320;
+                google_ad_height = 50;
+                //-->
+                </script>
+                <script type="text/javascript"
+                src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+                </script>';
+                return $html;
+        }
 
-	public static function mobileTop()
-	{
-		$html = '<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-			<ins class="adsbygoogle"
-			style="display:inline-block;width:320px;height:50px"
-			data-ad-client="ca-pub-8111276931546791"
-			data-ad-slot="9932221977"></ins>
-			<script>
-			(adsbygoogle = window.adsbygoogle || []).push({});
-			</script>';
+        public static function igbTop()
+        {
+                $html = '<script type="text/javascript"><!--
+                google_ad_client = "ca-pub-8111276931546791";
+                /* zkb top text */
+                google_ad_slot = "5502022370";
+                google_ad_width = 728;
+                google_ad_height = 90;
+                //-->
+                </script>
+                <script type="text/javascript"
+                src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+                </script>';
+                return $html;
+        }
 
-		return $html;
-	}
-
-	public static function mobileBottom()
-	{
-		$html = '<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-			<ins class="adsbygoogle"
-			style="display:inline-block;width:320px;height:50px"
-			data-ad-client="ca-pub-8111276931546791"
-			data-ad-slot="2408955178"></ins>
-			<script>
-			(adsbygoogle = window.adsbygoogle || []).push({});
-			</script>';
-
-		return $html;
-	}
-
-	public static function igbTop()
-	{
-		$html = '<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-			<ins class="adsbygoogle"
-			style="display:inline-block;width:728px;height:90px"
-			data-ad-client="ca-pub-8111276931546791"
-			data-ad-slot="5502022370"></ins>
-			<script>
-			(adsbygoogle = window.adsbygoogle || []).push({});
-			</script>';
-
-		return $html;
-	}
-
-	public static function igbBottom()
-	{
-		$html = '<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-			<ins class="adsbygoogle"
-			style="display:inline-block;width:728px;height:90px"
-			data-ad-client="ca-pub-8111276931546791"
-			data-ad-slot="5502022370"></ins>
-			<script>
-			(adsbygoogle = window.adsbygoogle || []).push({});
-			</script>';
-
-		return $html;
-	}
+        public static function igbBottom()
+        {
+                $html = '<script type="text/javascript"><!--
+                google_ad_client = "ca-pub-8111276931546791";
+                /* zkb bottom text */
+                google_ad_slot = "6978755572";
+                google_ad_width = 728;
+                google_ad_height = 90;
+                //-->
+                </script>
+                <script type="text/javascript"
+                src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+                </script>';
+                return $html;
+        }
 }
