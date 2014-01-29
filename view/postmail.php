@@ -50,6 +50,13 @@ if($_POST)
 		if (sizeof($hash) == 0) die("Invalid Killmail Link");
 		Db::execute("insert ignore into zz_crest_killmail (killID, hash) values (:killID, :hash)", array(":killID" => $killID, ":hash" => $hash));
 		$error = "Killmail Link successfully submitted.  It will be processed once the CREST endpoint has become available.";
+		global $ip;
+		Log::ircAdmin("|n|External Killmail link submited: |g|$killmailurl |n|($ip)");
+
+		// Has the kill already been submitted?
+		$count = Db::queryField("select count(*) count from zz_participants where killID = :killID and isVictim = 1", "count", array(":killID" => $killID));
+		if ($count)
+			$app->redirect("/detail/$killID/");
 	}
 
 	if($killmail)
