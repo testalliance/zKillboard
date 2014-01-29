@@ -4,10 +4,8 @@
 {% block title %}{% include 'components/title.html' %}{% endblock %}
 
 {% block content %}
-{% if message %}
-	{% for message in message %}
-		<div class="row"><div class="alert alert-success">{{ message }}</div></div>
-	{% endfor %}
+{% if message != "" %}
+	<div class="row"><div class="alert alert-success">{{ message }}</div></div>
 {% endif %}
 <div class="row">
 	<div class="col-lg-5">

@@ -32,11 +32,11 @@ if($_POST)
 		$check = Api::checkAPI($keyid, $vcode);
 		if($check == "success")
 		{
-			$error = array(Api::addKey($keyid, $vcode, $label));
+			$error = Api::addKey($keyid, $vcode, $label);
 		}
 		else
 		{
-			$error = array($check);
+			$error = $check;
 		}
 	}
 
@@ -49,14 +49,22 @@ if($_POST)
 		$hash = $frag[1];
 		if (sizeof($hash) == 0) die("Invalid Killmail Link");
 		Db::execute("insert ignore into zz_crest_killmail (killID, hash) values (:killID, :hash)", array(":killID" => $killID, ":hash" => $hash));
-		$error = "Killmail Link successfully submitted.  It will be processed once the CREST endpoint has become available.";
 		global $ip;
-		Log::ircAdmin("|n|External Killmail link submited: |g|$killmailurl |n|($ip)");
+		Log::ircAdmin("|n|External Killmail link submitted: |g|$killmailurl |n|($ip)");
 
-		// Has the kill already been submitted?
-		$count = Db::queryField("select count(*) count from zz_participants where killID = :killID and isVictim = 1", "count", array(":killID" => $killID));
-		if ($count)
-			$app->redirect("/detail/$killID/");
+		$maxIterations = 1; // TODO Bump this up to 20 when we finally process these links
+		$iteration = 0;
+		do {
+			// Has the kill been processed?
+			$processed = Db::queryField("select processed from zz_killmails where killID = :killID", "processed", array(":killID" => $killID));
+			if ($processed == 1) $app->redirect("/detail/$killID/");
+			else if ($processed == 2) $error = "There was an error processing your killmail.  Please contact support.";
+			else if ($processed == 3) $error = "Your mail is an NPC only mail and will not be displayed.";
+			//else sleep(1); // TODO uncomment this line when we finally process these links
+			$iteration++;
+		} while ($iteration < $maxIterations && $error == "");
+		// $error = "We waited $maxIterations for the kill to be processed but the server may be busy atm, please wait!";
+		$error = "Killmail Link successfully submitted.  It will be processed once the CREST endpoint has become available.";
 	}
 
 	if($killmail)
@@ -73,7 +81,7 @@ if($_POST)
 				$error = $return["error"];
 		}
 		else
-			$error = array("Sorry, you need to be logged in to post manual killmails");
+			$error = "Sorry, you need to be logged in to post manual killmails";
 	}
 }
 $app->render("postmail.html", array("message" => $error));
