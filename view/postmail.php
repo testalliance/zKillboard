@@ -42,10 +42,14 @@ if($_POST)
 
 	if ($killmailurl)
 	{
-		$frag = explode("/", $killmailurl);
-		if (sizeof($frag) != 7) die("Invalid URL");
-		Db::execute("insert ignore into zz_crest_killmail (killID, hash) values (:killID, :hash)", array(":killID" => $frag[4], ":hash" => $frag[5]));
-		$error = "URL successfully submitted";
+		$frag = explode(":", $killmailurl);
+		if (sizeof($frag) != 2) die("Invalid Killmail Link");
+		$killID = (int) $frag[0];
+		if ($killID == 0) die("Invalid Killmail Link");
+		$hash = $frag[1];
+		if (sizeof($hash) == 0) die("Invalid Killmail Link");
+		Db::execute("insert ignore into zz_crest_killmail (killID, hash) values (:killID, :hash)", array(":killID" => $killID, ":hash" => $hash));
+		$error = "Killmail Link successfully submitted.  It will be processed once the CREST endpoint has become available.";
 	}
 
 	if($killmail)
