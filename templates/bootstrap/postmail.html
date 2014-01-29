@@ -5,7 +5,9 @@
 
 {% block content %}
 {% if message %}
-	<div class="row"><div class="alert alert-success">{{ message }}</div></div>
+	{% for message in message %}
+		<div class="row"><div class="alert alert-success">{{ message }}</div></div>
+	{% endfor %}
 {% endif %}
 <div class="row">
 	<div class="col-lg-5">
