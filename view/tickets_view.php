@@ -32,7 +32,7 @@ if($_POST)
 	if(isset($_POST["reply"]))
 		$reply = $_POST["reply"];
 
-	if($reply && $ticket[0]["status"] != 0)
+	if($reply && $ticket["status"] != 0)
 	{
 		$name = $info["username"];
 		$moderator = $info["moderator"];
