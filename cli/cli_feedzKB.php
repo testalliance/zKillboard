@@ -97,6 +97,7 @@ class cli_feedzKB implements cliCommand
 					if(isset($kill->_stringValue))
 						unset($kill->_stringValue);
 
+					if ($kill == "") continue;
 					$hash = Util::getKillHash(null, $kill);
 					$json = json_encode($kill);
 					$killID = $kill->killID;
