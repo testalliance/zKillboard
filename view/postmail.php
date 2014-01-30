@@ -50,7 +50,7 @@ if($_POST)
 		if (sizeof($hash) == 0) die("Invalid Killmail Link");
 		Db::execute("insert ignore into zz_crest_killmail (killID, hash) values (:killID, :hash)", array(":killID" => $killID, ":hash" => $hash));
 		global $ip;
-		Log::ircAdmin("|n|External Killmail link submitted: |g|$killmailurl |n|($ip)");
+		Log::ircAdmin("|n|External Killmail link submitted:|g| $killmailurl |n|($ip)");
 
 		$maxIterations = 1; // TODO Bump this up to 20 when we finally process these links
 		$iteration = 0;
