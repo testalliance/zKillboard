@@ -48,9 +48,7 @@ if($_POST)
 		if ($killID == 0) die("Invalid Killmail Link");
 		$hash = $frag[1];
 		if (sizeof($hash) == 0) die("Invalid Killmail Link");
-		Db::execute("insert ignore into zz_crest_killmail (killID, hash) values (:killID, :hash)", array(":killID" => $killID, ":hash" => $hash));
-		global $ip;
-		Log::ircAdmin("|n|External Killmail link submitted:|g| $killmailurl |n|($ip)");
+		$i = Db::execute("insert ignore into zz_crest_killmail (killID, hash) values (:killID, :hash)", array(":killID" => $killID, ":hash" => $hash));
 
 		$maxIterations = 1; // TODO Bump this up to 20 when we finally process these links
 		$iteration = 0;
@@ -65,6 +63,9 @@ if($_POST)
 		} while ($iteration < $maxIterations && $error == "");
 		// $error = "We waited $maxIterations for the kill to be processed but the server may be busy atm, please wait!";
 		$error = "Killmail Link successfully submitted.  It will be processed once the CREST endpoint has become available.";
+
+		global $ip;
+		if ($i) Log::ircAdmin("|n|External Killmail link submitted:|g| $killmailurl |n|($ip)"); // Log only if new row
 	}
 
 	if($killmail)
