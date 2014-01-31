@@ -371,7 +371,7 @@ class Util
 
 	public static function bootstrapThemes()
 	{
-		$json = json_decode(self::download("http://api.bootswatch.com/3/"));
+		$json = json_decode(self::getData("http://api.bootswatch.com/3/"));
 
 		$available = array();
 		foreach($json->themes as $theme)
@@ -397,19 +397,37 @@ class Util
 
 	/**
 	 * @param string $url
+	 * @return string|array|null $result
 	 */
-	public static function download($url, $cacheTime = 3600)
+	public static function getData($url, $cacheTime = 3600)
 	{
+		global $ipsAvailable;
+
 		$md5 = md5($url);
-		$data = Cache::get($md5);
+		$result = Cache::get($md5);
 
-		if(!$data)
+		if(!$result)
 		{
-			$data = file_get_contents($url);
-			Cache::set($md5, $data, $cacheTime);
-			return $data;
-		}
-		return $data;
+			$ip = $ipsAvailable[time() % count($ipsAvailable)];
+			$userAgent = "zKillboard dataGetter";
 
+			$curl = curl_init();
+	        curl_setopt($curl, CURLOPT_USERAGENT, $userAgent);
+	        curl_setopt($curl, CURLOPT_TIMEOUT, 30);
+	        curl_setopt($curl, CURLOPT_POST, false);
+	        curl_setopt($curl, CURLOPT_FORBID_REUSE, false);
+	        curl_setopt($curl, CURLOPT_ENCODING, "");
+	        $headers = array();
+	        $headers[] = "Connection: keep-alive";
+	        $headers[] = "Keep-Alive: timeout=10, max=1000";
+	        curl_setopt($curl, CURLOPT_URL, $url);
+	        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+	        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+	        curl_setopt($curl, CURLOPT_INTERFACE, $ip);
+	        $result = curl_exec($curl);
+		}
+
+        Cache::set($md5, $result, $cacheTime);
+        return $result;
 	}
 }
