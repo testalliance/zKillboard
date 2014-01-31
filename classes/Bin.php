@@ -27,9 +27,9 @@ class Bin
 	 * get something from storage
 	 *
 	 * @static
-	 * @param $name
-	 * @param boolean|null $default
-	 * @return null
+	 * @param $name string
+	 * @param $default mixed
+     * @return mixed
 	 */
 	public static function get($name, $default = null)
 	{
@@ -41,8 +41,8 @@ class Bin
 	 * Store something
 	 *
 	 * @static
-	 * @param $name
-	 * @param $value
+	 * @param $name string
+	 * @param $value mixed
 	 * @return void
 	 */
 	public static function set($name, $value)

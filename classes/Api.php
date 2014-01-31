@@ -26,8 +26,8 @@ class Api
 	 * Checks a key for validity and KillLog access.
 	 *
 	 * @static
-	 * @param $keyID The keyID to be checked.
-	 * @param $vCode The vCode to be checked
+	 * @param $keyID int The keyID to be checked.
+	 * @param $vCode string The vCode to be checked
 	 * @return string|null A message, Success on success, otherwise an error.
 	 */
 	public static function checkAPI($keyID, $vCode)
@@ -60,10 +60,7 @@ class Api
 		if (!$hasBits) {
 			return "Error, key does not have access to killlog, please modify key to add killlog access";
 		}
-		if ($hasBits) {
-			return "success";
-		}
-
+		return "success";
 	}
 
 	/**
@@ -138,7 +135,7 @@ class Api
 	}
 
 	/**
-	 * Returns an array of charactery keys.
+	 * Returns an array of character keys.
 	 *
 	 * @static
 	 * @param $userID int
@@ -303,7 +300,7 @@ class Api
 		Db::execute("update zz_api_characters set errorCode = :code where keyID = :keyID and characterID = :charID", array(":keyID" => $keyID, ":charID" => $charID, ":code" => $code));
 	}
 
-	public static function fetchApis()
+    public static function fetchApis()
 	{
 		global $baseDir;
 
@@ -339,7 +336,7 @@ class Api
 		}
 	}
 
-	public static function doApiSummary()
+    public static function doApiSummary()
 	{
 		$lastActualKills = Db::queryField("select contents count from zz_storage where locker = 'actualKills'", "count", array(), 0);
 		$actualKills = Db::queryField("select count(*) count from zz_killmails where processed = 1", "count", array(), 0);
@@ -358,9 +355,10 @@ class Api
 	}
 
 	/**
-	 * @param string $keyID
-	 * @param int $charID
-	 * @param string $killlog
+	 * @param $keyID string
+	 * @param $charID int
+	 * @param $killlog string
+     * @return int
 	 */
 	public static function processRawApi($keyID, $charID, $killlog)
 	{
