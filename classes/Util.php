@@ -386,13 +386,13 @@ class Util
 	 */
 	public static function strposa($haystack, $needles=array(), $offset=0)
 	{
-	        $chr = array();
-	        foreach($needles as $needle) {
-	                $res = strpos($haystack, $needle, $offset);
-	                if ($res !== false) $chr[$needle] = $res;
-	        }
-	        if(empty($chr)) return false;
-	        return min($chr);
+			$chr = array();
+			foreach($needles as $needle) {
+					$res = strpos($haystack, $needle, $offset);
+					if ($res !== false) $chr[$needle] = $res;
+			}
+			if(empty($chr)) return false;
+			return min($chr);
 	}
 
 	/**
@@ -410,27 +410,27 @@ class Util
 		{
 			$curl = curl_init();
 			$userAgent = "zKillboard dataGetter";
-	        curl_setopt($curl, CURLOPT_USERAGENT, $userAgent);
-	        curl_setopt($curl, CURLOPT_TIMEOUT, 30);
-	        curl_setopt($curl, CURLOPT_POST, false);
-	        curl_setopt($curl, CURLOPT_FORBID_REUSE, false);
-	        curl_setopt($curl, CURLOPT_ENCODING, "");
-	        $headers = array();
-	        $headers[] = "Connection: keep-alive";
-	        $headers[] = "Keep-Alive: timeout=10, max=1000";
-	        curl_setopt($curl, CURLOPT_URL, $url);
-	        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-	        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($curl, CURLOPT_USERAGENT, $userAgent);
+			curl_setopt($curl, CURLOPT_TIMEOUT, 30);
+			curl_setopt($curl, CURLOPT_POST, false);
+			curl_setopt($curl, CURLOPT_FORBID_REUSE, false);
+			curl_setopt($curl, CURLOPT_ENCODING, "");
+			$headers = array();
+			$headers[] = "Connection: keep-alive";
+			$headers[] = "Keep-Alive: timeout=10, max=1000";
+			curl_setopt($curl, CURLOPT_URL, $url);
+			curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 			if(count($ipsAvailable) > 0)
 			{
 				$ip = $ipsAvailable[time() % count($ipsAvailable)];
-	        	curl_setopt($curl, CURLOPT_INTERFACE, $ip);
-	        }
-	        $result = curl_exec($curl);
+				curl_setopt($curl, CURLOPT_INTERFACE, $ip);
+			}
+			$result = curl_exec($curl);
 		}
 
-        Cache::set($md5, $result, $cacheTime);
-        return $result;
+		Cache::set($md5, $result, $cacheTime);
+		return $result;
 	}
 
 	/**
