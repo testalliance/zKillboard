@@ -136,7 +136,14 @@ function involvedships($array)
 		else
 			continue;
 	}
+
+	usort($involved, "sortByOrder");
 	return $involved;
+}
+
+function sortByOrder($a, $b)
+{
+	return $a["count"] < $b["count"];
 }
 
 function usdeurgbp($totalprice)
