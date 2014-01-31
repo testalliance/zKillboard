@@ -169,10 +169,10 @@
 	</thead>
 	<tbody>
 	{% set imageSize = 32 %}
-	{% set resizeImage = 32 %}
+	{% set resizeImage = 40 %}
 	{% for attacker in killdata.involved %}
 		<tr class="attacker">
-			<td class="icons" style="vertical-align: middle; width: 150px;">
+			<td class="icons" style="vertical-align: middle; width: 200px;">
 				{% set field = attacker %}
 				{% include 'components/image_char.html' %}
 				{% include 'components/image_corp.html' %}
@@ -185,7 +185,7 @@
 				{% if attacker.allianceID != 0 %} / <a href="/alliance/{{attacker.allianceID}}/">{{ attacker.allianceName }}</a>{% endif %}
 				{% if attacker.factionID != 0 %} / <a href="/faction/{{attacker.factionID}}/">{{ attacker.factionName }}</a>{% endif %}
 			</td>
-			<td class="icons" style="width:80px;">
+			<td class="icons" style="width:100px;">
 				{% include 'components/image_ship.html' %}
 				{% include 'components/image_item.html' %}
 			</td>
