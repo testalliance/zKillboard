@@ -27,6 +27,7 @@ class Account
 			Db::execute("update zz_users_config set locker = 'tracker_$ent' where locker = '$ent'");
 			$result = UserConfig::get("tracker_$ent");
 			$part = array();
+			$entlist = array();
 
 			if($result != null) foreach($result as $row) {
 				switch($ent)
@@ -41,6 +42,7 @@ class Account
 					case "item":
 						$row["typeID"] = $row["id"];
 						$row["shipName"] = $row["name"];
+					break;
 
 					case "ship":
 						$row["shipTypeID"] = $row["id"];

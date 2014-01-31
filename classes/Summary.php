@@ -94,7 +94,6 @@ class Summary
 		$mc = Cache::get($key);
 		if ($mc) return $mc;
 
-		$stats = array();
 		$rank = Db::queryRow("select * from zz_ranks where type = :type and typeID = :id", array(":type" => $type, ":id" => $id), 300);
 		$recentRank = Db::queryField("select overallRank from zz_ranks_recent where type = :type and typeID = :id", "overallRank", array(":type" => $type, ":id" => $id), 300);
 		$idCount = 0;
