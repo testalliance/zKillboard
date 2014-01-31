@@ -30,9 +30,9 @@ if(isset($req))
 
 if($_POST)
 {
-	$keyid = getPost("keyid");
-	$vcode = getPost("vcode");
-	$label = getPost("label");
+	$keyid = Util::getPost("keyid");
+	$vcode = Util::getPost("vcode");
+	$label = Util::getPost("label");
 	// Apikey stuff
 	if(isset($keyid) || isset($vcode))
 	{
@@ -47,18 +47,18 @@ if($_POST)
 		}
 	}
 
-	$deletesessionid = getPost("deletesessionid");
+	$deletesessionid = Util::getPost("deletesessionid");
 	// delete a session
 	if(isset($deletesessionid))
 		User::deleteSession($userID, $deletesessionid);
 
-	$deletekeyid = getPost("deletekeyid");
-	$deleteentity = getPost("deleteentity");
+	$deletekeyid = Util::getPost("deletekeyid");
+	$deleteentity = Util::getPost("deleteentity");
 	// Delete an apikey
 	if(isset($deletekeyid) && !isset($deleteentity))
 		$error = Api::deleteKey($deletekeyid);
 
-	$viewtheme = getPost("viewtheme");
+	$viewtheme = Util::getPost("viewtheme");
 	// Theme stuff
 	if(isset($viewtheme))
 	{
@@ -66,13 +66,13 @@ if($_POST)
 		$app->redirect($_SERVER["REQUEST_URI"]);
 	}
 
-	$theme = getPost("theme");
+	$theme = Util::getPost("theme");
 	if(isset($theme))
 		UserConfig::set("theme", $theme);
 
-	$orgpw = getPost("orgpw");
-	$password = getPost("password");
-	$password2 = getPost("password2");
+	$orgpw = Util::getPost("orgpw");
+	$password = Util::getPost("password");
+	$password2 = Util::getPost("password2");
 	// Password
 	if(isset($orgpw) && isset($password) && isset($password2))
 	{
@@ -87,12 +87,12 @@ if($_POST)
 			$error = "Original password is wrong, please try again";
 	}
 
-	$timeago = getPost("timeago");
+	$timeago = Util::getPost("timeago");
 	if(isset($timeago))
 		UserConfig::set("timeago", $timeago);
 
-	$deleteentityid = getPost("deleteentityid");
-	$deleteentitytype = getPost("deleteentitytype");
+	$deleteentityid = Util::getPost("deleteentityid");
+	$deleteentitytype = Util::getPost("deleteentitytype");
 	// Tracker
 	if(isset($deleteentityid) && isset($deleteentitytype))
 	{
@@ -108,8 +108,8 @@ if($_POST)
 		UserConfig::set("tracker_" . $deleteentitytype, $q);
 	}
 
-	$entity = getPost("entity");
-	$entitymetadata = getPost("entitymetadata");
+	$entity = Util::getPost("entity");
+	$entitymetadata = Util::getPost("entitymetadata");
 	// Tracker
 	if((isset($entity) && $entity != null) && (isset($entitymetadata) && $entitymetadata != null))
 	{
@@ -127,15 +127,15 @@ if($_POST)
 			$error = "{$entitymetadata['name']} is already being tracked";
 	}
 
-	$ddcombine = getPost("ddcombine");
+	$ddcombine = Util::getPost("ddcombine");
 	if(isset($ddcombine))
 		UserConfig::set("ddcombine", $ddcombine);
 
-	$ddmonthyear = getPost("ddmonthYear");
+	$ddmonthyear = Util::getPost("ddmonthYear");
 	if(isset($ddmonthyear))
 		UserConfig::set("ddmonthyear",$ddmonthyear);
 
-	$useSummaryAccordion = getPost("useSummaryAccordion");
+	$useSummaryAccordion = Util::getPost("useSummaryAccordion");
 	if(isset($useSummaryAccordion))
 		UserConfig::set("useSummaryAccordion", $useSummaryAccordion);
 }
@@ -157,7 +157,3 @@ $data["useSummaryAccordion"] = UserConfig::get("useSummaryAccordion");
 $data["sessions"] = User::getSessions($userID);
 
 $app->render("account.html", array("data" => $data, "message" => $error, "key" => $key, "reqid" => $reqid));
-
-function getPost($var) {
-	return isset($_POST[$var]) ? $_POST[$var] : null;
-}

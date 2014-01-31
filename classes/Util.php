@@ -408,10 +408,8 @@ class Util
 
 		if(!$result)
 		{
-			$ip = $ipsAvailable[time() % count($ipsAvailable)];
-			$userAgent = "zKillboard dataGetter";
-
 			$curl = curl_init();
+			$userAgent = "zKillboard dataGetter";
 	        curl_setopt($curl, CURLOPT_USERAGENT, $userAgent);
 	        curl_setopt($curl, CURLOPT_TIMEOUT, 30);
 	        curl_setopt($curl, CURLOPT_POST, false);
@@ -423,11 +421,28 @@ class Util
 	        curl_setopt($curl, CURLOPT_URL, $url);
 	        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
 	        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-	        curl_setopt($curl, CURLOPT_INTERFACE, $ip);
+			if(count($ipsAvailable) > 0)
+			{
+				$ip = $ipsAvailable[time() % count($ipsAvailable)];
+	        	curl_setopt($curl, CURLOPT_INTERFACE, $ip);
+	        }
 	        $result = curl_exec($curl);
 		}
 
         Cache::set($md5, $result, $cacheTime);
         return $result;
+	}
+
+	/**
+	 * Gets post data, and returns it
+	 * @param  string $var The variable you can to return
+	 * @return string|array|null
+	 */
+	public static function getPost($var)
+	{
+		if(isset($_POST[$var]))
+			return $_POST[$var];
+		return null;
+
 	}
 }
