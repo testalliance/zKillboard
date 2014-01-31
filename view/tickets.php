@@ -20,16 +20,12 @@ $message = array();
 
 if($_POST)
 {
-	$tags = "";
-	$ticket = "";
+	$tags = Util::getPost("hidden-tags");;
+	$ticket = Util::getPost("ticket");;
 
 	$info = User::getUserInfo();
 	$name = $info["username"];
 	$email = $info["email"];
-	if(isset($_POST["hidden-tags"]))
-		$tags = $_POST["hidden-tags"];
-	if(isset($_POST["ticket"]))
-		$ticket = $_POST["ticket"];
 
 	if(isset($name) && isset($email) && isset($tags) && isset($ticket))
 	{

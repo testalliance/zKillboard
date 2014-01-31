@@ -26,24 +26,12 @@ if (!User::isModerator()) $app->redirect("/");
 
 if($_POST)
 {
-	$status = NULL;
-	$reply = NULL;
-	$report = NULL;
-	$delete = NULL;
-	$deleteapi = NULL;
-
-	if(isset($_POST["status"]))
-		$status = $_POST["status"];
-	if(isset($_POST["reply"]))
-		$reply = $_POST["reply"];
-	if(isset($_POST["report"]))
-		$report = $_POST["report"];
-	if(isset($_POST["delete"]))
-		$delete = $_POST["delete"];
-	if(isset($_POST["manualpull"]))
-		$manualpull = $_POST["manualpull"];
-	if(isset($_POST["deleteapi"]))
-		$deleteapi = $_POST["deleteapi"];
+	$status = Util::getPost("status");
+	$reply = Util::getPost("reply");
+	$report = Util::getPost("report");
+	$delete = Util::getPost("delete");
+	$deleteapi = Util::getPost("deleteapi");
+	$manualpull = Util::getPost("manualpull");
 
 	if(isset($status))
 	{

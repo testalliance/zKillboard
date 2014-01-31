@@ -18,10 +18,10 @@
 
 if($_POST)
 {
-    $username = "";
-    $password = "";
-    $password2 = "";
-    $email = "";
+    $username = Util::getPost("username");
+    $password = Util::getPost("password");
+    $password2 = Util::getPost("password2");
+    $email = Util::getPost("email");
 
     if(isset($_POST["username"]))
         $username = $_POST["username"];

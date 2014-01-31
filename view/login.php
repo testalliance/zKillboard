@@ -1,19 +1,10 @@
 <?php
 if($_POST)
 {
-    $username = "";
-    $password = "";
-    $autologin = 0;
-    $requesturi = "";
-
-    if(isset($_POST["username"]))
-        $username = $_POST["username"];
-    if(isset($_POST["password"]))
-        $password = $_POST["password"];
-    if(isset($_POST["autologin"]))
-        $autologin = 1;
-    if(isset($_POST["requesturi"]))
-        $requesturi = $_POST["requesturi"];
+    $username = Util::getPost("username");
+    $password = Util::getPost("password");
+    $autologin = Util::getPost("autologin");
+    $requesturi = Util::getPost("requesturi");
 
     if(!$username)
     {

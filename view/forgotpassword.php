@@ -18,10 +18,7 @@
 
 if($_POST)
 {
-    $email = "";
-    if(isset($_POST["email"]))
-        $email = $_POST["email"];
-
+    $email = Util::getPost("email");
     if(isset($email))
     {
         $exists = Db::queryField("SELECT username FROM zz_users WHERE email = :email", "username", array(":email" => $email), 0);

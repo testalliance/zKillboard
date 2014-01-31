@@ -1,16 +1,9 @@
 <?php
 if($_POST)
 {
-    $username = "";
-    $password = "";
-    $autologin = 0;
-
-    if(isset($_POST["username"]))
-        $username = $_POST["username"];
-    if(isset($_POST["password"]))
-        $password = $_POST["password"];
-    if(isset($_POST["autologin"]))
-        $autologin = 1;
+    $username = Util::getPost("username");
+    $password = Util::getPost("password");
+    $autologin = Util::Util::getPost("autologin");
 
     if(!$username)
     {

@@ -20,11 +20,10 @@ $error = "";
 
 if($_POST)
 {
-	@$keyid = trim($_POST["keyid"]);
-	@$vcode = trim($_POST["vcode"]);
-	@$killmail = $_POST["killmail"];
-	@$killmailurl = $_POST["killmailurl"];
-	$label = "";
+	$keyid = Util::getPost("keyid");
+	$vcode = Util::getPost("vcode");
+	$killmail = Util::getPost("killmail");
+	$killmailurl = Util::getPost("killmailurl");
 
 	// Apikey stuff
 	if($keyid || $vcode)

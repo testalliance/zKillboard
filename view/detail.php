@@ -30,10 +30,7 @@ $email = $info["email"];
 
 if($_POST)
 {
-	$report = "";
-	if(isset($_POST["report"]))
-		$report = $_POST["report"];
-
+	$report = Util::getPost("report");
 	if (isset($report))
 	{
 		if($id < 0)

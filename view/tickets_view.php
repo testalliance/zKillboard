@@ -28,9 +28,7 @@ elseif($ticket["userid"] != $info["id"] && $info["moderator"] == 0 && $info["adm
 
 if($_POST)
 {
-	$reply = "";
-	if(isset($_POST["reply"]))
-		$reply = $_POST["reply"];
+	$reply = Util::getPost("reply");
 
 	if($reply && $ticket["status"] != 0)
 	{

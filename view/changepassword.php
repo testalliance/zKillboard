@@ -20,12 +20,8 @@ if($_POST)
 {
     $message = "";
     $messagetype = "";
-    $password = "";
-    $password2 = "";
-    if(isset($_POST["password"]))
-        $password = $_POST["password"];
-    if(isset($_POST["password2"]))
-        $password2 = $_POST["password2"];
+    $password = Util::getPost("password");
+    $password2 = Util::getPost("password2");
 
     if(!$password || !$password2)
     {
