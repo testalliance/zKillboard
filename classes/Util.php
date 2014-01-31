@@ -409,18 +409,18 @@ class Util
 		if(!$result)
 		{
 			$curl = curl_init();
-			$userAgent = "zKillboard dataGetter";
-			curl_setopt($curl, CURLOPT_USERAGENT, $userAgent);
-			curl_setopt($curl, CURLOPT_TIMEOUT, 30);
-			curl_setopt($curl, CURLOPT_POST, false);
-			curl_setopt($curl, CURLOPT_FORBID_REUSE, false);
-			curl_setopt($curl, CURLOPT_ENCODING, "");
-			$headers = array();
-			$headers[] = "Connection: keep-alive";
-			$headers[] = "Keep-Alive: timeout=10, max=1000";
-			curl_setopt($curl, CURLOPT_URL, $url);
-			curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt_array($curl, array(
+				CURLOPT_USERAGENT 			=> "zKillboard dataGetter",
+				CURLOPT_TIMEOUT 			=> 30,
+				CURLOPT_POST 				=> false,
+				CURLOPT_FORBID_REUSE 		=> false,
+				CURLOPT_ENCODING 			=> "",
+				CURLOPT_URL 				=> $url,
+				CURLOPT_HTTPHEADER 			=> array("Connection: keep-alive", "Keep-Alive: timeout=10, max=1000"),
+				CURLOPT_RETURNTRANSFER 		=> true
+				)
+			);
+
 			if(count($ipsAvailable) > 0)
 			{
 				$ip = $ipsAvailable[time() % count($ipsAvailable)];
