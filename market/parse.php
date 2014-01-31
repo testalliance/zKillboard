@@ -2,18 +2,18 @@
 
 
 if(php_sapi_name() != "cli")
-    die("This is a cli script!");
+die("This is a cli script!");
 
 if(!extension_loaded('pcntl'))
-    die("This script needs the pcntl extension!");
+die("This script needs the pcntl extension!");
 
 $base = __DIR__;
 require_once( "$base/../config.php" );
 
 if($debug)
 {
-    ini_set('display_errors', 1);
-    error_reporting(E_ALL);
+	ini_set('display_errors', 1);
+	error_reporting(E_ALL);
 }
 
 // vendor autoload
@@ -24,13 +24,13 @@ spl_autoload_register("zkbautoload");
 
 function zkbautoload($class_name)
 {
-    $baseDir = dirname(__FILE__);
-    $fileName = "$baseDir/../classes/$class_name.php";
-    if (file_exists($fileName))
-    {  
-        require_once $fileName;
-        return;
-    }
+	$baseDir = dirname(__FILE__);
+	$fileName = "$baseDir/../classes/$class_name.php";
+	if (file_exists($fileName))
+	{  
+		require_once $fileName;
+		return;
+	}
 }
 
 $file = $argv[1];
@@ -175,36 +175,8 @@ foreach($storage as $key=>$fields) {
 }
 echo "\nInserting data... ";
 Db::execute("update tempData set insert_dttm = now()");
-	$count = Db::execute("insert into zz_marketdata select * from (select * from tempData) as foo on duplicate key update 
-			volRemaining = foo.volRemaining, issued = foo.issued, expires = foo.expires, price = foo.price, pid = 0, insert_dttm = now()
-
-			");
-	echo " Done ($count)\n";
-	echo "Clearing completed/expired market orders... ";
-	$count = Db::execute("delete from zz_marketdata where pid = 1");
-	echo "Done ($count)\n";
-
-	$typeIDs = Db::query("select distinct typeid from zz_marketdata where profitChecked = 0", array(), 0);
-	Db::execute("update zz_marketdata set profitChecked = 1 where profitChecked = 0");
-
-	$count = 0;
-	$totalSize = sizeof($typeIDs);
-
-die();
-
-
-	foreach ($typeIDs as $row) {
-		$count++;
-		echo "$count / $totalSize \n";
-		$typeID = $row["typeid"];
-		Db::execute("delete from zz_profits where typeid = :typeID", array(":typeID" => $typeID));
-		$volume = Db::queryField("select count(*) volume from zz_marketdata where typeid = :typeID", "volume", array(":typeID" => $typeID), array(), 0);
-		Db::execute("
-				insert into zz_profits select sell.typeid, sell.orderID, bid.orderID, least(bid.volRemaining, sell.volRemaining) volume, (least(bid.volRemaining, sell.volRemaining) * (bid.price - sell.price)) profit, now()  from zz_marketdata sell left join zz_marketdata bid on (sell.typeID = bid.typeID) left join mapSolarSystems sellSystem on (sell.solarSystemID = sellSystem.solarSystemID) left join mapSolarSystems bidSystem on (bid.solarSystemID = bidSystem.solarSystemID) where round(sellSystem.security, 1) >= 0.1 and round(bidSystem.security, 1) >= 0.1 and bid.bid = 1 and sell.bid = 0 and bid.minVolume = 1 and sell.typeid = :typeID and (bid.price - sell.price) > (0.03 * sell.price) group by sell.typeid, sell.orderID, bid.orderID  order by profit desc limit 50
-				", array(":typeID" => $typeID));
-		Db::execute("delete from zz_profits where profit < 1000000 and typeID = :typeID", array(":typeID" => $typeID));
-	}
-
-// Clear old orders
-Db::execute("delete from zz_profits where insert_dttm < date_sub(now(), interval 48 hour)");
-Db::execute("delete from zz_profits where typeid not in (select distinct typeid from zz_marketdata)");
+$count = Db::execute("insert into zz_marketdata select * from (select * from tempData) as foo on duplicate key update volRemaining = foo.volRemaining, issued = foo.issued, expires = foo.expires, price = foo.price, pid = 0, insert_dttm = now()");
+echo " Done ($count)\n";
+echo "Clearing completed/expired market orders... ";
+$count = Db::execute("delete from zz_marketdata where pid = 1");
+echo "Done ($count)\n";
