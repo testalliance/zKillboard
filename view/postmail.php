@@ -100,4 +100,8 @@ if($_POST)
 			$error = "Sorry, you need to be logged in to post manual killmails";
 	}
 }
+
+if(!is_array($error))
+	$error = array($error);
+
 $app->render("postmail.html", array("message" => $error));
