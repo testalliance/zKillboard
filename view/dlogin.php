@@ -3,7 +3,7 @@ if($_POST)
 {
     $username = Util::getPost("username");
     $password = Util::getPost("password");
-    $autologin = Util::Util::getPost("autologin");
+    $autologin = Util::getPost("autologin");
 
     if(!$username)
     {
