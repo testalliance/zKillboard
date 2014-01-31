@@ -21,7 +21,7 @@
  */
 class Cache
 {
-	function Cache()
+	function __construct($args)
 	{
 		trigger_error('The class "cache" may only be invoked statically.', E_USER_ERROR);
 	}
