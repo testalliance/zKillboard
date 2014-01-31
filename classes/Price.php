@@ -89,8 +89,7 @@ class Price
 		$result = Cache::get($eveCentralApi);
 		if ($result === FALSE) {
 			try {
-				Util::getPheal();
-				$result = Pheal::request_http_curl($eveCentralApi, array());
+				$result = Util::getData($eveCentralApi);
 				Cache::set($eveCentralApi, $result, 600);
 			} catch (Exception $ex) {
 				return 0;
