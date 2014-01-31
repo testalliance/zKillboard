@@ -41,30 +41,46 @@ if($_POST)
 
 	if ($killmailurl)
 	{
-		$frag = explode(":", $killmailurl);
-		if (sizeof($frag) != 2) die("Invalid Killmail Link");
-		$killID = (int) $frag[0];
-		if ($killID == 0) die("Invalid Killmail Link");
-		$hash = $frag[1];
-		if (sizeof($hash) == 0) die("Invalid Killmail Link");
-		$i = Db::execute("insert ignore into zz_crest_killmail (killID, hash) values (:killID, :hash)", array(":killID" => $killID, ":hash" => $hash));
+		// a hash looks like: 12345:asdfasdfsadfasdf
 
-		$maxIterations = 1; // TODO Bump this up to 20 when we finally process these links
-		$iteration = 0;
-		do {
-			// Has the kill been processed?
-			$processed = Db::queryField("select processed from zz_killmails where killID = :killID", "processed", array(":killID" => $killID));
-			if ($processed == 1) $app->redirect("/detail/$killID/");
-			else if ($processed == 2) $error = "There was an error processing your killmail.  Please contact support.";
-			else if ($processed == 3) $error = "Your mail is an NPC only mail and will not be displayed.";
-			//else sleep(1); // TODO uncomment this line when we finally process these links
-			$iteration++;
-		} while ($iteration < $maxIterations && $error == "");
-		// $error = "We waited $maxIterations for the kill to be processed but the server may be busy atm, please wait!";
-		$error = "Killmail Link successfully submitted.  It will be processed once the CREST endpoint has become available.";
+		if(!stristr($killmailurl, ":"))
+			$error = "Invalid killmail link";
+		else
+		{
+			$exp = explode(":", $killmailurl);
+			if(count($exp) != 2)
+				$error = "Invalid killmail link";
+			elseif(isset($exp[0]) && (int) $exp[0] == 0)
+				$error = "Invalid killmail link";
+			elseif(isset($exp[1]) && strlen($exp[1]) < 40)
+				$error = "Invalid killmail link";
+			else
+			{
+				$killID = (int) $exp[0];
+				$hash = $exp[1];
+				$i = Db::execute("insert ignore into zz_crest_killmail (killID, hash) values (:killID, :hash)", array(":killID" => $killID, ":hash" => $hash));
 
-		global $ip;
-		if ($i) Log::ircAdmin("|n|External Killmail link submitted:|g| $killmailurl |n|($ip)"); // Log only if new row
+				$maxIterations = 1; // TODO Bump this up to 20 when we finally process these links
+				$iteration = 0;
+				do {
+					// Has the kill been processed?
+					$processed = Db::queryField("select processed from zz_killmails where killID = :killID", "processed", array(":killID" => $killID));
+					if ($processed == 1)
+						$app->redirect("/detail/$killID/");
+					else if ($processed == 2)
+						$error = "There was an error processing your killmail.  Please contact support.";
+					else if ($processed == 3)
+						$error = "Your mail is an NPC only mail and will not be displayed.";
+					//else sleep(1); // TODO uncomment this line when we finally process these links
+					$iteration++;
+				} while ($iteration < $maxIterations && $error == "");
+				// $error = "We waited $maxIterations for the kill to be processed but the server may be busy atm, please wait!";
+				$error = "Killmail Link successfully submitted.  It will be processed once the CREST endpoint has become available.";
+
+				global $ip;
+				if ($i) Log::ircAdmin("|n|External Killmail link submitted:|g| $killmailurl |n|($ip)"); // Log only if new row
+			}
+		}
 	}
 
 	if($killmail)
