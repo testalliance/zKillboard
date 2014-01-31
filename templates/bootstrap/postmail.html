@@ -4,11 +4,11 @@
 {% block title %}{% include 'components/title.html' %}{% endblock %}
 
 {% block content %}
-{% if message != "" %}
-	{% for message in message %}
+{% for message in message %}
+	{% if message != "" %}
 		<div class="row"><div class="alert alert-success">{{ message }}</div></div>
-	{% endfor %}
-{% endif %}
+	{% endif %}
+{% endfor %}
 <div class="row">
 	<div class="col-lg-5">
 		<h3>API Key Post</h3>
