@@ -443,6 +443,5 @@ class Util
 		if(isset($_POST[$var]))
 			return $_POST[$var];
 		return null;
-
 	}
 }
