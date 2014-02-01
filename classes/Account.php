@@ -21,13 +21,13 @@ class Account
 	public static function getUserTrackerData()
 	{
 		$entities = array("character", "corporation", "alliance", "faction", "ship", "item", "system", "region");
+		$entlist = array();
 
 		foreach($entities as $ent)
 		{
 			Db::execute("update zz_users_config set locker = 'tracker_$ent' where locker = '$ent'");
 			$result = UserConfig::get("tracker_$ent");
 			$part = array();
-			$entlist = array();
 
 			if($result != null) foreach($result as $row) {
 				switch($ent)
@@ -37,22 +37,22 @@ class Account
 						$row["solarSystemName"] = $row["name"];
 						$sunType = Db::queryField("SELECT sunTypeID FROM ccp_systems WHERE solarSystemID = :id", "sunTypeID", array(":id" => $row["id"]));
 						$row["sunTypeID"] = $sunType;
-					break;
+						break;
 
 					case "item":
 						$row["typeID"] = $row["id"];
 						$row["shipName"] = $row["name"];
-					break;
+						break;
 
 					case "ship":
 						$row["shipTypeID"] = $row["id"];
 						$row["${ent}Name"] = $row["name"];
-					break;
+						break;
 
 					default:
 						$row["${ent}ID"] = $row["id"];
 						$row["${ent}Name"] = $row["name"];
-					break;
+						break;
 				}
 				$part[] = $row;
 			}
