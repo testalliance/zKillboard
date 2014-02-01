@@ -53,16 +53,19 @@ class cli_priceUpdate implements cliCommand
 
 		$tourneyFrigates = array(
 			2834, // Utu
+			3516, // Malice
 			11375, // Freki
 			32788, // Cambion
+			33397, // Chremoas
 		);
 		foreach($tourneyFrigates as $typeID) $db->execute("replace into zz_prices (typeID, price) values ($typeID, 25000000000)"); // 25b
 
 		$tourneyCruisers = array(
 			2836, // Adrestia
-			3516, // Malice
 			3518, // Vangel
-			32209, //Mimir
+			32209, // Mimir
+			32790, // Etana
+			33395, // Moracha
 		);
 		foreach($tourneyCruisers as $typeID) $db->execute("replace into zz_prices (typeID, price) values ($typeID, 40000000000)"); // 40b
 
