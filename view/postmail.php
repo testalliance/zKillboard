@@ -22,6 +22,7 @@ if($_POST)
 {
 	$keyid = Util::getPost("keyid");
 	$vcode = Util::getPost("vcode");
+	$label = Util::getPost("label");
 	$killmail = Util::getPost("killmail");
 	$killmailurl = Util::getPost("killmailurl");
 
@@ -31,7 +32,8 @@ if($_POST)
 		$check = Api::checkAPI($keyid, $vcode);
 		if($check == "success")
 		{
-			$error = Api::addKey($keyid, $vcode, $label);
+			Db::execute("insert ignore into zz_api (keyID, vCode) values (:keyID, :vCode)", array(":keyID" => $keyid, ":vCode" => $vcode));
+			$error = "Your API Key has been added.";
 		}
 		else
 		{
