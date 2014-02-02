@@ -100,6 +100,7 @@ if($pageview == "comments")
 
 $extra["droppedisk"] = droppedIsk(md5($id), $killdata["items"]);
 $extra["lostisk"] = $killdata["info"]["total_price"] - $extra["droppedisk"];
+$extra["fittedisk"] = fittedIsk(md5($id), $killdata["items"]);
 $extra["relatedtime"] = date("YmdH00", strtotime($killdata["info"]["killTime"]));
 $extra["fittingwheel"] = eftarray(md5($id), $killdata["items"], $killdata["victim"]["characterID"]);
 $extra["involvedships"] = involvedships($killdata["involved"]);
@@ -107,6 +108,7 @@ $extra["involvedshipscount"] = count($extra["involvedships"]);
 $extra["totalprice"] = usdeurgbp($killdata["info"]["total_price"]);
 $extra["destroyedprice"] = usdeurgbp($extra["lostisk"]);
 $extra["droppedprice"] = usdeurgbp($extra["droppedisk"]);
+$extra["fittedprice"] = usdeurgbp($extra["fittedisk"]);
 $extra["efttext"] = Fitting::EFT($extra["fittingwheel"]);
 $extra["dnatext"] = Fitting::DNA($killdata["items"],$killdata["info"]["shipTypeID"]);
 $extra["edkrawmail"] = Kills::getRawMail($id);
@@ -313,7 +315,8 @@ function combineditems($md5, $items)
 	return $itemList;
 }
 
-function buildItemKey($itm) {
+function buildItemKey($itm)
+{
 	$key = $itm["typeName"] . ($itm["singleton"] == 2 ? " (Copy)" : "");
 	$key .= "|" . ($itm["qtyDropped"] > 0 ? "dropped" : "destroyed");
 	if (!isset($itm["flagName"])) $itm["flagName"] = Info::getFlagName($itm["flag"]);
@@ -368,12 +371,14 @@ function involvedCorpsAndAllis($md5, $involved)
 	return $invAll;
 }
 
-function involvedSort($field1, $field2) {
+function involvedSort($field1, $field2)
+{
 	if ($field1["involved"] == $field2["involved"] && isset($field1["name"]) && isset($field2["name"])) return strcasecmp($field1["name"], $field2["name"]);
 	return $field2["involved"] - $field1["involved"];
 }
 
-function droppedIsk($md5, $items) {
+function droppedIsk($md5, $items)
+{
 	$Cache = Cache::get($md5."droppedisk");
 	if($Cache) return $Cache;
 
@@ -382,4 +387,20 @@ function droppedIsk($md5, $items) {
 
 	Cache::set($md5."droppedisk", $droppedisk);
 	return $droppedisk;
+}
+
+function fittedIsk($md5, $items)
+{
+	$cache = Cache::get($md5."fittedIsk");
+	if($cache)
+		return $cache;
+
+	$fittedIsk = 0;
+	$flags = array("High Slots", "Mid Slots", "Low Slots", "SubSystems", "Rigs", "Drone Bay", "Fuel Bay");
+	foreach($items as $item)
+	{
+		if(in_array($item["flagName"], $flags))
+			$fittedIsk = $fittedIsk + $item["price"];
+	}
+	return $fittedIsk;
 }
