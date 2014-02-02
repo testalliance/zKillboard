@@ -22,7 +22,6 @@ if($_POST)
 {
 	$keyid = Util::getPost("keyid");
 	$vcode = Util::getPost("vcode");
-	$label = Util::getPost("label");
 	$killmail = Util::getPost("killmail");
 	$killmailurl = Util::getPost("killmailurl");
 
