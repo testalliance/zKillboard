@@ -43,15 +43,15 @@
 		<th>Damage:</th>
 		<td>{{ killdata.victim.damage|number_format(0) }}</td>
 	</tr>
-	<tr class="item_dropped_row">
+	<tr class="item_dropped_row" rel="tooltip" title="&#36;{{ extra.droppedprice.usd|number_format(2, '.', ',') }} / {{ extra.droppedprice.eur|number_format(2, '.', ',') }}&euro; / &pound;{{ extra.droppedprice.gbp|number_format(2, '.', ',') }}">
 		<th>Dropped:</th>
 		<td class="item_dropped">{{ extra.droppedisk|number_format(2, '.', ',') }} ISK</td>
 	</tr>
-	<tr>
+	<tr rel="tooltip" title="&#36;{{ extra.destroyedprice.usd|number_format(2, '.', ',') }} / {{ extra.destroyedprice.eur|number_format(2, '.', ',') }}&euro; / &pound;{{ extra.destroyedprice.gbp|number_format(2, '.', ',') }}">
 		<th>Destroyed:</th>
 		<td class="item_destroyed">{{ extra.lostisk | number_format(2, '.', ',') }} ISK</td>
 	</tr>
-	<tr>
+	<tr rel="tooltip" title="&#36;{{ extra.totalprice.usd|number_format(2, '.', ',') }} / {{ extra.totalprice.eur|number_format(2, '.', ',') }}&euro; / &pound;{{ extra.totalprice.gbp|number_format(2, '.', ',') }}">
 		<th class="item_dropped">Grand Total:</th>
 		<td><strong class="item_dropped">{{ killdata.info.total_price|number_format(2, '.', ',') }} ISK</strong></td>
 	</tr>
