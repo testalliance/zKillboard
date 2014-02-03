@@ -49,8 +49,7 @@ class cli_minutely implements cliCommand
 				Storage::store("KillsLastHour", $killsLastHour);
 				$db->execute("delete from zz_analytics where dttm < date_sub(now(), interval 24 hour)");
 
-				$fc = new FileCache;
-				$fc->cacheDir = "$base/cache/queryCache/";
+				$fc = new FileCache("$base/cache/queryCache/");
 				$fc->cleanUp();
 			break;
 

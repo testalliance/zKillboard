@@ -35,6 +35,11 @@ class FileCache extends AbstractCache
 			mkdir($this->cacheDir);
 	}
 
+	public function __consruct($cd)
+	{
+		$this->cacheDir = $cd;
+	}
+
 	/**
 	 * Gets the data
 	 *
