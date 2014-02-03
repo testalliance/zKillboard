@@ -230,15 +230,14 @@ class Kills
 	public static function getRawMail($killID, $array = array(), $edk = true)
 	{
 		$cacheName = $killID;
-		$sem = sem_get($killID % 101);
-		if (!sem_acquire($sem)) return "";
+		$sem = Semaphore::fetch($killID);
 		if($edk)
 			$cacheName = $killID."EDK";
 
 		// Check if the mail has already been generated, then return it from the cache..
 		$Cache = Cache::get($cacheName);
 		if($Cache) {
-			sem_release($sem);
+			Semaphore::release($sem);
 			return $Cache;
 		}
 
@@ -390,7 +389,7 @@ class Kills
 		// Store the generated mail in cache
 		Cache::set($cacheName, $mail, 604800);
 
-		sem_release($sem);
+		Semaphore::release($sem);
 		return $mail;
 	}
 

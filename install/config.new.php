@@ -109,3 +109,6 @@ $config = array(
 	"log.enabled" => false,
 	"cookies.secret_key" => $cookie_secret
 	);
+
+$useSemaphores = false;
+$semaphoreModulus = 10;

@@ -153,13 +153,12 @@ class Summary
 	{
 		if ($kills == null || !is_array($kills) || sizeof($kills) == 0) return array();
 
-		$sem = sem_get($parameters["solarSystemID"] % 101);
-		if (!sem_acquire($sem)) return array();
+		$sem = Semaphore::fetch($parameters["solarSystemID"]);
 
 		$key = "related:$key";
 		$mc = Cache::get($key);
 		if ($mc) {
-			sem_release($sem);
+			Semaphore::release($sem);
 			return $mc;
 		}
 
@@ -217,7 +216,7 @@ class Summary
 		  $retValue["teamA"] = $temp;
 		  }*/
 
-		sem_release($sem);
+		Semaphore::release($sem);
 		Cache::set($key, $retValue, 900);
 		return $retValue;
 	}
