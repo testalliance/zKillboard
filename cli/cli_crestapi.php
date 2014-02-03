@@ -99,7 +99,8 @@ class cli_crestapi implements cliCommand
 				$killmail["items"] = $items;
 
 				$json = json_encode($killmail);
-				Db::execute("replace into zz_killmails (killID, source, kill_json) values (:killID, :source, :json)", array(":killID" => $killID, ":source" => "crest:$killID", ":json" => $json));
+				$killmailHash = Util::getKillHash(null, json_decode($json));
+				Db::execute("replace into zz_killmails (killID, hash, source, kill_json) values (:killID, :hash, :source, :json)", array(":killID" => $killID, ":hash" => $hash, ":source" => "crest:$killID", ":json" => $json));
 			} catch (Exception $ex) {
 				/*echo "$killID\n";
 				print_r($ex);
