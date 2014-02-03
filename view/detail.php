@@ -399,7 +399,7 @@ function fittedIsk($md5, $items)
 	$flags = array("High Slots", "Mid Slots", "Low Slots", "SubSystems", "Rigs", "Drone Bay", "Fuel Bay");
 	foreach($items as $item)
 	{
-		if(in_array($item["flagName"], $flags))
+		if(isset($item["flagName"]) && in_array($item["flagName"], $flags))
 			$fittedIsk = $fittedIsk + $item["price"];
 	}
 	return $fittedIsk;
