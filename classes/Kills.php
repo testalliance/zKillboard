@@ -216,7 +216,8 @@ class Kills
 	public static function getJson($killID)
 	{
 		$jsonRaw = Db::queryField("SELECT kill_json FROM zz_killmails WHERE killID = :killID", "kill_json", array(":killID" => $killID));
-		$killarray = Info::addInfo(json_decode($jsonRaw, true));
+		$decoded = json_decode($jsonRaw, true);
+		$killarray = Info::addInfo($decoded);
 		return json_encode($killarray);
 	}
 

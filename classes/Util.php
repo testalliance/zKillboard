@@ -398,7 +398,7 @@ class Util
 
 	/**
 	 * @param string $url
-	 * @return string|array|null $result
+	 * @return string|null $result
 	 */
 	public static function getData($url, $cacheTime = 3600)
 	{

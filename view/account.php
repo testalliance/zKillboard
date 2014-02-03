@@ -113,7 +113,7 @@ if($_POST)
 	// Tracker
 	if((isset($entity) && $entity != null) && (isset($entitymetadata) && $entitymetadata != null))
 	{
-		$entitymetadata = json_decode($entitymetadata, true);
+		$entitymetadata = json_decode("$entitymetadata", true);
 		$entities = UserConfig::get("tracker_" . $entitymetadata['type']);
 		$entity = array('id' => $entitymetadata['id'], 'name' => $entitymetadata['name']);
 

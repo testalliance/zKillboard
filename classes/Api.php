@@ -67,9 +67,9 @@ class Api
 	 * Adds a key to the database.
 	 *
 	 * @static
-	 * @param $keyID int
-	 * @param $vCode string
-	 * @param null $label
+	 * @param int $keyID
+	 * @param string $vCode
+	 * @param null|string $label
 	 * @return string
 	 */
 	public static function addKey($keyID, $vCode, $label = null)

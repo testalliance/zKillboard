@@ -180,28 +180,6 @@ try {
 	throw $ex;
 }
 
-// Launch the EDK transfer crap
-if(strtolower(prompt("|g|Do you want to migrate kills from an existing EDK installation? |r|(experimental)|n|", "y/N")) == "y")
-{
-	$edkPath = prompt("Root path of your edk installation?");
-	if($edkPath)
-	{
-		if(defined("PHP_BINARY"))
-			$cmd = PHP_BINARY . " ";
-		else
-			$cmd = "php ";
-
-		$cmd .= escapeshellarg('$base/edkConversion.php') . " ";
-		$cmd .= escapeshellarg($edkPath) . " ";
-		$cmd .= escapeshellarg($settings["dbhost"]) . " ";
-		$cmd .= escapeshellarg($settings["dbuser"]) . " ";
-		$cmd .= escapeshellarg($settings["dbpassword"]) . " ";
-		$cmd .= escapeshellarg($settings["dbname"]);
-
-		passthru($cmd);
-	}
-}
-
 out("|g|Creating cache directories");
 @mkdir($baseDir."cache/");
 @mkdir($baseDir."cache/sessions/");
