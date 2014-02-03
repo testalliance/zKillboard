@@ -26,8 +26,8 @@ class FileCache extends AbstractCache
 	 * @param $cacheTime the default cache time (5 minutes)
 	 */
 
-	protected var $cacheDir = "cache/queryCache/";
-	protected var $cacheTime = 300;
+	protected $cacheDir = "cache/queryCache/";
+	protected $cacheTime = 300;
 
 	public function __construct()
 	{
