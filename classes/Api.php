@@ -28,7 +28,7 @@ class Api
 	 * @static
 	 * @param $keyID int The keyID to be checked.
 	 * @param $vCode string The vCode to be checked
-	 * @return string|null A message, Success on success, otherwise an error.
+	 * @return string A message, Success on success, otherwise an error.
 	 */
 	public static function checkAPI($keyID, $vCode)
 	{
@@ -355,7 +355,7 @@ class Api
 	}
 
 	/**
-	 * @param $keyID string
+	 * @param string $keyID string
 	 * @param $charID int
 	 * @param $killlog string
      * @return int
