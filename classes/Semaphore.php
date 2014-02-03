@@ -1,5 +1,4 @@
 ﻿<?php
-
 /* zKillboard
  * Copyright (C) 2012-2013 EVE-KILL Team and EVSCO.
  *
@@ -20,7 +19,7 @@
 class Semaphore
 {
     /**
-     * @param $semaphoreID int
+     * @param int $semaphoreID
      * @return null|resource
      */
     public static function fetch($semaphoreID)
@@ -36,7 +35,7 @@ class Semaphore
     }
 
     /**
-     * @param $semaphoreResource resource
+     * @param resource $semaphoreResource
      */
     public static function release($semaphoreResource)
     {
