@@ -5,6 +5,7 @@
 			"twig/twig": "*",
 			"twig/extensions": "*",
 			"3rdpartyeve/phealng": "0.3.*",
+			"3rdpartyeve/perry": "0.2.*",
 			"phpmailer/phpmailer": "*",
 			"mobiledetect/mobiledetectlib": "*",
 			"realityking/pchart": "@dev",
