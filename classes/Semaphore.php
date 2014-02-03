@@ -35,7 +35,7 @@ class Semaphore
     }
 
     /**
-     * @param resource $semaphoreResource
+     * @param null|resource $semaphoreResource
      */
     public static function release($semaphoreResource)
     {

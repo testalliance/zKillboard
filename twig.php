@@ -84,22 +84,22 @@ $twig->addGlobal("isTablet", ($detect->isTablet() ? true : false));
 
 $twig->addExtension(new UserGlobals());
 
-$twig->addFunction("pageTimer", new Twig_Function_Function("Util::pageTimer"));
-$twig->addFunction("queryCount", new Twig_Function_Function("Db::getQueryCount"));
-$twig->addFunction("isActive", new Twig_Function_Function("Util::isActive"));
-$twig->addFunction("firstUpper", new Twig_Function_Function("Util::firstUpper"));
-$twig->addFunction("pluralize", new Twig_Function_Function("Util::pluralize"));
-$twig->addFunction("calcX", new Twig_Function_Function("Util::calcX"));
-$twig->addFunction("calcY", new Twig_Function_Function("Util::calcY"));
-$twig->addFunction("formatIsk", new Twig_Function_Function("Util::formatIsk"));
-$twig->addFunction("shortNum", new Twig_Function_Function("Util::formatIsk"));
-$twig->addFunction("shortString", new Twig_Function_Function("Util::shortString"));
-$twig->addFunction("truncate", new Twig_Function_Function("Util::truncate"));
-$twig->addFunction("chart", new Twig_Function_Function("Chart::addChart"));
-$twig->addFunction("getMonth", new Twig_Function_Function("Util::getMonth"));
-$twig->addFunction("getLongMonth", new Twig_Function_Function("Util::getLongMonth"));
-$twig->addFunction("isMaintenance", new Twig_Function_Function("Util::isMaintenanceMode"));
-$twig->addFunction("getMaintenanceReason", new Twig_Function_Function("Util::getMaintenanceReason"));
+$twig->addFunction(new Twig_SimpleFunction("pageTimer", "Util::pageTimer"));
+$twig->addFunction(new Twig_SimpleFunction("queryCount", "Db::getQueryCount"));
+$twig->addFunction(new Twig_SimpleFunction("isActive", "Util::isActive"));
+$twig->addFunction(new Twig_SimpleFunction("firstUpper", "Util::firstUpper"));
+$twig->addFunction(new Twig_SimpleFunction("pluralize", "Util::pluralize"));
+$twig->addFunction(new Twig_SimpleFunction("calcX", "Util::calcX"));
+$twig->addFunction(new Twig_SimpleFunction("calcY", "Util::calcY"));
+$twig->addFunction(new Twig_SimpleFunction("formatIsk", "Util::formatIsk"));
+$twig->addFunction(new Twig_SimpleFunction("shortNum", "Util::formatIsk"));
+$twig->addFunction(new Twig_SimpleFunction("shortString", "Util::shortString"));
+$twig->addFunction(new Twig_SimpleFunction("truncate", "Util::truncate"));
+$twig->addFunction(new Twig_SimpleFunction("chart", "Chart::addChart"));
+$twig->addFunction(new Twig_SimpleFunction("getMonth", "Util::getMonth"));
+$twig->addFunction(new Twig_SimpleFunction("getLongMonth", "Util::getLongMonth"));
+$twig->addFunction(new Twig_SimpleFunction("isMaintenance", "Util::isMaintenanceMode"));
+$twig->addFunction(new Twig_SimpleFunction("getMaintenanceReason", "Util::getMaintenanceReason"));
 
 $igb = false;
 if(stristr(@$_SERVER["HTTP_USER_AGENT"], "EVE-IGB"))

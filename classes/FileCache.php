@@ -26,10 +26,10 @@ class FileCache extends AbstractCache
 	 * @param $cacheTime the default cache time (5 minutes)
 	 */
 
-	var $cacheDir = "cache/queryCache/";
-	var $cacheTime = 300;
+	protected var $cacheDir = "cache/queryCache/";
+	protected var $cacheTime = 300;
 
-	function __construct()
+	private function __construct()
 	{
 		if(!is_dir($this->cacheDir))
 			mkdir($this->cacheDir);
@@ -38,8 +38,8 @@ class FileCache extends AbstractCache
 	/**
 	 * Gets the data
 	 *
-	 * @param $key
-	 * @return array
+	 * @param string $key
+	 * @return array|boolean
 	 */
 	public function get($key)
 	{
@@ -220,7 +220,7 @@ class FileCache extends AbstractCache
 	/**
 	 * Cleans up old and unused query cache files
 	 */
-	function cleanUp()
+	public function cleanUp()
 	{
 		$dir = opendir($this->cacheDir);
 		while($file = readdir($dir))

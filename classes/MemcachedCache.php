@@ -65,12 +65,12 @@ class MemcachedCache extends AbstractCache
 
 	public function increment($key, $step = 1, $timeout = 0)
 	{
-		return $this->mc->increment($key, $step, $step, $timeout);
+		return $this->mc->increment($key, $step, $timeout);
 	}
 
 	public function decrement($key, $step = 1, $timeout = 0)
 	{
-		return $this->mc->decrement($key, $step, -$step, $timeout);
+		return $this->mc->decrement($key, -$step, $timeout);
 	}
 
 	public function flush()

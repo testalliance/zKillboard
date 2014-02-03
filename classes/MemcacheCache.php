@@ -23,7 +23,7 @@ class MemcacheCache extends AbstractCache
 {
 	private $mc;
 
-	function __construct()
+	public function __construct()
 	{
 		global $memcacheServer, $memcachePort;
 

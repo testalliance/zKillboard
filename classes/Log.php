@@ -70,6 +70,10 @@ class Log
 		"|n|" => "\x03", // reset
 	);
 
+	/**
+	 * @param string $msg
+	 * @return string
+	**/
 	public static function addIRCColors($msg)
 	{
 		foreach (self::$colors as $color => $value) {
@@ -78,6 +82,10 @@ class Log
 		return $msg;
 	}
 
+	/**
+	 * @param string $msg
+	 * @return string
+	**/
 	public static function stripIRCColors($msg)
 	{
 		foreach (self::$colors as $color => $value) {
@@ -86,6 +94,9 @@ class Log
 		return $msg;
 	}
 
+	/**
+	 * @param string $msg
+	**/
 	public static function firePHP($msg)
 	{
 		ChromePhp::log($msg);

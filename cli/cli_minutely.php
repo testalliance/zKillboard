@@ -25,7 +25,7 @@ class cli_minutely implements cliCommand
 
 	public function getAvailMethods()
 	{
-		return "killsLastHour cloudFlareRegister cloudFlareDelete fileCacheClean all"; // Space seperated list
+		return "killsLastHour fileCacheClean all"; // Space seperated list
 	}
 
 	public function getCronInfo()
@@ -57,14 +57,6 @@ class cli_minutely implements cliCommand
 			case "killsLastHour":
 				$killsLastHour = $db->queryField("select count(*) count from zz_killmails where insertTime > date_sub(now(), interval 1 hour)", "count");
 				Storage::store("KillsLastHour", $killsLastHour);
-			break;
-
-			case "cloudFlareRegister";
-				Domains::registerDomainsWithCloudflare();
-			break;
-
-			case "cloudFlareDelete";
-				Domains::deleteDomainsFromCloudflare();
 			break;
 
 			case "fileCacheClean";

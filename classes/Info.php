@@ -736,7 +736,8 @@ class Info
 
 	/**
 	 * [addInfo description]
-	 * @param array $element
+	 * @param array|null $element
+	 * @return array|null
 	 */
 	public static function addInfo(&$element)
 	{

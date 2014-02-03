@@ -64,7 +64,7 @@ class User
 			$username = $cookie[0];
 			$cookieHash = $cookie[1];
 			$userID = Db::queryField("SELECT id FROM zz_users WHERE username = :username", "id", array(":username" => $username), 0);
-			$hashes = self::checkLoginHashed($userID, $cookieHash);
+			$hashes = self::checkLoginHashed($userID);
 			foreach($hashes as $hash)
 			{
 				$hash = $hash["sessionHash"];

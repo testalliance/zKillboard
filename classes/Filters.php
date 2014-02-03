@@ -18,6 +18,11 @@
 
 class Filters
 {
+	/**
+	 * @param null|array $parameters
+	 * @param string $name
+	 * @return null|array;
+	**/
 	private static function grabParameters($parameters, $name)
 	{
 		$retValue = isset($parameters[$name]) ? $parameters[$name] : null;
