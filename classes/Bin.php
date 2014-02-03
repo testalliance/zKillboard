@@ -28,7 +28,7 @@ class Bin
 	 *
 	 * @static
 	 * @param $name string
-	 * @param $default mixed
+	 * @param boolean $default mixed
      * @return mixed
 	 */
 	public static function get($name, $default = null)
