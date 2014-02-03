@@ -29,7 +29,7 @@ class FileCache extends AbstractCache
 	protected var $cacheDir = "cache/queryCache/";
 	protected var $cacheTime = 300;
 
-	private function __construct()
+	public function __construct()
 	{
 		if(!is_dir($this->cacheDir))
 			mkdir($this->cacheDir);
