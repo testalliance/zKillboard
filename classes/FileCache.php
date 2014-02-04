@@ -183,7 +183,7 @@ class FileCache extends AbstractCache
 	 * Sets data to cache file
 	 *
 	 * @param string $key
-	 * @param string $value
+	 * @param string|array $value
 	 * @param int $timeout
 	 *
 	 * return bool

@@ -144,12 +144,6 @@ $app->map("/moderator(/:req)(/:id)(/page/:page)/", function ($req = NULL, $id = 
     include( "view/moderator.php" );
 })->via("GET", "POST");
 
-// Admin
-$app->map("/admin(/:req)(/:id)/", function ($req = NULL, $id=NULL) use ($app) {
-    global $cookie_name, $cookie_time;
-    include( "view/admin.php" );
-})->via("GET", "POST");
-
 // EveInfo
 $app->get("/item/:id/", function($id) use ($app) {
     global $oracleURL;

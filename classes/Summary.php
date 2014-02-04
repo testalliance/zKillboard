@@ -476,7 +476,7 @@ class Summary
 
 	/**
 	 * @param array $array
-	 * @param string $killHash
+	 * @param array $killHash
 	 * @return array
 	 */
 	private static function addInfo($array, $killHash)
