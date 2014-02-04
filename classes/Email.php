@@ -1,4 +1,5 @@
 ﻿<?php
+
 /* zKillboard
  * Copyright (C) 2012-2013 EVE-KILL Team and EVSCO.
  *
@@ -18,8 +19,12 @@
 
 class Email
 {
+
 	/**
+	 * @param string $email
 	 * @param string $subject
+	 * @param string $body
+	 * @return string
 	 */
 	public static function send($email, $subject, $body)
 	{
@@ -39,9 +44,7 @@ class Email
 		if (!$mail->Send()) {
 			Log::log("Error sending email to $email: " . $mail->ErrorInfo);
 			echo "Mail error: " . $mail->ErrorInfo;
-		}
-		else
-		{
+		} else {
 			Log::log("Email sent to $email with subject '$subject'");
 			return "Success";
 		}

@@ -1,4 +1,5 @@
 <?php
+
 /* zKillboard
  * Copyright (C) 2012-2013 EVE-KILL Team and EVSCO.
  *
@@ -19,40 +20,13 @@
 class Filters
 {
 	/**
-	 * @param null|array $parameters
-	 * @param string $name
-	 * @return null|array;
-	**/
-	public static function grabParameters($parameters, $name)
-	{
-		$retValue = isset($parameters[$name]) ? $parameters[$name] : null;
-		if ($retValue === null) return $retValue;
-		if (!is_array($retValue)) $retValue = array($retValue);
-		return $retValue;
-	}
-
-	/**
-	 * @param string $table
+	 * @param array $tables
+	 * @param array $combined
+	 * @param array $whereClauses
+	 * @param array $parameters
+	 * @param bool $allTime
+	 * @throws Exception
 	 */
-	private static function buildWhere(&$tables, &$whereClauses, $table, $column, $parameters)
-	{
-		$array = self::grabParameters($parameters, $column);
-		if ($array === null || !is_array($array) || sizeof($array) == 0) return "";
-		// Ensure SQL safe parameters
-		$cleanArray = array();
-		foreach ($array as $value) $cleanArray[] = "'" . (int)$value . "'";
-		$tables[] = $table;
-		$not = "";
-		if (Util::startsWith($column, "!")) {
-			$not = " not ";
-			$column = substr($column, 1);
-		}
-		if ($column == "groupID") {
-			//$whereClauses[] = "(p.$column $not in (" . implode(",", $cleanArray) . ") or p.vGroupID $not in (" . implode(",", $cleanArray) . "))";
-			$whereClauses[] = "(p.vGroupID $not in (" . implode(",", $cleanArray) . "))";
-		} else $whereClauses[] = "p.$column $not in (" . implode(",", $cleanArray) . ")";
-	}
-
 	public static function buildFilters(&$tables, &$combined, &$whereClauses, &$parameters, $allTime = true)
 	{
 		$year = null;
@@ -92,7 +66,7 @@ class Filters
 			$tables[] = "zz_participants p";
 			$hourModifier = 1;
 			if (array_key_exists("exHours", $parameters)) {
-				$exHours = (int) $parameters["exHours"];
+				$exHours = (int)$parameters["exHours"];
 				if ($exHours > 1 && $exHours <= 12) $hourModifier = $exHours;
 			}
 			$whereClauses[] = "p.dttm >= '" . date("Y:m:d H:i:00", $unixTime - ($hourModifier * 3600)) . "'";
@@ -114,7 +88,7 @@ class Filters
 
 		if (array_key_exists("pastSeconds", $parameters)) {
 			$tables[] = "zz_participants p";
-			$whereClauses[] = "p.dttm >= date_sub(now(), interval " . ((int) $parameters["pastSeconds"]) . " second)";
+			$whereClauses[] = "p.dttm >= date_sub(now(), interval " . ((int)$parameters["pastSeconds"]) . " second)";
 		}
 
 		if (array_key_exists("iskValue", $parameters)) {
@@ -145,12 +119,10 @@ class Filters
 		$kills = array_key_exists("kills", $parameters);
 		$losses = array_key_exists("losses", $parameters); //|| (array_key_exists("solo", $parameters));
 		if ((array_key_exists("mixed", $parameters) && $parameters["mixed"] == true) || array_key_exists("iskValue", $parameters)) {
-		}
-		else if ($losses) {
+		} else if ($losses) {
 			$tables[] = $participants;
 			$whereClauses[] = "p.isVictim = '1'";
-		}
-		else if ($kills) {
+		} else if ($kills) {
 			$tables[] = $participants;
 			$whereClauses[] = "p.isVictim = '0'";
 		}
@@ -175,5 +147,45 @@ class Filters
 				$whereClauses[] = "{$tablePrefix}.dttm <= '$year-$month-31 23:59:59'";
 			}
 		}
+	}
+
+	/**
+	 * @param array $tables
+	 * @param array $whereClauses
+	 * @param string $table
+	 * @param string $column
+	 * @param array $parameters
+	 * @return string
+	 */
+	private static function buildWhere(&$tables, &$whereClauses, $table, $column, $parameters)
+	{
+		$array = self::grabParameters($parameters, $column);
+		if ($array === null || !is_array($array) || sizeof($array) == 0) return "";
+		// Ensure SQL safe parameters
+		$cleanArray = array();
+		foreach ($array as $value) $cleanArray[] = "'" . (int)$value . "'";
+		$tables[] = $table;
+		$not = "";
+		if (Util::startsWith($column, "!")) {
+			$not = " not ";
+			$column = substr($column, 1);
+		}
+		if ($column == "groupID") {
+			//$whereClauses[] = "(p.$column $not in (" . implode(",", $cleanArray) . ") or p.vGroupID $not in (" . implode(",", $cleanArray) . "))";
+			$whereClauses[] = "(p.vGroupID $not in (" . implode(",", $cleanArray) . "))";
+		} else $whereClauses[] = "p.$column $not in (" . implode(",", $cleanArray) . ")";
+	}
+
+	/**
+	 * @param null|array $parameters
+	 * @param string $name
+	 * @return null|array;
+	 **/
+	public static function grabParameters($parameters, $name)
+	{
+		$retValue = isset($parameters[$name]) ? $parameters[$name] : null;
+		if ($retValue === null) return $retValue;
+		if (!is_array($retValue)) $retValue = array($retValue);
+		return $retValue;
 	}
 }

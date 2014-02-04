@@ -1,4 +1,5 @@
 <?php
+
 /* zKillboard
  * Copyright (C) 2012-2013 EVE-KILL Team and EVSCO.
  *
@@ -31,7 +32,7 @@ class Feed
 
 		$userAgent = @$_SERVER["HTTP_USER_AGENT"];
 
-		Log::log("API Fetch: " . $_SERVER["REQUEST_URI"] . " (" . $ip . " / ". $userAgent . ")");
+		Log::log("API Fetch: " . $_SERVER["REQUEST_URI"] . " (" . $ip . " / " . $userAgent . ")");
 		$tables = array();
 		$orWhereClauses = array();
 		$andWhereClauses = array();
@@ -79,9 +80,9 @@ class Feed
 	/**
 	 * Groups the kills together based on specified parameters
 	 * @static
-	 * @param $kills
-	 * @param $parameters
-	 * @param $orderDirection
+	 * @param array $kills
+	 * @param array $parameters
+	 * @param string $orderDirection
 	 * @return array
 	 */
 	public static function getJSON($kills, $parameters, $orderDirection)
