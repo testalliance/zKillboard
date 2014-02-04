@@ -33,7 +33,7 @@ class cli_crestapi implements cliCommand
 		global $baseDir;
 		@mkdir("{$baseDir}cache/crest/");
 
-		$crests = Db::query("select * from zz_crest_killmail where killID = 36331960 and processed = 0 order by killID", array(), 0);
+		$crests = Db::query("select * from zz_crest_killmail where processed = 0 order by killID", array(), 0);
 		foreach ($crests as $crest) {
 			try {
 				$killID = $crest["killID"];
