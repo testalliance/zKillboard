@@ -33,7 +33,7 @@ class cli_crestapi implements cliCommand
 		global $baseDir;
 		@mkdir("{$baseDir}cache/crest/");
 
-		$crests = Db::query("select * from zz_crest_killmail where processed = 0 order by killID", array(), 0);
+		$crests = Db::query("select * from zz_crest_killmail where killID = 36331960 and processed = 0 order by killID", array(), 0);
 		foreach ($crests as $crest) {
 			try {
 				$killID = $crest["killID"];
@@ -53,50 +53,9 @@ class cli_crestapi implements cliCommand
 				$killmail["moonID"] = (int) @$perrymail->moon->id;
 
 				$victim = array();
-				$victim["shipTypeID"] = (int) $perrymail->victim->shipType->id;
-				$victim["characterID"] = (int) @$perrymail->victim->character->id;
-				$victim["characterName"] = (string) @$perrymail->victim->character->name;
-				$victim["corporationID"] = (int) $perrymail->victim->corporation->id;
-				$victim["corporationName"] = (string) @$perrymail->victim->corporation->name;
-				$victim["allianceID"] = (int) @$perrymail->victim->alliance->id;
-				$victim["allianceName"] = (string) @$perrymail->victim->alliance->name;
-				$victim["factionID"] = (int) @$perrymail->victim->faction->id;
-				$victim["factionName"] = (string) @$perrymail->victim->faction->name;
-				$victim["damageTaken"] = (int) @$perrymail->victim->damageTaken;
-
-				$killmail["victim"] = $victim;
-
-				$attackers = array();
-				foreach($perrymail->attackers as $attacker) {
-					$aggressor = array();
-					$aggressor["characterID"] = (int) @$attacker->character->id;
-					$aggressor["characterName"] = (string) @$attacker->character->name;
-					$aggressor["corporationID"] = (int) @$attacker->corporation->id;
-					$aggressor["corporationName"] = (string) @$attacker->corporation->name;
-					$aggressor["allianceID"] = (int) @$attacker->alliance->id;
-					$aggressor["allianceName"] = (string) @$attacker->alliance->name;
-					$aggressor["factionID"] = (int) @$attacker->faction->id;
-					$aggressor["factionName"] = (string) @$attacker->faction->name;
-					$aggressor["securityStatus"] = $attacker->securityStatus;
-					$aggressor["damageDone"] = (int) @$attacker->damageDone;
-					$aggressor["finalBlow"] = (int) @$attacker->finalBlow;
-					$aggressor["weaponTypeID"] = (int) @$attacker->shipType->id;
-					$aggressor["shipTypeID"] = (int) @$attacker->shipType->id;
-					$attackers[] = $aggressor;
-				}
-				$killmail["attackers"] = $attackers;
-
-				$items = array();
-				foreach($perrymail->victim->items as $item) {
-					$i = array();
-					$i["typeID"] = (int) @$item->itemType->id;
-					$i["flag"] = (int) @$item->flag;
-					$i["qtyDropped"] = (int) @$item->quantityDropped;
-					$i["qtyDestroyed"] = (int) @$item->quantityDestroyed;
-					$i["singleton"] = (int) @$item->singleton;
-					$items[] = $i;
-				}
-				$killmail["items"] = $items;
+				$killmail["victim"] = self::getVictim($perrymail->victim);
+				$killmail["attackers"] = self::getAttackers($perrymail->attackers);
+				$killmail["items"] = self::getItems($perrymail->victim->items);
 
 				$json = json_encode($killmail);
 				$killmailHash = Util::getKillHash(null, json_decode($json));
@@ -109,26 +68,70 @@ class cli_crestapi implements cliCommand
 		}
 	}
 
-	public static function convertToArray($obj)
+	/**
+	* @param object $perrymail
+	* @return array
+	*/
+	private static function getVictim($pvictim)
 	{
-		if (is_object($obj)) $obj = (array)$obj;
-		if (is_array($obj)) {
-			$new = array();
-			foreach ($obj as $key => $val) {
-				if (md5($key) == "afeaf5f8dd5f04379ea3a6158f4ecae1" || md5($key) == "a58455001d157d434f1226aadb07bdc5") continue;
-				if ($key == "*genericMembers" || md5($key) == "fbe2e69c614c0ef9bfa2b85e64932253") {
-					$values = self::convertToArray($val);
-					foreach ($values as $vkey => $vvalue) {
-						$new[$vkey] = $vvalue;
-					}
-				}
-				else $new[$key] = self::convertToArray($val);
-			}
-		} else {
-			$new = $obj;
-		}
-
-		return $new;
+		$victim = array();
+		$victim["shipTypeID"] = (int) $pvictim->shipType->id;
+		$victim["characterID"] = (int) @$pvictim->character->id;
+		$victim["characterName"] = (string) @$pvictim->character->name;
+		$victim["corporationID"] = (int) $pvictim->corporation->id;
+		$victim["corporationName"] = (string) @$pvictim->corporation->name;
+		$victim["allianceID"] = (int) @$pvictim->alliance->id;
+		$victim["allianceName"] = (string) @$pvictim->alliance->name;
+		$victim["factionID"] = (int) @$pvictim->faction->id;
+		$victim["factionName"] = (string) @$pvictim->faction->name;
+		$victim["damageTaken"] = (int) @$pvictim->damageTaken;
+		return $victim;
 	}
 
+	/**
+	 * @param array $attackers
+	 * @return array
+	 */
+	private static function getAttackers($attackers)
+	{
+		$aggressors = array();
+		foreach($attackers as $attacker) {
+			$aggressor = array();
+			$aggressor["characterID"] = (int) @$attacker->character->id;
+			$aggressor["characterName"] = (string) @$attacker->character->name;
+			$aggressor["corporationID"] = (int) @$attacker->corporation->id;
+			$aggressor["corporationName"] = (string) @$attacker->corporation->name;
+			$aggressor["allianceID"] = (int) @$attacker->alliance->id;
+			$aggressor["allianceName"] = (string) @$attacker->alliance->name;
+			$aggressor["factionID"] = (int) @$attacker->faction->id;
+			$aggressor["factionName"] = (string) @$attacker->faction->name;
+			$aggressor["securityStatus"] = $attacker->securityStatus;
+			$aggressor["damageDone"] = (int) @$attacker->damageDone;
+			$aggressor["finalBlow"] = (int) @$attacker->finalBlow;
+			$aggressor["weaponTypeID"] = (int) @$attacker->shipType->id;
+			$aggressor["shipTypeID"] = (int) @$attacker->shipType->id;
+			$aggressors[] = $aggressor;
+		}
+		return $aggressors;
+	}
+
+	/**
+	 * @param array $items
+	 * @return array
+	 */
+	private static function getItems($items)
+	{
+		$retArray = array();
+		foreach($items as $item) {
+			$i = array();
+			$i["typeID"] = (int) @$item->itemType->id;
+			$i["flag"] = (int) @$item->flag;
+			$i["qtyDropped"] = (int) @$item->quantityDropped;
+			$i["qtyDestroyed"] = (int) @$item->quantityDestroyed;
+			$i["singleton"] = (int) @$item->singleton;
+			if (isset($item->items)) $i["items"] = self::getItems($item->items);
+			$retArray[] = $i;
+		}
+		return $retArray;
+	}
 }
