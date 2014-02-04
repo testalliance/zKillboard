@@ -45,6 +45,9 @@ class cli_minutely implements cliCommand
 		switch($command)
 		{
 			case "all":
+				// Cleanup old sessions
+				$db->execute("delete from zz_users_sessions where validTill < now()");
+
 				$killsLastHour = $db->queryField("select count(*) count from zz_killmails where insertTime > date_sub(now(), interval 1 hour)", "count");
 				Storage::store("KillsLastHour", $killsLastHour);
 				$db->execute("delete from zz_analytics where dttm < date_sub(now(), interval 24 hour)");
