@@ -31,7 +31,7 @@ class FileCache extends AbstractCache
 
 	public function __construct($cd = null)
 	{
-		íf($cd)
+		if(!is_null($cd))
 			$this->cacheDir = $cd;
 
 		if(!is_dir($this->cacheDir))
