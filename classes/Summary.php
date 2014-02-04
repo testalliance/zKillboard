@@ -218,8 +218,8 @@ class Summary
 		$teamATotals = self::getStatsKillList($teamAKills);
 		$teamBTotals = self::getStatsKillList($teamBKills);
 
-		self::hashPilots($teamBKills, $teamAKills, $teamBList, $teamAList);
-		self::hashPilots($teamAKills, $teamBKills, $teamAList, $teamBList);
+		self::hashPilots($teamBKills, $teamBList, $teamAList);
+		self::hashPilots($teamAKills, $teamAList, $teamBList);
 
 		$teamATotals["pilotCount"] = self::getUniquePilotCount($teamAList);
 		$teamBTotals["pilotCount"] = self::getUniquePilotCount($teamBList);
@@ -376,7 +376,7 @@ class Summary
 	}
 
 	/**
-	 * @param $kills
+	 * @param array $kills
 	 * @return array
 	 */
 	private static function getStatsKillList(&$kills)
@@ -411,12 +411,11 @@ class Summary
 	}
 
 	/**
-	 * @param $kills
-	 * @param $otherKills
-	 * @param $teamBs
-	 * @param $teamAs
+	 * @param array $kills
+	 * @param array $teamBs
+	 * @param array $teamAs
 	 */
-	protected static function hashPilots($kills, $otherKills, &$teamBs, &$teamAs)
+	protected static function hashPilots($kills, &$teamBs, &$teamAs)
 	{
 		$pilotsAdded = array();
 		ksort($kills);
@@ -461,7 +460,7 @@ class Summary
 	}
 
 	/**
-	 * @param $array
+	 * @param array $array
 	 * @return int
 	 */
 	private static function getUniquePilotCount($array)
@@ -476,8 +475,8 @@ class Summary
 	}
 
 	/**
-	 * @param $array
-	 * @param $killHash
+	 * @param array $array
+	 * @param string $killHash
 	 * @return array
 	 */
 	private static function addInfo($array, $killHash)
@@ -500,8 +499,8 @@ class Summary
 	}
 
 	/**
-	 * @param $a
-	 * @param $b
+	 * @param array $a
+	 * @param array $b
 	 * @return int|null|string
 	 */
 	public static function shipGroupSort($a, $b)
