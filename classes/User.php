@@ -20,7 +20,7 @@ class User
 	/**
 	 * @param string $username
 	 * @param string $password
-	 * @param bool $autologin
+	 * @param bool $autoLogin
 	 * @return bool
 	*/
 	public static function setLogin($username, $password, $autoLogin)

@@ -89,6 +89,9 @@ function irc_error($text) {
 	die();
 }
 
+/**
+ * @param string $text
+ */
 function irc_out($text) {
 	global $nick, $channel;
 	$text = Log::addIRCColors($text);

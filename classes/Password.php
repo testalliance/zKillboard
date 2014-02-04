@@ -30,6 +30,9 @@ class Password
 		return "Updated password";
 	}
 
+	/**
+	 * @param string $plainTextPassword
+	 */
 	public static function checkPassword($plainTextPassword, $storedPassword = NULL)
 	{
 		if($plainTextPassword && $storedPassword)

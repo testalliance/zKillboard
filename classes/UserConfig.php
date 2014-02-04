@@ -20,6 +20,9 @@ class UserConfig
 {
 	private static $userConfig = null;
 
+	/**
+	 * @param integer|null $id
+	 */
 	private static function loadUserConfig($id)
 	{
 		if (self::$userConfig != null) return;
