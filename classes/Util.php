@@ -437,7 +437,7 @@ class Util
 	/**
 	 * Gets post data, and returns it
 	 * @param  string $var The variable you can to return
-	 * @return string|array|null
+	 * @return string|null
 	 */
 	public static function getPost($var)
 	{

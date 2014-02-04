@@ -515,11 +515,11 @@ class Info
 	 * [addResults description]
 	 * @param array $resultArray
 	 * @param string $type
-	 * @param array $results
+	 * @param array|null $results
 	 */
 	private static function addResults(&$resultArray, $type, $results)
 	{
-		foreach ($results as $result) {
+		if ($results != null) foreach ($results as $result) {
 			$keys = array_keys($result);
 			$result["type"] = $type;
 			$value = $result[$keys[0]];

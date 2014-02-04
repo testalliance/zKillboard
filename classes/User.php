@@ -17,6 +17,12 @@
  */
 class User
 {
+	/**
+	 * @param string $username
+	 * @param string $password
+	 * @param bool $autologin
+	 * @return bool
+	*/
 	public static function setLogin($username, $password, $autoLogin)
 	{
 		global $cookie_name, $cookie_time, $cookie_ssl, $baseAddr, $app;
@@ -35,6 +41,11 @@ class User
 		return true;
 	}
 
+	/**
+	 * @param string $username
+	 * @param string $password
+	 * @return bool
+	*/
 	public static function checkLogin($username, $password)
 	{
 		$p = Db::query("SELECT username, password FROM zz_users WHERE username = :username", array(":username" => $username), 0);
@@ -49,11 +60,18 @@ class User
 		return false;
 	}
 
+	/**
+	 * @param int $userID
+	 * @return array|null
+	*/
 	public static function checkLoginHashed($userID)
 	{
 		return Db::query("SELECT sessionHash FROM zz_users_sessions WHERE userID = :userID AND now() < validTill", array(":userID" => $userID), 0);
 	}
 
+	/**
+	 * @return bool
+	*/
 	public static function autoLogin()
 	{
 		global $cookie_name, $cookie_time, $app;
@@ -78,11 +96,17 @@ class User
 		return false;
 	}
 
+	/**
+	 * @return bool
+	*/
 	public static function isLoggedIn()
 	{
 		return isset($_SESSION["loggedin"]);
 	}
 
+	/**
+	 * @return array|null
+	*/
 	public static function getUserInfo()
 	{
 		if (isset($_SESSION["loggedin"])) {
@@ -92,37 +116,58 @@ class User
 		return null;
 	}
 
+	/**
+	 * @return int|null
+	*/
 	public static function getUserID()
 	{
 		if (isset($_SESSION["loggedin"])) {
 			$id = Db::queryField("SELECT id FROM zz_users WHERE username = :username", "id", array(":username" => $_SESSION["loggedin"]), 1);
-			return $id;
+			return (int) $id;
 		}
 		return null;
 	}
 
+	/**
+	 * @return bool
+	*/
 	public static function isModerator()
 	{
 		$info = self::getUserInfo();
 		return $info["moderator"] == 1;
 	}
 
+	/**
+	 * @return bool
+	*/
 	public static function isAdmin()
 	{
 		$info = self::getUserInfo();
 		return $info["admin"] == 1;
 	}
 
+	/**
+	 * @param int $userID
+	 * @return string
+	*/
 	public static function getUsername($userID)
 	{
 		return Db::queryField("SELECT username FROM zz_users WHERE userID = :userID", array(":userID" => $userID));
 	}
 
+	/**
+	 * @param int $userID
+	 * @return array|null
+	*/
 	public static function getSessions($userID)
 	{
 		return Db::query("SELECT sessionHash, dateCreated, validTill, userAgent, ip FROM zz_users_sessions WHERE userID = :userID", array(":userID" => $userID), 0);
 	}
 
+	/**
+	 * @param int $userID
+	 * @param string $sessionHash
+	*/
 	public static function deleteSession($userID, $sessionHash)
 	{
 		Db::execute("DELETE FROM zz_users_sessions WHERE userID = :userID AND sessionHash = :sessionHash", array(":userID" => $userID, ":sessionHash" => $sessionHash));
