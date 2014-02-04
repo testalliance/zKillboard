@@ -287,6 +287,7 @@ class Db
 	 * Takes a query, and explains it, and drops it into a db table for later perusal..
 	 *
 	 * @param string $query
+	 * @param array $parameters
 	 * @return void
 	 */
 	public static function explainQuery($query, $parameters = array(), $duration = 0)
