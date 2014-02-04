@@ -20,14 +20,21 @@ class cli_crestapi implements cliCommand
 {
 	public function getDescription()
 	{
-		return "";
+		return "Processes and converts external killmail links";
 	}
 
+	/**
+	 * @return string|array
+	*/
 	public function getAvailMethods()
 	{
 		return ""; // Space seperated list
 	}
 
+	/**
+	 * @param array $parameters
+	 * @param Database $db
+	*/
 	public function execute($parameters, $db)
 	{
 		global $baseDir;
@@ -59,11 +66,10 @@ class cli_crestapi implements cliCommand
 
 				$json = json_encode($killmail);
 				$killmailHash = Util::getKillHash(null, json_decode($json));
-				Db::execute("replace into zz_killmails (killID, hash, source, kill_json) values (:killID, :hash, :source, :json)", array(":killID" => $killID, ":hash" => $hash, ":source" => "crest:$killID", ":json" => $json));
+				Db::execute("insert ignore into zz_killmails (killID, hash, source, kill_json) values (:killID, :hash, :source, :json)", array(":killID" => $killID, ":hash" => $hash, ":source" => "crest:$killID", ":json" => $json));
+				Db::execute("update zz_crest_killmail set processed = 1 where killID = :killID", array(":killID" => $killID));
 			} catch (Exception $ex) {
-				/*echo "$killID\n";
-				print_r($ex);
-				die();*/
+				Db::execute("update zz_crest_killmail set processed = -1 where killID = :killID", array(":killID" => $killID));
 			}
 		}
 	}
