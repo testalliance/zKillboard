@@ -27,6 +27,10 @@ class Util
 		return Storage::retrieve("MaintenanceReason", "");
 	}
 
+	/**
+	 * @param integer $keyID
+	 * @param string $vCode
+	 */
 	public static function getPheal($keyID = null, $vCode = null)
 	{
 		global $phealCacheLocation, $apiServer, $baseAddr, $ipsAvailable;

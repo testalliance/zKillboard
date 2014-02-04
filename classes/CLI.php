@@ -18,6 +18,9 @@
 
 class CLI
 {
+	/**
+	 * @param string $message
+	 */
 	public static function out($message, $die = false)
 	{
 		$colors = array(

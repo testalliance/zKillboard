@@ -17,6 +17,9 @@
  */
 class Twit
 {
+	/**
+	 * @param string $message
+	 */
 	public static function sendMessage($message)
 	{
 		global $consumerKey, $consumerSecret, $accessToken, $accessTokenSecret;
