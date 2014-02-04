@@ -445,8 +445,6 @@ class Util
 	 */
 	public static function getPost($var)
 	{
-		if(isset($_POST[$var]))
-			return $_POST[$var];
-		return null;
+		return isset($_POST[$var]) ? $_POST[$var] : null;
 	}
 }
