@@ -291,7 +291,6 @@ class Summary
 		$chars = array();
 		$corps = array();
 		$allis = array();
-		$factions = array();
 		foreach ($kills as $kill) {
 			$victim = $kill["victim"];
 			$price = $kill["info"]["total_price"];
@@ -299,12 +298,10 @@ class Summary
 			self::increment($chars, $victim["characterID"], $price, $points);
 			self::increment($corps, $victim["corporationID"], $price, $points);
 			self::increment($allis, $victim["allianceID"], $price, $points);
-			self::increment($factions, $victim["factionID"], $price, $points);
 		}
-		if (false && sizeof($factions) > 1) self::filterKills($kills, $teamB, $teamA, "factionID", $factions, "F");
-		else if (sizeof($allis)) self::filterKills($kills, $teamB, $teamA, "allianceID", $allis, "A");
-		else if (sizeof($corps)) self::filterKills($kills, $teamB, $teamA, "corporationID", $corps, "C");
-		else if (sizeof($chars)) self::filterKills($kills, $teamB, $teamA, "characterID", $chars, "P");
+		if (sizeof($allis)) self::filterKills($kills, $teamB, $teamA, "allianceID", $allis);
+		else if (sizeof($corps)) self::filterKills($kills, $teamB, $teamA, "corporationID", $corps);
+		else if (sizeof($chars)) self::filterKills($kills, $teamB, $teamA, "characterID", $chars);
 	}
 
 	/**
