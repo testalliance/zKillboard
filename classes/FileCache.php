@@ -29,6 +29,9 @@ class FileCache extends AbstractCache
 	protected $cacheDir = "cache/queryCache/";
 	protected $cacheTime = 300;
 
+	/**
+	 * @param string $cd a dir to use instead of default
+	 */
 	public function __construct($cd = null)
 	{
 		if(!is_null($cd))
@@ -66,8 +69,8 @@ class FileCache extends AbstractCache
 	/**
 	 * Sets data
 	 *
-	 * @param $key
-	 * @param $value
+	 * @param string $key
+	 * @param string|array $value
 	 * @param string $timeout
 	 *
 	 * return bool
@@ -80,8 +83,8 @@ class FileCache extends AbstractCache
 	/**
 	 * Replaces data
 	 *
-	 * @param $key
-	 * @param $value
+	 * @param string $key
+	 * @param string|array $value
 	 * @param string $timeout
 	 * @return boolean
 	 */
@@ -119,7 +122,9 @@ class FileCache extends AbstractCache
 	/**
 	 * Increments value
 	 *
-	 * @param $key
+	 * @param string $key
+	 * @param int $step
+	 * @param int $timeout
 	 * @return bool
 	 */
 	public function increment($key, $step = 1, $timeout = 0)
@@ -141,7 +146,9 @@ class FileCache extends AbstractCache
 	/**
 	 * Decrements value
 	 *
-	 * @param $key
+	 * @param string $key
+	 * @param int $step
+	 * @param int $timeout
 	 * @return bool
 	 */
 	public function decrement($key, $step = 1, $timeout = 0)
@@ -175,9 +182,9 @@ class FileCache extends AbstractCache
 	/**
 	 * Sets data to cache file
 	 *
-	 * @param $key
-	 * @param $value
-	 * @param string $timeout
+	 * @param string $key
+	 * @param string $value
+	 * @param int $timeout
 	 *
 	 * return bool
 	 */
@@ -204,7 +211,8 @@ class FileCache extends AbstractCache
 	/**
 	 * Gets the data from the cache
 	 *
-	 * @param $key
+	 * @param string $key
+	 * @param bool $sha
 	 * @return array
 	 */
 	private function getData($key, $sha = true)
