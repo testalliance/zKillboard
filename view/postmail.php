@@ -60,6 +60,7 @@ if($_POST)
 				$killID = (int) $exp[0];
 				$hash = $exp[1];
 				$i = Db::execute("insert ignore into zz_crest_killmail (killID, hash) values (:killID, :hash)", array(":killID" => $killID, ":hash" => $hash));
+				Db::execute("update zz_crest_killmail set processed = 0 where processed = -1 and killID = :killID", array(":killID" => $killID));
 
 				$timer = new Timer();
 				do {
@@ -72,10 +73,7 @@ if($_POST)
 					else if ($processed == 3) $error = "Your mail is an NPC only mail and will not be displayed.";
 					else usleep(200);
 				} while ($timer->stop() < 20000 && $error == "");
-				if ($error == "") $error = "We waited $maxIterations for the kill to be processed but the server may be busy atm, please wait!";
-
-				global $ip;
-				if ($i) Log::ircAdmin("|n|External Killmail link submitted:|g| $killmailurl |n|($ip)"); // Log only if new row
+				if ($error == "") $error = "We waited 20 seconds for the kill to be processed but the server must be busy atm, please wait!";
 			}
 		}
 	}
