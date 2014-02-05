@@ -31,53 +31,62 @@ class cli_crestapi implements cliCommand
 		return ""; // Space seperated list
 	}
 
+	public function getCronInfo()
+	{
+		return array(0 => "");
+	}
+
 	/**
 	 * @param array $parameters
 	 * @param Database $db
-	*/
+	 */
 	public function execute($parameters, $db)
 	{
 		global $baseDir;
 		@mkdir("{$baseDir}cache/crest/");
+		$timer = new Timer();
 
-		$crests = Db::query("select * from zz_crest_killmail where processed = 0 order by killID", array(), 0);
-		foreach ($crests as $crest) {
-			try {
-				$killID = $crest["killID"];
-				$hash = $crest["hash"];
-				$cacheFile = "{$baseDir}cache/crest/$killID.json";
-				if (!file_exists($cacheFile)) {
-					$url = "http://public-crest.eveonline.com/killmails/$killID/$hash/";
-					$contents = @file_get_contents($url);
-					file_put_contents($cacheFile, $contents);
+		do {
+			$crests = Db::query("select * from zz_crest_killmail where processed = 0 order by killID", array(), 0);
+			foreach ($crests as $crest) {
+				try {
+					$killID = $crest["killID"];
+					$hash = $crest["hash"];
+					$cacheFile = "{$baseDir}cache/crest/$killID.json";
+					if (!file_exists($cacheFile)) {
+						$url = "http://public-crest.eveonline.com/killmails/$killID/$hash/";
+						$contents = @file_get_contents($url);
+						file_put_contents($cacheFile, $contents);
+					}
+					$perrymail = new \Perry\Representation\Eve\v1\Killmail(file_get_contents($cacheFile));
+
+					$killmail = array();
+					$killmail["killID"] = (int) $killID;
+					$killmail["solarSystemID"] = (int) $perrymail->solarSystem->id;
+					$killmail["killTime"] = str_replace(".", "-", $perrymail->killTime);
+					$killmail["moonID"] = (int) @$perrymail->moon->id;
+
+					$victim = array();
+					$killmail["victim"] = self::getVictim($perrymail->victim);
+					$killmail["attackers"] = self::getAttackers($perrymail->attackers);
+					$killmail["items"] = self::getItems($perrymail->victim->items);
+
+					$json = json_encode($killmail);
+					$killmailHash = Util::getKillHash(null, json_decode($json));
+					Db::execute("insert ignore into zz_killmails (killID, hash, source, kill_json) values (:killID, :hash, :source, :json)", array(":killID" => $killID, ":hash" => $hash, ":source" => "crest:$killID", ":json" => $json));
+					Db::execute("update zz_crest_killmail set processed = 1 where killID = :killID", array(":killID" => $killID));
+				} catch (Exception $ex) {
+					Db::execute("update zz_crest_killmail set processed = -1 where killID = :killID", array(":killID" => $killID));
 				}
-				$perrymail = new \Perry\Representation\Eve\v1\Killmail(file_get_contents($cacheFile));
-
-				$killmail = array();
-				$killmail["killID"] = (int) $killID;
-				$killmail["solarSystemID"] = (int) $perrymail->solarSystem->id;
-				$killmail["killTime"] = str_replace(".", "-", $perrymail->killTime);
-				$killmail["moonID"] = (int) @$perrymail->moon->id;
-
-				$victim = array();
-				$killmail["victim"] = self::getVictim($perrymail->victim);
-				$killmail["attackers"] = self::getAttackers($perrymail->attackers);
-				$killmail["items"] = self::getItems($perrymail->victim->items);
-
-				$json = json_encode($killmail);
-				$killmailHash = Util::getKillHash(null, json_decode($json));
-				Db::execute("insert ignore into zz_killmails (killID, hash, source, kill_json) values (:killID, :hash, :source, :json)", array(":killID" => $killID, ":hash" => $hash, ":source" => "crest:$killID", ":json" => $json));
-				Db::execute("update zz_crest_killmail set processed = 1 where killID = :killID", array(":killID" => $killID));
-			} catch (Exception $ex) {
-				Db::execute("update zz_crest_killmail set processed = -1 where killID = :killID", array(":killID" => $killID));
 			}
-		}
+			if (count($crests) == 0) sleep(1);
+		} while ($timer->stop() < 65000);
 	}
 
 	/**
-	* @param object $perrymail
-	* @return array
-	*/
+	 * @param object $perrymail
+	 * @return array
+	 */
 	private static function getVictim($pvictim)
 	{
 		$victim = array();
