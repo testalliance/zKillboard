@@ -18,7 +18,8 @@
 
 $base = dirname(__FILE__);
 
-function exception_error_handler($errno, $errstr, $errfile, $errline ) {
+function exception_error_handler($errno, $errstr, $errfile, $errline )
+{
 	if (error_reporting() === 0) { return; } //error has been suppressed with "@"
     throw new ErrorException($errstr, $errno, 0, $errfile, $errline);
 }
@@ -26,12 +27,12 @@ function exception_error_handler($errno, $errstr, $errfile, $errline ) {
 // Force all warnings into errors
 set_error_handler("exception_error_handler");
 
-if (file_exists("$base/../config.php")) {
+if (file_exists("$base/../config.php"))
+{
 	out("|r|Your config.php is already setup, if you want to reinstall please delete it.", true);
 }
 
-out("We will prompt you with a few questions.  If at any time you are unsure and want to
-back out of the installation hit |g|CTRL+C.|n|
+out("We will prompt you with a few questions. If at any time you are unsure and want to back out of the installation hit |g|CTRL+C.|n|
 
 |g|Questions will always have a default answer specified in []'s.  Example:
 What is 1+1? [2]|n|
@@ -95,23 +96,18 @@ $settings["cookiesecret"] = sha1($cookiesecret);
 $configFile = file_get_contents("$base/config.new.php");
 
 // Create the new config
-foreach($settings as $key=>$value) {
+foreach($settings as $key=>$value)
 	$configFile = str_replace("%$key%", $value, $configFile);
-}
 
 // Save the file and then attempt to load and initialize from that file
 $configLocation = "$base/../config.php";
-if (file_put_contents($configLocation, $configFile) === false) out("|r|Unable to write configuration file at $configLocation", true);
+if (file_put_contents($configLocation, $configFile) === false)
+	out("|r|Unable to write configuration file at $configLocation", true);
 
-try {
+try
+{
 	out("|g|Config file written, now attempting to initialize settings");
 	require_once( "$base/../config.php" );
-
-	if($debug)
-	{
-		ini_set('display_errors', 1);
-		error_reporting(E_ALL);
-	}
 
 	out("Installing composer:\n");
 	chdir("$base/..");
@@ -124,57 +120,70 @@ try {
 
 	out("\n|g|composer install complete!");
 
-	require( "$base/../vendor/autoload.php" );
-
 	chdir("$base/..");
 
-	// zkb class autoloader
-	spl_autoload_register("zkbautoload");
+	require_once( "init.php" );
 
 	$one = Db::queryField("select 1 one from dual", "one", array(), 1);
 	if ($one != "1")
 		throw new Exception("We were able to connect but the database did not return the expected '1' for: select 1 one from dual;");
+
 	out("|g|Success! Database initialized.");
-} catch (Exception $ex) {
+}
+catch (Exception $ex)
+{
 	out("|r|Error! Removing configuration file.");
 	unlink($configLocation);
 	throw $ex;
 }
 
 // Move bash_complete_zkillboard to the bash_complete folder
-try {
+try
+{
 	file_put_contents("/etc/bash_completion.d/zkillboard", file_get_contents("$base/bash_complete_zkillboard"));
 	exec("chmod +x $base/../cli.php");
-} catch (Exception $ex) {
+}
+catch (Exception $ex)
+{
 	out("|r|Error! Couldn't move the bash_complete file into /etc/bash_completion.d/, please do this after the installer is done.");
 }
 
 // Now install the db structure
-try {
+try
+{
 	$sqlFiles = scandir("$base/sql");
-	foreach($sqlFiles as $file) {
-		if (Util::endsWith($file, ".sql")) {
+	foreach($sqlFiles as $file)
+	{
+		if (Util::endsWith($file, ".sql"))
+		{
 			$table = str_replace(".sql", "", $file);
 			out("Adding table |g|$table|n| ... ", false, false);
 			$sqlFile = "$base/sql/$file";
 			loadFile($sqlFile);
 			// Ensure the table starts with base parameters and doesn't inherit anything from zkillboard.com
-			if (!Util::startsWith($table, "ccp_")) Db::execute("truncate table $table");
+			if (!Util::startsWith($table, "ccp_"))
+				Db::execute("truncate table $table");
+
 			out("|g|done");
 		}
 	}
-} catch (Exception $ex) {
+}
+catch (Exception $ex)
+{
 	out("|r|Error! Removing configuration file.");
 	unlink($configLocation);
 	throw $ex;
 }
 
-try {
+try
+{
 	out("|g|Installing default admin user...");
 	// Install the default admin user
 	Db::execute("INSERT INTO zz_users (username, moderator, admin, password) VALUES ('admin', 1, 1, '$2y$10\$maxuZ/qozcjIgr7ZSnrWJemywbThbPiJDYIuOk9eLxF0pGE5SkNNu')");
 	out("\n\n|r|*** NOTICE ***\nDefault admin user has password 'admin'\nIt is strongly recommended you change this password!\n*** NOTICE ***\n");
-} catch (Exception $ex) {
+}
+catch (Exception $ex)
+{
 	out("|r|Error! Unable to add default admin user...");
 	unlink($configLocation);
 	throw $ex;
@@ -188,25 +197,17 @@ out("|g|Creating cache directories");
 out("|g|Enjoy your new installation of zKillboard, you may browse to it here: http://" . $settings["baseaddr"] . "\n");
 exit;
 
-function zkbautoload($class_name)
+function loadFile($file)
 {
-	global $base;
-	$fileName = "$base/../classes/$class_name.php";
-	if (file_exists($fileName))
-	{
-		require_once $fileName;
-		return;
-	}
-}
-
-function loadFile($file) {
 	if (Util::endsWith($file, ".gz")) $handle = gzopen($file, "r");
 	else $handle = fopen($file, "r");
 
 	$query = "";
-	while ($buffer = fgets($handle)) {
+	while ($buffer = fgets($handle))
+	{
 		$query .= $buffer;
-		if (strpos($query, ";") !== false) {
+		if (strpos($query, ";") !== false)
+		{
 			$query = str_replace(";", "", $query);
 			Db::execute($query);
 			$query = "";
@@ -233,21 +234,27 @@ function out($message, $die = false, $newline = true)
 		echo $message.PHP_EOL;
 	else
 		echo $message;
+
 	if($die) die();
 }
 
-function prompt($prompt, $default = "") {
+function prompt($prompt, $default = "")
+{
 	out("$prompt [$default] ", false, false);
 	$answer = trim(fgets(STDIN));
 	echo "\n";
-	if (strlen($answer) == 0) return $default;
+	if (strlen($answer) == 0)
+		return $default;
+
 	return $answer;
 }
 
 // Password prompter kindly borrowed from http://stackoverflow.com/questions/187736/command-line-password-prompt-in-php
-function prompt_silent($prompt = "Enter Password:") {
+function prompt_silent($prompt = "Enter Password:")
+{
 	$command = "/usr/bin/env bash -c 'echo OK'";
-	if (rtrim(shell_exec($command)) !== 'OK') {
+	if (rtrim(shell_exec($command)) !== 'OK')
+	{
 		trigger_error("Can't invoke bash");
 		return;
 	}
