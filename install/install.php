@@ -122,7 +122,7 @@ try
 
 	chdir("$base/..");
 
-	require_once( "init.php" );
+	require_once( "../init.php" );
 
 	$one = Db::queryField("select 1 one from dual", "one", array(), 1);
 	if ($one != "1")
