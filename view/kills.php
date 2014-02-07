@@ -68,7 +68,7 @@ switch($type)
 	case "dust_vehicles":
 		$kills = Kills::getKills(array("groupID" => "351210", "limit" => $limit, "cacheTime" => 300, "losses" => true, "page" => $page));
 	break;
-	case "lowsec":
+/*	case "lowsec":
 		$kills = Kills::getKills(array("lowsec" => true, "page" => $page));
 	break;
 	case "highsec":
@@ -76,7 +76,7 @@ switch($type)
 	break;
 	case "nullsec":
 		$kills = Kills::getKills(array("nullsec" => true, "page" => $page));
-	break;
+	break;*/
 	case "w-space":
 		$kills = Kills::getKills(array("w-space" => true, "page" => $page));
 	break;
