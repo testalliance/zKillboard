@@ -22,13 +22,11 @@ see `LICENSE.md` file
 # Running zKillboard
 
 ## Dependencies
-- PHP 5.3+
-- Apache + mod_rewrite or Lighttpd
+- PHP 5.4+ / HHVM 2.4+
+- Apache + mod_rewrite, Nginx or Lighttpd
 - Linux, Mac OS X or Windows
-- MariaDB 5.5+ (MySQL 5.5+ might work, but isn't strictly supported, since some tables are in the Aria format)
+- MariaDB 5.5+
 - Composer
-- Memcached isn't strictly required, but is highly recommended
-- Redis 2.6+ (http://redis.io) and PHPRedis extension (https://github.com/nicolasff/phpredis) are alternative to Memcached
 - cURL and it's php library, php5-curl
 
 ## Path
@@ -70,10 +68,10 @@ Apache rewrite is handled by the .htaccess, located in the /public directory.
 
         DocumentRoot /path/to/zkb_install/public/
         <Directory /path/to/zkb_install/public/>
-	        Options FollowSymLinks MultiViews
-	        AllowOverride All
-	        Order allow,deny
-	        Allow from all
+          Options FollowSymLinks MultiViews
+          AllowOverride All
+          Order allow,deny
+          Allow from all
         </Directory>
 </VirtualHost>
 ```
@@ -81,12 +79,12 @@ Apache rewrite is handled by the .htaccess, located in the /public directory.
 ## Lighttpd config (Including redirect/rewrite rules)
 ```
 url.redirect = (
-	"/?a=kill_detail&kll_id=([0-9]+)" => "/evekilldetailintercept/$1/",
-	"/?a=kill_related&kll_id=([0-9]+)" => "/evekillrelatedintercept/$1/"
+  "/?a=kill_detail&kll_id=([0-9]+)" => "/evekilldetailintercept/$1/",
+  "/?a=kill_related&kll_id=([0-9]+)" => "/evekillrelatedintercept/$1/"
 )
 
 url.rewrite-if-not-file = (
-	"(.*)" => "/index.php/$0"
+  "(.*)" => "/index.php/$0"
 )
 server.document-root = "/path/to/zkb_install/public/"
 ```
@@ -97,16 +95,15 @@ But other webservers have other ways to write rewrites, so from our side of thin
 Feel free to issue pull requests to amend this.
 
 ## Recommended
-- PHP 5.3+
+- PHP 5.5+ / HHVM 2.4+
 - Linux
 - MariaDB 5.5+
 - Composer
-- Memcached
-- Twig PHP Plugin (Available for compiling after vendor stuff is downloaded. under vendor/twig/twig/ext/twig/)
+- APC / Memcached / Redis
 - cURL and it's php plugin, php5-curl
 
 ## Installation
-Installation is currently command line only on linux consoles. Other methods are currently not supported.
+Installation is handled via command line. Other methods are currently not supported.
 
 1. `cd` to a dir where you want zKillboard to reside.
 2. Do `git clone git@github.com:EVE-KILL/zKillboard.git`.
@@ -182,9 +179,6 @@ If you don't want to use the automated cron script, you can run each command man
 
 All cronjobs can be launched manually with the cli interface.
 
-## Feed (Experimental)
-The feed interface can be accessed by issuing `zkillboard feed`, all commands available can be found with help.
-
 ## Stomp
 Stomp uses the STOMP PHP plugin which you can get via git.
 Here is a quick one liner: `cd /tmp/ && git clone https://github.com/ppetermann/pecl-tools-stomp.git && cd pecl-tools-stomp && phpize && ./configure && make && make install`
@@ -195,3 +189,96 @@ The stomp service is read only. If you need to send data via it, come by IRC and
 - Stomp server: tcp://stomp.zkillboard.com:61613
 - Stomp user: guest
 - Stomp pass: guest
+
+## HHVM
+zKillboard runs perfectly under hhvm, which provides a near 10x speed increase aswell.
+
+To get HHVM look at https://github.com/facebook/hhvm/wiki#installing-pre-built-packages-for-hhvm
+
+### HHVM Config
+```
+Server {
+  Type = fastcgi
+  #Port = 9000
+  #IP = 127.0.0.1
+  FileSocket = /run/shm/hhvm.sock
+
+  APC {
+    EnableApc = true
+    TableType = concurrent
+    ExpireOnSets = true
+    PurgeFrequency = 4096
+  }
+}
+
+Eval {
+  Jit = true
+  JitWarmupRequests = 50
+}
+
+Log {
+  Level = Error
+  NoSlencer = true
+  AlwaysLogUnhandledExceptions = true
+  RuntimeErrorReportingLevel = 8191
+  UseLogFile = true
+  UseSyslog = false
+  InjectedStackTrace = true
+  NativeStackTrace = true
+  File = /var/log/hhvm/error.log
+  Access {
+    * {
+      File = /var/log/hhvm/access.log
+      Format = %h %l %u % t \"%r\" %>s %b
+    }
+  }
+}
+
+ErrorHandling {
+  CallUserHandlerOnFatals = true
+  MaxLoopCount = 0
+  NoInfiniteRecursionDetection = false
+  ThrowBadTypeExceptions = false
+  ThrowTooManyArguments = false
+  WarnTooManyArguments = false
+  ThrowMissingArguments = false
+  ThrowInvalidArguments = false
+  EnableHipHopErrors = true
+  NoticeFrequency = 1    # 1 out of these many notices to log
+  WarningFrequency = 1   # 1 out of these many warnings to log
+  AssertActive = false
+  AssertWarning = false
+}
+
+ Debug {
+  FullBacktrace = true
+  ServerStackTrace = true
+  ServerErrorMessage = true
+  TranslateSource = true
+
+  RecordInput = false
+  ClearInputOnSuccess = true
+
+  ProfilerOutputDir = /tmp
+  CoreDumpEmail = email address
+  CoreDumpReport = true
+  CoreDumpReportDirectory = /tmp
+}
+
+Repo {
+  Central {
+    Path = /var/log/hhvm/.hhvm.hhbc
+  }
+}
+
+MySQL {
+  ReadOnly = false
+  ConnectTimeout = 1000 # in ms
+  ReadTimeout = 2000 # in ms
+  SlowQueryThreshold = 4000 # in ms
+  KillOnTimeout = true
+  WaitTimeout = -1
+  TypedResults = true
+}
+
+```
