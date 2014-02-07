@@ -133,25 +133,22 @@ class Util
 		return number_format($value, $numDecimals) . self::$formatIskIndexes[$iskIndex];
 	}
 
-	public static function convertUriToParameters($additionalParameters = array())
+	public static function convertUriToParameters($additionalParameters = array(), $addExtraParameters = true)
 	{
 		$parameters = array();
 		@$uri = $_SERVER["REQUEST_URI"];
 		$split = explode("/", $uri);
-		if ($additionalParameters != null) foreach($additionalParameters as $key=>$value) {
-			if (strpos($key, "ID") !== false) {
-				$split[] = $key;
-				$split[] = $value;
-			}
-		}
-		//$split = array_merge($additionalParameters, $split);
 		$currentIndex = 0;
-		foreach ($split as $key) {
-			$value = $currentIndex + 1 < sizeof($split) ? $split[$currentIndex + 1] : null;
+		foreach ($split as $key)
+		{
+			$value = $currentIndex + 1 < count($split) ? $split[$currentIndex + 1] : null;
 			switch ($key) {
 				case "kills":
 				case "losses":
 				case "w-space":
+				case "lowsec":
+				case "nullsec":
+				case "highsec":
 				case "solo":
 					$parameters[$key] = true;
 					break;
@@ -184,45 +181,62 @@ class Util
 						if (sizeof($exploded) > 10) throw new Exception("Too many IDs! Max: 10");
 						$parameters[$key] = $exploded;
 					}
-					break;
+				break;
 				case "page":
 					$value = (int)$value;
 					if ($value < 1) throw new Exception("page must be greater than or equal to 1");
 					$parameters[$key] = $value;
-					break;
+				break;
 				case "orderDirection":
 					if (!($value == "asc" || $value == "desc")) throw new Exception("Invalid orderDirection!  Allowed: asc, desc");
 					$parameters[$key] = "desc";
 					$parameters[$key] = $value;
-					break;
+				break;
 				case "pastSeconds":
 					$value = (int) $value;
 					if (($value / 86400) > 7) throw new Exception("pastSeconds is limited to a max of 7 days");
 					$parameters[$key] = $value;
-					break;
+				break;
 				case "startTime":
 				case "endTime":
 					$time = strtotime($value);
 					if($time < 0) throw new Exception("$value is not a valid time format");
 					$parameters[$key] = $value;
-					break;
+				break;
 				case "limit":
 					$value = (int) $value;
 					if ($value < 200) $parameters["limit"] = $value;
-					break;
+					elseif($value > 200) $parameters["limit"] = 200;
+					elseif($value <= 0) $parameters["limit"] = 1;
+				break;
 				case "beforeKillID":
 				case "afterKillID":
 					if (!is_numeric($value)) throw new Exception("$value is not a valid entry for $key");
 					$parameters[$key] = (int) $value;
-					break;
+				break;
 				case "xml":
+					$parameters[$key] = true;
 					$value = true;
+				break;
 				default:
-					if (is_numeric($value) && $value < 0) continue; //throw new Exception("$value is not a valid entry for $key");
-					if ($key != "" && $value != "") $parameters[$key] = $value;
+					if($addExtraParameters == true)
+					{
+						if (is_numeric($value) && $value < 0) continue; //throw new Exception("$value is not a valid entry for $key");
+						if ($key != "" && $value != "") $parameters[$key] = $value;
+					}
+
+					// Add more parameters to the $parameters array
+					if(!empty($additionalParameters))
+					{
+						foreach($additionalParameters as $extra)
+							if($extra == $key)
+								$parameters[$key] = $value;
+					}
+				break;
 			}
 			$currentIndex++;
 		}
+
 		if (isset($parameters["page"]) && $parameters["page"] > 10 && isset($parameters["api"])) {
 			// Verify that the request is for a character, corporation, or alliance
 			// This will prevent scrape attempts against regions, ships, systems, etc. which

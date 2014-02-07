@@ -101,6 +101,21 @@ class Filters
 			$whereClauses[] = "(regionID >= '11000001' and regionID <= '11000030')";
 		}
 
+		if (array_key_exists("lowsec", $parameters)) {
+			$tables[] = "zz_participants p";
+			$whereClauses[] = "(solarSystemID IN (SELECT solarSystemID FROM ccp_systems WHERE security > 0.0 AND security < 0.5))";
+		}
+
+		if (array_key_exists("highsec", $parameters)) {
+			$tables[] = "zz_participants p";
+			$whereClauses[] = "(solarSystemID IN (SELECT solarSystemID FROM ccp_systems WHERE security >= 0.5))";
+		}
+
+		if (array_key_exists("nullsec", $parameters)) {
+			$tables[] = "zz_participants p";
+			$whereClauses[] = "(solarSystemID IN (SELECT solarSystemID FROM ccp_systems WHERE security <= 0.0))";
+		}
+
 		if (array_key_exists("beforeKillID", $parameters)) {
 			$killID = (int)$parameters["beforeKillID"];
 			$tables[] = "zz_participants p";

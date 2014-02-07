@@ -62,14 +62,23 @@ switch($type)
 	case "supers":
 		$kills = Kills::getKills(array("groupID" => array(30, 659), "limit" => $limit, "cacheTime" => 300, "losses" => true, "page" => $page));
 	break;
-	case "w-space":
-		$kills = Kills::getKills(array("w-space" => true, "page" => $page));
-	break;
 	case "dust":
 		$kills = Kills::getKills(array("groupID" => "351064", "limit" => $limit, "cacheTime" => 300, "losses" => true, "page" => $page));
 	break;
 	case "dust_vehicles":
 		$kills = Kills::getKills(array("groupID" => "351210", "limit" => $limit, "cacheTime" => 300, "losses" => true, "page" => $page));
+	break;
+	case "lowsec":
+		$kills = Kills::getKills(array("lowsec" => true, "page" => $page));
+	break;
+	case "highsec":
+		$kills = Kills::getKills(array("highsec" => true, "page" => $page));
+	break;
+	case "nullsec":
+		$kills = Kills::getKills(array("nullsec" => true, "page" => $page));
+	break;
+	case "w-space":
+		$kills = Kills::getKills(array("w-space" => true, "page" => $page));
 	break;
 	default:
 		$kills = Kills::getKills(array("combined" => true, "page" => $page));
