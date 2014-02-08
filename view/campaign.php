@@ -16,13 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-die("We haven't finished the campaign code yet - please come back later (and bring some beer)");
+$error = "";
+$campain = Db::queryRow("SELECT * FROM zz_campaigns WHERE name = :name", array(":name" => $name), 1);
+if (!isset($campaign)) $error = "No such campaign...";
 
-switch($type)
-{
-	case "all": // All campaigns.
-		$data = Campaigns::getAllCampaigns();
-	break;
-}
+$data = array();
 
-$app->render("campaigns.html", array("data" => $data));
+$app->render("campaign.html", array("data" => $data, "error" => $error));

@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% set pageTitle = 'Campagin - {{ name }}' %}
+{% block title %}{% include 'components/title.html' %}{% endblock %}
+
+{% block content %}
+{% if error %}
+<div class="row"><div class="alert alert-danger">{{ error }}</div></div>
+{% endif %}
+
+{% endblock %}

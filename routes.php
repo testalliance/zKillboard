@@ -49,8 +49,8 @@ $app->map("/tickets/view/:id/", function($id) use ($app) {
 })->via("GET", "POST");
 
 // Campaigns
-$app->map("/campaigns/:type(/:id)/", function($type = "all", $id = NULL) use($app) {
-    include( "view/campaigns.php" );
+$app->map("/campaign/:name/", function($name) use($app) {
+    include( "view/campaign.php" );
 })->via("GET");
 
 // Tracker
