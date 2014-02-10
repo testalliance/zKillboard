@@ -280,6 +280,7 @@ MySQL {
   WaitTimeout = -1
   TypedResults = true
 }
+```
 
 ## Admin account
 
@@ -289,4 +290,4 @@ Current special features to the admin account:
 
 1) Any entities (pilots, corporations, etc.) added to the Admin's tracker will automatically be fetched from https://zkillboard.com up to and including a full fetch of all kills and maintaining a fetch of said kills on an hourly basis.  Of course, this is dependent on proper cronjob setup.
 
-```
+
