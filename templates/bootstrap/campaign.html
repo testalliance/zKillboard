@@ -1,11 +1,39 @@
 {% extends 'base.html' %}
 
-{% set pageTitle = 'Campagin - {{ name }}' %}
+{% set pageTitle = 'Campagin - {{ data.campaign.name }}' %}
 {% block title %}{% include 'components/title.html' %}{% endblock %}
 
 {% block content %}
 {% if error %}
-<div class="row"><div class="alert alert-danger">{{ error }}</div></div>
+	<div class="row"><div class="alert alert-danger">{{ error }}</div></div>
 {% endif %}
+
+<h2><small>Campaign: </small>{{ data.campaign.name }} <small>Start: {{ data.campaign.start_dttm }} {% if data.campaign.end_dttm %} End: {{ data.campaign.end_dttm }}{% endif %}</small></h2>
+
+<div class="container">
+	<table class="table table-bordered">
+		<tr><th colspan="2">{{ data.teamA.name }}</th></tr>
+		<tr><td>Kills</td><td>{{ data.teamB.stats.destroyed | number_format()}}</td></tr>
+		<tr><td>ISK Destroyed</td><td>{{ data.teamB.stats.iskDestroyed | number_format(2, '.', ',') }}</td></tr>
+		<tr><td>Points</td><td>{{ data.teamB.stats.pointsDestroyed | number_format() }}</td></tr>
+		
+	</table>
+</div>
+<div class="container">
+	<table class="table table-bordered">
+		<tr><th colspan="2">{{ data.teamB.name }}</th></tr>
+		<tr><td>Kills</td><td>{{ data.teamA.stats.destroyed | number_format()}}</td></tr>
+		<tr><td>ISK Destroyed</td><td>{{ data.teamA.stats.iskDestroyed | number_format(2, '.', ',') }}</td></tr>
+		<tr><td>Points</td><td>{{ data.teamA.stats.pointsDestroyed | number_format() }}</td></tr>
+		
+	</table>
+</div>
+
+{% set summaryTable = data.stats %}
+{% if isTablet == true or isMobile == false %}{% if useSummaryAccordion == "true" %}{% include 'components/summary_accordion.html' %}{% else %}{% include 'components/summary.html' %}{% endif %}{% endif %}
+
+{% set killListTitle = 'Recent Activity' %}
+{% set killList = data.kills %}
+{% include 'components/kill_list.html' %}
 
 {% endblock %}

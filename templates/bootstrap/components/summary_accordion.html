@@ -2,8 +2,6 @@
 {% if summaryTable is empty %}
 <!--<h3>Summary</h3>
 <div class="alert">No summary data available...</div>-->
-{% elseif summaryTable|length == 1 %}
-<!-- No summary included for an item with one row -->
 {% else %}
 <h4>Summary <a class="accordion-toggle" data-toggle="collapse" data-parent="#summary" href="#summaryExpand"><span class="glyphicon glyphicon-resize-vertical"></span></a></h4>
 <div class="accordion" id="summary">
