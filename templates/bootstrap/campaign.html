@@ -10,23 +10,23 @@
 
 <h2><small>Campaign: </small>{{ data.campaign.name }} <small>Start: {{ data.campaign.start_dttm }} {% if data.campaign.end_dttm %} End: {{ data.campaign.end_dttm }}{% endif %}</small></h2>
 
-<div class="container">
+<div class="row">
+<div class="col-md-6">
 	<table class="table table-bordered">
 		<tr><th colspan="2">{{ data.teamA.name }}</th></tr>
-		<tr><td>Kills</td><td>{{ data.teamB.stats.destroyed | number_format()}}</td></tr>
-		<tr><td>ISK Destroyed</td><td>{{ data.teamB.stats.iskDestroyed | number_format(2, '.', ',') }}</td></tr>
-		<tr><td>Points</td><td>{{ data.teamB.stats.pointsDestroyed | number_format() }}</td></tr>
-		
+		<tr><td>Losses</td><td>{{ data.teamA.stats.destroyed | number_format()}}</td></tr>
+		<tr><td>ISK</td><td>{{ data.teamA.stats.iskDestroyed | number_format(2, '.', ',') }}</td></tr>
+		<tr><td>Points</td><td>{{ data.teamA.stats.pointsDestroyed | number_format() }}</td></tr>
 	</table>
 </div>
-<div class="container">
+<div class="col-md-6">
 	<table class="table table-bordered">
 		<tr><th colspan="2">{{ data.teamB.name }}</th></tr>
-		<tr><td>Kills</td><td>{{ data.teamA.stats.destroyed | number_format()}}</td></tr>
-		<tr><td>ISK Destroyed</td><td>{{ data.teamA.stats.iskDestroyed | number_format(2, '.', ',') }}</td></tr>
-		<tr><td>Points</td><td>{{ data.teamA.stats.pointsDestroyed | number_format() }}</td></tr>
-		
+		<tr><td>Losses</td><td>{{ data.teamB.stats.destroyed | number_format()}}</td></tr>
+		<tr><td>ISK Destroyed</td><td>{{ data.teamB.stats.iskDestroyed | number_format(2, '.', ',') }}</td></tr>
+		<tr><td>Points</td><td>{{ data.teamB.stats.pointsDestroyed | number_format() }}</td></tr>
 	</table>
+</div>
 </div>
 
 {% set summaryTable = data.stats %}

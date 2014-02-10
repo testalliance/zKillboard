@@ -59,12 +59,11 @@ function buildFilter($team, $prefix) {
 
 function getLosses($filterA, $filterB, $startTime, $endTime, $prefix) {
 	$end = $endTime == null ? "" : " and ta.dttm <= '$endTime' and tb.dttm <= '$endTime' ";
-//die("select $prefix.groupID, count(distinct $prefix.killID) kills, sum($prefix.total_price) total, sum($prefix.points) points from zz_participants ta left join zz_participants tb on (ta.killID = tb.killID) where ta.dttm >= '$startTime' and tb.dttm >= '$startTime' $end and $filterA and $filterB and ta.killID = tb.killID and $prefix.isVictim = 1 group by $prefix.groupID");
-	return Db::query("select $prefix.groupID, count(distinct $prefix.killID) kills, sum($prefix.total_price) total, sum($prefix.points) points from zz_participants ta left join zz_participants tb on (ta.killID = tb.killID) where ta.dttm >= '$startTime' and tb.dttm >= '$startTime' $end and $filterA and $filterB and ta.killID = tb.killID and $prefix.isVictim = 1 group by $prefix.groupID");
+	return Db::query("select groupID, sum(1) kills, sum(total_price) total, sum(points) points from (select $prefix.groupID, $prefix.total_price, $prefix.points from zz_participants ta left join zz_participants tb on (ta.killID = tb.killID) where ta.dttm >= '$startTime' and tb.dttm >= '$startTime' $end and $filterA and $filterB and ta.killID = tb.killID and $prefix.isVictim = 1 group by $prefix.killID) as foo group by groupID");
 }
 
 function getLast50($filterA, $filterB, $startTime, $endTime) {
-	$end = $endTime == null ? "" : " and ta.dttm < '$endTime' and tb.dttm < '$endTime' ";
+	$end = $endTime == null ? "" : " and ta.dttm <= '$endTime' and tb.dttm <= '$endTime' ";
 	$result = Db::query("select distinct ta.killID from zz_participants ta left join zz_participants tb on (ta.killID = tb.killID) where ta.dttm >= '$startTime' and tb.dttm >= '$startTime' $end and $filterA and $filterB and ta.killID = tb.killID order by ta.dttm desc limit 50");
 	return Kills::getKillsDetails($result);
 }
