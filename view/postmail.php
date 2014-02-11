@@ -42,23 +42,18 @@ if($_POST)
 
 	if ($killmailurl)
 	{
-		// a hash looks like: 12345:asdfasdfsadfasdf
+		// Looks like http://public-crest.eveonline.com/killmails/30290604/787fb3714062f1700560d4a83ce32c67640b1797/
+		$exploded = explode("/", $killmailurl);
 
-		if(!stristr($killmailurl, ":"))
-			$error = "Invalid killmail link";
+		if (count($exploded) != 7) $error = "Invalid killmail link.";
 		else
 		{
-			$exp = explode(":", $killmailurl);
-			if(count($exp) != 2)
-				$error = "Invalid killmail link";
-			elseif(isset($exp[0]) && (int) $exp[0] == 0)
-				$error = "Invalid killmail link";
-			elseif(isset($exp[1]) && strlen($exp[1]) < 40)
-				$error = "Invalid killmail link";
+			if((int) $exploded[4] <= 0) $error = "Invalid killmail link";
+			elseif(strlen($exploded[5]) != 40) $error = "Invalid killmail link";
 			else
 			{
-				$killID = (int) $exp[0];
-				$hash = $exp[1];
+				$killID = (int) $exploded[4];
+				$hash = (string) $exploded[5];
 				$i = Db::execute("insert ignore into zz_crest_killmail (killID, hash) values (:killID, :hash)", array(":killID" => $killID, ":hash" => $hash));
 				Db::execute("update zz_crest_killmail set processed = 0 where processed = -1 and killID = :killID", array(":killID" => $killID));
 
