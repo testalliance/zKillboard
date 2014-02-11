@@ -36,7 +36,6 @@ class Registration
 			$message = "Thank you, $username, for registering at zKillboard.com";
 			Email::send($email, $subject, $message);
 			$message = "You have been registered, you should recieve a confirmation email in a moment, in the mean time you can click login and login!";
-			Log::ircAdmin("New registration: |g|$username |n|| |g|$email");
 			return array("type" => "success", "message" => $message);
 		}
 		else
