@@ -47,7 +47,7 @@ class cli_crestapi implements cliCommand
 		$timer = new Timer();
 
 		do {
-			$crests = Db::query("select * from zz_crest_killmail where processed = 0 order by killID", array(), 0);
+			$crests = Db::query("select * from zz_crest_killmail where processed = 0 order by killID limit 30", array(), 0);
 			foreach ($crests as $crest) {
 				try {
 					$killID = $crest["killID"];
@@ -123,7 +123,7 @@ class cli_crestapi implements cliCommand
 			$aggressor["securityStatus"] = $attacker->securityStatus;
 			$aggressor["damageDone"] = (int) @$attacker->damageDone;
 			$aggressor["finalBlow"] = (int) @$attacker->finalBlow;
-			$aggressor["weaponTypeID"] = (int) @$attacker->shipType->id;
+			$aggressor["weaponTypeID"] = (int) @$attacker->weaponType->id;
 			$aggressor["shipTypeID"] = (int) @$attacker->shipType->id;
 			$aggressors[] = $aggressor;
 		}
