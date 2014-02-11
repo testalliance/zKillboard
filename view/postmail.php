@@ -62,9 +62,9 @@ if($_POST)
 					// Has the kill been processed?
 					$crestStatus = Db::queryField("select processed from zz_crest_killmail where killID = :killID", "processed", array(":killID" => $killID), 0);
 					$processed = Db::queryField("select processed from zz_killmails where killID = :killID", "processed", array(":killID" => $killID), 0);
-					if ($crestStatus == -1) $error = "There is an error with the killmail at the CREST endpoint.  We'll let CCP know.  Your kill has still been submitted and we'll process it as soon as the error has been fixed.  Thank you.";
+					if ($crestStatus == -1) $error = "There is an error with the killmail at the CREST endpoint. We'll let CCP know. Your kill has still been submitted and we'll process it as soon as the error has been fixed. Thank you.";
 					else if ($processed == 1) $app->redirect("/detail/$killID/");
-					else if ($processed == 2) $error = "There was an error while processing the killmail.  Please open a ticket and include the external killmail link so we can examine what happened.  Thank you."; 
+					else if ($processed == 2) $error = "There was an error while processing the killmail. Please open a ticket and include the external killmail link so we can examine what happened. Thank you.";
 					else if ($processed == 3) $error = "Only PvP mails are accepted, the mail you just submitted was a PvE killmail.";
 					else usleep(200);
 				} while ($timer->stop() < 20000 && $error == "");
