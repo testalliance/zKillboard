@@ -59,7 +59,6 @@ class cli_crestapi implements cliCommand
 						file_put_contents($cacheFile, $contents);
 					}
 					$perrymail = new \Perry\Representation\Eve\v1\Killmail(file_get_contents($cacheFile));
-echo "$killID\n";
 
 					$killmail = array();
 					$killmail["killID"] = (int) $killID;
