@@ -32,15 +32,14 @@ $entities = array(
 	array('type' => 'character',   'query' => 'SELECT characterID AS id, name FROM zz_characters WHERE name LIKE :query LIMIT 9',                                      'image' => 'Character/%1$d_32.jpg'),
 	array('type' => 'item',        'query' => 'SELECT typeID AS id, typeName AS name, groupID FROM ccp_invTypes WHERE published = 1 AND typeName LIKE :query LIMIT 9', 'image' => 'Type/%1$d_32.png'),
 	array('type' => 'system',      'query' => 'SELECT solarSystemID  AS id, solarSystemName AS name FROM ccp_systems WHERE solarSystemName LIKE :query LIMIT 9',       'image' => ''),
-	array('type' => 'region',      'query' => 'SELECT regionID AS id, regionName AS name FROM ccp_regions WHERE regionName LIKE :query LIMIT 9',                       'image' => ''),
-	array('type' => 'campaign',    'query' => 'SELECT id AS id, campaignTitle as name FROM zz_campaigns WHERE campaignTitle LIKE :query LIMIT 9',                      'image' => ''),
+	array('type' => 'region',      'query' => 'SELECT regionID AS id, regionName AS name FROM ccp_regions WHERE regionName LIKE :query LIMIT 9',                       'image' => '')
 );
 
 // define the faction data
 $data = array(
-	"Caldari State"			=> array("id" => "500001", "name" => "Caldari State"), 
-	"Minmatar Republic"		=> array("id" => "500002", "name" => "Minmatar Republic"), 
-	"Amarr Empire"			=> array("id" => "500003", "name" => "Amarr Empire"), 
+	"Caldari State"			=> array("id" => "500001", "name" => "Caldari State"),
+	"Minmatar Republic"		=> array("id" => "500002", "name" => "Minmatar Republic"),
+	"Amarr Empire"			=> array("id" => "500003", "name" => "Amarr Empire"),
 	"Gallente Federation"	=> array("id" => "500004", "name" => "Gallente Federation")
 );
 
@@ -78,12 +77,12 @@ if (count($search_results) > 0)
 	foreach ($search_results as $key => $row) { $sort_by[$key] = $row['name']; }
 
 	//perfom and return the sorted array
-	array_multisort($sort_by, SORT_ASC, SORT_NATURAL, $search_results);	
+	array_multisort($sort_by, SORT_ASC, SORT_NATURAL, $search_results);
 }
 
 // CORS headers
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET");
+header("Access-Control-Allow-Methods: POST");
 
 //return the top 15 results as a json object
 echo json_encode(array_slice($search_results, 0, 15));
