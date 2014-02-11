@@ -72,26 +72,8 @@ if($_POST)
 			}
 		}
 	}
-
-	if($killmail)
-	{
-		$u = User::getUserInfo();
-		if(User::isLoggedIn())
-		{
-			$return = Parser::parseRaw($killmail, $u["id"]);
-			if(isset($return["success"]))
-				$app->redirect("/detail/".$return["success"]."/");
-			if(isset($return["dupe"]))
-				$app->redirect("/detail/".$return["dupe"]."/");
-			if(isset($return["error"]))
-				$error = $return["error"];
-		}
-		else
-			$error = "Sorry, you need to be logged in to post manual killmails";
-	}
 }
 
-if(!is_array($error))
-	$error = array($error);
+if(!is_array($error)) $error = array($error);
 
-	$app->render("postmail.html", array("message" => $error));
+$app->render("postmail.html", array("message" => $error));

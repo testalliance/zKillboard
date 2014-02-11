@@ -67,38 +67,10 @@
 		</div>
 		<div class="row">
 		<br/><img src="/img/km_external_link.png"/><br/>
-		<div class="alert alert-info"><i>Extermal Killmail Links exist in Rubicon 1.1 but the support CREST endpoint has not been released yet. We've been told delivery will be anywhere from 2 days to 2 weeks.  Submitting now means we'll get the mail later when the endpoint does exist!</i></div>
-		</div>
-		<hr/>
-
-		<h3>Post Killmail</h3>
-		<div class="well">
-			{% if sessionusername == "" %}
-				<div class="alert alert-danger">You are not logged in, your killmail will not be accepted.</div>
-			{% endif %}
-			<p>Post a killmail from the ingame character sheet.</p>
-			<form  name="postkillmail" method="post" action="/post/" class="form">
-				<div class="form-group">
-					<textarea id="killmail" name="killmail" type="text" required rows="12" class="col-xs-12"></textarea>
-				</div>
-			{% if sessionusername == "" %}
-				<div class="alert alert-danger">You are not logged in, your killmail will not be accepted.</div>
-			{% endif %}
-				<div class="form-group">
-					<input type="submit" class="btn btn-primary" value="Post mail">
-				</div>
-			</form>
-		</div>
-		<h3>Mail Posting Guidelines</h3>
-		<div class="well">
-			<p class="alert alert-warning">Failure to comply with these rules will result in losing your mail posting privileges. In worst case, it could mean you get banned from the site.</p>	
-			<ul>
-				<li>The modification of killmails, for any reason, is not allowed.</li>
-				<li>Fake mails, even if they are meant as a joke, are not allowed.</li>
-				<li>Only mails from Tranquility are allowed.  Killmails from any other server are not allowed.</li>
-			</ul>
-		</div>
 	</div>
+	<hr/>
+	<div><i><small>Manual mail postings have been removed in favor of using the External Killmail Link.</small></i></div>
+
 </div>
 
 {% endblock %}
