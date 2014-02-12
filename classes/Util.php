@@ -218,6 +218,10 @@ class Util
 					$parameters[$key] = true;
 					$value = true;
 				break;
+				case "pretty":
+					$parameters[$key] = true;
+					$value = $true;
+				break;
 				default:
 					if($addExtraParameters == true)
 					{
