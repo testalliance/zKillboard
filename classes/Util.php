@@ -220,7 +220,7 @@ class Util
 				break;
 				case "pretty":
 					$parameters[$key] = true;
-					$value = $true;
+					$value = true;
 				break;
 				default:
 					if($addExtraParameters == true)
