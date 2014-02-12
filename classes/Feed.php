@@ -94,11 +94,21 @@ class Feed
 			$jsonText = Db::queryField("select kill_json from zz_killmails where killID = :killID", "kill_json", array(":killID" => $killID));
 			$json = json_decode($jsonText, true);
 			if (array_key_exists("no-items", $parameters)) unset($json["items"]);
-			if (array_key_exists("no-attackers", $parameters))
+			if (array_key_exists("finalblow-only", $parameters))
 			{
 				$involved = count($json["attackers"]);
-				unset($json["attackers"]);
 				$json["zkb"]["involved"] = $involved;
+				$data = $json["attackers"];
+				unset($json["attackers"]);
+				foreach($data as $attacker)
+					if($attacker["finalBlow"] == "1")
+						$json["attackers"][] = $attacker;
+			}
+			elseif (array_key_exists("no-attackers", $parameters))
+			{
+				$involved = count($json["attackers"]);
+				$json["zkb"]["involved"] = $involved;
+				unset($json["attackers"]);
 			}
 
 			$retValue[] = json_encode($json);
