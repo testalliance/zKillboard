@@ -39,6 +39,14 @@ else {
 	$teamBLosses = getLosses($teamAFilter, $teamBFilter, "tb");
 	$stats = createSummaryArray($teamALosses, $teamBLosses);
 
+	$data["top"] = array();
+	$data["top"][] = Info::doMakeCommon("Top Pilots", "characterID", getTop("characterID", $teamAFilter, $teamBFilter, "ta."));
+	$data["top"][] = Info::doMakeCommon("Top Corporations", "corporationID", getTop("corporationID", $teamAFilter, $teamBFilter, "ta."));
+	$data["top"][] = Info::doMakeCommon("Top Alliances", "allianceID", getTop("allianceID", $teamAFilter, $teamBFilter, "ta."));
+	$data["top"][] = Info::doMakeCommon("Top Systems", "solarSystemID", getTop("solarSystemID", $teamAFilter, $teamBFilter, "ta."));
+	$data["top"][] = Info::doMakeCommon("Top Ships", "shipTypeID", getTop("shipTypeID", $teamAFilter, $teamBFilter, "ta."));
+	$data["top"][] = Info::doMakeCommon("Top Weapons", "weaponTypeID", getTop("weaponTypeID", $teamAFilter, $teamBFilter, "ta."));
+
 	$kills = getLast50($teamAFilter, $teamBFilter, $startTime, $endTime);
 
 	$data["stats"] = $stats["stats"];
@@ -58,7 +66,7 @@ function buildFilter($team, $prefix, $startTime, $endTime) {
 	return "((" . implode(" OR ", $arr) . ") and {$prefix}dttm >= '$startTime' $end)";
 }
 
-function getLosses($filterA, $filterB, $prefix) {
+function getLosses($filterB, $filterA, $prefix) {
 	return Db::query("select groupID, sum(1) kills, sum(total_price) total, sum(points) points from (select $prefix.groupID, $prefix.total_price, $prefix.points from zz_participants ta left join zz_participants tb on (ta.killID = tb.killID) where $filterA and $filterB and ta.killID = tb.killID and $prefix.isVictim = 1 group by $prefix.killID) as foo group by groupID");
 }
 
@@ -120,4 +128,29 @@ function createSummaryArray($teamA, $teamB) {
 	}
 
 	return array("stats" => $stats, "teamA" => $teamAStats, "teamB" => $teamBStats);
+}
+
+function getTop($column, $filterA, $filterB) {
+	$prefix = "ta.";
+	$otherPrefix = "tb.";
+	$resultA = Db::query("select p.{$column}, count(distinct p.killID) kills from zz_participants p left join zz_participants ta on (p.killID = ta.killID) left join zz_participants tb on (ta.killID = tb.killID) where {$otherPrefix}isVictim = 1 and {$prefix}isVictim = 0 and $filterA and $filterB and p.{$column} != 0 and p.isVictim = 0 group by 1 order by 2 desc limit 10");
+	$prefix = "tb.";
+	$otherPrefix = "ta.";
+	$resultB = Db::query("select p.{$column}, count(distinct p.killID) kills from zz_participants p left join zz_participants ta on (p.killID = ta.killID) left join zz_participants tb on (ta.killID = tb.killID) where {$otherPrefix}isVictim = 1 and {$prefix}isVictim = 0 and $filterA and $filterB and p.{$column} != 0 and p.isVictim = 0 group by 1 order by 2 desc limit 10");
+	$result = array_merge($resultA, $resultB);
+	usort($result, "sortKills");
+	// Clean out duplicates
+	$seen = array();
+	$finalResult = array();
+	foreach($result as $row) {
+		$key = $row[$column];
+		if (!in_array($key, $seen)) $finalResult[] = $row;
+		$seen[] = $key;
+	}
+	$result = array_slice($finalResult, 0, 5);
+	return Info::addInfo($result);
+}
+
+function sortKills($v1, $v2) {
+	return $v1["kills"] < $v2["kills"];
 }

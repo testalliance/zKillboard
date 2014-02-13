@@ -58,13 +58,11 @@
 <div class="clearfix"></div>
 
 <div class="row">
-{% set topSet = data.topPilots %}
-{% include 'components/top_killer_list.html' %}
-{% set topSet = data.topCorps %}
-{% include 'components/top_killer_list.html' %}
-{% set topSet = data.topAllis %}
-{% include 'components/top_killer_list.html' %}
+{% for topSet in data.top %}
+	{% include 'components/top_killer_list.html' %}
+{% endfor %}
 </div>
+<div class="clearfix"></div>
 
 {% set killListTitle = 'Recent Activity' %}
 {% set killList = data.kills %}

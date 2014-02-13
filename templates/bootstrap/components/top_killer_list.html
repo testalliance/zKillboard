@@ -15,8 +15,17 @@
         {% elseif topSet.type == 'alliance' %}
             <td style="width: 40px;">{% include 'components/image_alli.html' %}</td>
             <td>{% include 'components/text_alli.html' %}</td>
-		{% endif %}
-			<td style="width: 85px; text-align: right;">{{ data.kills|number_format(0) }} Kills</td>
+        {% elseif topSet.type == 'solarSystem' %}
+            <td style="width: 40px;">{% include 'components/image_system.html' %}</td>
+            <td>{% include 'components/text_system.html' %}</td>
+        {% elseif topSet.type == 'shipType' %}
+            <td style="width: 40px;">{% include 'components/image_ship.html' %}</td>
+            <td>{% include 'components/text_ship.html' %}</td>
+        {% elseif topSet.type == 'weaponType' %}
+            <td style="width: 40px;">{% include 'components/image_item.html' %}</td>
+            <td>{% include 'components/text_item.html' %}</td>
+	{% endif %}
+            <td style="width: 85px; text-align: right;">{{ data.kills|number_format(0) }} Kills</td>
         </tr>
     {% endfor %}
     </table>

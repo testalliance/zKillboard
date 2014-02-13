@@ -969,7 +969,10 @@ class Info
 		foreach($array as $row) {
 			$data = $row;
 			$data["id"] = $row[$field];
-			$data["name"] = $row[$retArray["type"] . "Name"];
+			if (isset($row[$retArray["type"] . "Name"])) $data["name"] = $row[$retArray["type"] . "Name"];
+			else if (isset($row["shipName"])) $data["name"] = $row["shipName"];
+			else if (isset($row["typeName"])) $data["name"] = $row["typeName"];
+			else $data["name"] = $data["id"];
 			$data["kills"] = $row["kills"];
 			$retArray["values"][] = $data;
 		}
