@@ -24,8 +24,7 @@ $regionName = Info::getRegionName(Info::getRegionIDFromSystemID($systemID));
 $unixTime = strtotime($relatedTime);
 $time = date("Y-m-d H:i", $unixTime);
 
-$exHours = (int) $exHours;
-if ($exHours < 1 || $exHours > 12) $exHours = 1;
+if (((int) $exHours) < 1 || ((int) $exHours > 12)) $exHours = 1;
 
 $key = "$systemID:$relatedTime:$exHours";
 $mc = Cache::get($key);
