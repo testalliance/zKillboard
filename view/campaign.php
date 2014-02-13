@@ -53,6 +53,8 @@ else {
 	$data["teamA"] = array("name" => $teamAName, "stats" => $stats["teamA"]);
 	$data["teamB"] = array("name" => $teamBName, "stats" => $stats["teamB"]);
 	$data["kills"] = $kills;
+	$data["entitiesA"] = getEntities($teamA);
+	$data["entitiesB"] = getEntities($teamB);
 	$data["campaign"] = $campaign;
 }
 $app->render("campaign.html", array("data" => $data, "error" => $error));
@@ -153,4 +155,19 @@ function getTop($column, $filterA, $filterB) {
 
 function sortKills($v1, $v2) {
 	return $v1["kills"] < $v2["kills"];
+}
+
+function getEntities($team) {
+	$entities = array();
+	$entities["alliances"] = getSpecificEntity($team, "allianceID");
+	$entities["corporations"] = getSpecificEntity($team, "corporationID");
+	$entities["characters"] = getSpecificEntity($team, "characterID");
+	Info::addInfo($entities);
+	return $entities;
+}
+
+function getSpecificEntity($team, $id) {
+	$array = array();
+	if (isset($team[$id])) foreach($team[$id] as $value) $array[] = array($id => $value);
+	return $array;
 }

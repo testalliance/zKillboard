@@ -47,6 +47,11 @@
 		<td class="text-left {{ right }}">{{ data.teamB.stats.pointsDestroyed | number_format() }}</td>
 		<td class="text-left {{ right }}">{{ pctg | number_format(1) }}%</td>
 	</tr>
+	<tr>
+		<td class="text-right" colspan="2">{% set entities = data.entitiesA %}{% include 'components/entities.html' %}</td>
+		<td class="text-center">Members</td>
+		<td class="text-left" colspan="2">{% set entities = data.entitiesB %}{% include 'components/entities.html' %}</td>
+	</tr>
 </table>
 </div>
 

@@ -1,0 +1,10 @@
+{% for type, values in entities %}
+	{% set imageSize = 32 %}
+	{% for field in values %}
+		{% if type == 'characters' %}
+			{% include 'components/image_character.html' %}
+		{% elseif type == 'corporations' %}
+			{% include 'components/image_corp.html' %}
+		{% endif %}
+	{% endfor %}
+{% endfor %}
