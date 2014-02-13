@@ -74,7 +74,7 @@ class Feed
 
 		$kills = Db::query($query, array(), $cacheTime);
 
-		return self::getJSON($kills, $parameters, $orderDirection);
+		return self::getJSON($kills, $parameters);
 	}
 
 	/**
@@ -82,10 +82,9 @@ class Feed
 	 * @static
 	 * @param array $kills
 	 * @param array $parameters
-	 * @param string $orderDirection
 	 * @return array
 	 */
-	public static function getJSON($kills, $parameters, $orderDirection)
+	public static function getJSON($kills, $parameters)
 	{
 		$retValue = array();
 
