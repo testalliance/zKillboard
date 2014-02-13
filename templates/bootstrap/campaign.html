@@ -13,30 +13,39 @@
 <div class="row col-md-6">
 <table class="table table-bordered">
 	<tr>
-		<th class="text-right">{{ data.teamA.name }}</th>
+		<th class="text-right" colspan="2">{{ data.teamA.name }}</th>
 		<th class="text-center">vs</th>
-		<th class="text-left">{{ data.teamB.name }}</th>
+		<th class="text-left" colspan="2">{{ data.teamB.name }}</th>
 	</tr>
 	<tr>
 		{% set left = data.teamA.stats.destroyed < data.teamB.stats.destroyed ? 'green' : 'red' %}
 		{% set right = data.teamA.stats.destroyed > data.teamB.stats.destroyed ? 'green' : 'red' %}
+		{% set pctg = data.teamA.stats.destroyed == 0 or data.teamB.stats.destroyed == 0 ? 0 : (data.teamA.stats.destroyed / (data.teamA.stats.destroyed + data.teamB.stats.destroyed)) * 100 %}
+		<td class="text-right {{ left }}">{{ (100 - pctg) | number_format(1) }}%</td>
 		<td class="text-right {{ left }}">{{ data.teamA.stats.destroyed | number_format()}}</td>
 		<td class="text-center">Losses</td>
-		<td class="text-left {{ right }}">{{ data.teamB.stats.destroyed | number_format()}}</td>
+		<td class="text-left {{ right }}">{{ data.teamB.stats.destroyed | number_format()}} ({{ pctg | number_format(1) }}%)</td>
+		<td class="text-left {{ right }}">{{ pctg | number_format(1) }}%</td>
 	</tr>
 	<tr>
 		{% set left = data.teamA.stats.iskDestroyed < data.teamB.stats.iskDestroyed ? 'green' : 'red' %}
 		{% set right = data.teamA.stats.iskDestroyed > data.teamB.stats.iskDestroyed ? 'green' : 'red' %}
+		{% set pctg = data.teamA.stats.iskDestroyed == 0 or data.teamB.stats.iskDestroyed == 0 ? 0 : (data.teamA.stats.iskDestroyed / (data.teamA.stats.iskDestroyed + data.teamB.stats.iskDestroyed)) * 100 %}
+		<td class="text-right {{ left }}">{{ (100 - pctg) | number_format(1) }}%</td>
 		<td class="text-right {{ left }}">{{ data.teamA.stats.iskDestroyed | number_format(2, '.', ',') }}</td>
 		<td class="text-center">ISK</td>
 		<td class="text-left {{ right }}">{{ data.teamB.stats.iskDestroyed | number_format(2, '.', ',') }}</td>
+		<td class="text-left {{ right }}">{{ pctg | number_format(1) }}%</td>
 	</tr>
 	<tr>
 		{% set left = data.teamA.stats.pointsDestroyed < data.teamB.stats.pointsDestroyed ? 'green' : 'red' %}
 		{% set right = data.teamA.stats.pointsDestroyed > data.teamB.stats.pointsDestroyed ? 'green' : 'red' %}
+		{% set pctg = data.teamA.stats.pointsDestroyed == 0 or data.teamB.stats.pointsDestroyed == 0 ? 0 : (data.teamA.stats.pointsDestroyed / (data.teamA.stats.pointsDestroyed + data.teamB.stats.pointsDestroyed)) * 100 %}
+		<td class="text-right {{ left }}">{{ (100 - pctg) | number_format(1) }}%</td>
 		<td class="text-right {{ left }}">{{ data.teamA.stats.pointsDestroyed | number_format() }}</td>
 		<td class="text-center">Points</td>
 		<td class="text-left {{ right }}">{{ data.teamB.stats.pointsDestroyed | number_format() }}</td>
+		<td class="text-left {{ right }}">{{ pctg | number_format(1) }}%</td>
 	</tr>
 </table>
 </div>
@@ -45,6 +54,17 @@
 
 {% set summaryTable = data.stats %}
 {% include 'components/campaign_summary.html' %}
+
+<div class="clearfix"></div>
+
+<div class="row">
+{% set topSet = data.topPilots %}
+{% include 'components/top_killer_list.html' %}
+{% set topSet = data.topCorps %}
+{% include 'components/top_killer_list.html' %}
+{% set topSet = data.topAllis %}
+{% include 'components/top_killer_list.html' %}
+</div>
 
 {% set killListTitle = 'Recent Activity' %}
 {% set killList = data.kills %}

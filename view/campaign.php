@@ -32,11 +32,11 @@ else {
 	$teamAName = "Red Federation";
 	$teamBName = "Blue Republic";
 
-	$teamAFilter = buildFilter($teamA, "ta");
-	$teamBFilter = buildFilter($teamB, "tb");
+	$teamAFilter = buildFilter($teamA, "ta.", $startTime, $endTime);
+	$teamBFilter = buildFilter($teamB, "tb.", $startTime, $endTime);
 
-	$teamALosses = getLosses($teamAFilter, $teamBFilter, $startTime, $endTime, "ta");
-	$teamBLosses = getLosses($teamAFilter, $teamBFilter, $startTime, $endTime, "tb");
+	$teamALosses = getLosses($teamAFilter, $teamBFilter, "ta");
+	$teamBLosses = getLosses($teamAFilter, $teamBFilter, "tb");
 	$stats = createSummaryArray($teamALosses, $teamBLosses);
 
 	$kills = getLast50($teamAFilter, $teamBFilter, $startTime, $endTime);
@@ -49,22 +49,21 @@ else {
 }
 $app->render("campaign.html", array("data" => $data, "error" => $error));
 
-function buildFilter($team, $prefix) {
+function buildFilter($team, $prefix, $startTime, $endTime) {
 	$arr = array();
 	foreach($team as $id => $entities) {
-		$arr[] = "$prefix.$id in (" . implode(", ", $entities) . ")";
+		$arr[] = "{$prefix}$id in (" . implode(", ", $entities) . ")";
 	}
-	return "(" . implode(" AND ", $arr) . ")";
+	$end = $endTime == null ? "" : " and {$prefix}dttm <= '$endTime'";
+	return "((" . implode(" OR ", $arr) . ") and {$prefix}dttm >= '$startTime' $end)";
 }
 
-function getLosses($filterA, $filterB, $startTime, $endTime, $prefix) {
-	$end = $endTime == null ? "" : " and ta.dttm <= '$endTime' and tb.dttm <= '$endTime' ";
-	return Db::query("select groupID, sum(1) kills, sum(total_price) total, sum(points) points from (select $prefix.groupID, $prefix.total_price, $prefix.points from zz_participants ta left join zz_participants tb on (ta.killID = tb.killID) where ta.dttm >= '$startTime' and tb.dttm >= '$startTime' $end and $filterA and $filterB and ta.killID = tb.killID and $prefix.isVictim = 1 group by $prefix.killID) as foo group by groupID");
+function getLosses($filterA, $filterB, $prefix) {
+	return Db::query("select groupID, sum(1) kills, sum(total_price) total, sum(points) points from (select $prefix.groupID, $prefix.total_price, $prefix.points from zz_participants ta left join zz_participants tb on (ta.killID = tb.killID) where $filterA and $filterB and ta.killID = tb.killID and $prefix.isVictim = 1 group by $prefix.killID) as foo group by groupID");
 }
 
-function getLast50($filterA, $filterB, $startTime, $endTime) {
-	$end = $endTime == null ? "" : " and ta.dttm <= '$endTime' and tb.dttm <= '$endTime' ";
-	$result = Db::query("select distinct ta.killID from zz_participants ta left join zz_participants tb on (ta.killID = tb.killID) where ta.dttm >= '$startTime' and tb.dttm >= '$startTime' $end and $filterA and $filterB and ta.killID = tb.killID order by ta.dttm desc limit 50");
+function getLast50($filterA, $filterB) {
+	$result = Db::query("select distinct ta.killID from zz_participants ta left join zz_participants tb on (ta.killID = tb.killID) where $filterA and $filterB and ta.killID = tb.killID order by ta.dttm desc limit 50");
 	return Kills::getKillsDetails($result);
 }
 
