@@ -42,12 +42,14 @@
 		{% include 'account/tracker.html' %}
 	{% elseif key == 'subdomains' and reqid %}
 		{% include 'account/subdomain_management.html' %}
-    {% elseif key == 'subdomains' %}
-        {% include 'account/subdomains.html' %}
+	{% elseif key == 'subdomains' %}
+        	{% include 'account/subdomains.html' %}
 	{% elseif key == 'killdetail' %}
 		{% include 'account/killdetail.html' %}
 	{% elseif key == 'sessions' %}
 		{% include 'account/sessions.html' %}
+	{% elseif key == 'campaigns' %}
+		{% include 'account/campaigns.html' %}
 	{% endif %}
 {% endblock %}
 {% block script %}
