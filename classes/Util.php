@@ -216,11 +216,9 @@ class Util
 				break;
 				case "xml":
 					$parameters[$key] = true;
-					$value = true;
 				break;
 				case "pretty":
 					$parameters[$key] = true;
-					$value = true;
 				break;
 				default:
 					if($addExtraParameters == true)

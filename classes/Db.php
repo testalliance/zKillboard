@@ -202,8 +202,7 @@ class Db
 	public static function execute($query, $parameters = array(), $reportErrors = true, $returnID = false)
 	{
 		// Sanity check
-		if(strpos($query, ";") !== false)
-			throw new Exception("Semicolons are not allowed in queryes. Use parameters instead.");
+		if(strpos($query, ";") !== false) throw new Exception("Semicolons are not allowed in queryes. Use parameters instead.");
 
 		// Start the timer
 		$timer = new Timer();
@@ -212,8 +211,8 @@ class Db
 		// Open the databse connection
 		$pdo = self::getPDO();
 		// Make sure PDO is actually set
-		if($pdo == NULL)
-			return;
+		if($pdo == NULL) return;
+
 		// Begin the transaction
 		$pdo->beginTransaction();
 		// Prepare the query
@@ -233,24 +232,21 @@ class Db
 		}
 
 		// return the last inserted id
-		if($returnID)
-			$lastInsertID = $pdo->lastInsertId();
+		$lastInsertID = $returnID ? $pdo->lastInsertId() : 0;
 
 		// No error, time to commit
 		$pdo->commit();
 		// Stop the timer
 		$duration = $timer->stop();
 		// If the duration of the query was more than 5000 seconds, we need to log it..
-		if($duration > 5000)
-			self::log($query, $parameters, $duration);
+		if($duration > 5000) self::log($query, $parameters, $duration);
 
 		// Get the amount of rows that was altered
 		$rowCount = $stmt->rowCount();
 		// Close the cursor
 		$stmt->closeCursor();
 
-		if($returnID)
-			return $lastInsertID;
+		if($returnID) return $lastInsertID;
 
 		// Return the amount of rows that was altered
 		return $rowCount;
