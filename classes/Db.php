@@ -281,7 +281,7 @@ class Db
 	 */
 	public static function processError($statement, $query, $parameters = array(), $reportErrors = true)
 	{
-		if ($reportErrors = false) return;
+		if ($reportErrors == false) return;
 		$errorCode = $statement->errorCode();
 		$errorInfo = $statement->errorInfo();
 		self::log("$errorCode - " . $errorInfo[2] . "\n$query", $parameters, 1000);
