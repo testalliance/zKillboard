@@ -80,12 +80,13 @@ class Feed
 	/**
 	 * Groups the kills together based on specified parameters
 	 * @static
-	 * @param array $kills
+	 * @param array|null $kills
 	 * @param array $parameters
 	 * @return array
 	 */
 	public static function getJSON($kills, $parameters)
 	{
+		if ($kills == null) return array();
 		$retValue = array();
 
 		foreach ($kills as $kill) {
