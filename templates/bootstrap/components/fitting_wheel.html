@@ -99,7 +99,8 @@
         {% include 'components/image_ship.html' %}
 </div>
 {% endif %}
-{% if killdata.victim.killID > 0 %}<span class="green"><small>API Verified</small></span>{% endif %}
+{% if extra.crest %}<span><small><a class="green" target="_blank" href="http://public-crest.eveonline.com/killmails/{{ extra.crest.killID }}/{{ extra.crest.hash }}/">CREST Verified</a></small></span>
+{% elseif killdata.victim.killID > 0 %}<span class="green"><small>API Verified</small></span>{% endif %}
 </div>
 
 {% set eveImageClass = true %}
