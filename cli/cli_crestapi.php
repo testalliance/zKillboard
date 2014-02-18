@@ -80,6 +80,7 @@ class cli_crestapi implements cliCommand
 					// Write this file to eve-kill's parse directory
 					$xml = Util::xmlOut(array($killmail), array());
 					$file = "/var/killboard/zkb_killlogs/0_0_$killID.xml";
+					@unlink($file);
 					@error_log($xml, 3, $file);
 				} catch (Exception $ex) {
 					Db::execute("update zz_crest_killmail set processed = -1 where killID = :killID", array(":killID" => $killID));
