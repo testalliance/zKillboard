@@ -116,6 +116,7 @@ $extra["zkbrawmail"] = Kills::getRawMail($id, array(), false);
 $extra["reports"] = Db::queryField("SELECT count(*) as cnt FROM zz_tickets WHERE killID = :killid", "cnt", array(":killid" => $id), 0);
 $extra["slotCounts"] = Info::getSlotCounts($killdata["victim"]["shipTypeID"]);
 $extra["commentID"] = Info::commentID($id);
+$extra["crest"] = Db::queryRow("select killID, hash from zz_crest_killmail where killID = :killID and processed = 1", array(":killID" => $id), 300);
 
 $systemID = $killdata["info"]["solarSystemID"];
 $data = Info::getWormholeSystemInfo($systemID);
