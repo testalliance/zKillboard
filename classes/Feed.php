@@ -74,19 +74,19 @@ class Feed
 
 		$kills = Db::query($query, array(), $cacheTime);
 
-		return self::getJSON($kills, $parameters, $orderDirection);
+		return self::getJSON($kills, $parameters);
 	}
 
 	/**
 	 * Groups the kills together based on specified parameters
 	 * @static
-	 * @param array $kills
+	 * @param array|null $kills
 	 * @param array $parameters
-	 * @param string $orderDirection
 	 * @return array
 	 */
-	public static function getJSON($kills, $parameters, $orderDirection)
+	public static function getJSON($kills, $parameters)
 	{
+		if ($kills == null) return array();
 		$retValue = array();
 
 		foreach ($kills as $kill) {
@@ -94,7 +94,22 @@ class Feed
 			$jsonText = Db::queryField("select kill_json from zz_killmails where killID = :killID", "kill_json", array(":killID" => $killID));
 			$json = json_decode($jsonText, true);
 			if (array_key_exists("no-items", $parameters)) unset($json["items"]);
-			if (array_key_exists("no-attackers", $parameters)) unset($json["attackers"]);
+			if (array_key_exists("finalblow-only", $parameters))
+			{
+				$involved = count($json["attackers"]);
+				$json["zkb"]["involved"] = $involved;
+				$data = $json["attackers"];
+				unset($json["attackers"]);
+				foreach($data as $attacker)
+					if($attacker["finalBlow"] == "1")
+						$json["attackers"][] = $attacker;
+			}
+			elseif (array_key_exists("no-attackers", $parameters))
+			{
+				$involved = count($json["attackers"]);
+				$json["zkb"]["involved"] = $involved;
+				unset($json["attackers"]);
+			}
 
 			$retValue[] = json_encode($json);
 		}

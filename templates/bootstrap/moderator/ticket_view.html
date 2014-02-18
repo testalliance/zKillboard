@@ -30,7 +30,7 @@
 		<tbody>
 			{% for data in info.replies %}
 			<tr>
-				<td><strong>{{ data.name }} <br> {% if data.moderator %}<i class="label label-info">Moderator</i>{% endif %}</strong></td>
+				<td><strong>{{ data.name|capitalize }} <br> {% if data.moderator %}<i class="label label-info">Moderator</i>{% endif %}</strong></td>
 				<td>{{ data.reply|raw }}</td>
 			</tr>
 			{% endfor %}

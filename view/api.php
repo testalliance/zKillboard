@@ -54,7 +54,10 @@ elseif(isset($_GET["callback"]) && Util::isValidCallback($_GET["callback"]) )
 else
 {
 	$app->contentType("application/json; charset=utf-8");
-	echo json_encode($array, JSON_NUMERIC_CHECK);
+	if(isset($parameters["pretty"]))
+		echo json_encode($array, JSON_PRETTY_PRINT);
+	else
+		echo json_encode($array, JSON_NUMERIC_CHECK);
 }
 
 function xmlOut($array, $parameters)

@@ -52,7 +52,7 @@ class Db
 		catch (Exception $e)
 		{
 			Log::log("Unable to connect to the database: " . $e->getMessage());
-			$pdo = null;
+			throw new Exception("Unable to connect to database!");
 		}
 
 		return $pdo;
@@ -129,9 +129,7 @@ class Db
 				if(stripos($query, "SELECT") !== FALSE)
 					self::explainQuery($query, $parameters, $duration);
 
-			// If the duration of the query was more than 5000 seconds, we need to log it..
-			if($duration > 5000)
-				self::log($query, $parameters, $duration);
+			self::log($query, $parameters, $duration);
 
 			// now to return the result
 			return $result;
@@ -201,9 +199,7 @@ class Db
 	 */
 	public static function execute($query, $parameters = array(), $reportErrors = true, $returnID = false)
 	{
-		// Sanity check
-		if(strpos($query, ";") !== false)
-			throw new Exception("Semicolons are not allowed in queryes. Use parameters instead.");
+		self::validateQuery($query);
 
 		// Start the timer
 		$timer = new Timer();
@@ -211,9 +207,7 @@ class Db
 		self::$queryCount++;
 		// Open the databse connection
 		$pdo = self::getPDO();
-		// Make sure PDO is actually set
-		if($pdo == NULL)
-			return;
+
 		// Begin the transaction
 		$pdo->beginTransaction();
 		// Prepare the query
@@ -225,7 +219,7 @@ class Db
 		if($stmt->errorCode() != 0)
 		{
 			// Report the error
-			if($reportErrors) self::processError($stmt, $query, $parameters);
+			self::processError($stmt, $query, $parameters, $reportErrors);
 			// Rollback the query
 			$pdo->rollBack();
 			// Return false
@@ -233,27 +227,36 @@ class Db
 		}
 
 		// return the last inserted id
-		if($returnID)
-			$lastInsertID = $pdo->lastInsertId();
+		$lastInsertID = $returnID ? $pdo->lastInsertId() : 0;
 
 		// No error, time to commit
 		$pdo->commit();
 		// Stop the timer
 		$duration = $timer->stop();
-		// If the duration of the query was more than 5000 seconds, we need to log it..
-		if($duration > 5000)
-			self::log($query, $parameters, $duration);
+
+		self::log($query, $parameters, $duration);
 
 		// Get the amount of rows that was altered
 		$rowCount = $stmt->rowCount();
 		// Close the cursor
 		$stmt->closeCursor();
 
-		if($returnID)
-			return $lastInsertID;
+		if($returnID) return $lastInsertID;
 
 		// Return the amount of rows that was altered
 		return $rowCount;
+	}
+
+	/**
+	 * Validates a query to ensure it contains no semicolons
+	 *
+	 * @static
+	 * @param string $query The query to be executed.
+	 * @return void
+	*/
+	private static function validateQuery($query)
+	{
+		if(strpos($query, ";") !== false) throw new Exception("Semicolons are not allowed in queryes. Use parameters instead.");
 	}
 
 	/**
@@ -273,13 +276,15 @@ class Db
 	 * @param	PDOStatement $statement
 	 * @param	string $query
 	 * @param	array $parameters
+	 @ @param	bool  $reportErrors
 	 * @return void
 	 */
-	public static function processError($statement, $query, $parameters = array())
+	public static function processError($statement, $query, $parameters = array(), $reportErrors = true)
 	{
+		if ($reportErrors == false) return;
 		$errorCode = $statement->errorCode();
 		$errorInfo = $statement->errorInfo();
-		self::log("$errorCode - " . $errorInfo[2] . "\n$query", $parameters);
+		self::log("$errorCode - " . $errorInfo[2] . "\n$query", $parameters, 1000);
 		throw new Exception($errorInfo[0] . " - " . $errorInfo[1] . " - " . $errorInfo[2]);
 	}
 
@@ -346,6 +351,7 @@ class Db
 	 */
 	public static function log($query, $parameters = array(), $duration = 0)
 	{
+		if ($duration < 5000) return; // Don't log short queries
 		global $baseAddr;
 		foreach ($parameters as $k => $v) {
 			$query = str_replace($k, "'" . $v . "'", $query);
