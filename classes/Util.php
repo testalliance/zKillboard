@@ -438,7 +438,8 @@ class Util
 				CURLOPT_ENCODING 			=> "",
 				CURLOPT_URL 				=> $url,
 				CURLOPT_HTTPHEADER 			=> array("Connection: keep-alive", "Keep-Alive: timeout=10, max=1000"),
-				CURLOPT_RETURNTRANSFER 		=> true
+				CURLOPT_RETURNTRANSFER 		=> true,
+				CURLOPT_FAILONERROR			=> true
 				)
 			);
 
