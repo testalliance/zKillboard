@@ -448,9 +448,9 @@ class Util
 				curl_setopt($curl, CURLOPT_INTERFACE, $ip);
 			}
 			$result = curl_exec($curl);
+			Cache::set($md5, $result, $cacheTime);
 		}
 
-		Cache::set($md5, $result, $cacheTime);
 		return $result;
 	}
 
