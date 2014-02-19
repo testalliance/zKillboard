@@ -42,8 +42,6 @@ class cli_crestapi implements cliCommand
 	 */
 	public function execute($parameters, $db)
 	{
-		global $baseDir;
-		@mkdir("{$baseDir}cache/crest/");
 		$timer = new Timer();
 
 		do {
@@ -51,14 +49,12 @@ class cli_crestapi implements cliCommand
 			foreach ($crests as $crest) {
 				try {
 					$killID = $crest["killID"];
-					$hash = $crest["hash"];
-					$cacheFile = "{$baseDir}cache/crest/$killID.json";
-					if (!file_exists($cacheFile)) {
-						$url = "http://public-crest.eveonline.com/killmails/$killID/$hash/";
-						$contents = @file_get_contents($url);
-						file_put_contents($cacheFile, $contents);
-					}
-					$perrymail = new \Perry\Representation\Eve\v1\Killmail(file_get_contents($cacheFile));
+					$hash = trim($crest["hash"]);
+
+					$url = "http://public-crest.eveonline.com/killmails/$killID/$hash/";
+					$contents = Util::getData($url, 1);
+
+					$perrymail = new \Perry\Representation\Eve\v1\Killmail($contents);
 
 					$killmail = array();
 					$killmail["killID"] = (int) $killID;

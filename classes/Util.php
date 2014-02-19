@@ -438,7 +438,8 @@ class Util
 				CURLOPT_ENCODING 			=> "",
 				CURLOPT_URL 				=> $url,
 				CURLOPT_HTTPHEADER 			=> array("Connection: keep-alive", "Keep-Alive: timeout=10, max=1000"),
-				CURLOPT_RETURNTRANSFER 		=> true
+				CURLOPT_RETURNTRANSFER 		=> true,
+				CURLOPT_FAILONERROR			=> true
 				)
 			);
 
@@ -448,9 +449,9 @@ class Util
 				curl_setopt($curl, CURLOPT_INTERFACE, $ip);
 			}
 			$result = curl_exec($curl);
+			Cache::set($md5, $result, $cacheTime);
 		}
 
-		Cache::set($md5, $result, $cacheTime);
 		return $result;
 	}
 
