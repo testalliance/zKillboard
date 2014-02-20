@@ -2,7 +2,6 @@ public/google*
 /config.php
 vendor/
 /composer.phar
-/composer.lock
 *.sublime*
 .lighttpd.conf
 cron.overrides

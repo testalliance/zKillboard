@@ -11,7 +11,8 @@
 			"realityking/pchart": "@dev",
 			"dg/twitter-php": "*",
 			"ircmaxell/password-compat": "*",
-			"ccampbell/chromephp": "*"
+			"ccampbell/chromephp": "*",
+			"cvweiss/zlibrary" : "*"
 	},
 		"minimum-stability": "stable",
 		"prefer-stable": true
