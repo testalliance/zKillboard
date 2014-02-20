@@ -86,7 +86,7 @@ class Parser
 
 				$processedKills[] = $killID;
 			}
-			while (Db::queryField("show session status like 'Not_flushed_delayed_rows'", "Value", array(), 0) > 0) usleep(50000);
+
 			if (sizeof($cleanupKills)) {
 				Db::execute("delete from zz_participants where killID in (" . implode(",", $cleanupKills) . ")");
 			}
