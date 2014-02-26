@@ -29,7 +29,7 @@ $hasRequired = false;
 foreach($requiredM as $required) {
 	$hasRequired |= array_key_exists($required, $parameters);
 }
-if (!$hasRequired) throw new Exception("Must pass at least two required modifier.  Please read API Information.");
+if (!isset($parameters["killID"]) && !$hasRequired) throw new Exception("Must pass at least two required modifier.  Please read API Information.");
 
 $return = Feed::getKills($parameters);
 

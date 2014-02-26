@@ -48,6 +48,11 @@ class Filters
 			$week = array_key_exists("week", $parameters) ? (int)$parameters["week"] : date("W");
 		}
 
+		if (array_key_exists("killID", $parameters)) {
+			$tables[] = "zz_participants p";
+			$whereClauses[] = "p.killID = " . ((int) $parameters["killID"]);
+		}
+
 		if (array_key_exists("api-only", $parameters)) {
 			$tables[] = "zz_participants p";
 			$whereClauses[] = "p.killID > 0";
