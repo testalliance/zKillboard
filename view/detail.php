@@ -392,7 +392,8 @@ function droppedIsk($md5, $items)
 
 function fittedIsk($md5, $items)
 {
-	$cache = Cache::get($md5."fittedIsk");
+	$key = $md5 . "fittedIsk";
+	$cache = Cache::get($key);
 	if($cache)
 		return $cache;
 
@@ -400,8 +401,12 @@ function fittedIsk($md5, $items)
 	$flags = array("High Slots", "Mid Slots", "Low Slots", "SubSystems", "Rigs", "Drone Bay", "Fuel Bay");
 	foreach($items as $item)
 	{
-		if(isset($item["flagName"]) && in_array($item["flagName"], $flags))
-			$fittedIsk = $fittedIsk + $item["price"];
+		if(isset($item["flagName"]) && in_array($item["flagName"], $flags)) {
+			$qty = isset($item["qtyDropped"]) ? $item["qtyDropped"] : 0;
+			$qty += isset($item["qtyDestroyed"]) ? $item["qtyDestroyed"] : 0;
+			$fittedIsk = $fittedIsk + ($item["price"] * $qty);
+		}
 	}
+	Cache::set($key, $fittedIsk);
 	return $fittedIsk;
 }
