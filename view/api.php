@@ -47,7 +47,7 @@ if(isset($parameters["xml"]))
 }
 elseif(isset($_GET["callback"]) && Util::isValidCallback($_GET["callback"]) )
 {
-	$app->contentType("application/json; charset=utf-8");
+	$app->contentType("application/javascript; charset=utf-8");
 	header("X-JSONP: true");
 	echo $_GET["callback"] . "(" . json_encode($array, JSON_NUMERIC_CHECK) .")";
 }
