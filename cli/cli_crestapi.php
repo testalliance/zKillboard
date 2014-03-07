@@ -52,9 +52,7 @@ class cli_crestapi implements cliCommand
 					$hash = trim($crest["hash"]);
 
 					$url = "http://public-crest.eveonline.com/killmails/$killID/$hash/";
-					$contents = Util::getData($url, 1);
-
-					$perrymail = new \Perry\Representation\Eve\v1\Killmail($contents);
+					$perrymail = \Perry\Perry::fromUrl($url);
 
 					$killmail = array();
 					$killmail["killID"] = (int) $killID;
