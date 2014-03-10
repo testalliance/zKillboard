@@ -134,7 +134,7 @@ class Parser
 			if ($attackerGroupID == 365) return true; // A tower is involved
 
 			// Don't process the kill if it's NPC only
-			$npcOnly &= $attacker["characterID"] == 0 && $attacker["corporationID"] < 1999999;
+			$npcOnly &= $attacker["characterID"] == 0 && ($attacker["corporationID"] < 1999999 && $attacker["corporationID"] != 1000125);
 
 			// Check for blue on blue
 			if ($attacker["characterID"] != 0) $blueOnBlue &= $victimCorp == $attacker["corporationID"] && $victimAlli == $attacker["allianceID"];
