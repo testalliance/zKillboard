@@ -43,7 +43,7 @@ class Parser
 			Db::execute("delete from zz_participants_temporary");
 
 			//Log::log("Fetching kills for processing...");
-			$result = Db::query("select * from zz_killmails where processed = 0 order by killID desc limit 100", array(), 0);
+			$result = Db::query("select * from zz_killmails where processed = 0 order by killID limit 100", array(), 0);
 
 			if (sizeof($result) == 0) {
 				$currentSecond = (int) date("s");
@@ -64,6 +64,11 @@ class Parser
 					continue;
 				}
 				$killID = $kill["killID"];
+
+				// Because of CREST caching and the want for accurate prices, don't process the first hour
+				// of kills until after 01:05 each day
+				if (date("Gi") < 105) return;
+
 				Db::execute("insert ignore into zz_killid values(:killID, 0)", array(":killID" => $killID));
 
 				// Cleanup if we're reparsing
