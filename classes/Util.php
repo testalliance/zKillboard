@@ -425,7 +425,7 @@ class Util
 		global $ipsAvailable;
 
 		$md5 = md5($url);
-		$result = Cache::get($md5);
+		$result = $cacheTime > 0 ? Cache::get($md5) : null;
 
 		if(!$result)
 		{
@@ -449,7 +449,7 @@ class Util
 				curl_setopt($curl, CURLOPT_INTERFACE, $ip);
 			}
 			$result = curl_exec($curl);
-			Cache::set($md5, $result, $cacheTime);
+			if ($cacheTime > 0) Cache::set($md5, $result, $cacheTime);
 		}
 
 		return $result;
