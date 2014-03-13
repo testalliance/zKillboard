@@ -165,16 +165,16 @@
         },
         {
             "name": "cvweiss/zlibrary",
-            "version": "v0.1.1",
+            "version": "v0.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cvweiss/zlibrary.git",
-                "reference": "ea99756e7d6cce0467477d1b2f77f27de82cd047"
+                "reference": "a0af029c3f7d9e3ab2e821e651a4ae038e8eb208"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cvweiss/zlibrary/zipball/ea99756e7d6cce0467477d1b2f77f27de82cd047",
-                "reference": "ea99756e7d6cce0467477d1b2f77f27de82cd047",
+                "url": "https://api.github.com/repos/cvweiss/zlibrary/zipball/a0af029c3f7d9e3ab2e821e651a4ae038e8eb208",
+                "reference": "a0af029c3f7d9e3ab2e821e651a4ae038e8eb208",
                 "shasum": ""
             },
             "require": {
@@ -197,20 +197,20 @@
                 }
             ],
             "description": "Library of classes to simplify various tasks",
-            "time": "2014-02-20 18:01:09"
+            "time": "2014-03-13 21:59:35"
         },
         {
             "name": "dg/twitter-php",
-            "version": "v3.2",
+            "version": "v3.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dg/twitter-php.git",
-                "reference": "5ca5b8cb823972e1239656c5f3b17ddd28e6d816"
+                "reference": "9836ec207ce85ad0b78172d54db3aafac82fb815"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dg/twitter-php/zipball/5ca5b8cb823972e1239656c5f3b17ddd28e6d816",
-                "reference": "5ca5b8cb823972e1239656c5f3b17ddd28e6d816",
+                "url": "https://api.github.com/repos/dg/twitter-php/zipball/9836ec207ce85ad0b78172d54db3aafac82fb815",
+                "reference": "9836ec207ce85ad0b78172d54db3aafac82fb815",
                 "shasum": ""
             },
             "type": "library",
@@ -235,7 +235,7 @@
                 "oauth",
                 "twitter"
             ],
-            "time": "2014-01-17 16:59:53"
+            "time": "2014-03-10 18:09:07"
         },
         {
             "name": "ircmaxell/password-compat",
@@ -278,16 +278,16 @@
         },
         {
             "name": "mobiledetect/mobiledetectlib",
-            "version": "2.7.8",
+            "version": "2.7.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/serbanghita/Mobile-Detect.git",
-                "reference": "aad192c0e0152ccd6a4ce4b4c2c901d4994063f0"
+                "reference": "610846237295e3e50a1923e7cc1639a956ead22a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/serbanghita/Mobile-Detect/zipball/aad192c0e0152ccd6a4ce4b4c2c901d4994063f0",
-                "reference": "aad192c0e0152ccd6a4ce4b4c2c901d4994063f0",
+                "url": "https://api.github.com/repos/serbanghita/Mobile-Detect/zipball/610846237295e3e50a1923e7cc1639a956ead22a",
+                "reference": "610846237295e3e50a1923e7cc1639a956ead22a",
                 "shasum": ""
             },
             "require": {
@@ -326,7 +326,7 @@
                 "mobile detector",
                 "php mobile detect"
             ],
-            "time": "2014-02-05 18:07:26"
+            "time": "2014-03-07 13:33:54"
         },
         {
             "name": "phpmailer/phpmailer",
