@@ -43,7 +43,7 @@ class Parser
 			Db::execute("delete from zz_participants_temporary");
 
 			//Log::log("Fetching kills for processing...");
-			$result = Db::query("select * from zz_killmails where processed = 0 order by killID desc limit 100", array(), 0);
+			$result = Db::query("select * from zz_killmails where processed = 0 order by killID limit 100", array(), 0);
 
 			if (sizeof($result) == 0) {
 				$currentSecond = (int) date("s");
@@ -64,6 +64,11 @@ class Parser
 					continue;
 				}
 				$killID = $kill["killID"];
+
+				// Because of CREST caching and the want for accurate prices, don't process the first hour
+				// of kills until after 01:05 each day
+				if (date("Gi") < 105) return;
+
 				Db::execute("insert ignore into zz_killid values(:killID, 0)", array(":killID" => $killID));
 
 				// Cleanup if we're reparsing
@@ -86,7 +91,7 @@ class Parser
 
 				$processedKills[] = $killID;
 			}
-			while (Db::queryField("show session status like 'Not_flushed_delayed_rows'", "Value", array(), 0) > 0) usleep(50000);
+
 			if (sizeof($cleanupKills)) {
 				Db::execute("delete from zz_participants where killID in (" . implode(",", $cleanupKills) . ")");
 			}
@@ -134,7 +139,7 @@ class Parser
 			if ($attackerGroupID == 365) return true; // A tower is involved
 
 			// Don't process the kill if it's NPC only
-			$npcOnly &= $attacker["characterID"] == 0 && $attacker["corporationID"] < 1999999;
+			$npcOnly &= $attacker["characterID"] == 0 && ($attacker["corporationID"] < 1999999 && $attacker["corporationID"] != 1000125);
 
 			// Check for blue on blue
 			if ($attacker["characterID"] != 0) $blueOnBlue &= $victimCorp == $attacker["corporationID"] && $victimAlli == $attacker["allianceID"];
@@ -149,11 +154,11 @@ class Parser
 	 */
 	private static function processVictim(&$kill, $killID, &$victim, $isNpcVictim)
 	{
-		$shipPrice = Price::getItemPrice($victim["shipTypeID"]);
+		$dttm = (string) $kill["killTime"];
+
+		$shipPrice = Price::getItemPrice($victim["shipTypeID"], $dttm, true);
 		$groupID = Info::getGroupID($victim["shipTypeID"]);
 		$regionID = Info::getRegionIDFromSystemID($kill["solarSystemID"]);
-
-		$dttm = (string) $kill["killTime"];
 
 		if (!$isNpcVictim) Db::execute("
 				insert into zz_participants_temporary
@@ -244,6 +249,9 @@ class Parser
 	private static function processItem(&$kill, &$killID, &$item, $itemInsertOrder, $isCargo = false, $parentContainerFlag = -1)
 	{
 		global $itemNames;
+
+		$dttm = (string) $kill["killTime"];
+
 		if ($itemNames == null ) {
 			$itemNames = array();
 			$results = Db::query("select typeID, typeName from ccp_invTypes", array(), 3600);
@@ -256,13 +264,11 @@ class Parser
 		else $itemName = "TypeID $typeID";
 
 		if ($item["typeID"] == 33329 && $item["flag"] == 89) $price = 0.01; // Golden pod implant can't be destroyed
-		else $price = Price::getItemPrice($typeID);
+		else $price = Price::getItemPrice($typeID, $dttm, true);
 		if ($isCargo && strpos($itemName, "Blueprint") !== false) $item["singleton"] = 2;
 		if ($item["singleton"] == 2) {
 			$price = $price / 100;
 		}
-
-		Db::execute("insert ignore into zz_item_price_lookup (typeID, priceDate, price) values (:typeID, now(), :price)", array(":typeID" => $item["typeID"], ":price" => $price));
 
 		return ($price * ($item["qtyDropped"] + $item["qtyDestroyed"]));
 	}

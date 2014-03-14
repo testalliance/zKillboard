@@ -18,27 +18,22 @@
 
 class Price
 {
-	public static function setPrice($typeID, $price)
-	{
-		return Db::execute("replace into zz_prices (typeID, price) values (:typeID, :price)", array(":typeID" => $typeID, ":price" => $price));
-	}
-
 	/**
 	 * Obtain the price of an item.
 	 *
 	 * @static
-	 * @param	$typeID int The typeID of the item
+	 * @param	$typeID     int  The typeID of the item
+	 * @param       $date       date The date of the item price value
+         * @param       $doPopulate bool If set, retrieve the market values from CCP
 	 * @return double The price of the item.
 	 */
-	public static function getItemPrice($typeID)
+	public static function getItemPrice($typeID, $date, $doPopulate = false)
 	{
 		if (in_array($typeID, array(588, 596, 601, 670, 606, 33328))) return 10000; // Pods and noobships
 		if (in_array($typeID, array(25, 51, 29148, 3468))) return 1; // Male Corpse, Female Corpse, Bookmarks, Plastic Wrap
 
-		$price = self::getDatabasePrice($typeID);
-		if ($price == 0) $price = self::getMarketPrice($typeID);
-		if ($price == 0) $price = self::getMarketPrice($typeID, false);
-		if ($price == 0) $price = self::getItemBasePrice($typeID);
+		$price = static::getMarketPrice($typeID, $date, $doPopulate);
+		if ($price == 0) $price = static::getItemBasePrice($typeID);
 		if ($price == 0) $price = 0.01; // Give up
 
 		return $price;
@@ -46,93 +41,125 @@ class Price
 
 	/**
 	 * @static
-	 * @param	$typeID int
-	 * @return null|integer The price of the typeID, if found.	Zero if not found.
+	 * @param	$typeID     int  The typeID of the item
+	 * @param       $date       date The date of the item price value
+         * @param       $doPopulate bool If set, retrieve the market values from CCP
+	 * @return double The price of the item.
 	 */
-	protected static function getDatabasePrice($typeID)
+	protected static function getMarketPrice($typeID, $date, $doPopulate)
 	{
-		$price = Db::queryField("select price from zz_prices where typeID = :typeID", "price",
-														array(":typeID" => $typeID));
+		if ($doPopulate) static::doPopulatePrice($typeID, $date);
+		$price = Db::queryField("select avgPrice from zz_item_price_lookup where typeID = :typeID order by abs(datediff(date(date_sub(:date, interval 1 day)), date(priceDate))) limit 1", "avgPrice", array(":typeID" => $typeID, ":date" => $date), 1);
 		if ($price != null) return $price;
 		return 0;
 	}
 
 	/**
 	 * @static
-	 * @param	$typeID int
-	 * @return null
+	 * @param  $typeID int
+	 * @return double
 	 */
 	protected static function getItemBasePrice($typeID)
 	{
-		// Market failed, faction pricing failed, do we have a basePrice in the database?
+		// Market failed - do we have a basePrice in the database?
 		$price = Db::queryField("select basePrice from ccp_invTypes where typeID = :typeID", "basePrice", array(":typeID" => $typeID));
-		self::storeItemPrice($typeID, $price);
 		if ($price != null) return $price;
-	}
-
-	/**
-	 * Get the market price of the item in Jita.
-	 * Attempts to use the sell median price first, if that value isn't set it will use
-	 * the median of all values.
-	 *
-	 * @param int $typeID
-	 * @return double
-	 */
-	public static function getMarketPrice($typeID, $useJita = false)
-	{
-		if ($useJita) {
-			// Get the Jita price.
-			$eveCentralApi = "http://api.eve-central.com/api/marketstat?usesystem=30000142&typeid=$typeID";
-		} else {
-			$eveCentralApi = "http://api.eve-central.com/api/marketstat?typeid=$typeID";
-		}
-		$result = Cache::get($eveCentralApi);
-		if ($result === FALSE) {
-			try {
-				$result = Util::getData($eveCentralApi);
-				Cache::set($eveCentralApi, $result, 600);
-			} catch (Exception $ex) {
-				return 0;
-			}
-		}
-		try {
-			@$xml = new SimpleXMLElement($result);
-			@$sellMedian = (double)$xml->marketstat->type->sell->median;
-			@$allMedian = (double)$xml->marketstat->type->all->median;
-			if ($allMedian == 0) $allMedian = 0.00001;
-			$price = $allMedian;
-			if ($price == 0 || ($sellMedian / $allMedian) > 2) $price = $sellMedian;
-			if ($price !== null && $price >= 0.01) {
-				self::storeItemPrice($typeID, $price);
-				return $price;
-			}
-		} catch (Exception $ex) {
-
-		}
-		//if ($useJita == false) return getMarketPrice($typeID, true);
 		return 0;
 	}
 
-	/**
-	 * Save the price in the database for future reference.
-	 * Price will expire after 7 days.
-	 *
-	 * @static
-	 * @param	$typeID
-	 * @param	null|double $price
-	 * @return void
-	 */
-	protected static function storeItemPrice($typeID, $price)
+	protected static function doPopulatePrice($typeID, $date)
 	{
-		if ($price == null) return;
-		// 604800 is the number of seconds in 7 days
+		$todaysLookup = "CREST-Market:" . date("Ymd");
+		$todaysLookupTypeID = $todaysLookup . ":$typeID";
 
-		//Log::log("Storing $typeID at price $price");
-		Db::execute("replace into zz_prices (typeID, price, expires) values (:typeID, :price, date_add(now(), interval 7 day))",
-				array(
-					":price" => $price,
-					":typeID" => $typeID,
-					));
+		$isDone = (bool) Storage::retrieve($todaysLookupTypeID, false);
+		if ($isDone) return;
+
+		static::doPopulateRareItemPrices($todaysLookup); // Populate rare items and today's lookup and do some cleanup
+		Storage::store($todaysLookupTypeID, "true"); // Add today's lookup entry for this item
+
+		usleep(200); // Limit CREST market calls to 5 per second (sleep regardless of when we made our last call)
+
+		$url = "http://public-crest.eveonline.com/market/10000002/types/$typeID/history/";
+		$raw = Util::getData($url);
+		$json = json_decode($raw, true);
+		if (isset($json["items"]))
+		{
+			foreach ($json["items"] as $row)
+			{
+				Db::execute("insert ignore into zz_item_price_lookup (typeID, priceDate, lowPrice, avgPrice, highPrice) values (:typeID, :date, :low, :avg, :high)", array(":typeID" => $typeID, ":date" => $row["date"], ":low" => $row["lowPrice"], ":avg" => $row["avgPrice"], ":high" => $row["highPrice"]));
+			}
+		}
 	}
 
+	/**
+	 * Enters values into the lookup table that are not generally found on the market
+	 * @pararm $todaysLookup string Today's lookup value
+	 */
+	protected static function doPopulateRareItemPrices($todaysLookup)
+	{
+		$isDone = (bool) Storage::retrieve($todaysLookup, false);
+		if ($isDone) return;
+
+		$motherships = Db::query("select typeid from ccp_invTypes where groupid = 659");
+		foreach ($motherships as $mothership) {
+			$typeID = $mothership["typeid"];
+			static::setPrice($typeID, 20000000000); // 20b
+		}
+
+		$titans = Db::query("select typeid from ccp_invTypes where groupid = 30");
+		foreach ($titans as $titan) {
+			$typeID = $titan["typeid"];
+			static::setPrice($typeID, 100000000000); // 100b
+		}
+
+		$tourneyFrigates = array(
+				2834, // Utu
+				3516, // Malice
+				11375, // Freki
+				32788, // Cambion
+				33397, // Chremoas
+				);
+		foreach($tourneyFrigates as $typeID) static::setPrice($typeID, 25000000000); // 25b
+
+		$tourneyCruisers = array(
+				2836, // Adrestia
+				3518, // Vangel
+				32209, // Mimir
+				32790, // Etana
+				33395, // Moracha
+				);
+		foreach($tourneyCruisers as $typeID) static::setPrice($typeID, 40000000000); // 40b
+
+		$rareCruisers = array( // Ships we should never see get blown up!
+				11940, // Gold Magnate
+				11942, // Silver Magnate
+				635, // Opux Luxury Yacht
+				110111, // Guardian-Vexor
+				25560, // Opux Dragoon Yacht
+				);
+		foreach($rareCruisers as $typeID) static::setPrice($typeID, 55000000000); // 55b
+
+		$rareBattleships = array( // More ships we should never see get blown up!
+				13202, // Megathron Federate Issue
+				26840, // Raven State Issue
+				11936, // Apocalypse Imperial Issue
+				11938, // Armageddon Imperial Issue
+				26842, // Tempest Tribal Issue
+				);
+		foreach($rareBattleships as $typeID) static::setPrice($typeID, 750000000000); // 750b
+
+		// Base lookups for today have been populated
+		Storage::store($todaysLookup, "true");
+
+		// Clear all older lookup entries and leave today's lookup entries
+		Db::execute("delete from zz_storage where locker not like '$todaysLookup%' and locker like 'CREST-Market%'");
+	}
+
+	protected static function setPrice($typeID, $price, $low = -1, $high = -1)
+	{
+		if ($low == -1) $low = $price;
+		if ($high == -1) $high = $price;
+		Db::execute("replace into zz_item_price_lookup (typeID, priceDate, lowPrice, avgPrice, highPrice) values (:typeID, date(now()), :low, :avg, :high)", array(":typeID" => $typeID, ":low" => $price, ":avg" => $low, ":high" => $high));
+	}
 }

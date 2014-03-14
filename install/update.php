@@ -19,10 +19,10 @@
 $base = dirname(__FILE__);
 
 if(php_sapi_name() != "cli")
-    die("This is a cli script!");
+die("This is a cli script!");
 
 if(!extension_loaded('pcntl'))
-    die("This script needs the pcntl extension!");
+die("This script needs the pcntl extension!");
 
 // Update composer and any vendor products
 out("\nUpdating composer...");
@@ -43,12 +43,12 @@ spl_autoload_register("zkbautoload");
 function zkbautoload($class_name)
 {
 	global $base;
-    $fileName = "$base/../classes/$class_name.php";
-    if (file_exists($fileName))
-    {
-        require_once $fileName;
-        return;
-    }
+	$fileName = "$base/../classes/$class_name.php";
+	if (file_exists($fileName))
+	{
+		require_once $fileName;
+		return;
+	}
 }
 
 Db::execute("SET SESSION wait_timeout = 120000000");
@@ -58,7 +58,7 @@ out("|b|Waiting 60 seconds for all executing scripts to stop...|n|");
 sleep(60);
 
 // Get a list of all tables
-$tableResult = Db::query("show tables", array(), 0);
+$tableResult = Db::query("show tables", array(), 0, false);
 $tables = array();
 foreach($tableResult as $row) {
 	$table = array_pop($row);
@@ -67,17 +67,17 @@ foreach($tableResult as $row) {
 
 // Now install the db structure
 try {
-    $sqlFiles = scandir("$base/sql");
-    foreach($sqlFiles as $file) {
-        if (Util::endsWith($file, ".sql")) {
-            $table = str_replace(".sql", "", $file);
-            out("Updating table |g|$table|n| ... ", false, false);
-            $sqlFile = "$base/sql/$file";
-            loadFile($sqlFile, $table);
-            out("|w|done|n|");
+	$sqlFiles = scandir("$base/sql");
+	foreach($sqlFiles as $file) {
+		if (Util::endsWith($file, ".sql")) {
+			$table = str_replace(".sql", "", $file);
+			out("Updating table |g|$table|n| ... ", false, false);
+			$sqlFile = "$base/sql/$file";
+			loadFile($sqlFile, $table);
+			out("|w|done|n|");
 			$tables[$table] = false;
-        }
-    }
+		}
+	}
 	foreach ($tables as $table=>$drop) {
 		if ($drop && Util::startsWith($table, "zz_")) {
 			out("|r|Dropping table: |g|$table|n|\n", false, false);
@@ -85,8 +85,8 @@ try {
 		}
 	}
 } catch (Exception $ex) {
-    out("|r|Error!|n|");
-    throw $ex;
+	out("|r|Error!|n|");
+	throw $ex;
 }
 
 $count = Db::execute("INSERT IGNORE INTO zz_users (username, moderator, admin, password) VALUES ('admin', 1, 1, '$2y$10\$maxuZ/qozcjIgr7ZSnrWJemywbThbPiJDYIuOk9eLxF0pGE5SkNNu')");
@@ -99,57 +99,57 @@ Db::execute("delete from zz_storage where locker = 'maintenance'");
 out("All done, enjoy your update!");
 
 function loadFile($file, $table) {
-    if (Util::endsWith($file, ".gz")) $handle = gzopen($file, "r");
-    else $handle = fopen($file, "r");
-  if(Db::queryRow("SHOW TABLES LIKE'$table'")!= null){ //Check to see if we are adding new tables
-	  if (Util::startsWith($table, "ccp_")) {
-		  Db::execute("drop table $table");
-	  } else {
-		  Db::execute("alter table $table rename old_$table");
-	  }
-  }
+	if (Util::endsWith($file, ".gz")) $handle = gzopen($file, "r");
+	else $handle = fopen($file, "r");
+	if(Db::queryRow("SHOW TABLES LIKE'$table'", array(), 0, false)!= null){ //Check to see if we are adding new tables
+		if (Util::startsWith($table, "ccp_")) {
+			Db::execute("drop table $table");
+		} else {
+			Db::execute("alter table $table rename old_$table");
+		}
+	}
 
 
-    $query = ""; 
-    while ($buffer = fgets($handle)) {
-        $query .= $buffer;
-        if (strpos($query, ";") !== false) {
-            $query = str_replace(";", "", $query);
-            Db::execute($query);
-            $query = ""; 
-        }   
-    }   
-    fclose($handle);
-  if (Db::queryRow("SHOW TABLES LIKE 'old_$table'")!= null){ // Check again to see if the old_table is there
-	  if (!Util::startsWith($table, "ccp_")) {
+	$query = ""; 
+	while ($buffer = fgets($handle)) {
+		$query .= $buffer;
+		if (strpos($query, ";") !== false) {
+			$query = str_replace(";", "", $query);
+			Db::execute($query);
+			$query = ""; 
+		}   
+	}   
+	fclose($handle);
+	if (Db::queryRow("SHOW TABLES LIKE 'old_$table'", array(), 0, false)!= null){ // Check again to see if the old_table is there
+		if (!Util::startsWith($table, "ccp_")) {
 			try {
-		  Db::execute("insert ignore into $table select * from old_$table");
-		  Db::execute("drop table old_$table");
+				Db::execute("insert ignore into $table select * from old_$table");
+				Db::execute("drop table old_$table");
 			} catch (Exception $ex) {
 				Db::execute("drop table $table");
 				Db::execute("alter table old_$table rename $table");
 				throw $ex;
 			}
-	  }
-  }
+		}
+	}
 }
 
 function out($message, $die = false, $newline = true)
 {
-    $colors = array(
-        "|w|" => "1;37", //White
-        "|b|" => "0;34", //Blue
-        "|g|" => "0;32", //Green
-        "|r|" => "0;31", //Red
-        "|n|" => "0" //Neutral
-        );
+	$colors = array(
+			"|w|" => "1;37", //White
+			"|b|" => "0;34", //Blue
+			"|g|" => "0;32", //Green
+			"|r|" => "0;31", //Red
+			"|n|" => "0" //Neutral
+		       );
 
 	$message = "$message|n|";
-    foreach($colors as $color => $value)
-        $message = str_replace($color, "\033[".$value."m", $message);
+	foreach($colors as $color => $value)
+		$message = str_replace($color, "\033[".$value."m", $message);
 
-    if($newline)
-        echo $message.PHP_EOL;
-    else
-        echo $message;
+	if($newline)
+		echo $message.PHP_EOL;
+	else
+		echo $message;
 }
