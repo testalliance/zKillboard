@@ -87,10 +87,7 @@ class Price
 		{
 			foreach ($json["items"] as $row)
 			{
-				// TODO
-				// Initially using "replace into" to ensure accurate historal data on prices
-				// however, "replace into" will soon be changed into "insert ignore into"
-				Db::execute("replace into zz_item_price_lookup (typeID, priceDate, lowPrice, avgPrice, highPrice) values (:typeID, :date, :low, :avg, :high)", array(":typeID" => $typeID, ":date" => $row["date"], ":low" => $row["lowPrice"], ":avg" => $row["avgPrice"], ":high" => $row["highPrice"]));
+				Db::execute("insert ignore into zz_item_price_lookup (typeID, priceDate, lowPrice, avgPrice, highPrice) values (:typeID, :date, :low, :avg, :high)", array(":typeID" => $typeID, ":date" => $row["date"], ":low" => $row["lowPrice"], ":avg" => $row["avgPrice"], ":high" => $row["highPrice"]));
 			}
 		}
 	}
