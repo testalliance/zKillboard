@@ -3,7 +3,7 @@ $(document).ready(function() {
 
 	// Check to see if the user has ads enabled
 	if ( $("iframe").length == 0 ) {
-		$("#adsensetop, #adsensebottom").html("<div>Advertising seems to be blocked by your browser.<br/>This isn't very nice as the ads pay for the servers!<br/>May all your ships quickly become wrecks...</div>");
+		$("#adsensetop, #adsensebottom").html("<div><small>Advertising seems to be blocked by your browser. Please help support zKillboard.com and enable ads. Otherwise, may all your ships quickly become wrecks!</small></div>");
 	}
 
     if ($("[rel=tooltip]").length) {
