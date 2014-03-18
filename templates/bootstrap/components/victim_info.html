@@ -1,23 +1,35 @@
 {% set showImage = true %}
-{% set resizeImage = 16 %}
-<table class="table table-condensed table-striped table-hover" style="width: 100%;">
-	{% set field = killdata.victim %}
-	{% if killdata.victim.characterName %}
+{% set field = killdata.victim %}
+<div style="padding: 0px; width: 100%; margin: 0px;">
+<table class="table table-condensed" style="width: 100%; margin: 0px;">
 	<tr>
-		<th>Victim:</th>
-		<td style="width: 70%;">{% include 'components/text_char.html' %}</td>
+		<td style="width: 66px; padding: 0px;">
+			{% set imageSize = 64 %}
+			{% set imageResize = 64 %}
+			{% include 'components/image_char.html' %}
+		</td>
+		<td style="width: 34px; padding: 0px;">
+			{% set imageSize = 32 %}
+			{% include 'components/image_corp.html' %}<br/>
+			{% if field.allianceID != 0 %}
+				{% include 'components/image_alli.html' %}
+			{% elseif field.factionID != 0 %}
+				{% include 'components/image_faction.html' %}
+			{% endif %}
+		</td>
+		<td>
+			{% set showImage = false %}
+			{% include 'components/text_char.html' %}<br/>
+			{% include 'components/text_corp.html' %}<br/>
+			{% if field.allianceID != 0 %}
+				{% include 'components/text_alli.html' %}<br/>
+			{% elseif field.factionID != 0 %}
+				{% include 'components/text_faction.html' %}
+			{% endif %}
+		</td>
 	</tr>
-	{% endif %}
-	<tr>
-		<th>Corp:</th>
-		<td width="100%">{% include 'components/text_corp.html' %}</td>
-	</tr>
-	{% if killdata.victim.allianceName %}
-		<tr>
-			<th>Alliance:</th>
-		<td>{% include 'components/text_alli.html' %}</td>
-		</tr>
-	{% endif %}
+</table>
+<table class="table table-condensed table-striped table-hover" style="width: 100%; padding: 0px; margin: 0px;">
 	{% if killdata.victim.factionName %}
 		<tr>
 			<th>Faction:</th>
@@ -26,7 +38,7 @@
 	{% endif %}
 	<tr>
 		<th>Ship:</th>
-		<td>{% include 'components/text_ship.html' %}</td>
+		<td style="width: 100%">{% include 'components/text_ship.html' %}</td>
 	</tr>
 	<tr>
 		<th>System:</th>
@@ -63,3 +75,4 @@
 		<td><strong class="item_dropped">{{ killdata.info.total_price|number_format(2, '.', ',') }} ISK</strong></td>
 	</tr>
 </table>
+</div>
