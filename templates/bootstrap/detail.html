@@ -97,15 +97,6 @@
 </div>
 
 <div class="col-lg-4">
-	<ul class="nav nav-tabs">
-		<li class="active"><a href="#details" data-toggle="tab">Details</a></li>
-		{% if disqusLoad %}
-		<li><a href="#comment" data-toggle="tab">Comments</a></li>
-		{% endif %}
-		<li><a href="#shiptypes" data-toggle="tab">Ship Types</a></li>
-	</ul>
-	<div class="tab-content">
-
 		<div class="tab-pane fade in active" id="details">
 			<div>{% include 'components/tdfb.html' %}</div>
 			<div>
@@ -116,35 +107,9 @@
 			{% endif %}
 		</div>
 {% if disqusLoad %}
-		<div class="tab-pane fade" id="comment">
-			{% set disqusID = extra.commentID %}
-			{% include 'components/disqus.html' %}
-		</div>
+	{% set disqusID = extra.commentID %}
+	{% include 'components/disqus.html' %}
 {% endif %}
-		<div class="tab-pane fade" id="shiptypes">
-			<table class="table table-condensed table-striped">
-				<thead>
-					<tr class="titles">
-						<th>Ship</th>
-						<th>Count</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for involved in extra.involvedships %}
-					<tr>
-						{% set field = involved %}
-						{% set imageSize = 32 %}
-						<td>
-							{% include 'components/image_ship.html' %} 
-							{% include 'components/text_ship.html' %}
-						</td>
-						<td>{{ involved.count }}</td>
-					</tr>
-					{% endfor %}
-				</tbody>
-			</table>
-		</div>
-	</div>
 </div>
 
 
