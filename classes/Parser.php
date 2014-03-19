@@ -69,8 +69,6 @@ class Parser
 				// of kills until after 01:05 each day
 				if (date("Gi") < 105) return;
 
-				Db::execute("insert ignore into zz_killid values(:killID, 0)", array(":killID" => $killID));
-
 				// Cleanup if we're reparsing
 				$cleanupKills[] = $killID;
 
