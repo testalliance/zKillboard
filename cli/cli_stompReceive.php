@@ -35,7 +35,7 @@ class cli_stompReceive implements cliCommand
 
 	public function execute($parameters, $db)
 	{
-		global $stompServer, $stompUser, $stompPassword, $baseAddr;
+		global $stompServer, $stompUser, $stompPassword, $baseAddr, $debug;
 
 		// Ensure the class exists
 		if (!class_exists("Stomp")) {
@@ -85,7 +85,7 @@ class cli_stompReceive implements cliCommand
 										array("killID" => $killID, ":hash" => $hash, ":source" => "stompQueue", ":json" => json_encode($killdata)));
 								$stomp->ack($frame->headers["message-id"]);
 								$stompCount++;
-if ($aff) Log::log("Added kill $killID");
+								if ($debug && $aff) Log::log("Added kill $killID");
 								continue;
 							}
 							else
