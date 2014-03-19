@@ -181,7 +181,7 @@ All cronjobs can be launched manually with the cli interface.
 
 ## Stomp
 Stomp uses the STOMP PHP plugin which you can get via git.
-Here is a quick one liner: `cd /tmp/ && git clone https://github.com/ppetermann/pecl-tools-stomp.git && cd pecl-tools-stomp && phpize && ./configure && make && make install`
+Here is a quick one liner: `cd /tmp/ && git clone https://github.com/php/pecl-tools-stomp.git && cd pecl-tools-stomp && phpize && ./configure && make && make install`
 After that you make a `20-stomp.ini` in `/etc/php5/conf.d/` and add `extension=stomp.so` to it, and save. And restart your php stuff.
 
 The stomp service is read only. If you need to send data via it, come by IRC and have a chat with us.

@@ -77,12 +77,6 @@
 		</style>
     </head>
     <body>
-        <div class="pull-right hidden-xs hidden-sm" style="position: relative; z-index: 1000;">
-            <div class="g-plusone" data-size="medium"></div>
-            <br/>
-            <div class="fb-like" data-width="1" data-layout="button_count" data-action="like" data-show-faces="false" data-share="false"></div>
-        </div>
-
 		<div class="content">
     		{% include "navigationbar.html" %}
 
@@ -92,7 +86,7 @@
 
             <div class="container nobackground">
                 {% if showAds != false %}
-                <div class="centered" id="adsensetop" style="height: 90px; margin-bottom: 10px;">
+                <div class="centered" id="adsensetop" style="margin-bottom: 5px;">
                     {% if eveigb %}{{ igbtopad|raw }}{% elseif isMobile and isTablet == false %}{{ mobiletopad|raw }}{% else %}{{ topad|raw }}{% endif %}
                 </div>
                 {% endif %}
@@ -109,7 +103,7 @@
                 {% if showAds != false %}
     			<div class="clearfix"></div>
 				<hr/>
-                <div class="centered" id="adsensebottom" style="height: 90px; margin-top: 10px;">
+                <div class="centered" id="adsensebottom" style="margin-top: 10px;">
                     {% if eveigb %}{{ igbbottomad|raw }}{% elseif isMobile and isTablet == false %}{{ mobilebottomad|raw }}{% else %}{{ bottomad|raw }}{% endif %}
                 </div>
                 {% endif %}
@@ -141,15 +135,7 @@
         }());
         </script>
         {% endif %}
-	{% if showAds != false and not isMaintenance() %}
-        <script type="text/javascript">
-          (function() {
-            var po = document.createElement("script"); po.type = "text/javascript"; po.async = true;
-            po.src = "https://apis.google.com/js/plusone.js?publisherid=107173459028404191788";
-            var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(po, s);
-          })();
-        </script>
-    <div id="fb-root"></div>
+	{% if showAds != false %}
     <script>
         (function(d, s, id) {
           var js, fjs = d.getElementsByTagName(s)[0];

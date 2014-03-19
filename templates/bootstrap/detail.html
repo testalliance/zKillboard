@@ -81,11 +81,11 @@
 </div>
 
 {% if pageview == "overview" %}
-<div class="col-lg-8">
+<div class="col-lg-8" style="padding: 0px;">
 	<table class="hidden-xs" style="background-color:transparent;">
 		<tr>
-			<td class="col-lg-7">{% include 'components/fitting_wheel.html' %}</td>
-			<td style="width:100%;">{% include 'components/victim_info.html' %}</td>
+			<td style="padding: 0px;">{% include 'components/fitting_wheel.html' %}</td>
+			<td style="width: 100%;" valign="top">{% include 'components/victim_info.html' %}</td>
 		<tr>
 	</table>
 	<div class="row hidden-lg hidden-md hidden-sm">
@@ -97,15 +97,6 @@
 </div>
 
 <div class="col-lg-4">
-	<ul class="nav nav-tabs">
-		<li class="active"><a href="#details" data-toggle="tab">Details</a></li>
-		{% if disqusLoad %}
-		<li><a href="#comment" data-toggle="tab">Comments</a></li>
-		{% endif %}
-		<li><a href="#shiptypes" data-toggle="tab">Ship Types</a></li>
-	</ul>
-	<div class="tab-content">
-
 		<div class="tab-pane fade in active" id="details">
 			<div>{% include 'components/tdfb.html' %}</div>
 			<div>
@@ -116,45 +107,9 @@
 			{% endif %}
 		</div>
 {% if disqusLoad %}
-		<div class="tab-pane fade" id="comment">
-			<div id="disqus_thread"></div>
-			<script type="text/javascript">
-			var disqus_shortname = '{{ disqusShortName }}';
-			var disqus_identifier = '{{ extra.commentID }}';
-			(function() {
-				var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-				dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-				(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-			})();
-			</script>
-			<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-			<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-		</div>
+	{% set disqusID = extra.commentID %}
+	{% include 'components/disqus.html' %}
 {% endif %}
-		<div class="tab-pane fade" id="shiptypes">
-			<table class="table table-condensed table-striped">
-				<thead>
-					<tr class="titles">
-						<th>Ship</th>
-						<th>Count</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for involved in extra.involvedships %}
-					<tr>
-						{% set field = involved %}
-						{% set imageSize = 32 %}
-						<td>
-							{% include 'components/image_ship.html' %} 
-							{% include 'components/text_ship.html' %}
-						</td>
-						<td>{{ involved.count }}</td>
-					</tr>
-					{% endfor %}
-				</tbody>
-			</table>
-		</div>
-	</div>
 </div>
 
 
