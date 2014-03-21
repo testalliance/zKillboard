@@ -85,10 +85,10 @@ class cli_apiFetchKillLog implements cliCommand
 					if ($beforeKillID == 0) $beforeKillID = $killID;
 					else $beforeKillID = min($beforeKillID, $killID);
 				}
-				if ($beforeKillID < $notRecentKillID) $db->execute("update zz_api_characters set cachedUntil = date_add(cachedUntil, interval 2 hour) where apiRowID = :id", array(":id" => $apiRowID));
+				if (sizeof($result->kills) == 0 || $beforeKillID < $notRecentKillID) $db->execute("update zz_api_characters set cachedUntil = date_add(cachedUntil, interval 4 hour) where apiRowID = :id", array(":id" => $apiRowID));
+
 				$hour = date("H");
-				if ($hour >= 12 && $hour <= 15) @error_log($pheal->xml, 3, $file); // Write all files once a day
-				else if ($aff > 0) @error_log($pheal->xml, 3, $file);
+				if (sizeof($result->kills) > 0 && (($hour >= 12 && $hour <= 15) || $aff > 0)) Util::sendToEveKill("{$keyID}_{$charID}_$beforeKillID.xml", $pheal->xml);
 			} while ($aff > 25 || ($beforeKillID > 0 && $maxKillID == 0));
 		} catch (Exception $ex) {
 			$errorCode = $ex->getCode();
