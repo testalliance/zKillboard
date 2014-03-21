@@ -64,7 +64,7 @@ class cli_hourly implements cliCommand
 		$fileCache = new FileCache();
 		$fileCache->cleanup();
 
-		$tableQuery = $db->query("show tables");
+		$tableQuery = $db->query("show tables", array(), 0, false);
 		$tables = array();
 		foreach($tableQuery as $row) {
 			foreach($row as $column) $tables[] = $column;
@@ -81,8 +81,9 @@ class cli_hourly implements cliCommand
 				if (Util::isMaintenanceMode())
 					continue;
 
-				$result = $db->queryRow("analyze table $table");
+				$result = $db->queryRow("analyze table $table", array(), 0, false);
 				if (!in_array($result["Msg_text"], $tableisgood)) Log::ircAdmin("|r|Error analyzing table |g|$table|r|: " . $result["Msg_text"]);
+else Log::log("Analyzed $table");
 			}
 		}
 
