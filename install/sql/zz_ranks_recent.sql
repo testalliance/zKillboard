@@ -20,5 +20,5 @@ CREATE TABLE `zz_ranks_recent` (
   `iskEff` decimal(3,1) NOT NULL,
   `overallRank` mediumint(16) NOT NULL,
   PRIMARY KEY (`type`,`typeID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPRESSED ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
 
