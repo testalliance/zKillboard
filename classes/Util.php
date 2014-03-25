@@ -467,13 +467,16 @@ class Util
 
 	public static function sendToEveKill($name, $content)
 	{
-		$ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "http://eve-kill.net/?a=zkb");
-        curl_setopt($ch, CURLOPT_POST, 2);
-		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, array("name" => $name, "content" => $content));
-        curl_exec($ch);
-        curl_close($ch);
+		try {
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL, "http://eve-kill.net/?a=zkb");
+			curl_setopt($ch, CURLOPT_POST, true);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, array("name" => $name, "content" => $content));
+			curl_exec($ch);
+			curl_close($ch);
+		} catch (Exception $ex) {
+			Log::log("sendToEveKill exception: " . $ex->getMessage());
+		}
 	}
 
 	public static function xmlOut($array, $parameters)
