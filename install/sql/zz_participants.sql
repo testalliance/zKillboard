@@ -53,7 +53,7 @@ CREATE TABLE `zz_participants` (
   KEY `groupID_number_involved` (`groupID`,`number_involved`),
   KEY `vGroupID_number_involved` (`vGroupID`,`number_involved`),
   KEY `weaponTypeID_number_involved` (`weaponTypeID`,`number_involved`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPRESSED
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT
 /*!50100 PARTITION BY RANGE (year(dttm))
 (PARTITION y2007 VALUES LESS THAN (2008) ENGINE = InnoDB,
  PARTITION y2008 VALUES LESS THAN (2009) ENGINE = InnoDB,
