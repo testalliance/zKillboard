@@ -87,7 +87,6 @@ $twig->addExtension(new UserGlobals());
 $twig->addFunction(new Twig_SimpleFunction("pageTimer", "Util::pageTimer"));
 $twig->addFunction(new Twig_SimpleFunction("queryCount", "Db::getQueryCount"));
 $twig->addFunction(new Twig_SimpleFunction("isActive", "Util::isActive"));
-$twig->addFunction(new Twig_SimpleFunction("firstUpper", "Util::firstUpper"));
 $twig->addFunction(new Twig_SimpleFunction("pluralize", "Util::pluralize"));
 $twig->addFunction(new Twig_SimpleFunction("calcX", "Util::calcX"));
 $twig->addFunction(new Twig_SimpleFunction("calcY", "Util::calcY"));

@@ -77,13 +77,6 @@ class Util
 		return substr($haystack, -strlen($needle)) === $needle;
 	}
 
-	public static function firstUpper($str)
-	{
-		if (strlen($str) == 1) return strtoupper($str);
-		$str = strtolower($str);
-		return strtoupper(substr($str, 0, 1)) . substr($str, 1);
-	}
-
 	public static function getKillHash($killID = null, $kill = null)
 	{
 		if ($killID != null) {
