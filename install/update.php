@@ -60,7 +60,8 @@ sleep(60);
 // Get a list of all tables
 $tableResult = Db::query("show tables", array(), 0, false);
 $tables = array();
-foreach($tableResult as $row) {
+foreach($tableResult as $row)
+{
 	$table = array_pop($row);
 	$tables[$table] = true;
 }
@@ -68,8 +69,10 @@ foreach($tableResult as $row) {
 // Now install the db structure
 try {
 	$sqlFiles = scandir("$base/sql");
-	foreach($sqlFiles as $file) {
-		if (Util::endsWith($file, ".sql")) {
+	foreach($sqlFiles as $file)
+	{
+		if (Util::endsWith($file, ".sql"))
+		{
 			$table = str_replace(".sql", "", $file);
 			out("Updating table |g|$table|n| ... ", false, false);
 			$sqlFile = "$base/sql/$file";
@@ -78,48 +81,57 @@ try {
 			$tables[$table] = false;
 		}
 	}
-	foreach ($tables as $table=>$drop) {
-		if ($drop && Util::startsWith($table, "zz_")) {
+	foreach ($tables as $table=>$drop)
+	{
+		if ($drop && Util::startsWith($table, "zz_"))
+		{
 			out("|r|Dropping table: |g|$table|n|\n", false, false);
 			Db::execute("drop table $table");
 		}
 	}
-} catch (Exception $ex) {
+}
+catch (Exception $ex)
+{
 	out("|r|Error!|n|");
 	throw $ex;
 }
 
 $count = Db::execute("INSERT IGNORE INTO zz_users (username, moderator, admin, password) VALUES ('admin', 1, 1, '$2y$10\$maxuZ/qozcjIgr7ZSnrWJemywbThbPiJDYIuOk9eLxF0pGE5SkNNu')");
-if ($count > 0) {
+if ($count > 0)
 	out("\n\n|r|*** NOTICE ***\nDefault admin user has been added with password 'admin'\nIt is strongly recommended you change this password!\n*** NOTICE ***\n");
-}
 
 out("|g|Unsetting maintenance mode|n|");
 Db::execute("delete from zz_storage where locker = 'maintenance'");
 out("All done, enjoy your update!");
 
-function loadFile($file, $table) {
-	if (Util::endsWith($file, ".gz")) $handle = gzopen($file, "r");
-	else $handle = fopen($file, "r");
-	if(Db::queryRow("SHOW TABLES LIKE'$table'", array(), 0, false)!= null){ //Check to see if we are adding new tables
-		if (Util::startsWith($table, "ccp_")) {
+function loadFile($file, $table)
+{
+	if (Util::endsWith($file, ".gz"))
+		$handle = gzopen($file, "r");
+	else
+		$handle = fopen($file, "r");
+
+	//Check to see if we are adding new tables
+	if(Db::queryRow("SHOW TABLES LIKE'$table'", array(), 0, false)!= null)
+	{
+		if (Util::startsWith($table, "ccp_"))
 			Db::execute("drop table $table");
-		} else {
+		else
 			Db::execute("alter table $table rename old_$table");
-		}
 	}
 
 
-	$query = ""; 
+	$query = "";
 	while ($buffer = fgets($handle)) {
 		$query .= $buffer;
 		if (strpos($query, ";") !== false) {
 			$query = str_replace(";", "", $query);
 			Db::execute($query);
-			$query = ""; 
-		}   
-	}   
+			$query = "";
+		}
+	}
 	fclose($handle);
+
 	if (Db::queryRow("SHOW TABLES LIKE 'old_$table'", array(), 0, false)!= null){ // Check again to see if the old_table is there
 		if (!Util::startsWith($table, "ccp_")) {
 			try {
