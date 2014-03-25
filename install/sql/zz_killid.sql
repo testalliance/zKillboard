@@ -5,5 +5,5 @@ CREATE TABLE `zz_killid` (
   `writ` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`killID`),
   KEY `writ` (`writ`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
 

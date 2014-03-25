@@ -5,7 +5,7 @@ CREATE TABLE `ccp_dgmAttributeCategories` (
   `categoryName` varchar(100) DEFAULT NULL,
   `categoryDescription` varchar(400) DEFAULT NULL,
   PRIMARY KEY (`categoryID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 
 LOCK TABLES `ccp_dgmAttributeCategories` WRITE;

@@ -8,5 +8,5 @@ CREATE TABLE `zz_crest_killmail` (
   KEY `killID` (`killID`),
   KEY `hash` (`hash`),
   KEY `processed` (`processed`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
 

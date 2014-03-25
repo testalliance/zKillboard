@@ -11,5 +11,5 @@ CREATE TABLE `zz_alliances` (
   KEY `shortName` (`ticker`),
   KEY `name` (`name`),
   KEY `executorCorpID` (`executorCorpID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPRESSED;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
 
