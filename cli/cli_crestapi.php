@@ -50,8 +50,10 @@ class cli_crestapi implements cliCommand
 				try {
 					$killID = $crest["killID"];
 					$hash = trim($crest["hash"]);
+					usleep(200);
 
 					$url = "http://public-crest.eveonline.com/killmails/$killID/$hash/";
+					Log::log($url);
 					$perrymail = \Perry\Perry::fromUrl($url);
 
 					$killmail = array();
@@ -75,6 +77,7 @@ class cli_crestapi implements cliCommand
 					$xml = Util::xmlOut(array($killmail), array());
 					Util::sendToEveKill("0_0_$killID.xml", $xml);
 				} catch (Exception $ex) {
+					Log::log("CREST exception: $killID - " . $ex->getMessage());
 					Db::execute("update zz_crest_killmail set processed = -1 where killID = :killID", array(":killID" => $killID));
 				}
 			}
