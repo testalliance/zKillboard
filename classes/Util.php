@@ -415,7 +415,7 @@ class Util
 	 */
 	public static function getData($url, $cacheTime = 3600)
 	{
-		global $ipsAvailable;
+		global $ipsAvailable, $baseAddr;
 
 		$md5 = md5($url);
 		$result = $cacheTime > 0 ? Cache::get($md5) : null;
@@ -424,7 +424,7 @@ class Util
 		{
 			$curl = curl_init();
 			curl_setopt_array($curl, array(
-				CURLOPT_USERAGENT 			=> "zKillboard dataGetter",
+				CURLOPT_USERAGENT 			=> "zKillboard dataGetter for site: {$baseAddr}",
 				CURLOPT_TIMEOUT 			=> 30,
 				CURLOPT_POST 				=> false,
 				CURLOPT_FORBID_REUSE 		=> false,
