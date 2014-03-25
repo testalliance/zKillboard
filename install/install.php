@@ -34,12 +34,8 @@ if (file_exists("$base/../config.php"))
 
 out("We will prompt you with a few questions. If at any time you are unsure and want to back out of the installation hit |g|CTRL+C.|n|
 
-|g|Questions will always have a default answer specified in []'s.  Example:
-What is 1+1? [2]|n|
-
-Hitting enter will let you select the default answer.
-
-Some database questions:");
+Questions will always have a default answer specified in []'s. Example: |g|What is 1+1? [2]|n|
+Hitting enter will let you select the default answer.");
 
 $settings = array();
 
@@ -143,15 +139,23 @@ catch (Exception $ex)
 	throw $ex;
 }
 
+$ln = false;
 // Move bash_complete_zkillboard to the bash_complete folder
 try
 {
 	file_put_contents("/etc/bash_completion.d/zkillboard", file_get_contents("$base/bash_complete_zkillboard"));
 	exec("chmod +x $base/../cli.php");
+	$ln = true;
 }
 catch (Exception $ex)
 {
 	out("|r|Error! Couldn't move the bash_complete file into /etc/bash_completion.d/, please do this after the installer is done.");
+}
+
+// ln the cli into /usr/sbin/zkillboard
+if($ln == true)
+{
+	passthru("ln -s $base/../cli.php /usr/sbin/zkillboard");
 }
 
 // Now install the db structure
@@ -247,7 +251,6 @@ function prompt($prompt, $default = "")
 {
 	out("$prompt [$default] ", false, false);
 	$answer = trim(fgets(STDIN));
-	echo "\n";
 	if (strlen($answer) == 0)
 		return $default;
 
