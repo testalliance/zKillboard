@@ -14,5 +14,5 @@ CREATE TABLE `zz_corporations` (
   KEY `ticker` (`ticker`),
   KEY `lastUpdated` (`lastUpdated`),
   KEY `allianceID` (`allianceID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 

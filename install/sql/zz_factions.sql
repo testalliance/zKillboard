@@ -6,5 +6,5 @@ CREATE TABLE `zz_factions` (
   `ticker` varchar(16) DEFAULT NULL,
   PRIMARY KEY (`factionID`),
   KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 

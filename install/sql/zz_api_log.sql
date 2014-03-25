@@ -9,5 +9,5 @@ CREATE TABLE `zz_api_log` (
   `options` varchar(512) DEFAULT NULL,
   PRIMARY KEY (`logID`),
   KEY `requestTime` (`requestTime`,`scope`,`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 

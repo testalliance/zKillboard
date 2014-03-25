@@ -6,7 +6,7 @@ CREATE TABLE `ccp_zwormhole_info` (
   `effectID` int(11) DEFAULT NULL,
   `effectName` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`solarSystemID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC ;
 
 
 LOCK TABLES `ccp_zwormhole_info` WRITE;

@@ -7,5 +7,5 @@ CREATE TABLE `zz_item_price_lookup` (
   `lowPrice` decimal(16,2) NOT NULL,
   `highPrice` decimal(16,2) NOT NULL,
   PRIMARY KEY (`typeID`,`priceDate`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
