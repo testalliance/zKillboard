@@ -155,7 +155,14 @@ catch (Exception $ex)
 // ln the cli into /usr/sbin/zkillboard
 if($ln == true)
 {
-	passthru("ln -s $base/../cli.php /usr/sbin/zkillboard");
+	try
+	{
+		passthru("ln -s $base/../cli.php /usr/sbin/zkillboard");
+	}
+	catch(Exception $e)
+	{
+		out("|r|Error!|n| file most likely already exists. Check after the installer is done, and if it doesn't, run: ln -s $base/../cli.php /usr/sbin/zkillboard");
+	}
 }
 
 // Now install the db structure
