@@ -2,7 +2,7 @@
 
 {% if pageType %}
 	{% set pageTitle = pageType|replace({"_": " "}) %}
-    {% set pageTitle = 'Kills (' ~ firstUpper(pageTitle) ~ ')' %}
+    {% set pageTitle = 'Kills (' ~ pageTitle|capitalize ~ ')' %}
 {% else %}
     {% set pageTitle = 'Kills' %}
 {% endif %}

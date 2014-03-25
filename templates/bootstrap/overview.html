@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 
 {% if pageType and pageType != 'overview' %}
-	{% set pageTitle = firstUpper(key) ~ ' / ' ~ pageName ~ ' / ' ~ firstUpper(pageType) %}
+	{% set pageTitle = key|capitalize ~ ' / ' ~ pageName ~ ' / ' ~ pageType|capitalize %}
 {% else %}
-	{% set pageTitle = firstUpper(key) ~ ' / ' ~ pageName %}
+	{% set pageTitle = key|capitalize ~ ' / ' ~ pageName %}
 {% endif %}
 {% block title %}{% include 'components/title.html' %}{% endblock %}
 

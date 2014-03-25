@@ -17,7 +17,7 @@
 {% for field in data %}
 		{% if field.type != lastType %}
 			<div class="clearfix"></div>
-			<h3>{{ firstUpper(field.type) }}s</h3>
+			<h3>{{ field.type|capitalize }}s</h3>
 			{% set lastType = field.type %}
 		{% endif %}
 		<div class="pull-left" style="margin-bottom: 0.5em; width: 390px;"/>

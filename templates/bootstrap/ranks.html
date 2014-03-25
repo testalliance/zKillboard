@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% set pageTitle = pageTitle ~ ' - ' ~ firstUpper(subType) %}
+{% set pageTitle = pageTitle ~ ' - ' ~ subType|capitalize %}
 {% block title %}{% include 'components/title.html' %}{% endblock %}
 
 {% block content %}
