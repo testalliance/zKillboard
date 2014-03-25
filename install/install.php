@@ -92,6 +92,12 @@ out("A secret key is needed for your cookies to be encrypted.");
 $cookiesecret = prompt("Secret key for cookies?", uniqid(time()));
 $settings["cookiesecret"] = sha1($cookiesecret);
 
+// Set admin password
+require $base.'/../classes/Password.php';
+out("Set password for 'admin' user. It's recommend to change this!");
+$admpw = prompt("Password", substr(str_shuffle('abcefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'), 0, 12));
+$admpw = Password::genPassword($admpw);
+
 // Get default config
 $configFile = file_get_contents("$base/config.new.php");
 
@@ -179,8 +185,7 @@ try
 {
 	out("|g|Installing default admin user...");
 	// Install the default admin user
-	Db::execute("INSERT INTO zz_users (username, moderator, admin, password) VALUES ('admin', 1, 1, '$2y$10\$maxuZ/qozcjIgr7ZSnrWJemywbThbPiJDYIuOk9eLxF0pGE5SkNNu')");
-	out("\n\n|r|*** NOTICE ***\nDefault admin user has password 'admin'\nIt is strongly recommended you change this password!\n*** NOTICE ***\n");
+	Db::execute("INSERT INTO zz_users (username, moderator, admin, password) VALUES ('admin', 1, 1, '".$admpw."')");
 }
 catch (Exception $ex)
 {
