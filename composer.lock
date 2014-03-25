@@ -132,16 +132,16 @@
         },
         {
             "name": "cvweiss/zcache",
-            "version": "v0.1",
+            "version": "v0.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cvweiss/zcache.git",
-                "reference": "181de27984b596be5ef98314de98643e0419064c"
+                "reference": "a1943f527ddbec19440b529bc47c3335d029a06f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cvweiss/zcache/zipball/181de27984b596be5ef98314de98643e0419064c",
-                "reference": "181de27984b596be5ef98314de98643e0419064c",
+                "url": "https://api.github.com/repos/cvweiss/zcache/zipball/a1943f527ddbec19440b529bc47c3335d029a06f",
+                "reference": "a1943f527ddbec19440b529bc47c3335d029a06f",
                 "shasum": ""
             },
             "type": "library",
@@ -161,20 +161,20 @@
                 }
             ],
             "description": "Library of classes to simplify caching",
-            "time": "2014-02-20 17:06:50"
+            "time": "2014-03-21 20:53:42"
         },
         {
             "name": "cvweiss/zlibrary",
-            "version": "v0.2.3",
+            "version": "v0.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cvweiss/zlibrary.git",
-                "reference": "a0af029c3f7d9e3ab2e821e651a4ae038e8eb208"
+                "reference": "da447d7065a1ff2bf24415f0c9cb7894e810b409"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cvweiss/zlibrary/zipball/a0af029c3f7d9e3ab2e821e651a4ae038e8eb208",
-                "reference": "a0af029c3f7d9e3ab2e821e651a4ae038e8eb208",
+                "url": "https://api.github.com/repos/cvweiss/zlibrary/zipball/da447d7065a1ff2bf24415f0c9cb7894e810b409",
+                "reference": "da447d7065a1ff2bf24415f0c9cb7894e810b409",
                 "shasum": ""
             },
             "require": {
@@ -197,7 +197,7 @@
                 }
             ],
             "description": "Library of classes to simplify various tasks",
-            "time": "2014-03-13 21:59:35"
+            "time": "2014-03-17 16:10:46"
         },
         {
             "name": "dg/twitter-php",
@@ -596,7 +596,7 @@
                     "role": "Lead Developer"
                 },
                 {
-                    "name": "Armin Ronacher",
+                    "name": "Armin Ronacher2",
                     "email": "armin.ronacher@active-4.com",
                     "role": "Project Founder"
                 },
