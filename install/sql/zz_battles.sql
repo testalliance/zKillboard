@@ -9,5 +9,5 @@ CREATE TABLE `zz_battles` (
   `kills` int(11) NOT NULL,
   PRIMARY KEY (`battleID`),
   UNIQUE KEY `solarSystemID` (`solarSystemID`,`dttm`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
