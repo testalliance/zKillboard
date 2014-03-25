@@ -30,7 +30,7 @@ class cli_stompReceive implements cliCommand
 
 	public function getCronInfo()
 	{
-		return class_exists("Stomp") ? array(60 => "") : array();
+		return class_exists("Stomp") ? array(55 => "") : array();
 	}
 
 	public function execute($parameters, $db)
@@ -66,7 +66,7 @@ class cli_stompReceive implements cliCommand
 
 			$stompCount = 0;
 			$timer = new Timer();
-			while($timer->stop() < 60000)
+			while($timer->stop() < 55000)
 			{
 				$frame = $stomp->readFrame();
 				if(!empty($frame))
