@@ -13,6 +13,4 @@ CREATE TABLE `zz_killmails` (
   KEY `source` (`source`),
   KEY `insertTime` (`insertTime`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPRESSED KEY_BLOCK_SIZE=4
-/*!50100 PARTITION BY HASH (killid)
-PARTITIONS 10 */;
 
