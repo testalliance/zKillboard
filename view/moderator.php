@@ -97,7 +97,7 @@ elseif($req == "tickets")
 {
 	$limit = 30;
 	$offset = ($page - 1) * $limit;
-	$info = Db::query("SELECT * FROM zz_tickets WHERE killID = 0 ORDER BY status DESC, datePosted DESC LIMIT $offset, $limit", array(), 0);
+	$info = Db::query("SELECT t.*, count(r.belongsTo) replyCount FROM zz_tickets t left join zz_tickets_replies r on (t.id = r.belongsTo)  WHERE killID = 0 GROUP BY 1 ORDER BY status DESC, count(r.belongsTo) != 0, datePosted DESC LIMIT $offset, $limit", array(), 0);
 	foreach($info as $key => $val)
 	{
 		if($val["tags"])
