@@ -81,7 +81,7 @@
 		<div class="content">
     		{% include "navigationbar.html" %}
 
-<div class="alert alert-danger" style="padding: 0px; margin: 0px; margin-bottom: 15px;"><center>All 23 million kills being reimported and reprocessed!</center></div>
+<div class="alert alert-danger" style="padding: 0px; margin: 0px; position: relative; top: -15px;"><center>All 23 million kills being reimported and reprocessed!</center></div>
     		{% if isMaintenance() %}
     			<div class="alert alert-danger"><center>Site is in maintenance mode<br/><small>During this time no kills are processed<br/>{{ getMaintenanceReason() }}</small></center></div>
     		{% endif %}
@@ -93,24 +93,11 @@
                 </div>
                 {% endif %}
 
-                {% block header %}
-                {% endblock %}
+                {% block header %}{% endblock %}
 
                 {% block content %}Default content{% endblock %}
 
-    			{% if not isMobile %}
-                <div id="back-top"><a href="#top"><span></span>Back to the Top</a></div>
-    			{% endif %}
-
-                {% if showAds != false %}
-    			<div class="clearfix"></div>
-				<hr/>
-                <div class="centered" id="adsensebottom" style="margin-top: 10px;">
-                    {% if eveigb %}{{ igbbottomad|raw }}{% elseif isMobile and isTablet == false %}{{ mobilebottomad|raw }}{% else %}{{ bottomad|raw }}{% endif %}
-                </div>
-                {% endif %}
-
-				<div class="clearfix"></div>
+		<div class="clearfix"></div>
 
                 <div class="hidden-xs">{% include "footer.html" %}</div>
             </div>		
