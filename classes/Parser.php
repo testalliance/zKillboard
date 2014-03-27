@@ -43,7 +43,7 @@ class Parser
 			Db::execute("delete from zz_participants_temporary");
 
 			//Log::log("Fetching kills for processing...");
-			$result = Db::query("select * from zz_killmails where processed = 0 order by killID limit 100", array(), 0);
+			$result = Db::query("select * from zz_killmails where processed = 0 order by killID desc limit 100", array(), 0);
 
 			if (sizeof($result) == 0) {
 				$currentSecond = (int) date("s");
