@@ -4,6 +4,7 @@
 {% set headingType = 'h2' %}
 {% endif %}
 {% if killList|length == 0 %}
+<div class="clearfix"></div>
 <{{ headingType }}>{{ killListTitle }}</{{ headingType }}>
 <div class="alert">Nothing to display here...</div>
 {% else %}
@@ -12,6 +13,7 @@
 {% set CurrentYear = '' %}
 {% set CurrentMonth = '' %}
 {% set CurrentDay = ''%}
+<div class="clearfix"></div>
 <table class="table table-condensed table-striped table-hover">
     <thead>
         <tr>
