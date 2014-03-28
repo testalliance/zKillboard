@@ -21,7 +21,7 @@
         <link rel="shortcut icon" sizes="70x70" href="/img/tile/tiny.png">
         <link rel="shortcut icon" sizes="150x150" href="/img/tile/square.png">
         <link rel="shortcut icon" sizes="310x150" href="/img/tile/wide.png">
-	<link rel="shortcut icon" sizes="16x16" href="/favicon.ico" />
+		<link rel="shortcut icon" sizes="16x16" href="/favicon.ico" />
         <meta name="msapplication-square70x70logo" content="/img/tile/tiny.png"/>
         <meta name="msapplication-square150x150logo" content="/img/tile/square.png"/>
         <meta name="msapplication-wide310x150logo" content="/img/tile/wide.png"/>
@@ -39,22 +39,22 @@
         <meta name="twitter:title" content="zKillboard / {{ pageTitle }}">
         <meta name="twitter:card" content="summary">
         <meta name="twitter:description" content="{{ description }}">
-        <meta name="twitter:image" content="https://zkillboard.com/3D.png">
-        <meta name="og:title" content="zKillboard.com / {{ pageTitle }}">
+        <meta name="twitter:image" content="{{ fullsiteurl }}/3D.png">
+        <meta name="og:title" content="{{ siteurl }} / {{ pageTitle }}">
         <meta name="og:url" content="{{ fullsiteurl }}">
         <meta name="og:description" content="{{ description }}">
-        <meta name="og:image" content="https://zkillboard.com/3D.png">
-	<meta name="google-site-verification" content="4YdeWaZKjMbr1Fnia-8e2DMgfn4nBT6OVuXqtZc2suA" />
+        <meta name="og:image" content="{{ fullsiteurl }}/3D.png">
+		<meta name="google-site-verification" content="4YdeWaZKjMbr1Fnia-8e2DMgfn4nBT6OVuXqtZc2suA" />
 {% endblock %}
 {% block robots %}
 {% endblock %}
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <title>{% block title %}zKillboard.com{% endblock %}</title>
+        <title>{% block title %}{{ siteurl }}{% endblock %}</title>
 		<link rel="canonical" href="https://zkillboard.com{{ requesturi }}">
         <link rel="search" type="application/opensearchdescription+xml" href="//{{ siteurl }}/xml/zkbsearch.xml" title="zKillboard">
 {% if theme is not defined %}{% set theme = 'cyborg' %}{% endif %}
-{% if theme == "cyborg" %}{% set version = "3.0.2" %}{% else %}{% set version = "latest" %}{% endif %}
+{% if theme == "cyborg" %}{% set version = "3.1.1" %}{% else %}{% set version = "latest" %}{% endif %}
         {% if theme == "default" %}
             <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">
         {% else %}
@@ -81,7 +81,6 @@
 		<div class="content">
     		{% include "navigationbar.html" %}
 
-<div class="alert alert-danger" style="padding: 0px; margin: 0px; position: relative; top: -15px;"><center>All 23 million kills being reimported and reprocessed!</center></div>
     		{% if isMaintenance() %}
     			<div class="alert alert-danger"><center>Site is in maintenance mode<br/><small>During this time no kills are processed<br/>{{ getMaintenanceReason() }}</small></center></div>
     		{% endif %}
@@ -108,7 +107,7 @@
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.1.0/jquery.timeago.min.js"></script>
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/jquery.dataTables.min.js"></script>
-		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.2/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="/js/bootstrap-datepicker.js"></script>
         <script type="text/javascript" src="/js/search.js"></script>
         <script type="text/javascript" src="/js/common.js"></script>
