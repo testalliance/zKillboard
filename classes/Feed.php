@@ -28,11 +28,12 @@ class Feed
 	 */
 	public static function getKills($parameters = array())
 	{
+		global $debug;
 		$ip = IP::get();
 
 		$userAgent = @$_SERVER["HTTP_USER_AGENT"];
 
-		Log::log("API Fetch: " . $_SERVER["REQUEST_URI"] . " (" . $ip . " / " . $userAgent . ")");
+		if ($debug) Log::log("API Fetch: " . $_SERVER["REQUEST_URI"] . " (" . $ip . " / " . $userAgent . ")");
 		$tables = array();
 		$orWhereClauses = array();
 		$andWhereClauses = array();
