@@ -384,7 +384,9 @@ function droppedIsk($md5, $items)
 	if($Cache) return $Cache;
 
 	$droppedisk = 0;
-	foreach($items as $dropped) $droppedisk += $dropped["price"] * $dropped["qtyDropped"];
+	foreach($items as $dropped) {
+		$droppedisk += $dropped["price"] * ($dropped["singleton"] ? $dropped["qtyDropped"] / 100 : $dropped["qtyDropped"]);
+	}
 
 	Cache::set($md5."droppedisk", $droppedisk);
 	return $droppedisk;
