@@ -295,18 +295,15 @@ class Util
 
 	public static function scrapeCheck()
 	{
-		global $apiWhiteList, $apiRequestsPrDay;
-		if(!$apiRequestsPrDay)
-			$maxRequestsPerDay = 17280;
-		else
-			$maxRequestsPerDay = $apiRequestsPrDay;
+		global $apiWhiteList, $maxRequestsPerHour;
+		$maxRequestsPerHour = isset($maxRequestsPerHour) ? $maxRequestsPerHour : 360;
 
 		$ip = substr(IP::get(), 0, 64);
 		if(!in_array($ip, $apiWhiteList))
 		{
-			$count = Db::queryField("select count(*) count from zz_analytics where ip = :ip and uri like '/api/%' and dttm >= date_sub(now(), interval 24 hour)", "count", array(":ip" => $ip), 0);
+			$count = Db::queryField("select count(*) count from zz_analytics where ip = :ip and uri like '/api/%' and dttm >= date_sub(now(), interval 1 hour)", "count", array(":ip" => $ip), 0);
 
-			if($count > $maxRequestsPerDay)
+			if($count > $maxRequestsPerHour)
 			{
 				$date = date("Y-m-d H:i:s");
 				$cachedUntil = date("Y-m-d H:i:s", time() + 3600);
@@ -316,7 +313,7 @@ class Util
 					$data .= "<eveapi version=\"2\" zkbapi=\"1\">";
 					$data .= "<currentTime>$date</currentTime>";
 					$data .= "<result>";
-					$data .= "<error>You have too many API requests in the last 24 hours.  You are allowed a maximum of $maxRequestsPerDay requests.</error>";
+					$data .= "<error>You have too many API requests in the last hour.  You are allowed a maximum of $maxRequestsPerHour requests.</error>";
 					$data .= "</result>";
 					$data .= "<cachedUntil>$cachedUntil</cachedUntil>";
 					$data .= "</eveapi>";
@@ -325,10 +322,10 @@ class Util
 				else
 				{
 					header("Content-type: application/json; charset=utf-8");
-					$data = json_encode(array("Error" => "You have too many API requests in the last 24 hours.  You are allowed a maximum of $maxRequestsPerDay requests.", "cachedUntil" => $cachedUntil));
+					$data = json_encode(array("Error" => "You have too many API requests in the last hour.  You are allowed a maximum of $maxRequestsPerHour requests.", "cachedUntil" => $cachedUntil));
 				}
 				header("X-Bin-Request-Count: ". $count);
-				header("X-Bin-Max-Requests: ". $maxRequestsPerDay);
+				header("X-Bin-Max-Requests: ". $maxRequestsPerHour);
 				header("Retry-After: " . $cachedUntil . " GMT");
 				header("HTTP/1.1 429 Too Many Requests");
 				header("Etag: ".(md5(serialize($data))));
@@ -336,7 +333,7 @@ class Util
 				die();
 			}
 			header("X-Bin-Request-Count: ". $count);
-			header("X-Bin-Max-Requests: ". $maxRequestsPerDay);
+			header("X-Bin-Max-Requests: ". $maxRequestsPerHour);
 		}
 	}
 

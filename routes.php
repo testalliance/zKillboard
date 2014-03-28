@@ -16,9 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-$ip = substr(IP::get(), 0, 64);
 $uri = substr($_SERVER["REQUEST_URI"], 0, 256);
-if ($uri != "/killslasthour/" && $uri != "/autocomplete/") Db::execute("insert into zz_analytics values (:ip, :uri, now())", array(":ip" => $ip, ":uri" => $uri));
+if (Util::startsWith($uri, "/api/"))
+{
+	$ip = substr(IP::get(), 0, 64);
+	Db::execute("insert into zz_analytics values (:ip, :uri, now())", array(":ip" => $ip, ":uri" => $uri));
+}
 
 $app->notFound(function () use ($app) {
     $app->render('404.html');
