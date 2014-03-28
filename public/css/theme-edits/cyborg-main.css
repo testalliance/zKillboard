@@ -53,3 +53,21 @@ color: black;
 .alert-danger {
 	background-color: #800000;
 }
+
+table, .table {
+	color: #888;
+}
+
+table a, .table a {
+	color: #2a9fd6;
+	text-decoration: none;
+}
+
+tr.heading {
+	background-color: #000;
+}
+
+.nav .caret, .nav a:hover .caret {
+	border-top-color: #888;
+	border-bottom-color: #888;
+}

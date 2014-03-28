@@ -75,10 +75,6 @@ cursor: pointer;
 width: 160px;
 }
 
-.dropdown:hover .dropdown-menu {
-    display: block;
- }
-
 .facebook{
 	background: url("/img/social/fb_1.png") no-repeat center center;
 }
