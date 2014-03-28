@@ -30,9 +30,7 @@ class cli_parseKills implements cliCommand
 
 	public function getCronInfo()
 	{
-		return array(
-			60 => ""
-		);
+		return array(0 => ""); // Always run
 	}
 
 	public function execute($parameters, $db)
