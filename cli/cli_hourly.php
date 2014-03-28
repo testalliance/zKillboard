@@ -53,7 +53,7 @@ class cli_hourly implements cliCommand
 		}
 
 		$highKillID = $db->queryField("select max(killID) highKillID from zz_killmails", "highKillID");
-		if ($highKillID > 2000000) Storage::store("notRecentKillID", ($highKillID - 2000000));
+		if ($highKillID > 1000000) Storage::store("notRecentKillID", ($highKillID - 1000000));
 
 		self::apiPercentage($db);
 
