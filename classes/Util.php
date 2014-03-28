@@ -27,6 +27,11 @@ class Util
 		return Storage::retrieve("MaintenanceReason", "");
 	}
 
+	public static function getNotification()
+	{
+		return Storage::retrieve("notification", null);
+	}
+
 	/**
 	 * @param integer $keyID
 	 * @param string $vCode

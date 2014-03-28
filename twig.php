@@ -99,6 +99,7 @@ $twig->addFunction(new Twig_SimpleFunction("getMonth", "Util::getMonth"));
 $twig->addFunction(new Twig_SimpleFunction("getLongMonth", "Util::getLongMonth"));
 $twig->addFunction(new Twig_SimpleFunction("isMaintenance", "Util::isMaintenanceMode"));
 $twig->addFunction(new Twig_SimpleFunction("getMaintenanceReason", "Util::getMaintenanceReason"));
+$twig->addFunction(new Twig_SimpleFunction("getNotification", "Util::getNotification"));
 
 $igb = false;
 if(stristr(@$_SERVER["HTTP_USER_AGENT"], "EVE-IGB"))

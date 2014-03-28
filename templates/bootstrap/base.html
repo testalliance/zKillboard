@@ -86,6 +86,10 @@
     		{% endif %}
 
             <div class="container nobackground">
+		{% if getNotification() %}
+			<div class="alert" style="padding: 0px; margin: 0px; psition: relative; top: -15px;"><center>{{ getNotification() }}</center></div>
+		{% endif %}
+
                 {% if showAds != false %}
                 <div class="centered" id="adsensetop" style="margin-bottom: 5px;">
                     {% if eveigb %}{{ igbtopad|raw }}{% elseif isMobile and isTablet == false %}{{ mobiletopad|raw }}{% else %}{{ topad|raw }}{% endif %}
