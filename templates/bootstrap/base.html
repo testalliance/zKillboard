@@ -81,7 +81,6 @@
 		<div class="content">
     		{% include "navigationbar.html" %}
 
-<div class="alert alert-danger" style="padding: 0px; margin: 0px; position: relative; top: -15px;"><center>All 23 million kills being reimported and reprocessed!</center></div>
     		{% if isMaintenance() %}
     			<div class="alert alert-danger"><center>Site is in maintenance mode<br/><small>During this time no kills are processed<br/>{{ getMaintenanceReason() }}</small></center></div>
     		{% endif %}
