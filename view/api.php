@@ -49,7 +49,7 @@ elseif(isset($_GET["callback"]) && Util::isValidCallback($_GET["callback"]) )
 {
 	$app->contentType("application/javascript; charset=utf-8");
 	header("X-JSONP: true");
-	echo $_GET["callback"] . "(" . json_encode($array, JSON_NUMERIC_CHECK) .")";
+	echo $_GET["callback"] . "(" . json_encode($array) .")";
 }
 else
 {
@@ -57,5 +57,5 @@ else
 	if(isset($parameters["pretty"]))
 		echo json_encode($array, JSON_PRETTY_PRINT);
 	else
-		echo json_encode($array, JSON_NUMERIC_CHECK);
+		echo json_encode($array);
 }
