@@ -76,10 +76,6 @@ $stompServer = "tcp://stomp.zkillboard.com:61613";
 $stompUser = "guest";
 $stompPassword = "guest";
 
-// CloudFlare
-$cfUser = "";
-$cfKey = "";
-
 // Disqus
 $disqus = false;
 $disqusShortName = "";
@@ -99,8 +95,19 @@ $consumerSecret = "";
 $accessToken = "";
 $accessTokenSecret = "";
 
-// Show Ads? Disabled by default
+// Ads / Analytics
 $showAds = false;
+$showAnalytics = false;
+$topCaPub = ""; // ca-pub-<number>
+$topAdSlot = ""; // google_ad_slot number
+$bottomCaPub = ""; // ca-pub-<number>
+$bottomAdSlot = ""; // google_ad_slot number
+$analyticsID = ""; // UA-<number>
+$analyticsName = ""; // name
+
+// Facebook like button
+$showFacebook = false;
+$facebookAppID = null;
 
 // Slim config
 $config = array(

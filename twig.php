@@ -64,14 +64,18 @@ $twig->addGlobal("image_ship", $imageServer."Render/");
 $twig->addGlobal("siteurl", $baseAddr);
 $twig->addGlobal("fullsiteurl", $fullAddr);
 $twig->addGlobal("requesturi", $_SERVER["REQUEST_URI"]);
-$twig->addGlobal("topad", zKillboard::top());
-$twig->addGlobal("bottomad", zKillboard::bottom());
-$twig->addGlobal("mobiletopad", zKillboard::mobileTop());
-$twig->addGlobal("mobilebottomad", zKillboard::mobileBottom());
-$twig->addGlobal("igbtopad", zKillboard::igbTop());
-$twig->addGlobal("igbbottomad", zKillboard::igbBottom());
-$twig->addGlobal("analytics", zKillboard::analytics());
+$twig->addGlobal("topad", Google::ad($topCaPub, $topAdSlot, $adWidth = 728, $adHeight = 90));
+$twig->addGlobal("bottomad", Google::ad($bottomCaPub, $bottomAdSlot, $adWidth = 728, $adHeight = 90));
+$twig->addGlobal("mobiletopad", Google::ad($topCaPub, $topAdSlot, $adWidth = 320, $adHeight = 50));
+$twig->addGlobal("mobilebottomad", Google::ad($bottomCaPub, $bottomAdSlot, $adWidth = 320, $adHeight = 50));
+$twig->addGlobal("igbtopad", Google::ad($topCaPub, $topAdSlot, $adWidth = 728, $adHeight = 90));
+$twig->addGlobal("igbbottomad", Google::ad($bottomCaPub, $bottomAdSlot, $adWidth = 728, $adHeight = 90));
+$twig->addGlobal("analytics", Google::analytics($analyticsID, $analyticsName));
+$twig->addGlobal("fbAppID", $facebookAppID);
 $twig->addGlobal("disqusLoad", $disqus);
+$twig->addGlobal("showAds", $showAds);
+$twig->addglobal("showAnalytics", $showAnalytics);
+$twig->addGlobal("showFacebook", $showFacebook);
 if($disqus)
 {
     $twig->addGlobal("disqusShortName", $disqusShortName);
