@@ -40,7 +40,6 @@ class Google
 		$html = '
 			<script type="text/javascript"><!--
 			google_ad_client = "'.$caPub.'";
-			/* zKillboard */
 			google_ad_slot = "'.$adSlot.'";
 			google_ad_width = '.$adWidth.';
 			google_ad_height = '.$adHeight.';
