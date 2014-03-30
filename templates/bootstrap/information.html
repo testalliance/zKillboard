@@ -13,9 +13,9 @@
 <h2>Statistics</h2>
 <pre class="prettyprint">
 {% if info.total > 0 %}
-{{ info.kills|number_format(0, '.', ',') }} kills processed and available for viewing 
-{{ info.ignored|number_format(0, '.', ',') }} kills ignored (NPC, blue on blue, etc.)
-{{ info.total|number_format(0, '.', ',') }} total kills in the database.
+{{ info.total|number_format(0, '.', ',') }} kills processed.
+{{ info.ignored|number_format(0, '.', ',') }} NPC kills ignored.
+{{ info.kills|number_format(0, '.', ',') }} total kills in the database 
 {% endif %}
 </pre>
 {% elseif pageview == "contact" %}
