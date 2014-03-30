@@ -67,7 +67,9 @@
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.min.css">
 		{% block style %}
         {% endblock %}
-        {{ analytics|raw }}
+        {% if showAnalytics != false %}
+            {{ analytics|raw }}
+        {% endif %}
         <script type="text/javascript">
             {{ disqus|raw }}
 		</script>

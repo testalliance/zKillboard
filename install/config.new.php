@@ -99,8 +99,15 @@ $consumerSecret = "";
 $accessToken = "";
 $accessTokenSecret = "";
 
-// Show Ads? Disabled by default
+// Ads / Analytics
 $showAds = false;
+$showAnalytics = false;
+$topCaPub = ""; // ca-pub-<number>
+$topAdSlot = ""; // google_ad_slot number
+$bottomCaPub = ""; // ca-pub-<number>
+$bottomAdSlot = ""; // google_ad_slot number
+$analyticsID = ""; // UA-<number>
+$analyticsName = ""; // name
 
 // Slim config
 $config = array(

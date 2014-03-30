@@ -16,9 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-class zKillboard
+class Google
 {
-	public static function analytics()
+	public static function analytics($analyticsID, $analyticsName)
 	{
 		$html = "
 			<script>
@@ -27,7 +27,7 @@ class zKillboard
 			  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 			  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-			  ga('create', 'UA-49428449-1', 'zkillboard.com');
+			  ga('create', '".$analyticsID."', '".$analyticsName."');
 			  ga('send', 'pageview');
 
 			</script>
@@ -35,15 +35,15 @@ class zKillboard
 		return $html;
 	}
 
-        public static function top()
+        public static function ad($caPub, $adSlot, $adWidth = 728, $adHeight = 90)
         {
 		$html = '
 			<script type="text/javascript"><!--
-			google_ad_client = "ca-pub-7481220870937701";
+			google_ad_client = "'.$caPub.'";
 			/* zKillboard */
-			google_ad_slot = "3186136253";
-			google_ad_width = 728;
-			google_ad_height = 90;
+			google_ad_slot = "'.$adSlot.'";
+			google_ad_width = '.$adWidth.';
+			google_ad_height = '.$adHeight.';
 			//-->
 			</script>
 			<script type="text/javascript"
@@ -51,41 +51,5 @@ class zKillboard
 			</script>
 		';
                 return $html;
-        }
-
-        public static function bottom()
-        {
-		return static::top();
-        }
-
-        public static function mobileTop()
-        {
-                return static::mobileBottom();
-        }
-
-        public static function mobileBottom()
-        {
-                $html = '<script type="text/javascript"><!--
-                google_ad_client = "ca-pub-8111276931546791";
-                /* zkb mobile bottom */
-                google_ad_slot = "9924725708";
-                google_ad_width = 320;
-                google_ad_height = 50;
-                //-->
-                </script>
-                <script type="text/javascript"
-                src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-                </script>';
-                return $html;
-        }
-
-        public static function igbTop()
-        {
-		return static::top();
-        }
-
-        public static function igbBottom()
-        {
-		return static::top();
         }
 }
