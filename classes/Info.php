@@ -628,7 +628,7 @@ class Info
 	{
 		$data = Db::queryRow("select corporationID, allianceID, factionID from zz_participants where corporationID = :id  and dttm >= date_sub(now(), interval 7 day) order by killID desc limit 1",  array(":id" => $id), 3600);
 		if (sizeof($data) == 0) $data = Db::queryRow("select corporationID, allianceID, 0 factionID from zz_corporations where corporationID = :id", array(":id" => $id), 3600);
-		if (sizeof($data) == 0) $data["corporationID"] == $id;
+		if (sizeof($data) == 0) $data["corporationID"] = $id;
 		$moreData = Db::queryRow("select * from zz_corporations where corporationID = :id", array(":id" => $id), 3600);
 		if ($moreData) {
 			$data["memberCount"] = $moreData["memberCount"];
