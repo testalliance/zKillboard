@@ -105,6 +105,10 @@ $bottomAdSlot = ""; // google_ad_slot number
 $analyticsID = ""; // UA-<number>
 $analyticsName = ""; // name
 
+// Facebook like button
+$showFacebook = false;
+$facebookAppID = null;
+
 // Slim config
 $config = array(
 	"mode" => "production",

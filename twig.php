@@ -71,9 +71,11 @@ $twig->addGlobal("mobilebottomad", Google::ad($bottomCaPub, $bottomAdSlot, $adWi
 $twig->addGlobal("igbtopad", Google::ad($topCaPub, $topAdSlot, $adWidth = 728, $adHeight = 90));
 $twig->addGlobal("igbbottomad", Google::ad($bottomCaPub, $bottomAdSlot, $adWidth = 728, $adHeight = 90));
 $twig->addGlobal("analytics", Google::analytics($analyticsID, $analyticsName));
+$twig->addGlobal("fbAppID", $facebookAppID);
 $twig->addGlobal("disqusLoad", $disqus);
 $twig->addGlobal("showAds", $showAds);
 $twig->addglobal("showAnalytics", $showAnalytics);
+$twig->addGlobal("showFacebook", $showFacebook);
 if($disqus)
 {
     $twig->addGlobal("disqusShortName", $disqusShortName);
