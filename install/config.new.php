@@ -76,10 +76,6 @@ $stompServer = "tcp://stomp.zkillboard.com:61613";
 $stompUser = "guest";
 $stompPassword = "guest";
 
-// CloudFlare
-$cfUser = "";
-$cfKey = "";
-
 // Disqus
 $disqus = false;
 $disqusShortName = "";
