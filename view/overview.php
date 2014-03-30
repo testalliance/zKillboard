@@ -17,6 +17,7 @@
  */
 
 $key = $input[0];
+if (!isset($input[1])) $app->redirect("/");
 $id = $input[1];
 $pageType = @$input[2];
 
