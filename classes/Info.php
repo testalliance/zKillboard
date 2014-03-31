@@ -798,19 +798,21 @@ class Info
 					break;
 				case "solarSystemID":
 					$info = self::getSystemInfo($value);
-					$element["solarSystemName"] = $info["solarSystemName"];
-					$element["sunTypeID"] = $info["sunTypeID"];
-					$securityLevel = number_format($info["security"], 1);
-					if ($securityLevel == 0 && $info["security"] > 0) $securityLevel = 0.1;
-					$element["solarSystemSecurity"] = $securityLevel;
-					$element["systemColorCode"] = self::getSystemColorCode($securityLevel);
-					$regionInfo = self::getRegionInfoFromSystemID($value);
-					$element["regionID"] = $regionInfo["regionID"];
-					$element["regionName"] = $regionInfo["regionName"];
-					$wspaceInfo = self::getWormholeSystemInfo($value);
-					if ($wspaceInfo) {
-						$element["systemClass"] = $wspaceInfo["class"];
-						$element["systemEffect"] = $wspaceInfo["effectName"];
+					if (sizeof($info)) {
+						$element["solarSystemName"] = $info["solarSystemName"];
+						$element["sunTypeID"] = $info["sunTypeID"];
+						$securityLevel = number_format($info["security"], 1);
+						if ($securityLevel == 0 && $info["security"] > 0) $securityLevel = 0.1;
+						$element["solarSystemSecurity"] = $securityLevel;
+						$element["systemColorCode"] = self::getSystemColorCode($securityLevel);
+						$regionInfo = self::getRegionInfoFromSystemID($value);
+						$element["regionID"] = $regionInfo["regionID"];
+						$element["regionName"] = $regionInfo["regionName"];
+						$wspaceInfo = self::getWormholeSystemInfo($value);
+						if ($wspaceInfo) {
+							$element["systemClass"] = $wspaceInfo["class"];
+							$element["systemEffect"] = $wspaceInfo["effectName"];
+						}
 					}
 					break;
 				case "regionID":
