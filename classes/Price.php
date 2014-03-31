@@ -78,7 +78,7 @@ class Price
 		static::doPopulateRareItemPrices($todaysLookup); // Populate rare items and today's lookup and do some cleanup
 		Storage::store($todaysLookupTypeID, "true"); // Add today's lookup entry for this item
 
-		usleep(200); // Limit CREST market calls to 5 per second (sleep regardless of when we made our last call)
+		usleep(200000); // Limit CREST market calls to 5 per second (sleep regardless of when we made our last call)
 
 		$url = "http://public-crest.eveonline.com/market/10000002/types/$typeID/history/";
 		$raw = Util::getData($url);
