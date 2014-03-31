@@ -103,6 +103,11 @@
                 {% block content %}Default content{% endblock %}
 
 		<div class="clearfix"></div>
+                {% if showAds != false %}
+                <div class="centered" id="adsensebottom" style="margin-bottom: 5px;">
+                    {% if eveigb %}{{ igbbottomad|raw }}{% elseif isMobile and isTablet == false %}{{ mobilebottomad|raw }}{% else %}{{ bottomad|raw }}{% endif %}
+                </div>
+                {% endif %}
 
                 <div class="hidden-xs">{% include "footer.html" %}</div>
             </div>		
