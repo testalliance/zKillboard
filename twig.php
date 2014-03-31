@@ -73,6 +73,10 @@ $twig->addGlobal("igbbottomad", Google::ad($bottomCaPub, $bottomAdSlot, $adWidth
 $twig->addGlobal("analytics", Google::analytics($analyticsID, $analyticsName));
 $twig->addGlobal("fbAppID", $facebookAppID);
 $twig->addGlobal("disqusLoad", $disqus);
+$noAdPages = array("/account/", "/moderator/", "/ticket", "/register/");
+foreach($noAdPages as $noAdPage) {
+	$showAds &= !Util::startsWith($uri, $noAdPage);
+}
 $twig->addGlobal("showAds", $showAds);
 $twig->addglobal("showAnalytics", $showAnalytics);
 $twig->addGlobal("showFacebook", $showFacebook);
