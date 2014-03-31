@@ -7,12 +7,12 @@ CREATE TABLE `zz_killmails` (
   `source` varchar(64) DEFAULT NULL,
   `insertTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `kill_json` mediumtext NOT NULL,
-  UNIQUE KEY `killID` (`killID`),
-  KEY `processed` (`processed`),
+  UNIQUE KEY `killID` (`killID`) KEY_BLOCK_SIZE=8192,
+  KEY `processed` (`processed`) KEY_BLOCK_SIZE=8192,
   KEY `hash` (`hash`),
   KEY `source` (`source`),
   KEY `insertTime` (`insertTime`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPRESSED KEY_BLOCK_SIZE=4
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPRESSED KEY_BLOCK_SIZE=8
 /*!50100 PARTITION BY HASH (killid)
 PARTITIONS 10 */;
 

@@ -8,7 +8,7 @@ CREATE TABLE `zz_corporations` (
   `ticker` varchar(6) NOT NULL,
   `memberCount` int(4) DEFAULT NULL,
   `lastUpdated` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `description` text CHARACTER SET utf16 COLLATE utf16_unicode_ci NOT NULL,
+  `description` text NOT NULL,
   PRIMARY KEY (`corporationID`),
   KEY `name` (`name`),
   KEY `ticker` (`ticker`),

@@ -19,5 +19,5 @@ CREATE TABLE `zz_api_characters` (
   KEY `isDirector` (`isDirector`),
   KEY `cachedUntil` (`cachedUntil`),
   KEY `errorCount` (`errorCount`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC ;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 

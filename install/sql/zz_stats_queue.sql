@@ -1,5 +1,7 @@
+
 DROP TABLE IF EXISTS `zz_stats_queue`;
-CREATE TABLE IF NOT EXISTS `zz_stats_queue` (
-  `killID` int(11) NOT NULL,
+CREATE TABLE `zz_stats_queue` (
+  `killID` int(16) NOT NULL,
   PRIMARY KEY (`killID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
