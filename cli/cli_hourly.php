@@ -30,13 +30,14 @@ class cli_hourly implements cliCommand
 
 	public function getCronInfo()
 	{
-		return array(
-			3600 => ""
-		);
+		return array(0 => ""); // Run every minute but let the code decide the top of the hour
 	}
 
 	public function execute($parameters, $db)
 	{
+		$minute = date("i");
+		if ($minute != 0) return;
+
 		global $enableAnalyze;
 
 		$actualKills = Storage::retrieve("ActualKillCount");
