@@ -48,6 +48,7 @@ class cli_updateCharacters implements cliCommand
 			$db->execute("insert ignore into zz_characters (characterID) select characterID from zz_api_characters where characterID != 0");
 		}
 		$result = $db->query("select characterID, name from zz_characters where lastUpdated < date_sub(now(), interval 7 day) and corporationID != 1000001 order by lastUpdated limit 600", array(), 0);
+		$timer = new Timer();
 		foreach ($result as $row) {
 			if (Util::isMaintenanceMode()) return;
 			$id = $row["characterID"];
@@ -77,6 +78,7 @@ class cli_updateCharacters implements cliCommand
 					Log::log("ERROR Validating Character $id" . $ex->getMessage());
 			}
 			usleep(100000); // Try not to spam the API servers (pauses 1/10th of a second)
+			if ($timer->stop() > 60000) return;
 		}
 	}
 }
