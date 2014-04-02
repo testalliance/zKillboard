@@ -1,13 +1,13 @@
-body {
-	background-color: #060606;
-	background-image: url("/img/bg_cyborg_blueish.png");
-	-webkit-background-size: cover;
-	-moz-background-size: cover;
-	-o-background-size: cover;
-	background-size: cover;
-	background-attachment: fixed;
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='.myBackground.jpg', sizingMethod='scale');
-	-ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='myBackground.jpg', sizingMethod='scale')";
+@media (min-width: 768px) {
+	body {
+		background-color: #060606;
+		background-image: url("/img/bg_cyborg_blueish.jpg");
+		-webkit-background-size: cover;
+		-moz-background-size: cover;
+		-o-background-size: cover;
+		background-size: cover;
+		background-attachment: fixed;
+	}
 }
 
 .nobackground {

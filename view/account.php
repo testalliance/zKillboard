@@ -131,7 +131,7 @@ if($_POST)
 	if(isset($ddcombine))
 		UserConfig::set("ddcombine", $ddcombine);
 
-	$ddmonthyear = Util::getPost("ddmonthYear");
+	$ddmonthyear = Util::getPost("ddmonthyear");
 	if(isset($ddmonthyear))
 		UserConfig::set("ddmonthyear",$ddmonthyear);
 
