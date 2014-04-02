@@ -32,6 +32,12 @@ class Util
 		return Storage::retrieve("notification", null);
 	}
 
+	public static function is904Error()
+	{
+		$stop904 = Db::queryField("select count(*) count from zz_storage where locker = 'ApiStop904' and contents > now()", "count", array(), 1);
+		return $stop904 > 0;
+	}
+
 	/**
 	 * @param integer $keyID
 	 * @param string $vCode
@@ -39,6 +45,13 @@ class Util
 	public static function getPheal($keyID = null, $vCode = null)
 	{
 		global $phealCacheLocation, $apiServer, $baseAddr, $ipsAvailable;
+
+		if (static::is904Error()) 
+		{
+			Log::log("Aborting thread because of API 904");
+			exit();
+		}
+
 		\Pheal\Core\Config::getInstance()->http_method = "curl";
 		\Pheal\Core\Config::getInstance()->http_user_agent = "API Fetcher for http://$baseAddr";
 		if(!empty($ipsAvailable))
@@ -56,8 +69,8 @@ class Util
 		\Pheal\Core\Config::getInstance()->api_customkeys = true;
 		\Pheal\Core\Config::getInstance()->api_base = $apiServer;
 
-			if ($keyID != null && $vCode != null) $pheal = new \Pheal\Pheal($keyID, $vCode);
-			else $pheal = new \Pheal\Pheal();
+		if ($keyID != null && $vCode != null) $pheal = new \Pheal\Pheal($keyID, $vCode);
+		else $pheal = new \Pheal\Pheal();
 		return $pheal;
 	}
 

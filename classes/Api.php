@@ -320,6 +320,7 @@ class Api
 			else foreach ($allChars as $char) {
 				if (Util::isMaintenanceMode()) return;
 				if ($timer->stop() > $maxTime) return;
+				if (Util::is904Error()) return;
 
 				$apiRowID = $char["apiRowID"];
 				Db::execute("update zz_api_characters set cachedUntil = date_add(if(cachedUntil=0, now(), cachedUntil), interval 5 minute), lastChecked = now() where apiRowID = :id", array(":id" => $apiRowID));
