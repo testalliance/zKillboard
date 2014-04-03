@@ -85,4 +85,4 @@ switch($type)
 	break;
 }
 
-$app->render("kills.html", array("kills" => $kills, "page" => $page, "pageType" => $type, "pager" => true));
+$app->render("kills.html", array("kills" => $kills, "page" => $page, "killsType" => $type, "pager" => true));

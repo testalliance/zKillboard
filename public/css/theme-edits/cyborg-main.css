@@ -71,3 +71,15 @@ tr.heading {
 	border-top-color: #888;
 	border-bottom-color: #888;
 }
+
+input.datepicker {
+	cursor: pointer !important;
+	outline: none;
+	color: #FFF; 
+	width: 70px;
+	background-color: #222;
+	border: 1px solid #282828;	
+	margin-right: 10px;
+	margin-top: 0px !important;
+	text-align: center;
+}

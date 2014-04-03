@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 
-{% if pageType %}
-	{% set pageTitle = pageType|replace({"_": " "}) %}
-    {% set pageTitle = 'Kills (' ~ pageTitle|capitalize ~ ')' %}
+{% set pageType = "kills" %}
+{% if killsType %}
+	{% set pageTitle = killsType|replace({"_": " "}) %}
+    {% set pageTitle = 'Kills (' ~ killsType|capitalize ~ ')' %}
 {% else %}
     {% set pageTitle = 'Kills' %}
 {% endif %}

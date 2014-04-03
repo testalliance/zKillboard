@@ -3,13 +3,12 @@
 {% else %}
 {% set headingType = 'h2' %}
 {% endif %}
+{% include 'components/pager.html' %}
 {% if killList|length == 0 %}
-<div class="clearfix"></div>
 <{{ headingType }}>{{ killListTitle }}</{{ headingType }}>
 <div class="alert">Nothing to display here...</div>
 {% else %}
 <{{ headingType }} class="pull-left">{{ killListTitle }}</{{ headingType }}>
-{% include 'components/pager.html' %}
 {% set CurrentYear = '' %}
 {% set CurrentMonth = '' %}
 {% set CurrentDay = ''%}
