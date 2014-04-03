@@ -21,8 +21,15 @@ $app->view(new \Slim\Extras\Views\Twig());
 
 // Theme
 $viewtheme = null;
-if(User::isLoggedIn())
+$accountBalance = 0;
+$userShowAds = true;
+if(User::isLoggedIn()) 
+{
 	$viewtheme = UserConfig::get("viewtheme");
+	$accountBalance = User::getBalance(User::getUserID());
+	$adFreeUntil = UserConfig::get("adFreeUntil", null);
+	$userShowAds = $adFreeUntil == null ? true : $adFreeUntil <= date("Y-m-d H:i");
+}
 $cachepath = "cache/templates/" . ($viewtheme ? $viewtheme : "bootstrap");
 
 \Slim\Extras\Views\Twig::$twigOptions = array(
@@ -76,6 +83,7 @@ $twig->addGlobal("disqusLoad", $disqus);
 $noAdPages = array("/account/", "/moderator/", "/ticket", "/register/", "/information/");
 foreach($noAdPages as $noAdPage) {
 	$showAds &= !Util::startsWith($uri, $noAdPage);
+	$showAds &= $userShowAds;
 }
 $twig->addGlobal("showAds", $showAds);
 $twig->addglobal("showAnalytics", $showAnalytics);
@@ -85,6 +93,11 @@ if($disqus)
     $twig->addGlobal("disqusShortName", $disqusShortName);
     $twig->addglobal("disqus", Disqus::init());
 }
+
+// User's account balance
+$twig->addGlobal("accountBalance", $accountBalance);
+$twig->addGlobal("adFreeMonthCost", $adFreeMonthCost);
+
 
 $detect = new Mobile_Detect();
 $twig->addGlobal("isMobile", ($detect->isMobile() ? true : false));

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% set pageTitle = 'Information - Payments' %}
+{% block title %}{% include 'components/title.html' %}{% endblock %}
+
+{% block content %}
+<h2>zKillboard - Payments</h2>
+<hr/>
+You can make payments to zKillboard that will remove ads when you are logged in.<br/>
+You can be ad free on zKillboard.com and all subdomains when they are implemented Soon(TM).<br/><br/>
+<div class="alert alert-info"><em>You MUST have an API registered with us that has the character you're sending ISK from - or we won't know who is sending us the ISK!<br/>This API must be tied to your account as well... click <a href='/account/api/'>here</a> to see API tied to your account.</em></div>
+Each month of ad free time costs {{ adFreeMonthCost|number_format(2) }} ISK. <br/>
+Each 6 months you purchase will give you a bonus month.<br/><br/>
+To make a payment send ISK to the character <a href="https://zkillboard.com/character/93382481/">zKillboard</a>, or use this handy in game link: <a href="showinfo:1375//93382481">zKillboard</a>.<br/><br/>
+The wallet is checked approximately every 35 minutes.<br/>
+{% endblock%}

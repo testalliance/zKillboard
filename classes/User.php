@@ -172,4 +172,16 @@ class User
 	{
 		Db::execute("DELETE FROM zz_users_sessions WHERE userID = :userID AND sessionHash = :sessionHash", array(":userID" => $userID, ":sessionHash" => $sessionHash));
 	}
+
+	public static function getBalance($userID)
+	{
+		$balance = Db::queryField("select balance from zz_account_balance where userID = :userID", "balance", array(":userID" => $userID), 0);
+		if ($balance == null) $balance = 0;
+		return $balance;
+	}
+
+	public static function getPaymentHistory($userID)
+	{
+		return Db::query("select * from zz_account_history where userID = :userID", array(":userID" => $userID), 0);
+	}
 }
