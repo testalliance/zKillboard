@@ -47,7 +47,7 @@ class cli_updateCharacters implements cliCommand
 			$db->execute("insert ignore into zz_characters (characterID) select ceoID from zz_corporations");
 			$db->execute("insert ignore into zz_characters (characterID) select characterID from zz_api_characters where characterID != 0");
 		}
-		$result = $db->query("select characterID, name from zz_characters where lastUpdated < date_sub(now(), interval 7 day) and corporationID != 1000001 order by lastUpdated limit 600", array(), 0);
+		$result = $db->query("select characterID, name from zz_characters where lastUpdated < date_sub(now(), interval 7 day) order by lastUpdated limit 600", array(), 0);
 		$timer = new Timer();
 		foreach ($result as $row) {
 			if (Util::isMaintenanceMode()) return;
