@@ -141,8 +141,8 @@
 				</li>
 				{% if sessionusername %}
 				<li class="dropdown">
-					<a href="#" class="dropdown-toggle hidden-xs" data-toggle="dropdown"><i class="fa fa-user"></i> {{ sessionusername }}</a>
-					<a href="#" class="dropdown-toggle hidden-lg hidden-md hidden-sm" data-toggle="dropdown">Account <b class="fa fa-caret-down"></b></a>
+					<a href="#" class="dropdown-toggle hidden-xs" data-toggle="dropdown"><i class="fa fa-user"></i> {{ sessionusername }} <span class="caret"></span></a>
+					<a href="#" class="dropdown-toggle hidden-lg hidden-md hidden-sm" data-toggle="dropdown">Account <span class="caret"></span></a>
 					<ul class="dropdown-menu">
 						<li><a href="/account/">Account</a></li>
 						{% if sessionmoderator or sessionadmin %}
@@ -155,7 +155,7 @@
 				{% else %}
 				<li class="hidden-xs"><a href="/register/">Register</a></li>
 				<li class="dropdown">
-					<a class="dropdown-toggle" href="/" data-toggle="dropdown">Login <i class="fa fa-caret-down"></i></a>
+					<a class="dropdown-toggle" href="/" data-toggle="dropdown">Login <span class="caret"></span></a>
 					<div class="dropdown-menu" style="padding: 20px;">
 						<form method="post" action="/login/" accept-charset="UTF-8">
 							<input class="form-control col-lg-4" type="text" placeholder="Username" id="username" name="username">
