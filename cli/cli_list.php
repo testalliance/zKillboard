@@ -30,7 +30,6 @@ class cli_list implements cliCommand
 
 	public function execute($parameters, $db)
 	{
-		var_dump($db);
 		$commands = array();
 		$dir = __DIR__;
 
@@ -38,7 +37,7 @@ class cli_list implements cliCommand
 		{
 			while(false !== ($entry = readdir($handle)))
 			{
-				if($entry != "." && $entry != ".." && $entry != "base.php" && $entry != "cli_methods.php")
+				if($entry != "." && $entry != ".." && $entry != "base.txt" && $entry != "cli_methods.php")
 				{
 					$s1 = explode("cli_", $entry);
 					$s2 = explode(".php", $s1[1]);
