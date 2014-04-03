@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% set pageTitle = 'Information - Killmails' %}
+{% block title %}{% include 'components/title.html' %}{% endblock %}
+
+{% block content %}
+<h2>zKillboard - Killmails</h2>
+<h4>Statistics</h4>
+{{ info.total|number_format(0, '.', ',') }} kills processed.<br/>
+{{ info.ignored|number_format(0, '.', ',') }} NPC kills ignored.<br/>
+{{ info.kills|number_format(0, '.', ',') }} total kills in the database.<br/>
+<br/>
+<h4>Points</h4>
+<pre>
+Calculation:
+        $vicpoints = Points::getPoints($victim["groupID"]);
+        $vicpoints += $kill["total_price"] / 10000000;
+        $maxpoints = round($vicpoints * 1.2);
+
+        $invpoints = 0;
+        foreach ($involved as $inv)
+        {
+                $invpoints += Points::getPoints($inv["groupID"]);
+        }
+
+        $gankfactor = $vicpoints / ($vicpoints + $invpoints);
+        $points = ceil($vicpoints * ($gankfactor / 0.75));
+        if ($points > $maxpoints) $points = $maxpoints;
+        $points = round($points, 0);
+</pre>
+<ul>
+{% for points in info.pointValues %}
+ <li>{{ points.0 }}: {{ points.1 }}</li>
+{% endfor %}
+</ul>
+{% endblock %}

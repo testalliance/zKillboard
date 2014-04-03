@@ -83,3 +83,10 @@ input.datepicker {
 	margin-top: 0px !important;
 	text-align: center;
 }
+
+pre {
+	background-color: #000;
+	font-weight: bold;
+	color: #6E6E6E;
+	border-color: #333;
+}
