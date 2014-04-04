@@ -20,8 +20,8 @@ $validPages = array("about", "legal", "killmails", "payments");
 if (!in_array($page, $validPages)) $app->redirect("/");
 
 $info = array();
-$info["kills"] = Storage::retrieve("KillCount");
-$info["total"] = Storage::retrieve("ActualKillCount");
+$info["kills"] = Storage::retrieve("totalKills");
+$info["total"] = Storage::retrieve("actualKills");
 $info["pointValues"] = Points::getPointValues();
 
 $app->render("information/$page.html", array("pageview" => $page, "info" => $info));
