@@ -21,7 +21,6 @@ if (!in_array($page, $validPages)) $app->redirect("/");
 
 $info = array();
 $info["kills"] = Storage::retrieve("KillCount");
-//$info["ignored"] = Db::queryField("select count(*) count from zz_killmails where processed = 3", "count", array(), 300);
 $info["total"] = Storage::retrieve("ActualKillCount");
 $info["pointValues"] = Points::getPointValues();
 
