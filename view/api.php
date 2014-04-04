@@ -24,7 +24,7 @@ $parameters = Util::convertUriToParameters();
 // Enforcement
 if (sizeof($parameters) < 2) die("Invalid request.  Must provide at least two request parameters");
 // At least one of these modifiers is required
-$requiredM = array("characterID", "corporationID", "allianceID", "factionID", "shipTypeID", "groupID", "solarSystemID", "regionID", "solo", "w-space");
+$requiredM = array("characterID", "corporationID", "allianceID", "factionID", "shipTypeID", "groupID", "solarSystemID", "solo", "w-space");
 $hasRequired = false;
 foreach($requiredM as $required) {
 	$hasRequired |= array_key_exists($required, $parameters);
