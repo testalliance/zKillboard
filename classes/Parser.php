@@ -43,7 +43,13 @@ class Parser
 			Db::execute("delete from zz_participants_temporary");
 
 			//Log::log("Fetching kills for processing...");
-			$result = Db::query("select * from zz_killmails where processed = 0 order by killID desc limit 100", array(), 0);
+			//$ids = Db::query("select killID from zz_killmails where processed = 0 order by killID desc limit 1", array(), 0);
+			$ids = Db::query("select max(killID) killID from zz_killmails where processed = 0", array(), 0);
+			$result = array();
+			foreach($ids as $row) {
+				$killID = $row["killID"];
+				$result[] = Db::queryRow("select * from zz_killmails where killID = :killID", array(":killID" => $killID), 0);
+			}
 
 			if (sizeof($result) == 0) {
 				$currentSecond = (int) date("s");
@@ -58,6 +64,7 @@ class Parser
 			foreach ($result as $row) {
 				$numKills++;
 				$kill = json_decode($row['kill_json'], true);
+				Db::execute("delete from zz_killid where killID = :killID", array(":killID" => $row["killID"]));
 				if (!isset($kill["killID"])) {
 					Log::log("Problem with kill " . $row["killID"]);
 					Db::execute("update zz_killmails set processed = 2 where killid = :killid", array(":killid" => $row["killID"]));
