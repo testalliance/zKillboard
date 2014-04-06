@@ -23,5 +23,6 @@ $info = array();
 $info["kills"] = Storage::retrieve("totalKills");
 $info["total"] = Storage::retrieve("actualKills");
 $info["pointValues"] = Points::getPointValues();
+$info["NextWalletFetch"] = Storage::retrieve("NextWalletFetch");
 
 $app->render("information/$page.html", array("pageview" => $page, "info" => $info));
