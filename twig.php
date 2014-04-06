@@ -44,6 +44,17 @@ $twig = $app->view()->getEnvironment();
 
 $uri = $_SERVER["REQUEST_URI"];
 $explode = explode("/", $uri);
+$expager = explode("/", $uri);
+
+foreach($expager as $key => $ex) 
+{
+	if(in_array($ex, array("page")))
+	{
+		unset($expager[$key]);
+		unset($expager[$key+1]);
+	}
+}
+
 foreach($explode as $key => $ex)
 {
 
@@ -56,6 +67,7 @@ foreach($explode as $key => $ex)
 
 }
 
+$twig->addGlobal('requestUriPager', implode("/", $expager));
 $actualURI = implode("/", $explode);
 $twig->addGlobal("actualURI", $actualURI);
 $uriParams = Util::convertUriToParameters();
