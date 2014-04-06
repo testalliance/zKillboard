@@ -70,7 +70,7 @@ class cli_fetchWallet implements cliCommand
 			$reason = $row["reason"];
 			if ($reason)
 			{
-				$reason = str_replace("DESC: ", "", $reason);
+				$reason = trim(str_replace("DESC: ", "", $reason));
 				$userID = Db::queryField("select id from zz_users where username = :reason", "id", array(":reason" => $reason));
 			}
 
