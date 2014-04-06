@@ -1,11 +1,9 @@
-{% if pageType == "kills" %}
-    {% set pageBase = '/kills/page/' %}
+{% if pageType == "kills" or pageType == "overview" %}
+	{% set pageBase = requestUriPager|last == '/' ? requestUriPager ~ 'page/' : requestUriPager ~ '/page/' %}
+{% elseif pageType == "index" %}
+	{% set pageBase = "/kills/page/" %}
 {% else %}
-    {% if requesturi|last == '/' %}
-        {% set pageBase = requesturi ~ 'page/' %}
-    {% else %}
-        {% set pageBase = requesturi ~ '/page/' %}
-    {% endif %}
+	{% set pageBase = requesturi|last == '/' ? requesturi ~ 'page/' : requesturi ~ '/page/' %}
 {% endif %}
 
 <div class="pull-right">
