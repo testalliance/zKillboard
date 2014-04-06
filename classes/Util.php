@@ -195,7 +195,7 @@ class Util
 				break;
 				case "page":
 					$value = (int)$value;
-					if ($value < 1) throw new Exception("page must be greater than or equal to 1");
+					if ($value < 1) $value = 1;
 					$parameters[$key] = $value;
 				break;
 				case "orderDirection":
