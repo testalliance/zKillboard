@@ -52,11 +52,11 @@ if($_POST)
 
 			$months = str_replace("buy", "", $purchase);
 			if ($months > 12 || $months < 0) $months = 1;
-			$balance = 1000000; User::getBalance($userID);
+			$balance = User::getBalance($userID);
 			$amount = $adFreeMonthCost * $months;
 			$bonus = floor($months / 6);
 			$months += $bonus;
-			if ($balance >= $amount && $months)
+			if ($balance >= $amount)
 			{
 				$dttm = UserConfig::get("adFreeUntil", null);
 				$now = $dttm == null ? " now() " : "'$dttm'";

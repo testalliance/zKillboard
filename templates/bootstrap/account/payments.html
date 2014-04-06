@@ -2,6 +2,7 @@
 <h4>Balance: {{ accountBalance|number_format(2) }} ISK</h4>
 Each month of ad free time costs {{ adFreeMonthCost|number_format(2) }} ISK. Each 6 months you purchase will give you a bonus month.<br/><br/>
 {% if accountBalance == 0 %}
+	<a href='/information/payments/'>For details on how to make payments click here</a>.<br/>
 	<em>Your balance is 0, sorry, but you currently do not have any options...</em>
 {% else %}
 	<form role="form" method="post">

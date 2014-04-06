@@ -54,6 +54,7 @@ class cli_fetchWallet implements cliCommand
 			//$cachedUntil = $q->cached_until;
 			if (count($q->transactions)) $this->insertRecords($charID, $q->transactions);
 		}
+		Db::execute("replace into zz_storage values ('NextWalletFetch', date_add(now(), interval 35 minute))");
 
 		$this->applyBalances();
 	}
@@ -63,12 +64,23 @@ class cli_fetchWallet implements cliCommand
 		$toBeApplied = Db::query("select * from zz_account_wallet where paymentApplied = 0", array(), 0);
 		foreach($toBeApplied as $row)
 		{
-			// Make sure this is a payment TO zKillboard
-			if ($row["ownerID2"] != 93382481) continue;
+			if ($row["ownerID2"] != 93382481) continue; // Only process payments to zKillboard
+			$userID = null;
 
-			$charID = $row["ownerID1"];
-			$keyID = Db::queryField("select keyID from zz_api_characters where characterID = :charID", "keyID", array(":charID" => $charID), 1);
-			$userID = Db::queryField("select userID from zz_api where keyID = :keyID", "userID", array(":keyID" => $keyID), 1);
+			$reason = $row["reason"];
+			if ($reason)
+			{
+				$reason = str_replace("DESC: ", "", $reason);
+				$userID = Db::queryField("select id from zz_users where username = :reason", "id", array(":reason" => $reason));
+			}
+
+			if ($userID == null) 
+			{
+				$charID = $row["ownerID1"];
+				$keyID = Db::queryField("select keyID from zz_api_characters where characterID = :charID", "keyID", array(":charID" => $charID), 1);
+				$userID = Db::queryField("select userID from zz_api where keyID = :keyID", "userID", array(":keyID" => $keyID), 1);
+			}
+
 			if ($userID)
 			{
 				Db::execute("insert into zz_account_balance values (:userID, :amount) on duplicate key update balance = balance + :amount", array(":userID" => $userID, ":amount" => $row["amount"]));
