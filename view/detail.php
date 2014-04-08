@@ -76,11 +76,15 @@ while($cnt < 10)
 	continue;
 }
 $topDamage = $finalBlow = null;
+$first = null;
 if (sizeof($killdata["involved"]) > 1){
 	foreach($killdata["involved"] as $inv) {
+		if ($first == null) $first = $inv;
 		if ($inv["finalBlow"] == 1) $finalBlow = $inv;
 		if ($topDamage == null && $inv["characterID"] != 0) $topDamage = $inv;
 	}
+	// If only NPC's are on the mail give them credit for top damage...
+	if ($topDamage == null) $topDamage = $first;
 }
 
 $extra = array();
