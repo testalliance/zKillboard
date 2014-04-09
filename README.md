@@ -3,14 +3,16 @@
 # zKillboard
 zKillboard is a killboard created for EVE-Online, for use on EVE-KILL.net, but can also be used for single entities.
 
+# WARNING
+This is BETA, which means it is a work in progress.  It lacks complete documentation and is currently not meant for use in production.
+
+Since zKillboard is a beta product, it has a code base that is far from complete and enjoys numerous updates, deletions, and modifications to the code and accompanying tables. Please feel free to attempt to install zKillboard on your own server, however, we are not responsible for any difficulties you come across during installation and continuing execution of the product.
+
 ## Credits
 zKillboard is released under the GNU Affero General Public License, version 3. The full license is available in the `AGPL.md` file.
 zKillboard also uses data and images from EVE-Online, which is covered by a seperate license from [CCP](http://www.ccpgames.com/en/home). You can see the full license in the `CCP.md` file.
 It also uses various 3rd party libraries, which all carry their own licensing. Please refer to them for more info.
 
-## WARNING
-This is BETA, which means it is a work in progress.  It lacks documentation and is currently
-not meant for use in production.
 
 ## Contact
 `#esc` on `irc.coldfront.net`
