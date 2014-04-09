@@ -98,7 +98,7 @@ class Util
 	public static function getKillHash($killID = null, $kill = null)
 	{
 		if ($killID != null) {
-			$json = Db::queryField("select kill_json from zz_killmails where killID = :killID", "kill_json", array(":killID" => $killID), 0);
+			$json = Killmail::get($killID);
 			if ($json === null) throw new Exception("Cannot find kill $killID");
 			$kill = json_decode($json);
 			if ($kill === null) throw new Exception("Cannot json_decode $killID");

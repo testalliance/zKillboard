@@ -63,7 +63,7 @@ class Parser
 			$cleanupKills = array();
 			foreach ($result as $row) {
 				$numKills++;
-				$kill = json_decode($row['kill_json'], true);
+				$kill = json_decode(Killmail::get($row["killID"]), true);
 				Db::execute("delete from zz_killid where killID = :killID", array(":killID" => $row["killID"]));
 				if (!isset($kill["killID"])) {
 					Log::log("Problem with kill " . $row["killID"]);

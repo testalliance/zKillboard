@@ -145,7 +145,7 @@ class Kills
 
 	public static function getItems($killID)
 	{
-		$json = Db::queryField("select kill_json from zz_killmails where killID = :killID", "kill_json", array(":killID" => $killID));
+		$json = Killmail::get($killID);
 		$killArray = json_decode($json, true);
 		$killTime = $killArray["killTime"];
 		$items = array();
@@ -200,7 +200,7 @@ class Kills
 	 */
 	public static function getArray($killID)
 	{
-		$jsonRaw = Db::queryField("SELECT kill_json FROM zz_killmails WHERE killID = :killID", "kill_json", array(":killID" => $killID));
+		$jsonRaw = Killmail::get($killID);
 		$decode = json_decode($jsonRaw, true);
 		$killarray = Info::addInfo($decode);
 		return $killarray;
@@ -214,7 +214,7 @@ class Kills
 	 */
 	public static function getJson($killID)
 	{
-		$jsonRaw = Db::queryField("SELECT kill_json FROM zz_killmails WHERE killID = :killID", "kill_json", array(":killID" => $killID));
+		$jsonRaw = Killmail::get($killID);
 		$decoded = json_decode($jsonRaw, true);
 		$killarray = Info::addInfo($decoded);
 		return json_encode($killarray);

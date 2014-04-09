@@ -92,7 +92,7 @@ class Feed
 
 		foreach ($kills as $kill) {
 			$killID = $kill["killID"];
-			$jsonText = Db::queryField("select kill_json from zz_killmails where killID = :killID", "kill_json", array(":killID" => $killID));
+			$jsonText = Killmail::get($killID);
 			$json = json_decode($jsonText, true);
 			if (array_key_exists("no-items", $parameters)) unset($json["items"]);
 			if (array_key_exists("finalblow-only", $parameters))

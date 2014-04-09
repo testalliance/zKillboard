@@ -46,7 +46,7 @@ class cli_statsQueue implements cliCommand
 				$killID = $row["killID"];
 				Stats::calcStats($killID, true);
 				// Add points and total value to the json stored in the database
-				$raw = Db::queryField("select kill_json from zz_killmails where killID = :killID", "kill_json", array(":killID" => $killID), 0);
+				$raw = Killmail::get($killID);
 				$json = json_decode($raw, true);
 				unset($json["_stringValue"]);
 				unset($json["zkb"]);
@@ -59,6 +59,7 @@ class cli_statsQueue implements cliCommand
 
 					$raw = json_encode($json);
 					Db::execute("update zz_killmails set kill_json = :raw where killID = :killID", array(":killID" => $killID, ":raw" => $raw));
+					Db::execute("insert ignore into zz_killid values (:killID, 0)", array(":killID" => $killID));
 				}
 				Db::execute("delete from zz_stats_queue where killID = :killID", array(":killID" => $killID));
 			}
