@@ -42,6 +42,8 @@ class cli_crestapi implements cliCommand
 	 */
 	public function execute($parameters, $db)
 	{
+		global $debug;
+		$count = 0;
 		$timer = new Timer();
 
 		do {
@@ -53,7 +55,7 @@ class cli_crestapi implements cliCommand
 					usleep(200000);
 
 					$url = "http://public-crest.eveonline.com/killmails/$killID/$hash/";
-					Log::log($url);
+					if ($debug) Log::log($url);
 					$perrymail = \Perry\Perry::fromUrl($url);
 
 					$killmail = array();
@@ -76,6 +78,8 @@ class cli_crestapi implements cliCommand
 					// Write this file to eve-kill's parse directory
 					$xml = Util::xmlOut(array($killmail), array());
 					Util::sendToEveKill("0_0_$killID.xml", $xml);
+
+					$count++;
 				} catch (Exception $ex) {
 					Log::log("CREST exception: $killID - " . $ex->getMessage());
 					Db::execute("update zz_crest_killmail set processed = -1 where killID = :killID", array(":killID" => $killID));
@@ -83,6 +87,7 @@ class cli_crestapi implements cliCommand
 			}
 			if (count($crests) == 0) sleep(1);
 		} while ($timer->stop() < 65000);
+		if ($count) Log::log("CREST: Added $count kills");
 	}
 
 	/**
