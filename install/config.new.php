@@ -97,6 +97,7 @@ $accessTokenSecret = "";
 
 // Ads / Analytics
 $showAds = false;
+$adFreeMonthCost = 0;
 $showAnalytics = false;
 $topCaPub = ""; // ca-pub-<number>
 $topAdSlot = ""; // google_ad_slot number
@@ -119,3 +120,6 @@ $config = array(
 
 $useSemaphores = false;
 $semaphoreModulus = 10;
+
+# Save killmails to file system if enabled.
+$fsKillmails = false;
