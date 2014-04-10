@@ -30,7 +30,7 @@ class cli_killwriter implements cliCommand
 
         public function getCronInfo()
         {
-                return array(600 => "");
+                return array(1800 => "");
         }
 
 	public function execute($parameters, $db)
