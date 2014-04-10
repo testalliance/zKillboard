@@ -18,9 +18,11 @@ class Killmail
 		}
 
 		$file = static::getFile($killID);
+		if (!file_exists($file)) return null;
 		
 		$contents = file_get_contents($file);
 		$kills = json_decode($contents, true);
+		if (!isset($kills["$killID"])) return null;
 		$kill = $kills["$killID"];
 		if ($kill != '') Cache::set("Kill$killID", $kill);
 		return $kill;
