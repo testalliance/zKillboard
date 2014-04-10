@@ -24,5 +24,6 @@ $info["kills"] = Storage::retrieve("totalKills");
 $info["total"] = Storage::retrieve("actualKills");
 $info["pointValues"] = Points::getPointValues();
 $info["NextWalletFetch"] = Storage::retrieve("NextWalletFetch");
+$info["apistats"] = Db::query("select errorCode, count(*) count from zz_api_log where requestTime >= date_sub(now(), interval 1 hour) group by 1");
 
 $app->render("information/$page.html", array("pageview" => $page, "info" => $info));

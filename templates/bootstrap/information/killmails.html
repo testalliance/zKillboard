@@ -10,6 +10,26 @@
 {{ info.kills|number_format(0, '.', ',') }} total kills in the database.<br/>
 <small><em>These numbers updated hourly...</em></small>
 <br/>
+<h4>API Calls</h4>
+Number of API calls and their result in the last hour.<br/>
+{% set totalCalls = 0 %}
+{% set errorCalls = 0 %}
+<table class="table table-compact table-striped table-hover table-bordered table-condensed col-xs-4" style="width: auto;">
+	<tr><th>Error</th><th>Count</th></tr>
+{% for row in info.apistats %}
+	<tr>
+		<td>{{ row.errorCode == null ? 'No error' : row.errorCode }}</td>
+		<td style="text-align: right;">{{ row.count|number_format() }}</td>
+	</tr>
+	{% set totalCalls = totalCalls + row.count %}
+	{% set errorCalls = errorCalls + ( row.errorCode == null ? 0 : row.count ) %}
+{% endfor %}
+</table>
+{% set totalRate = totalCalls / 3600 %}
+{% set errorRate = errorCalls / 3600 %}
+<div class="clearfix"></div>
+<p>API fetched at {{ totalRate|number_format(1) }} calls per second with {{ errorRate|number_format(1) }} errors per second.</p>
+
 <h4>Points</h4>
 <pre>
 Calculation:
