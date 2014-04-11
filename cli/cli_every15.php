@@ -38,16 +38,17 @@ class cli_every15 implements cliCommand
 	public function execute($parameters, $db)
 	{
 		$p = array();
-		$p["limit"] = 5;
-		$p["pastSeconds"] = 3 * 86400;
+		$numDays = 7;
+		$p["limit"] = 10;
+		$p["pastSeconds"] = $numDays * 86400;
 		$p["kills"] = true;
 
-		Storage::store("Top3dayChars", json_encode(Info::doMakeCommon("Top Characters", "characterID", Stats::getTopPilots($p))));
-		Storage::store("Top3dayCorps", json_encode(Info::doMakeCommon("Top Corporations", "corporationID", Stats::getTopCorps($p))));
-		Storage::store("Top3dayAlli", json_encode(Info::doMakeCommon("Top Alliances", "allianceID", Stats::getTopAllis($p))));
-		Storage::store("TopIsk", json_encode(Stats::getTopIsk(array("pastSeconds" => (3*86400), "limit" => 5))));
-		Storage::store("TopPods", json_encode(Stats::getTopIsk(array("groupID" => 29, "pastSeconds" => (3*86400), "limit" => 5))));
-		Storage::store("TopPoints", json_encode(Stats::getTopPoints("killID", array("losses" => true, "pastSeconds" => (3*86400), "limit" => 5))));
+		Storage::store("TopChars", json_encode(Info::doMakeCommon("Top Characters", "characterID", Stats::getTopPilots($p))));
+		Storage::store("TopCorps", json_encode(Info::doMakeCommon("Top Corporations", "corporationID", Stats::getTopCorps($p))));
+		Storage::store("TopAllis", json_encode(Info::doMakeCommon("Top Alliances", "allianceID", Stats::getTopAllis($p))));
+		Storage::store("TopIsk", json_encode(Stats::getTopIsk(array("pastSeconds" => ($numDays*86400), "limit" => 5))));
+		Storage::store("TopPods", json_encode(Stats::getTopIsk(array("groupID" => 29, "pastSeconds" => ($numDays*86400), "limit" => 5))));
+		Storage::store("TopPoints", json_encode(Stats::getTopPoints("killID", array("losses" => true, "pastSeconds" => ($numDays*86400), "limit" => 5))));
 		Storage::store("KillCount", $db->queryField("select count(*) count from zz_killmails", "count"));
 		Storage::store("ActualKillCount", $db->queryField("select count(*) count from zz_killmails where processed = 1", "count"));
 	}

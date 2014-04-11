@@ -21,18 +21,12 @@ $topIsk = json_decode(Storage::retrieve("TopIsk"), true);
 $topPods = json_decode(Storage::retrieve("TopPods"), true);
 $topPointList = json_decode(Storage::retrieve("TopPoints"), true);
 
-if(is_array($topPointList))
-	$topPoints = Kills::getKillsDetails($topPointList);
-
-$p = array();
-$p["limit"] = 5;
-$p["pastSeconds"] = 3 * 86400;
-$p["kills"] = true;
+if(is_array($topPointList)) $topPoints = Kills::getKillsDetails($topPointList);
 
 $top = array();
-$top[] = json_decode(Storage::retrieve("Top3dayChars"), true);
-$top[] = json_decode(Storage::retrieve("Top3dayCorps"), true);
-$top[] = json_decode(Storage::retrieve("Top3dayAlli"), true);
+$top[] = json_decode(Storage::retrieve("TopChars"), true);
+$top[] = json_decode(Storage::retrieve("TopCorps"), true);
+$top[] = json_decode(Storage::retrieve("TopAllis"), true);
 
 // get latest kills
 $killsLimit = 50;
