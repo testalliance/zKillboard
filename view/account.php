@@ -194,11 +194,12 @@ $charKeys = Api::getCharacterKeys($userID);
 $charKeys = Info::addInfo($charKeys);
 $data["apiCharKeys"] = $charKeys;
 $data["userInfo"] = User::getUserInfo();
-$data["currentTheme"] = UserConfig::get("theme", "default");
+$data["currentTheme"] = UserConfig::get("theme", "cyborg");
+$data["sessionviewtheme"] = UserConfig::get("viewtheme", "bootstrap");
 $data["timeago"] = UserConfig::get("timeago");
 $data["ddcombine"] = UserConfig::get("ddcombine");
 $data["ddmonthyear"] = UserConfig::get("ddmonthyear");
-$data["useSummaryAccordion"] = UserConfig::get("useSummaryAccordion");
+$data["useSummaryAccordion"] = UserConfig::get("useSummaryAccordion", true);
 $data["sessions"] = User::getSessions($userID);
 $data["history"] = User::getPaymentHistory($userID);
 

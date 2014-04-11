@@ -25,7 +25,7 @@
 						<select name="viewtheme" class="form-control input-sm">
 						{% for viewtheme in data.viewthemes %}
 							{% set selected = "" %}
-							{% if viewtheme == sessionviewtheme %}{% set selected = "selected"%}{% endif %}
+							{% if viewtheme == data.sessionviewtheme %}{% set selected = "selected"%}{% endif %}
 							<option value="{{ viewtheme }}" {{ selected }}>{{ viewtheme }}</option>
 						{% endfor %}
 						</select>
