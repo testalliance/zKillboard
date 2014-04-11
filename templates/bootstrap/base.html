@@ -81,6 +81,12 @@
 		<div class="content">
     		{% include "navigationbar.html" %}
 
+        {% if noparsetime %}
+          <div class="container nobackground">
+    			<div class="row alert"><center><strong>Between 00:00 and 01:05 no kills are processed while we wait for CCP's Market CREST cache to clear...</strong></center></div>
+          </div>
+        {% endif %}
+
     		{% if isMaintenance() %}
     			<div class="alert alert-danger"><center>Site is in maintenance mode<br/><small>During this time no kills are processed<br/>{{ getMaintenanceReason() }}</small></center></div>
     		{% endif %}

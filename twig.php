@@ -138,3 +138,6 @@ $igb = false;
 if(stristr(@$_SERVER["HTTP_USER_AGENT"], "EVE-IGB"))
 	$igb = true;
 $twig->addGlobal("eveigb", $igb);
+
+$now = date("Gi");
+if ($now >= 0 && $now < 105) $twig->addGlobal("noparsetime", true);
