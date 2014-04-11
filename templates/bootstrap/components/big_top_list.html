@@ -1,24 +1,23 @@
 {% if topSet | length %}
+<div class="container"> 
 <h4 style="text-align: center;">{{ topTitle }}</h4>
-<table class="table table-condensed topBoxes">
-	{% for data in topSet %}
-	<tr>	
-		{% set imageSize = 32 %}
+<div class="clearfix"></div>
+<div class="clearfix"></div>
+{% set imageSize = 64 %}
+{% set shipNameLength = 32 %}
+{% for data in topSet %}
+  <div class="col-sm-2 pull-left" style="text-align: center">
 		{% set field = data.victim %}
 		{% set shipImageLinkOverride = data.info.killID %}
-		<td>{% include 'components/image_ship.html' %}</td>
-		<td class="hidden-md hidden-sm">{% include 'components/text_ship.html' %}</td>
+    {% include 'components/text_ship.html' %}<br/>
+    {% include 'components/image_ship.html' %}<br/>
 		{% if field.characterName|length > 0 %}
-		<td>{% include 'components/text_char.html' %} </td>
+		  {% include 'components/text_char.html' %} </td>
 		{% else %}
-		<td>{% include 'components/text_corp.html' %} </td>
-		{% endif %}
-		<td style="text-align: right; white-space:nowrap;">
-		{% if showPoints %} {{ data.info.points | number_format(0) }} Points
-		{% else %}{{ formatIsk(data.info.total_price) }} ISK
-		{% endif %}
-		</td>
-	</tr>
-	{% endfor %}
-</table>
+		  {% include 'components/text_corp.html' %} </td>
+		{% endif %}<br/>
+		<h6>{{ formatIsk(data.info.total_price) }} ISK</h6>
+  </div>
+{% endfor %}
+</div>
 {% endif %}

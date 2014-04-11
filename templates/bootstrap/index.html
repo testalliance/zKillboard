@@ -5,36 +5,25 @@
 {% endblock %}
 
 {% block content %}
+{% set killListTitle = 'Most recent kills' %}
+{% set killList = kills %}
 <div class="row">
+<div class="col-sm-10 pull-left" style="margin: 0px; padding: 0px;">
 	<div class="col-sm-4">
 		{% set shipNameLength = 11 %}
 		{% set topTitle = 'Most Valuable Kills - Last 3 Days' %}
 		{% set topSet = topIsk %}
 		{% include 'components/big_top_list.html' %}
 	</div>
-	<div class="col-sm-4">
-		{% set topTitle = 'Most Valuable Pods - Last 3 Days' %}
-		{% set topSet = topPods %}
-		{% include 'components/big_top_list.html' %}
-	</div>
-	<div class="col-sm-4">
-		{% set topTitle = 'Top Points Lost - Last 3 Days' %}
-		{% set topSet = topPoints %}
-		{% set showPoints = true %}
-		{% include 'components/big_top_list.html' %}
-	{% set shipNameLength = 30 %}
-	</div>
+  <div class="clearfix"></div>
+{% include 'components/kill_list.html' %}
 </div>
-
-<div class="row">
+<div class="col-sm-2 pull-right">
 	{% set isEmbedded = true %}
 	{% for topSet in topKillers %}
 	{% include 'components/top_killer_list.html' %}
 	{% endfor %}
 </div>
-
-{% set killListTitle = 'Most recent kills' %}
-{% set killList = kills %}
-<div class="row">{% include 'components/kill_list.html' %}</div>
+</div>
 
 {% endblock %}

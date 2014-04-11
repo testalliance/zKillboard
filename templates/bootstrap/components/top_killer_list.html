@@ -1,24 +1,36 @@
+{% set first = true %}
 {% if topSet.values | length %}
-<div class="col-sm-4">
-    <h4 class="centered">{{ topSet.title }}</h4>
-    <table class="table table-condensed topBoxes">
-    {% for data in topSet.values %}
-        <tr>
-        {% set imageSize = 32 %}
+<div>
+  <center><h5>{{ topSet.title }}</h5></center>
+  <table class="table table-condensed topBoxes">
+  {% for data in topSet.values %}
+    {% set field = data %}
+    {% if first %}
+      <tr>
+        {% set imageSize = 64 %}
         {% set field = data %}
         {% if topSet.type == 'character' %}
-            <td style="width: 40px;">{% include 'components/image_char.html' %}</td>
-            <td>{% include 'components/text_char.html' %}</td>
+          <td>{% include 'components/image_char.html' %}</td>
         {% elseif topSet.type == 'corporation' %}
-            <td style="width: 40px;">{% include 'components/image_corp.html' %}</td>
-            <td>{% include 'components/text_corp.html' %}</td>
+          <td>{% include 'components/image_corp.html' %}</td>
         {% elseif topSet.type == 'alliance' %}
-            <td style="width: 40px;">{% include 'components/image_alli.html' %}</td>
-            <td>{% include 'components/text_alli.html' %}</td>
-		{% endif %}
-			<td style="width: 85px; text-align: right;">{{ data.kills|number_format(0) }} Kills</td>
-        </tr>
-    {% endfor %}
-    </table>
+          <td>{% include 'components/image_alli.html' %}</td>
+        {% endif %}
+      </tr>
+      {% set first = false %}
+    {% endif %}
+    <tr>
+        {% if topSet.type == 'character' %}
+          <td>{% include 'components/text_char.html' %}</td>
+        {% elseif topSet.type == 'corporation' %}
+          <td>{% include 'components/text_corp.html' %}</td>
+        {% elseif topSet.type == 'alliance' %}
+          <td>{% include 'components/text_alli.html' %}</td>
+        {% endif %}
+        <td style="text-align: right;">{{ data.kills|number_format(0) }}</td>
+    </tr>
+  {% endfor %}
+</table>
 </div>
+<div class="clearfix"></div>
 {% endif %}
