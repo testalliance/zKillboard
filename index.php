@@ -38,6 +38,7 @@ if(!User::isLoggedIn()) User::autoLogin();
 $viewtheme = null;
 if(User::isLoggedIn())
 	$viewtheme = UserConfig::get("viewtheme");
+if (!is_dir("templates/$viewtheme")) $viewtheme = "bootstrap";
 $app->config(array("templates.path" => $baseDir."templates/" . ($viewtheme ? $viewtheme : "bootstrap")));
 
 // Error handling

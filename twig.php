@@ -26,6 +26,7 @@ $userShowAds = true;
 if(User::isLoggedIn()) 
 {
 	$viewtheme = UserConfig::get("viewtheme");
+  if (!is_dir("templates/$viewtheme")) $viewtheme = "bootstrap";
 	$accountBalance = User::getBalance(User::getUserID());
 	$adFreeUntil = UserConfig::get("adFreeUntil", null);
 	$userShowAds = $adFreeUntil == null ? true : $adFreeUntil <= date("Y-m-d H:i");
