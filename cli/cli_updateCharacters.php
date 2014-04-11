@@ -65,16 +65,10 @@ class cli_updateCharacters implements cliCommand
 				$name = $charInfo->characterName;
 				$corpID = $charInfo->corporationID;
 				$alliID = $charInfo->allianceID;
-				//CLI::out("|g|$name|n| $id $corpID $alliID");
 				if ($name != "") $db->execute("update zz_characters set name = :name, corporationID = :corpID, allianceID = :alliID where characterID = :id", array(":id" => $id, ":name" => $name, ":corpID" => $corpID, ":alliID" => $alliID));
 			}
 			catch (Exception $ex)
 			{
-				// Is this name even a participant?
-				$count = $db->queryField("select count(*) count from zz_participants where characterID = :id", "count", array(":id" => $id));
-				if ($count == 0)
-					$db->execute("delete from zz_characters where characterID = :id", array(":id" => $id));
-				elseif ($ex->getCode() != 503)
 					Log::log("ERROR Validating Character $id" . $ex->getMessage());
 			}
 			usleep(100000); // Try not to spam the API servers (pauses 1/10th of a second)
