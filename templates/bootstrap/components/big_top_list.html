@@ -9,18 +9,18 @@
   <div class="col-sm-2 pull-left" style="text-align: center">
 		{% set field = data.victim %}
 		{% set shipImageLinkOverride = data.info.killID %}
-		{% include 'components/text_ship.html' %}<br/>
+		<span class="hidden-xs">{% include 'components/text_ship.html' %}<br/></span>
 		{% include 'components/image_ship.html' %}<br/>
-		{% if field.characterName|length > 0 %}
+		<span class="hidden-xs">{% if field.characterName|length > 0 %}
 		  {% include 'components/text_char.html' %} </td>
 		{% else %}
 		  {% include 'components/text_corp.html' %} </td>
-		{% endif %}<br/>
+		{% endif %}<br/></span>
 		<h6>{{ formatIsk(data.info.total_price) }} ISK
           {% if disqusLoad %}
-            <a href="/detail/{{ data.info.killID }}/#comments" data-disqus-identifier="{{ data.info.commentID }}" rel="tooltip" title="Comments"></a>
+            <a class="hidden-xs" href="/detail/{{ data.info.killID }}/#comments" data-disqus-identifier="{{ data.info.commentID }}" rel="tooltip" title="Comments"></a>
           {% endif %}</h6>
-
+	  <br/>
   </div>
 {% endfor %}
 </div>

@@ -144,13 +144,14 @@
 						{% if sessionmoderator or sessionadmin %}
 						<li><a href="/moderator/">Moderation</a></li>
 						{% endif %}
-						<li class="divider"></li>
+						<li class="divider hidden-xs"></li>
 						<li><a href="/logout/">Logout</a></li>
 					</ul>
 				</li>
 				{% else %}
 				<li class="hidden-xs"><a href="/register/">Register</a></li>
-				<li class="dropdown">
+				<li class="visible-xs"><a href="/login/">Login</a></li>
+				<li class="hidden-xs" class="dropdown">
 					<a class="dropdown-toggle" href="/" data-toggle="dropdown">Login <span class="caret"></span></a>
 					<div class="dropdown-menu" style="padding: 20px;">
 						<form method="post" action="/login/" accept-charset="UTF-8">
