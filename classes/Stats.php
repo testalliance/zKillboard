@@ -202,18 +202,20 @@ class Stats
 		$allis = Db::query("select distinct allianceID from zz_participants where isVictim = 0 and killID = :killID", array(":killID" => $killID));
 		$factions = Db::query("select distinct factionID from zz_participants where isVictim = 0 and killID = :killID", array(":killID" => $killID));
 
-		$groupID = $victim["groupID"];
-		$points = $modifier * $victim["points"];
-		$isk = $modifier * $victim["total_price"];
+		$groupID = isset($victim["groupID"]) ? $victim["groupID"] : 0;
+		$points = isset($victim["points"]) ? $modifier * $victim["points"] : 0;
+		$isk = isset($victim["total_price"]) ? $modifier * $victim["total_price"] : 0;
 
-		self::statLost("pilot", $victim["characterID"], $groupID, $modifier, $points, $isk);
-		self::statLost("corp", $victim["corporationID"], $groupID, $modifier, $points, $isk);
-		self::statLost("alli", $victim["allianceID"], $groupID, $modifier, $points, $isk);
-		self::statLost("faction", $victim["factionID"], $groupID, $modifier, $points, $isk);
-		self::statLost("ship", $victim["shipTypeID"], $groupID, $modifier, $points, $isk);
-		self::statLost("group", $victim["groupID"], $groupID, $modifier, $points, $isk);
-		self::statLost("system", $victim["solarSystemID"], $groupID, $modifier, $points, $isk);
-		self::statLost("region", $victim["regionID"], $groupID, $modifier, $points, $isk);
+		if ($victim) {
+			self::statLost("pilot", $victim["characterID"], $groupID, $modifier, $points, $isk);
+			self::statLost("corp", $victim["corporationID"], $groupID, $modifier, $points, $isk);
+			self::statLost("alli", $victim["allianceID"], $groupID, $modifier, $points, $isk);
+			self::statLost("faction", $victim["factionID"], $groupID, $modifier, $points, $isk);
+			self::statLost("ship", $victim["shipTypeID"], $groupID, $modifier, $points, $isk);
+			self::statLost("group", $victim["groupID"], $groupID, $modifier, $points, $isk);
+			self::statLost("system", $victim["solarSystemID"], $groupID, $modifier, $points, $isk);
+			self::statLost("region", $victim["regionID"], $groupID, $modifier, $points, $isk);
+		}
 
 		$shipTypes = array();
 		$groups = array();
