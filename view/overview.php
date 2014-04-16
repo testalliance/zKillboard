@@ -84,6 +84,7 @@ $solo = Kills::mergeKillArrays($soloKills, array(), $limit, $columnName, $id);
 
 $validAllTimePages = array("character", "corporation", "alliance");
 $topLists = array();
+$topKills = array();
 if ($pageType == "top" || ($pageType == "topalltime" && in_array($key, $validAllTimePages))) {
 	$topParameters = $parameters; // array("limit" => 10, "kills" => true, "$columnName" => $id);
 	$topParameters["limit"] = 10;
@@ -130,6 +131,8 @@ if ($pageType == "top" || ($pageType == "topalltime" && in_array($key, $validAll
 		}
 		if ($key != "ship") $topLists[] = Info::doMakeCommon("Top Ships", "shipTypeID", Stats::getTopShips($p));
 		if ($key != "system") $topLists[] = Info::doMakeCommon("Top Systems", "solarSystemID", Stats::getTopSystems($p));
+		$p["limit"] = 5;
+		$topKills = Stats::getTopIsk($p);
 }
 
 $corpList = array();
@@ -175,7 +178,7 @@ foreach($detail["stats"] as $q)
 }
 if ($mixedKills) $kills = Kills::mergeKillArrays($mixed, array(), $limit, $columnName, $id);
 
-$renderParams = array("pageName" => $pageName, "kills" => $kills, "losses" => $losses, "detail" => $detail, "page" => $page,
+$renderParams = array("pageName" => $pageName, "kills" => $kills, "losses" => $losses, "detail" => $detail, "page" => $page, "topKills" => $topKills,
 		"mixed" => $mixedKills, "key" => $key, "id" => $id, "pageType" => $pageType, "solo" => $solo, "topLists" => $topLists,
 		"corps" => $corpList, "corpStats" => $corpStats, "summaryTable" => $stats, "pager" => true, "datepicker" => true, "apiVerified" => $apiVerified);
 

@@ -88,21 +88,26 @@
 	{% set numPages = combinedPages %}
 	{% set isEmbedded = true %}
 {% if pageType == 'kills' %}
+      {% set topTitle = 'Most Valuable Kills - Last 7 Days' %}
     {% set killListTitle = 'Kills' %}
     {% set numPages = killPages %}
 	{% set killList = kills %}
 	{% set isEmbedded = true %}
 {% elseif pageType == 'solo' %}
+      {% set topTitle = 'Most Valuable Solo Kills - Last 7 Days' %}
     {% set killListTitle = 'Solo' %}
     {% set numPages = soloPages %}
 	{% set killList = solo %}
 	{% set isEmbedded = true %}
 {% elseif pageType == 'losses' %}
+      {% set topTitle = 'Most Valuable Losses - Last 7 Days' %}
     {% set killListTitle = 'Losses' %}
     {% set numPages = lossPages %}
 	{% set killList = losses %}
 	{% set isEmbedded = true %}
 {% endif %}
+    {% set topSet = topKills %}
+    {% include 'components/big_top_list.html' %}
     {% include 'components/kill_list.html' %}
   </div>
   <div class="col-lg-2 pull-left" style="padding: 0px;">
