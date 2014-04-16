@@ -526,15 +526,16 @@ class Info
 	 * @var array
 	 */
 	private static $entities = array(
-			array("faction", "SELECT factionID FROM zz_factions WHERE name "),
-			array("alliance", "SELECT allianceID FROM zz_alliances WHERE name "),
-			array("alliance", "SELECT allianceID FROM zz_alliances WHERE ticker "),
-			array("corporation", "SELECT corporationID FROM zz_corporations WHERE name "),
-			array("corporation", "SELECT corporationID FROM zz_corporations WHERE ticker "),
-			array("character", "SELECT characterID FROM zz_characters WHERE name "),
-			array("item", "select typeID from ccp_invTypes where published = 1 and typeName "),
-			array("system", "select solarSystemID from ccp_systems where solarSystemName "),
-			array("region", "select regionID from ccp_regions where regionName "),
+			array("faction", "SELECT factionID, factionID id FROM zz_factions WHERE name "),
+			array("faction", "SELECT factionID, factionID id FROM zz_factions WHERE ticker "),
+			array("alliance", "SELECT allianceID, allianceID id FROM zz_alliances WHERE name "),
+			array("alliance", "SELECT allianceID, allianceID id FROM zz_alliances WHERE ticker ", true),
+			array("corporation", "SELECT corporationID, corporationID id FROM zz_corporations WHERE name "),
+			array("corporation", "SELECT corporationID, corporationID id FROM zz_corporations WHERE ticker ", true),
+			array("character", "SELECT characterID, characterID id FROM zz_characters WHERE name "),
+			array("item", "select typeID, typeID id from ccp_invTypes where published = 1 and typeName ", true),
+			array("system", "select solarSystemID, solarSystemID id from ccp_systems where solarSystemName "),
+			array("region", "select regionID, regionID id from ccp_regions where regionName "),
 			);
 
 	/**
@@ -544,17 +545,19 @@ class Info
 	 * @param string $search
 	 * @return string
 	 */
-	public static function findEntity($search)
+	public static function findEntity($search, $exact = false)
 	{
 		$search = trim($search);
 		if (!isset($search)) return "";
 
 		$names = array();
 		for ($i = 0; $i <= 1; $i++) {
+			if ($i == 1 && $exact) continue;
 			$match = $i == 0 ? " = " : " like ";
 			foreach (self::$entities as $entity) {
 				$type = $entity[0];
 				$query = $entity[1];
+				if (isset($entity[2]) && $entity[2] == true) continue;
 				self::findEntitySearch($names, $type, "$query $match :search limit 9", $search . ($i == 0 ? "" : "%"));
 			}
 		}
