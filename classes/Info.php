@@ -501,7 +501,6 @@ class Info
 	 */
 	private static function findEntitySearch(&$resultArray, $type, $query, $search)
 	{
-Log::log("${query}");
 		$results = Db::query("${query}", array(":search" => $search), 3600);
 		self::addResults($resultArray, $type, $results);
 	}
