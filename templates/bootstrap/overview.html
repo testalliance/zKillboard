@@ -92,13 +92,11 @@
     {% set numPages = killPages %}
 	{% set killList = kills %}
 	{% set isEmbedded = true %}
-    {% include 'components/kill_list.html' %}
 {% elseif pageType == 'solo' %}
     {% set killListTitle = 'Solo' %}
     {% set numPages = soloPages %}
 	{% set killList = solo %}
 	{% set isEmbedded = true %}
-    {% include 'components/kill_list.html' %}
 {% elseif pageType == 'losses' %}
     {% set killListTitle = 'Losses' %}
     {% set numPages = lossPages %}
