@@ -501,6 +501,7 @@ class Info
 	 */
 	private static function findEntitySearch(&$resultArray, $type, $query, $search)
 	{
+Log::log("${query}");
 		$results = Db::query("${query}", array(":search" => $search), 3600);
 		self::addResults($resultArray, $type, $results);
 	}
@@ -526,6 +527,7 @@ class Info
 	 * @var array
 	 */
 	private static $entities = array(
+			array("faction", "SELECT factionID FROM zz_factions WHERE name "),
 			array("alliance", "SELECT allianceID FROM zz_alliances WHERE name "),
 			array("alliance", "SELECT allianceID FROM zz_alliances WHERE ticker "),
 			array("corporation", "SELECT corporationID FROM zz_corporations WHERE name "),
@@ -580,6 +582,7 @@ class Info
 			else if (isset($row["typeName"])) $retValue[] = $row["typeName"];
 			else if (isset($row["solarSystemName"])) $retValue[] = $row["solarSystemName"];
 			else if (isset($row["regionName"])) $retValue[] = $row["regionName"];
+			else if (isset($row["factionName"])) $retValue[] = $row["factionName"];
 		}
 		return $retValue;
 	}
