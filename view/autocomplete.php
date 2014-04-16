@@ -26,13 +26,13 @@ if ($app->request()->isPost())
 
 //declare the base data/sql etc
 $entities = array(
+		array('type' => 'region',      'query' => 'SELECT regionID AS id, regionName AS name FROM ccp_regions WHERE regionName LIKE :query LIMIT 9',                       'image' => ''),
+		array('type' => 'system',      'query' => 'SELECT solarSystemID  AS id, solarSystemName AS name FROM ccp_systems WHERE solarSystemName LIKE :query LIMIT 9',       'image' => ''),
 		array('type' => 'faction',     'query' => 'SELECT factionID as id, name from zz_factions where name like :query or ticker like :query limit 9','image' => 'Alliance/%1$d_32.png'),
 		array('type' => 'alliance',    'query' => 'SELECT allianceID AS id, name FROM zz_alliances WHERE name LIKE :query OR ticker LIKE :query LIMIT 9',                  'image' => 'Alliance/%1$d_32.png'),
 		array('type' => 'corporation', 'query' => 'SELECT corporationID AS id, name FROM zz_corporations WHERE name LIKE :query OR ticker LIKE :query LIMIT 9',            'image' => 'Corporation/%1$d_32.png'),
 		array('type' => 'character',   'query' => 'SELECT characterID AS id, name FROM zz_characters WHERE name LIKE :query LIMIT 9',                                      'image' => 'Character/%1$d_32.jpg'),
 		array('type' => 'item',        'query' => 'SELECT typeID AS id, typeName AS name, groupID FROM ccp_invTypes WHERE published = 1 AND typeName LIKE :query LIMIT 9', 'image' => 'Type/%1$d_32.png'),
-		array('type' => 'system',      'query' => 'SELECT solarSystemID  AS id, solarSystemName AS name FROM ccp_systems WHERE solarSystemName LIKE :query LIMIT 9',       'image' => ''),
-		array('type' => 'region',      'query' => 'SELECT regionID AS id, regionName AS name FROM ccp_regions WHERE regionName LIKE :query LIMIT 9',                       'image' => '')
 		);
 
 //define our array for the results
@@ -50,18 +50,8 @@ foreach ($entities as $key => $entity)
 	}
 }
 
-//declare out json return type
+// Declare out json return type
 $app->contentType('application/json; charset=utf-8');
-
-//if we have some results then sort them
-if (count($search_results) > 0)
-{
-	//get the values of the column we intend to sort by
-	foreach ($search_results as $key => $row) { $sort_by[$key] = $row['name']; }
-
-	//perfom and return the sorted array
-	array_multisort($sort_by, SORT_ASC, SORT_NATURAL, $search_results);
-}
 
 // CORS headers
 header("Access-Control-Allow-Origin: *");
