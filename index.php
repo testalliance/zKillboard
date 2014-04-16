@@ -1,21 +1,4 @@
 <?php
-$newRelic = false;
-if(stristr(phpversion(), "hiphop"))
-{
-	if(extension_loaded("newrelic"))
-	{
-		$newRelic = true;
-	}
-}
-
-if($newRelic)
-{
-	// Load New Relic
-	hhvm_newrelic_transaction_begin();
-	$request_url = strtok($_SERVER["REQUEST_URI"], "?");
-	hhvm_newrelic_transaction_set_request_url($request_url);
-}
-
 // Include Init
 require_once( "init.php" );
 
