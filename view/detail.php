@@ -20,7 +20,7 @@ $involved = array();
 $message = "";
 
 if($pageview == "comments")
-	$app->redirect("/detail/$id/#comment", 301);
+$app->redirect("/detail/$id/#comment", 301);
 
 $info = User::getUserInfo();
 $name = $info["username"];
@@ -37,7 +37,7 @@ if($_POST)
 		{
 			$tags = "Reported Kill";
 			Db::execute("INSERT INTO zz_tickets (userid, name, email, tags, ticket, killID) VALUES (:userid, :name, :email, :tags, :ticket, :killid)",
-			array(":userid" => $userID, ":name" => $name, ":email" => $email, ":tags" => $tags, ":ticket" => $report, ":killid" => $id));
+					array(":userid" => $userID, ":name" => $name, ":email" => $email, ":tags" => $tags, ":ticket" => $report, ":killid" => $id));
 			global $baseAddr;
 			$reportID = Db::queryField("SELECT id FROM zz_tickets WHERE killID = :killID AND name = :name", "id", array(":killID" => $id, ":name" => $name));
 			Log::ircAdmin("Kill Reported by $name: https://$baseAddr/detail/$id/ - https://$baseAddr/moderator/reportedkills/$reportID/");
@@ -155,15 +155,15 @@ function sortByOrder($a, $b)
 
 function usdeurgbp($totalprice)
 {
-    $usd = 17;
-    $eur = 13;
-    $gbp = 10;
-    $plex = Price::getItemPrice("29668", date("Ymd"));
-    $usdval = $plex / $usd;
-    $eurval = $plex / $eur;
-    $gbpval = $plex / $gbp;
+	$usd = 17;
+	$eur = 13;
+	$gbp = 10;
+	$plex = Price::getItemPrice("29668", date("Ymd"));
+	$usdval = $plex / $usd;
+	$eurval = $plex / $eur;
+	$gbpval = $plex / $gbp;
 
-    return array("usd" => $totalprice / $usdval, "eur" => $totalprice / $eurval, "gbp" => $totalprice / $gbpval);
+	return array("usd" => $totalprice / $usdval, "eur" => $totalprice / $eurval, "gbp" => $totalprice / $gbpval);
 }
 
 function eftarray($md5, $items, $victimID = 0)
@@ -190,6 +190,18 @@ function eftarray($md5, $items, $victimID = 0)
 		if ($itm["flagName"] == "Infantry Modules") $itm["flagName"] = "Mid Slots";
 		if ($itm["flagName"] == "Infantry Weapons") $itm["flagName"] = "High Slots";
 		if ($itm["flagName"] == "Infantry Equipment") $itm["flagName"] = "Low Slots";
+		if ($itm["flag"] == 89) {
+			$slot = Db::queryField("select coalesce(valueInt, valueFloat) slot from ccp_dgmTypeAttributes where typeID = :typeID and attributeID = 331", "slot", array(":typeID" => $itm["typeID"]));
+			if ($slot <= 5 && $slot >= 1) {
+				$itm["flagName"] = "High Slots";
+				$itm["flag"] = 27 + ($slot - 1);
+			}
+			else if ($slot > 5 && $slot <= 10) {
+				$itm["flagName"] = "Low Slots";
+				$itm["flag"] = 11 + ($slot - 6);
+			}
+			$itm["fittable"] = 1;
+		}
 
 		if (!isset($itm["flag"]) || $itm["flag"] == 0) {
 			if ($itm["flagName"] == "High Slots") $itm["flag"] = 27;
@@ -208,7 +220,7 @@ function eftarray($md5, $items, $victimID = 0)
 				{
 					if($itm["flagName"] == "High Slots")
 					{
-						high:
+high:
 						if(isset($eftarray["high"][$itm["flag"]]))
 						{
 							$itm["flag"] = $itm["flag"]+1;
@@ -218,7 +230,7 @@ function eftarray($md5, $items, $victimID = 0)
 					}
 					if($itm["flagName"] == "Mid Slots")
 					{
-						mid:
+mid:
 						if(isset($eftarray["mid"][$itm["flag"]]))
 						{
 							$itm["flag"] = $itm["flag"]+1;
@@ -228,7 +240,7 @@ function eftarray($md5, $items, $victimID = 0)
 					}
 					if($itm["flagName"] == "Low Slots")
 					{
-						low:
+low:
 						if(isset($eftarray["low"][$itm["flag"]]))
 						{
 							$itm["flag"] = $itm["flag"]+1;
@@ -238,7 +250,7 @@ function eftarray($md5, $items, $victimID = 0)
 					}
 					if($itm["flagName"] == "Rigs")
 					{
-						rigs:
+rigs:
 						if(isset($eftarray["rig"][$itm["flag"]]))
 						{
 							$itm["flag"] = $itm["flag"]+1;
@@ -248,7 +260,7 @@ function eftarray($md5, $items, $victimID = 0)
 					}
 					if($itm["flagName"] == "SubSystems")
 					{
-						subs:
+subs:
 						if(isset($eftarray["sub"][$itm["flag"]]))
 						{
 							$itm["flag"] = $itm["flag"]+1;
