@@ -38,9 +38,7 @@
 	{% else %}
 		<li class="{{ isActive('top', pageType) }} hidden-xs"><a href="/{{ key }}/{{ id }}/top/">Monthly Top</a></li>
 	{% endif %}
-	{% if key == "character" or key == "corporation" or key == "alliance" %}
-		<li class="{{ isActive('history', pageType) }} hidden-xs"><a href="/{{ key }}/{{ id }}/history/">History</a></li>
-	{% endif %}
+	<li class="{{ isActive('stats', pageType) }} hidden-xs"><a href="/{{ key }}/{{ id }}/stats/">Stats</a></li>
 	{% if key == "alliance" %}
 		<li class="{{ isActive('Corpstats', pageType) }} hidden-xs"><a href="/{{ key }}/{{ id }}/corpstats/">Corp Stats</a></li>
 		<li class="{{ isActive('api', pageType) }} hidden-xs"><a href="/{{ key }}/{{ id }}/api/">API</a></li>
@@ -116,10 +114,9 @@
   </div>
 {% elseif pageType == 'api' %}
     {% include 'components/corp_list.html' %}
-{% elseif pageType == 'history' %}
-    {% include 'components/summary_accordion.html' %}
+{% elseif pageType == 'stats' %}
+    {% include 'components/summary.html' %}
     <div class="clearfix"></div>
-    <hr/>
     {% include 'components/history.html' %}
 {% elseif pageType == 'top' %}
 	{% set showImage = true %}
