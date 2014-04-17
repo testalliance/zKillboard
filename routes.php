@@ -153,9 +153,6 @@ $app->get("/item/:id/", function($id) use ($app) {
     include ("view/item.php" );
 });
 
-// Give list of character id's to evewho
-$app->get("/evewhoc/:page/", function($page) use ($app) { include("view/evewhoc.php");});
-
 // StackTrace
 $app->get("/stacktrace/:hash/", function($hash) use ($app) {
     $q = Db::query("SELECT error, url FROM zz_errors WHERE id = :hash", array(":hash" => $hash));
