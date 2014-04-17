@@ -76,7 +76,6 @@
 
 <div class="row">
 {% if pageType == 'overview' or pageType == 'kills' or pageType == 'solo' or pageType == 'losses' %}
-    {% if pageType == 'overview' %}{% include 'components/summary_accordion.html' %}<hr/>{% endif %}
   <div class="col-lg-10 pull-left" style="padding-left: 0px;">
     {% if mixed %}
         {% set killListTitle = 'Recent Activity' %}
@@ -118,6 +117,9 @@
 {% elseif pageType == 'api' %}
     {% include 'components/corp_list.html' %}
 {% elseif pageType == 'history' %}
+    {% include 'components/summary_accordion.html' %}
+    <div class="clearfix"></div>
+    <hr/>
     {% include 'components/history.html' %}
 {% elseif pageType == 'top' %}
 	{% set showImage = true %}

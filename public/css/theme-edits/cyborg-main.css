@@ -17,12 +17,17 @@
 	background: #060606;
 	background-color: rgba(6,6,6,0.9);
 	box-shadow: 0 0 15px 15px rgba(6,6,6,0.9);
-	opacity: 0.95;
+	opacity: 0.98;
 }
 
 .table tbody tr.error td
 {
   background-color: #3F0606;
+}
+
+.table tbody tr.winwin td
+{
+  background-color: #001600;
 }
 
 select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input
@@ -31,7 +36,7 @@ color: black;
  }
 
 .item_dropped_row {
-	background-color: #093609; 
+	background-color: #001600;
 }
 .item_dropped {
 	color: white;
@@ -40,7 +45,7 @@ color: black;
 	color: white;
 }
 .item_destroyed, .red {
-	color: #800000;
+	color: red;
 }
 .green {
 	color: green;

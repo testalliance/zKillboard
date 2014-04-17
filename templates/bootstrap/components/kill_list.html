@@ -37,7 +37,7 @@
   
       {% set field = kill.victim %}
       {% set lossDisplay = '' %}
-      {% if kill.displayAsLoss == true and key != 'system' and key != 'region' %}{% set lossDisplay = 'error' %}{% endif %}
+      {% if kill.displayAsLoss == true and key != 'system' and key != 'region' %}{% set lossDisplay = 'error' %}{% elseif pageType == 'overview' %}{% set lossDisplay = 'winwin' %}{% endif %}
       <tr class="{{lossDisplay}} killListRow" onclick="window.location='/detail/{{kill.info.killID}}/'">
         <td>
           {% if timeago == "true" %}
