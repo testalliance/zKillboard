@@ -177,6 +177,7 @@ $app->get("/api/:input+", function($input) use ($app) {
 // Kills in the last hour
 $app->get("/killslasthour/", function() use ($app) {
     echo number_format(Storage::retrieve("KillsLastHour", null));
+    die();
 });
 
 // Post
