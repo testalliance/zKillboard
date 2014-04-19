@@ -96,7 +96,7 @@ class Fitting
 
 	public static function DNA($array = array(), $ship)
 	{
-		$goodspots = array("High Slots", "Rigs", "Low Slots", "Mid Slots", "Drone Bay", "Fuel Bay");
+		$goodspots = array("High Slots", "SubSystems", "Rigs", "Low Slots", "Mid Slots", "Drone Bay", "Fuel Bay");
 		$fitArray = array();
 		$fitString = $ship.":";
 
