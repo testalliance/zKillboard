@@ -25,46 +25,28 @@ class cli_minutely implements cliCommand
 
 	public function getAvailMethods()
 	{
-		return "killsLastHour fileCacheClean all"; // Space seperated list
+		return "";
 	}
 
 	public function getCronInfo()
 	{
-		return array(
-			60 => "all"
-		);
+		return array(0 => "");
 	}
 
 	public function execute($parameters, $db)
 	{
 		global $base;
 		chdir($base);
-		if (sizeof($parameters) == 0 || $parameters[0] == "") CLI::out("Usage: |g|help <command>|n| To see a list of commands, use: |g|list", true);
-		$command = $parameters[0];
 
-		switch($command)
-		{
-			case "all":
-				// Cleanup old sessions
-				$db->execute("delete from zz_users_sessions where validTill < now()");
+		// Cleanup old sessions
+		$db->execute("delete from zz_users_sessions where validTill < now()");
 
-				$killsLastHour = $db->queryField("select count(*) count from zz_killmails where insertTime > date_sub(now(), interval 1 hour)", "count");
-				Storage::store("KillsLastHour", $killsLastHour);
-				$db->execute("delete from zz_analytics where dttm < date_sub(now(), interval 1 hour)");
+		$killsLastHour = $db->queryField("select count(*) count from zz_killmails where insertTime > date_sub(now(), interval 1 hour)", "count");
+		Storage::store("KillsLastHour", $killsLastHour);
+		$db->execute("delete from zz_analytics where dttm < date_sub(now(), interval 1 hour)");
+		$db->execute("delete from zz_scrape_prevention where dttm < date_sub(now(), interval 1 hour)");
 
-				$fc = new FileCache("$base/cache/queryCache/");
-				$fc->cleanUp();
-			break;
-
-			case "killsLastHour":
-				$killsLastHour = $db->queryField("select count(*) count from zz_killmails where insertTime > date_sub(now(), interval 1 hour)", "count");
-				Storage::store("KillsLastHour", $killsLastHour);
-			break;
-
-			case "fileCacheClean";
-				$fc = new FileCache;
-				$fc->cleanUp();
-			break;
-		}
+		$fc = new FileCache("$base/cache/queryCache/");
+		$fc->cleanUp();
 	}
 }

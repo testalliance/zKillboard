@@ -320,10 +320,13 @@ class Util
 		global $apiWhiteList, $maxRequestsPerHour;
 		$maxRequestsPerHour = isset($maxRequestsPerHour) ? $maxRequestsPerHour : 360;
 
-		$ip = substr(IP::get(), 0, 64);
+		$uri = substr($_SERVER["REQUEST_URI"], 0, 256);
+        	$ip = substr(IP::get(), 0, 64);
+        	Db::execute("insert into zz_scrape_prevention values (:ip, :uri, now())", array(":ip" => $ip, ":uri" => $uri));
+
 		if(!in_array($ip, $apiWhiteList))
 		{
-			$count = Db::queryField("select count(*) count from zz_analytics where ip = :ip and uri like '/api/%' and dttm >= date_sub(now(), interval 1 hour)", "count", array(":ip" => $ip), 0);
+			$count = Db::queryField("select count(*) count from zz_scrape_prevention where ip = :ip and dttm >= date_sub(now(), interval 1 hour)", "count", array(":ip" => $ip), 0);
 
 			if($count > $maxRequestsPerHour)
 			{
