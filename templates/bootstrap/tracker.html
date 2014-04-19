@@ -4,7 +4,7 @@
 
 {% block content %}
 <h2>{{ pageTitle }}</h2>
-{% if isTablet == true or isMobile == false %}{% if useSummaryAccordion == "true" %}{% include 'components/summary_accordion.html' %}{% else %}{% include 'components/summary.html' %}{% endif %}{% endif %}
+{% include 'components/summary.html' %}
 {% set killList = kills %}
 {% include 'components/kill_list.html' %}
 
