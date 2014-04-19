@@ -40,11 +40,11 @@
 		<th>Ship:</th>
 		<td style="width: 100%">{% include 'components/text_ship.html' %}</td>
 	</tr>
-        {% if killdata.victim.previous.killID %}
-		{% set shipImageLinkOverride = killdata.victim.previous.killID %}
-		{% set field = killdata.victim.previous %}
+        {% if killdata.victim.related.killID %}
+		{% set shipImageLinkOverride = killdata.victim.related.killID %}
+		{% set field = killdata.victim.related %}
 	<tr>
-		<th>Previous:</th>
+		<th>Related:</th>
 		<td>{% include 'components/text_ship.html' %}</td>
 	</tr>
 	{% set field = killdata.victim %}

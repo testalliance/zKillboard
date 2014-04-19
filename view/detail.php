@@ -128,11 +128,10 @@ $extra["wormhole"] = $data;
 
 $url = "https://". $_SERVER["SERVER_NAME"] ."/detail/$id/";
 
-if ($killdata["victim"]["groupID"] == 29) {
-	$previousShip = Db::queryRow("select killID, shipTypeID from zz_participants where killID >= (:killID - 200) and killID < :killID and groupID != 29 and isVictim = 1 and characterID = :charID order by killID desc limit 1", array(":killID" => $id, ":charID" => $killdata["victim"]["characterID"]));
-	Info::addInfo($previousShip);
-	$killdata["victim"]["previous"] = $previousShip;
-}
+if ($killdata["victim"]["groupID"] == 29) $relatedShip = Db::queryRow("select killID, shipTypeID from zz_participants where killID >= (:killID - 200) and killID < :killID and groupID != 29 and isVictim = 1 and characterID = :charID order by killID desc limit 1", array(":killID" => $id, ":charID" => $killdata["victim"]["characterID"]));
+else $relatedShip = Db::queryRow("select killID, shipTypeID from zz_participants where killID <= (:killID + 200) and killID > :killID and groupID = 29 and isVictim = 1 and characterID = :charID order by killID asc limit 1", array(":killID" => $id, ":charID" => $killdata["victim"]["characterID"]));
+Info::addInfo($relatedShip);
+$killdata["victim"]["related"] = $relatedShip;
 
 $app->render("detail.html", array("pageview" => $pageview, "killdata" => $killdata, "extra" => $extra, "message" => $message, "flags" => Info::$effectToSlot, "topDamage" => $topDamage, "finalBlow" => $finalBlow, "url" => $url));
 
