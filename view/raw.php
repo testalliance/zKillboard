@@ -18,7 +18,7 @@
 
 Util::scrapeCheck();
 
-$jsonRaw = Db::queryField("select kill_json from zz_killmails where killID = :id", "kill_json", array(":id" => $id));
+$jsonRaw = Killmail::get($id);
 header("Content-Type: application/json");
 $json = json_decode($jsonRaw, true);
 
