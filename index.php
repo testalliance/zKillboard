@@ -47,10 +47,3 @@ if($debug)
 
 // Run the thing!
 $app->run();
-
-if($newRelic)
-{
-	// New Relic
-	hhvm_newrelic_transaction_set_name($uri);
-	hhvm_newrelic_transaction_end();
-}
