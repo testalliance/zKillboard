@@ -73,10 +73,22 @@ class Price
 		$todaysLookupTypeID = $todaysLookup . ":$typeID";
 
 		$isDone = (bool) Storage::retrieve($todaysLookupTypeID, false);
-		if ($isDone) return;
+		if ($typeID != 2233 && $isDone) return;
 
 		static::doPopulateRareItemPrices($todaysLookup); // Populate rare items and today's lookup and do some cleanup
 		Storage::store($todaysLookupTypeID, "true"); // Add today's lookup entry for this item
+
+		if ($typeID == 2233)
+		{
+			$gantry = Price::getItemPrice(3962, $date, true);
+			$nodes = Price::getItemPrice(2867, $date, true);
+			$modules = Price::getItemPrice(2871, $date, true);
+			$mainframes = Price::getItemPrice(2876, $date, true);
+			$cores = Price::getItemPrice(2872, $date, true);
+			$total = $gantry + (($nodes + $modules + $mainframes + $cores) * 8);
+			Db::execute("replace into zz_item_price_lookup (typeID, priceDate, lowPrice, avgPrice, highPrice) values (:typeID, :date, :low, :avg, :high)", array(":typeID" => $typeID, ":date" => $date, ":low" => $total, ":avg" => $total, ":high" => $total));
+			return $total;
+		}
 
 		usleep(200000); // Limit CREST market calls to 5 per second (sleep regardless of when we made our last call)
 
@@ -100,6 +112,9 @@ class Price
 	{
 		$isDone = (bool) Storage::retrieve($todaysLookup, false);
 		if ($isDone) return;
+
+		// Base lookups for today have been populated - do it here to allow later recursion
+		Storage::store($todaysLookup, "true");
 
 		$motherships = Db::query("select typeid from ccp_invTypes where groupid = 659");
 		foreach ($motherships as $mothership) {
@@ -148,9 +163,6 @@ class Price
 				26842, // Tempest Tribal Issue
 				);
 		foreach($rareBattleships as $typeID) static::setPrice($typeID, 750000000000); // 750b
-
-		// Base lookups for today have been populated
-		Storage::store($todaysLookup, "true");
 
 		// Clear all older lookup entries and leave today's lookup entries
 		Db::execute("delete from zz_storage where locker not like '$todaysLookup%' and locker like 'CREST-Market%'");
