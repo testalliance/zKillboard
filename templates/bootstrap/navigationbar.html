@@ -150,21 +150,7 @@
 				</li>
 				{% else %}
 				<li class="hidden-xs"><a href="/register/">Register</a></li>
-				<li class="visible-xs"><a href="/login/">Login</a></li>
-				<li class="hidden-xs" class="dropdown">
-					<a class="dropdown-toggle" href="/" data-toggle="dropdown">Login <span class="caret"></span></a>
-					<div class="dropdown-menu" style="padding: 20px;">
-						<form method="post" action="/login/" accept-charset="UTF-8">
-							<input class="form-control col-lg-4" type="text" placeholder="Username" id="username" name="username">
-							<input class="form-control col-lg-4" type="password" placeholder="Password" id="password" name="password">
-							<input type="hidden" id="requesturi" name="requesturi" value="{{ requesturi }}">
-							<input type="checkbox" name="autologin" id="autologin" checked="1">
-							<label class="string optional"> Remember me</label>
-							<input class="btn btn-block btn-primary col-lg-4" type="submit" id="sign-in" value="Login">
-							<a href="/forgotpassword/">Forgot password?</a>
-						</form>
-					</div>
-				</li>
+				<li><a href="/login/">Login</a></li>
 				{% endif %}
 			</ul>
 		</div>
