@@ -133,9 +133,9 @@ class Price
 				3516, // Malice
 				11375, // Freki
 				32788, // Cambion
-				33397, // Chremoas
 				);
 		foreach($tourneyFrigates as $typeID) static::setPrice($typeID, 25000000000); // 25b
+		static::setPrice(33397, 100000000000); // 100b for Chremoas
 
 		$tourneyCruisers = array(
 				2836, // Adrestia
