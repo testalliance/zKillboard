@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+global $apiWhiteList;
+
 //make sure the requester is not being a naughty boy
 Util::scrapeCheck();
 
@@ -23,9 +25,11 @@ $parameters = Util::convertUriToParameters();
 
 // Enforcement
 if (sizeof($parameters) < 2) die("Invalid request.  Must provide at least two request parameters");
+
 // At least one of these modifiers is required
 $requiredM = array("characterID", "corporationID", "allianceID", "factionID", "shipTypeID", "groupID", "solarSystemID", "solo", "w-space");
 $hasRequired = false;
+$hasRequired |= in_array(IP::get(), $apiWhiteList);
 foreach($requiredM as $required) {
 	$hasRequired |= array_key_exists($required, $parameters);
 }
