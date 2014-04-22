@@ -36,6 +36,7 @@ class cli_dna implements cliCommand
 	public function execute($parameters, $db)
 	{
 		Db::execute("delete from zz_dna where killDate < date_sub(now(), interval 31 day)");
+		Db::execute("delete from zz_dna where total <= 5 and killDate < date_sub(now(), interval 14 day)");
 		$calcCount = 0;
 		$timer = new Timer();
 		while ($timer->stop() < 65000) {

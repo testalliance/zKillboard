@@ -869,6 +869,15 @@ class Info
 		return "";
 	}
 
+
+	public static $effectFitToSlot = array(
+			"12" => "High Slots",
+			"13" => "Mid Slots",
+			"11" => "Low Slots",
+			"2663" => "Rigs",
+			"3772" => "SubSystems",
+			"87" => "Drone Bay",);
+
 	/**
 	 * [$effectToSlot description]
 	 * @var array
