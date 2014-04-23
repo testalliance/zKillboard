@@ -46,15 +46,13 @@ class Parser
 
 			$id = Db::queryField("select min(killID) killID from zz_killmails where processed = 0 and killID > 0", "killID", array(), 0);
 			if ($id === null) $id = Db::queryField("select min(killID) killID from zz_killmails where processed = 0", "killID", array(), 0);
-			if ($id === null) continue;
-
-			$result = array();
-			$result[] = Db::queryRow("select * from zz_killmails where killID = :killID", array(":killID" => $id), 0);
-
-			if (sizeof($result) == 0) {
+			if ($id === null) {
 				sleep(1);
 				continue;
 			}
+
+			$result = array();
+			$result[] = Db::queryRow("select * from zz_killmails where killID = :killID", array(":killID" => $id), 0);
 
 			$processedKills = array();
 			$cleanupKills = array();
