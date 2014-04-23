@@ -17,6 +17,9 @@
  */
 
 $limit = 50;
+$maxPage = 100;
+if ($page > $maxPage && $type == '') $app->redirect("/kills/page/$maxPage/");
+if ($page > $maxPage && $type != '') $app->redirect("/kills/$type/page/$maxPage/");
 
 switch($type)
 {
