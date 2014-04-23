@@ -41,6 +41,9 @@ class cli_minutely implements cliCommand
 		// Cleanup old sessions
 		$db->execute("delete from zz_users_sessions where validTill < now()");
 
+		// Cleanup deleted manual mails
+		$db->execute("delete from zz_killmails where processed = 2 and kill_json = '' and killID < 0 limit 10000");
+
 		$killsLastHour = $db->queryField("select count(*) count from zz_killmails where insertTime > date_sub(now(), interval 1 hour)", "count");
 		Storage::store("KillsLastHour", $killsLastHour);
 		$db->execute("delete from zz_analytics where dttm < date_sub(now(), interval 1 hour)");
