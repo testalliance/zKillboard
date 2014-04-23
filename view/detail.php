@@ -46,15 +46,6 @@ if($_POST)
 	}
 }
 
-if ($id < 0) {
-	// See if this manual mail has an api verified version
-	$mKillID = -1 * $id;
-	$killID = Db::queryField("select killID from zz_manual_mails where mKillID = :mKillID", "killID", array(":mKillID" => $mKillID), 1);
-	if ($killID > 0) {
-		$app->redirect("/detail/$killID/");
-	}
-}
-
 // Create the details on this kill
 $killdata = Kills::getKillDetails($id);
 
@@ -119,7 +110,7 @@ $extra["edkrawmail"] = Kills::getRawMail($id);
 $extra["zkbrawmail"] = Kills::getRawMail($id, array(), false);
 $extra["reports"] = Db::queryField("SELECT count(*) as cnt FROM zz_tickets WHERE killID = :killid", "cnt", array(":killid" => $id), 0);
 $extra["slotCounts"] = Info::getSlotCounts($killdata["victim"]["shipTypeID"]);
-$extra["commentID"] = Info::commentID($id);
+$extra["commentID"] = $id;
 $extra["crest"] = Db::queryRow("select killID, hash from zz_crest_killmail where killID = :killID and processed = 1", array(":killID" => $id), 300);
 
 $systemID = $killdata["info"]["solarSystemID"];

@@ -113,7 +113,7 @@ class Kills
 			Info::addInfo($element);
 			if (!isset($array1[$killid])) $array1[$killid] = array();
 			$array1[$killid][$type] = $element;
-			$array1[$killid][$type]["commentID"] = Info::commentID($killid);
+			$array1[$killid][$type]["commentID"] = $killid;
 		}
 		return $array1;
 	}
@@ -396,8 +396,6 @@ class Kills
 	public static function cleanDupe($mKillID, $killID)
 	{
 		Db::execute("update zz_killmails set processed = 2 where killID = :mKillID", array(":mKillID" => $mKillID));
-		Db::execute("update zz_manual_mails set killID = :killID where mKillID = :mKillID",
-				array(":killID" => $killID, ":mKillID" => (-1 * $mKillID)));
 		Stats::calcStats($mKillID, false); // remove manual version from stats
 	}
 }

@@ -986,29 +986,4 @@ class Info
 		}
 		return $retArray;
 	}
-
-	/**
-	 * [commentID description]
-	 * @param  int $id
-	 * @return int
-	 */
-	public static function commentID($id)
-	{
-		// Find the old killID or EVE-KILL ID
-		$checkID = $id;
-		if($checkID < 0) 
-			$checkID = -1 * $checkID;
-		$okID = Db::queryRow("SELECT mKillID, killID, eveKillID FROM zz_manual_mails WHERE (mKillID = :mKillID OR killID = :killID)", array(":mKillID" => $checkID, ":killID" => $checkID));
-
-		if(isset($okID["eveKillID"]))
-			$commentID = $okID["eveKillID"];
-		elseif(isset($okID["mKillID"]))
-			$commentID = $okID["mKillID"];
-		elseif(isset($okID["killID"]))
-			$commentID = $okID["killID"];
-		else
-			$commentID = $id;
-
-		return $commentID;
-	}
 }
