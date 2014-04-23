@@ -78,9 +78,8 @@ class Parser
 				if ($killID < 0) { // Manual mail, make sure we aren't duping an api verified mail
 					$apiVerified= Db::queryField("select count(1) count from zz_killmails where hash = :hash and killID > 0", "count", array(":hash" => $hash), 0);
 					if ($apiVerified) {
-						Log::log("api mail purge check: $hash\n");
-						die();
 						Log::log("Purging $killID");
+						Stats::calcStats($killID, false);
 						Db::execute("delete from zz_killmails where killID = :killID", array(":killID" => $killID));
 						continue;
 					}
