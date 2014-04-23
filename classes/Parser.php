@@ -24,6 +24,7 @@ class Parser
 {
 	public static function parseKills()
 	{
+		global $debug;
 		if (Util::isMaintenanceMode()) return;
 
 		$timer = new Timer();
@@ -35,6 +36,7 @@ class Parser
 
 		$numKills = 0;
 
+		if ($debug) Log::log("Fetching kills for processing...");
 		while ($timer->stop() < $maxTime) {
 			if (Util::isMaintenanceMode()) {
 				self::removeTempTables();
@@ -42,35 +44,30 @@ class Parser
 			}
 			Db::execute("delete from zz_participants_temporary");
 
-			//Log::log("Fetching kills for processing...");
-			//$ids = Db::query("select killID from zz_killmails where processed = 0 order by killID desc limit 1", array(), 0);
-			$ids = Db::query("select max(killID) killID from zz_killmails where processed = 0", array(), 0);
+			$id = Db::queryField("select min(killID) killID from zz_killmails where processed = 0 and killID > 0", "killID", array(), 0);
+			if ($id === null) $id = Db::queryField("select min(killID) killID from zz_killmails where processed = 0", "killID", array(), 0);
+			if ($id === null) continue;
+
 			$result = array();
-			foreach($ids as $row) {
-				$killID = $row["killID"];
-				$result[] = Db::queryRow("select * from zz_killmails where killID = :killID", array(":killID" => $killID), 0);
-			}
+			$result[] = Db::queryRow("select * from zz_killmails where killID = :killID", array(":killID" => $id), 0);
 
 			if (sizeof($result) == 0) {
-				$currentSecond = (int) date("s");
-				$sleepTime = max(1, 15 - ($currentSecond % 15));
-				sleep($sleepTime);
+				sleep(1);
 				continue;
 			}
 
-			//Log::log("Processing fetched kills...");
 			$processedKills = array();
 			$cleanupKills = array();
 			foreach ($result as $row) {
 				$numKills++;
 				$kill = json_decode(Killmail::get($row["killID"]), true);
-				Db::execute("delete from zz_killid where killID = :killID", array(":killID" => $row["killID"]));
 				if (!isset($kill["killID"])) {
-					Log::log("Problem with kill " . $row["killID"]);
+					if ($debug) Log::log("Problem with kill " . $row["killID"]);
 					Db::execute("update zz_killmails set processed = 2 where killid = :killid", array(":killid" => $row["killID"]));
 					continue;
 				}
 				$killID = $kill["killID"];
+				$hash = Db::queryField("select hash from zz_killmails where killID = :killID", "hash", array(":killID" => $killID));
 
 				// Because of CREST caching and the want for accurate prices, don't process the first hour
 				// of kills until after 01:05 each day
@@ -78,6 +75,30 @@ class Parser
 
 				// Cleanup if we're reparsing
 				$cleanupKills[] = $killID;
+				if ($debug) Log::log("Processing kill $killID");
+
+				if ($killID < 0) { // Manual mail, make sure we aren't duping an api verified mail
+					$apiVerified= Db::queryField("select count(1) count from zz_killmails where hash = :hash and killID > 0", "count", array(":hash" => $hash), 0);
+					if ($apiVerified) {
+						Log::log("api mail purge check: $hash\n");
+						die();
+						Log::log("Purging $killID");
+						Db::execute("delete from zz_killmails where killID = :killID", array(":killID" => $killID));
+						continue;
+					}
+				}
+				if ($killID > 0) { // Check for manual mails to remove
+					$manualMailIDs = Db::query("select killID from zz_killmails where hash = :hash and killID < 0", array(":hash" => $hash), 0);
+					foreach($manualMailIDs as $row) {
+						Log::log("Manual mail purge check");
+						die();
+						$manualMailID = $row["killID"];
+						Log::log("Purging $manualMailID");
+						Stats::calcStats($manualMailID, false);
+						Db::execute("delete from zz_killmails where killID = :killID", array(":killID" => $manualMailID));
+					}
+
+				}
 
 				// Do some validation on the kill
 				if (!self::validKill($kill)) {
@@ -159,20 +180,20 @@ class Parser
 				(:killID, :solarSystemID, :regionID, 1, :shipTypeID, :groupID, :shipPrice, :damageTaken, :factionID, :allianceID,
 				 :corporationID, :characterID, :dttm, :vGroupID)",
 				(array(
-					   ":killID" => $killID,
-					   ":solarSystemID" => $kill["solarSystemID"],
-					   ":regionID" => $regionID,
-					   ":shipTypeID" => $victim["shipTypeID"],
-					   ":groupID" => $groupID,
-					   ":vGroupID" => $groupID,
-					   ":shipPrice" => $shipPrice,
-					   ":damageTaken" => $victim["damageTaken"],
-					   ":factionID" => $victim["factionID"],
-					   ":allianceID" => $victim["allianceID"],
-					   ":corporationID" => $victim["corporationID"],
-					   ":characterID" => $victim["characterID"],
-					   ":dttm" => $dttm,
-					  )));
+				       ":killID" => $killID,
+				       ":solarSystemID" => $kill["solarSystemID"],
+				       ":regionID" => $regionID,
+				       ":shipTypeID" => $victim["shipTypeID"],
+				       ":groupID" => $groupID,
+				       ":vGroupID" => $groupID,
+				       ":shipPrice" => $shipPrice,
+				       ":damageTaken" => $victim["damageTaken"],
+				       ":factionID" => $victim["factionID"],
+				       ":allianceID" => $victim["allianceID"],
+				       ":corporationID" => $victim["corporationID"],
+				       ":characterID" => $victim["characterID"],
+				       ":dttm" => $dttm,
+				      )));
 
 		Info::addChar($victim["characterID"], $victim["characterName"]);
 		Info::addCorp($victim["corporationID"], $victim["corporationName"]);
@@ -197,22 +218,22 @@ class Parser
 				(:killID, :solarSystemID, :regionID, 0, :characterID, :corporationID, :allianceID, :total, :vGroupID,
 				 :factionID, :damageDone, :finalBlow, :weaponTypeID, :shipTypeID, :groupID, :dttm)",
 				(array(
-					   ":killID" => $killID,
-					   ":solarSystemID" => $kill["solarSystemID"],
-					   ":regionID" => $regionID,
-					   ":characterID" => $attacker["characterID"],
-					   ":corporationID" => $attacker["corporationID"],
-					   ":allianceID" => $attacker["allianceID"],
-					   ":factionID" => $attacker["factionID"],
-					   ":damageDone" => $attacker["damageDone"],
-					   ":finalBlow" => $attacker["finalBlow"],
-					   ":weaponTypeID" => $attacker["weaponTypeID"],
-					   ":shipTypeID" => $attacker["shipTypeID"],
-					   ":groupID" => $attackerGroupID,
-					   ":dttm" => $dttm,
-					   ":total" => $totalCost,
-					   ":vGroupID" => $victimGroupID,
-					  )));
+				       ":killID" => $killID,
+				       ":solarSystemID" => $kill["solarSystemID"],
+				       ":regionID" => $regionID,
+				       ":characterID" => $attacker["characterID"],
+				       ":corporationID" => $attacker["corporationID"],
+				       ":allianceID" => $attacker["allianceID"],
+				       ":factionID" => $attacker["factionID"],
+				       ":damageDone" => $attacker["damageDone"],
+				       ":finalBlow" => $attacker["finalBlow"],
+				       ":weaponTypeID" => $attacker["weaponTypeID"],
+				       ":shipTypeID" => $attacker["shipTypeID"],
+				       ":groupID" => $attackerGroupID,
+				       ":dttm" => $dttm,
+				       ":total" => $totalCost,
+				       ":vGroupID" => $victimGroupID,
+				      )));
 		Info::addChar($attacker["characterID"], $attacker["characterName"]);
 		Info::addCorp($attacker["corporationID"], $attacker["corporationName"]);
 		Info::addAlli($attacker["allianceID"], $attacker["allianceName"]);
