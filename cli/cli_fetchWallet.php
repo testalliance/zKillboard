@@ -38,6 +38,8 @@ class cli_fetchWallet implements cliCommand
 		if (Util::is904Error()) return;
 		global $walletApis;
 
+		if (!is_array($walletApis)) return;
+
 		foreach ($walletApis as $api)
 		{
 			$type = $api["type"];
