@@ -85,14 +85,13 @@ $app->get("/raw/:id/", function($id) use ($app) {
 });
 
 // Kill Detail View
-$app->map("/kill/:id(/:pageview)/", function($id, $pageview = "overview") use ($app) {
-    include( "view/detail.php" );
-})->via("GET", "POST");
-// Kill Detail View
-$app->map("/detail/:id(/:pageview)/", function($id, $pageview = "overview") use ($app) {
+$app->get("/detail/:id(/:pageview)/", function($id, $pageview = "overview") use ($app) {
     $app->redirect("/kill/$id");
     die();
-})->via("GET", "POST");
+});
+$app->get("/kill/:id(/:pageview)/", function($id, $pageview = "overview") use ($app) {
+    include( "view/detail.php" );
+});
 
 // Search
 $app->map("/search(/:search)/", function($search = NULL) use ($app) {
