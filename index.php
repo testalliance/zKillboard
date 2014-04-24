@@ -1,4 +1,11 @@
 <?php
+// Check for a config file, if there is no config, load the installer
+if(!file_exists("config.php"))
+{
+	include("installer/index.php");
+	die();
+}
+
 // Include Init
 require_once( "init.php" );
 
