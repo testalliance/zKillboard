@@ -86,7 +86,7 @@ $app->get("/raw/:id/", function($id) use ($app) {
 
 // Kill Detail View
 $app->get("/detail/:id(/:pageview)/", function($id, $pageview = "overview") use ($app) {
-    $app->redirect("/kill/$id");
+    $app->redirect("/kill/$id/", 301); // Permanent redirect
     die();
 });
 $app->get("/kill/:id(/:pageview)/", function($id, $pageview = "overview") use ($app) {
