@@ -1,7 +1,7 @@
 {
 	"require": {
 		"twig/twig": "*",
-		"ircmaxell/password-compat": "*",
+		"ircmaxell/password-compat": "*"
 	},
 	"minimum-stability": "stable",
 	"prefer-stable": true
