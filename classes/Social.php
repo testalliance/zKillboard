@@ -48,16 +48,22 @@ class Social
 		if ($victimInfo == null) return;
 		$totalPrice = $victimInfo["total_price"];
 
+		Info::addInfo($victimInfo);
+
+		// Reduce spam of freighters and jump freighters
+		$shipGroupID = $victimInfo["groupID"];
+		if (in_array($shipGroupID, array(513, 902))) {
+			$shipPrice = Price::getItemPrice($victimInfo["shipTypeID"], $victimInfo["dttm"]);
+			$ircMin += $shipPrice;
+			$twitMin += $shipPrice;
+		}
+
 		$worthIt = false;
 		$worthIt |= $totalPrice >= $ircMin;
-		$worthIt |= $victimInfo["corporationID"] == 1000197 && $totalPrice >= 100000000 && $victimInfo["shipTypeID"] != 670;
 		if (!$worthIt) return;
 
 		$tweetIt = false;
 		$tweetIt |= $totalPrice >= $twitMin;
-		$tweetIt |= $victimInfo["corporationID"] == 1000197 && $totalPrice >= 100000000 && $victimInfo["shipTypeID"] != 670;
-		
-		Info::addInfo($victimInfo);
 
 		$url = "https://zkillboard.com/kill/$killID/";
 		if ($totalPrice >= $twitMin) $url = Twit::shortenUrl($url);
