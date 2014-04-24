@@ -24,8 +24,8 @@
 	</div>
 	<div class="collapse navbar-collapse navbar-sub">
 		<ul class="nav navbar-nav">
-			<li class="{{ isActive('overview', pageview) }}"><a href="/detail/{{ killdata.info.killID }}/overview/">Overview</a></li>
-			<li class="visible-lg {{ isActive('involved', pageview) }} hidden-xs"><a href="/detail/{{ killdata.info.killID }}/involved/">Involved Pilots ({{ killdata.info.number_involved }})</a></li>
+			<li class="{{ isActive('overview', pageview) }}"><a href="/kill/{{ killdata.info.killID }}/overview/">Overview</a></li>
+			<li class="visible-lg {{ isActive('involved', pageview) }} hidden-xs"><a href="/kill/{{ killdata.info.killID }}/involved/">Involved Pilots ({{ killdata.info.number_involved }})</a></li>
 		</ul>
 		<ul class="nav navbar-nav pull-right">
 			{% if killdata.info.killID < 0 %}
@@ -165,7 +165,7 @@
 			</div>
 			<div class="modal-body">
 				{% if sessionusername %}
-					<form name="report" method="post" action="/detail/{{ killdata.info.killID }}/">
+					<form name="report" method="post" action="/kill/{{ killdata.info.killID }}/">
 						<div class="form-group">
 							<textarea id="report" name="report" type="text" required placeholder="Report Reason" class="col-md-12" rows="12"></textarea>
 						</div>
@@ -294,7 +294,7 @@ jQuery(".tagManager").tagsManager({
 	<meta name="twitter:image" content="https://image.eveonline.com/Render/{{ killdata.victim.shipTypeID }}_64.png">
 	<meta name="twitter:card" content="summary">
 	<meta name="og:title" content="zKillboard.com / {{ pageTitle }}">
-	<meta name="og:url" content="https://{{ siteurl }}/detail/{{ killdata.info.killID }}/">
+	<meta name="og:url" content="https://{{ siteurl }}/kill/{{ killdata.info.killID }}/">
 {% if finalBlow.characterName == NULL %}
 	<meta name="twitter:description" content="{{ killdata.victim.characterName }} ({{ killdata.victim.corporationName}}) lost their {{ killdata.victim.shipName }} in {{ killdata.info.solarSystemName }} ({{ killdata.info.regionName }})">
 	<meta name="og:description" content="{{ killdata.victim.characterName }} ({{ killdata.victim.corporationName}}) lost their {{ killdata.victim.shipName }} in {{ killdata.info.solarSystemName }} ({{ killdata.info.regionName }})">

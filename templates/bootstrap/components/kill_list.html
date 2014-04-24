@@ -38,7 +38,7 @@
       {% set field = kill.victim %}
       {% set lossDisplay = '' %}
       {% if kill.displayAsLoss == true and key != 'system' and key != 'region' %}{% set lossDisplay = 'error' %}{% elseif pageType == 'overview' %}{% set lossDisplay = 'winwin' %}{% endif %}
-      <tr class="{{lossDisplay}} killListRow" onclick="window.location='/detail/{{kill.info.killID}}/'">
+      <tr class="{{lossDisplay}} killListRow" onclick="window.location='/kill/{{kill.info.killID}}/'">
         <td>
           {% if timeago == "true" %}
             <abbr class="timeago" title="{{ kill.info.ISO8601 }}">{{ kill.info.ISO8601}}</abbr>
@@ -46,9 +46,9 @@
             {{ kill.info.killTime|slice(10) }}
           {% endif %}
           {% if disqusLoad %}
-            <small><a href="/detail/{{ kill.info.killID }}/#comments" data-disqus-identifier="{{ kill.info.commentID }}" rel="tooltip" title="Comments"></a></small>
+            <small><a href="/kill/{{ kill.info.killID }}/#comments" data-disqus-identifier="{{ kill.info.commentID }}" rel="tooltip" title="Comments"></a></small>
           {% endif %}
-          <br/><a href="/detail/{{ kill.info.killID }}/">{{ formatIsk(kill.info.total_price) }}</a>
+          <br/><a href="/kill/{{ kill.info.killID }}/">{{ formatIsk(kill.info.total_price) }}</a>
         </td>
         <td class="icon hidden-xs" style="text-align: center; vertical-align: middle;">
           {% include 'components/image_ship.html' %}
