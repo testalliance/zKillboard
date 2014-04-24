@@ -16,6 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// Check for a config file, if there is no config, load the installer
+if(!file_exists("config.php"))
+{
+	include("installer/index.php");
+	die();
+}
 // config load
 require_once( "config.php" );
 
