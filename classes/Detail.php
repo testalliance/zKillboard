@@ -256,7 +256,7 @@ subs:
 		$key .= "|" . ($itm["qtyDropped"] > 0 ? "dropped" : "destroyed");
 		if (!isset($itm["flagName"])) $itm["flagName"] = Info::getFlagName($itm["flag"]);
 		$key .= "|" . $itm["flagName"];
-		if ($itm["groupID"] == 649) $key .= microtime() . rand(0, 10000);
+		if (in_array($itm["groupID"], array(340, 649)) && isset($itm["items"])) $key .= microtime() . rand(0, 10000);
 		return $key;
 	}
 
