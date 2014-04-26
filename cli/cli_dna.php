@@ -82,6 +82,6 @@ class cli_dna implements cliCommand
 				$calcCount++;
 			}
 		}
-		Log::log("DNA'ed $calcCount kills");
+		if ($calcCount > 0) Log::log("DNA'ed $calcCount kills");
 	}
 }
