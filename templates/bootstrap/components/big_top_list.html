@@ -1,6 +1,10 @@
 {% if topSet | length %}
 <div class="container"> 
+{% if topSet.title %}
+<h4 style="text-align: center;">{{ topSet.title }}</h4>
+{% else %}
 <h4 style="text-align: center;">{{ topTitle }}</h4>
+{% endif %}
 <div class="clearfix"></div>
 <div class="clearfix"></div>
 {% set imageSize = 64 %}
@@ -9,6 +13,7 @@
   <div class="col-sm-2 pull-left" style="text-align: center">
 		{% set field = data.victim %}
 		{% set shipImageLinkOverride = data.info.killID %}
+		{% set shipNameLength = 20 %}
 		<span class="hidden-xs">{% include 'components/text_ship.html' %}<br/></span>
 		{% include 'components/image_ship.html' %}<br/>
 		<span class="hidden-xs">{% if field.characterName|length > 0 %}
