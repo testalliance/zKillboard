@@ -99,6 +99,7 @@ class Stats
 		$whereClauses = array();
 		$tables = array();
 		Filters::buildFilters($tables, $whereClauses, $whereClauses, $parameters, $allTime);
+		$whereClauses[] = "characterID != 0";
 
 		// Remove 0 values
 		$whereClauses[] = "$groupByColumn != 0";
@@ -139,6 +140,7 @@ class Stats
 		$tables = array();
 		$tables[] = "zz_participants p";
 		Filters::buildFilters($tables, $whereClauses, $whereClauses, $parameters, $allTime);
+		$whereClauses[] = "characterID != 0";
 
 		// Remove 0 values
 		$whereClauses[] = "$groupByColumn != 0";
