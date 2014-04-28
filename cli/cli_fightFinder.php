@@ -36,8 +36,8 @@ class cli_fightFinder implements cliCommand
 	public function execute($parameters, $db)
 	{
 		$db->execute("delete from zz_social where insertTime < date_sub(now(), interval 23 hour)");
-		$minPilots = 100;
-		$minWrecks = 100;
+		$minPilots = 200;
+		$minWrecks = 200;
 		$result = $db->query("select * from (select solarSystemID, count(distinct characterID) count, count(distinct killID) kills from zz_participants where characterID != 0 and killID > 0 and dttm > date_sub(now(), interval 1 hour) group by 1 order by 2 desc) f where count >= $minPilots and kills > $minWrecks");
 		foreach($result as $row) {
 			$systemID = $row["solarSystemID"];
