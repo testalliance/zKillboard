@@ -39,17 +39,16 @@ class Summary
 	 * @param array $parameters
 	 * @return array
 	 */
-	private static function getSummary($type, $column, &$data, $id, $parameters = array())
+	public static function getSummary($type, $column, &$data, $id, $parameters = array(), $overRide = false)
 	{
-		$key = "summary:$type:$column:$id:" . json_encode($parameters);
+		$key = "summary:$type:$column:$id:$overRide:" . json_encode($parameters);
 		$mc = Cache::get($key);
 		if ($mc) return $mc;
 
 		$rank = Db::queryRow("select * from zz_ranks where type = :type and typeID = :id", array(":type" => $type, ":id" => $id), 300);
 		$recentRank = Db::queryField("select overallRank from zz_ranks_recent where type = :type and typeID = :id", "overallRank", array(":type" => $type, ":id" => $id), 300);
-		$idCount = 0;
-		foreach ($parameters as $key => $value) if (Util::endsWith($key, "ID")) $idCount++;
-		if (false) { //isset($parameters["solo"]) || $idCount >= 2) {
+
+		if ($overRide) {
 			$rank = $recentRank = array();
 
 			$tables = array();
