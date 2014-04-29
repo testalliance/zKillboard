@@ -22,7 +22,7 @@
 
 .table tbody tr.error td
 {
-  background-color: #3F0606;
+  background-color: #2F0202;
 }
 
 .table tbody tr.winwin td
@@ -49,6 +49,10 @@ color: black;
 }
 .green {
 	color: green;
+}
+
+.no-stripe {
+	background-color: black;
 }
 
 .table-no-hover tbody tr:hover td, .table tbody tr:hover th {
