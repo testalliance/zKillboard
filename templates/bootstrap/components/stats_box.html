@@ -47,7 +47,16 @@
 	{% endif %}
 	{% endif %}
 	{% if detail.ranks is defined %}
-		<th style="text-align: right;"><strong>{{ detail.ranks.overallRank | number_format(0) }}</strong></th>
+		<th style="text-align: right;">
+			<strong>{{ detail.ranks.overallRank | number_format(0) }}</strong>
+			{% if detail.progress.overallRank < overallRank and detail.progress.overallRank != 0 %}
+				<small><span rel="tooltip" title="Ranked #{{ detail.progress.overallRank|number_format(0) }} on {{ detail.progress.dttm }}" class="glyphicon glyphicon-arrow-up green"></span></small>
+			{% elseif detail.progress.overallRank > detail.ranks.overallRank and detail.progress.overallRank != 0 %}
+				<small><span rel="tooltip" title="Ranked #{{ detail.progress.overallRank|number_format(0) }} on {{ detail.progress.dttm }}" class="glyphicon glyphicon-arrow-down red"></span></small>
+			{% elseif detail.progress.overallRank != 0 %}
+				<small><span rel="tooltip" title="No change in rank..." class="glyphicon glyphicon-minus"></span></small>
+			{% endif %}
+			</th>
 	{% endif %}
 	</tr>
 	<tr>
@@ -90,9 +99,18 @@
 		<td class="{{greenred}} hidden-xs" style="text-align: right">{{ iskEff | number_format(1) }}</td>
 	{% endif %}
 	{% endif %}
-    {% if detail.ranks is defined %}
+    	{% if detail.ranks is defined %}
 		{% set recentRank = ( detail.ranks.recentRank is defined ? detail.ranks.recentRank | number_format(0) : '-') %}
-        <th class="" style="text-align: right;"><strong>{{ recentRank }}</strong></th>
+        	<th class="" style="text-align: right;">
+			<strong>{{ recentRank }}</strong>
+			{% if detail.progress.recentRank < recentRank and detail.progress.recentRank != 0 %}
+				<small><span rel="tooltip" title="Ranked #{{ detail.progress.recentRank|number_format(0) }} on {{ detail.progress.dttm }}" class="glyphicon glyphicon-arrow-up green"></span></small>
+			{% elseif detail.progress.recentRank > detail.ranks.recentRank and detail.progress.recentRank != 0 %}
+				<small><span rel="tooltip" title="Ranked #{{ detail.progress.recentRank|number_format(0) }} on {{ detail.progress.dttm }}" class="glyphicon glyphicon-arrow-down red"></span></small>
+			{% elseif detail.progress.recentRank != 0 %}
+				<small><span rel="tooltip" title="No change in rank..." class="glyphicon glyphicon-minus"></span></small>
+			{% endif %}
+			</th>
 	{% endif %}
 
 	</tr>

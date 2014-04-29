@@ -43,5 +43,8 @@ class cli_daily implements cliCommand
 			$typeID = $row["shipTypeID"];
 			$db->execute("update ccp_invTypes set published = 1 where typeID = :typeID", array(":typeID" => $typeID));
 		}
+
+		// Clear out old ranks from progress table
+		$db->execute("delete from zz_ranks_progress where dttm < date(date_sub(now(), interval 30 day))");
 	}
 }

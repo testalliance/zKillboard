@@ -120,6 +120,7 @@ class cli_calculateRecentStatsAndRanks implements cliCommand
 			$db->execute("insert into zz_ranks_recent select * from zz_ranks_temporary");
 		}
 		$db->execute("drop table zz_ranks_temporary");
+		$db->execute("insert into zz_ranks_progress select date(now()), type, typeID, overallRank, 0 from zz_ranks_recent r where overallRank <= 100000 on duplicate key update recentRank = r.overallRank");
 	}
 
 	private static function stats($db)

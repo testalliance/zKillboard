@@ -118,6 +118,7 @@ class cli_calculateAllTimeStatsAndRanks implements cliCommand
 			$db->execute("insert into zz_ranks select * from zz_ranks_temporary");
 		}
 		$db->execute("drop table zz_ranks_temporary");
+		$db->execute("insert into zz_ranks_progress select date(now()), type, typeID, 0, overallRank from zz_ranks r where overallRank <= 100000 on duplicate key update overallRank = r.overallRank");
 	}
 
 	private static function stats($db)
