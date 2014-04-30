@@ -1,4 +1,5 @@
 <?php
+$referer = @$_SERVER["HTTP_REFERER"];
 if($_POST)
 {
     $username = Util::getPost("username");
@@ -38,4 +39,4 @@ if($_POST)
         }
     }
 }
-else $app->render("login.html");
+else $app->render("login.html", array("requesturi" => $referer));
