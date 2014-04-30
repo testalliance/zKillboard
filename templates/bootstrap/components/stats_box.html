@@ -5,7 +5,7 @@
 {% set spanWidth = 2 %}
 {% if detail.shipsLost %}{% set spanWidth = spanWidth + 2 %}{% endif %}
 {% if detail.shipsDestroyed %}{% set spanWidth = spanWidth + 2 %}{% endif %}
-<table class="table table-condensed table-hover span{{spanWidth}}">
+<table class="table table-condensed span{{spanWidth}}">
 	<tbody>
 	<tr>
 		<th>&nbsp;</th>
@@ -49,12 +49,14 @@
 	{% if detail.ranks is defined %}
 		<th style="text-align: right;">
 			<strong>{{ detail.ranks.overallRank | number_format(0) }}</strong>
-			{% if detail.progress.overallRank < overallRank and detail.progress.overallRank != 0 %}
+			{% if detail.progress.overallRank > detail.ranks.overallRank and detail.progress.overallRank != 0 %}
 				<small><span rel="tooltip" title="Ranked #{{ detail.progress.overallRank|number_format(0) }} on {{ detail.progress.dttm }}" class="glyphicon glyphicon-arrow-up green"></span></small>
-			{% elseif detail.progress.overallRank > detail.ranks.overallRank and detail.progress.overallRank != 0 %}
+			{% elseif detail.progress.overallRank < detail.ranks.overallRank and detail.progress.overallRank != 0 %}
 				<small><span rel="tooltip" title="Ranked #{{ detail.progress.overallRank|number_format(0) }} on {{ detail.progress.dttm }}" class="glyphicon glyphicon-arrow-down red"></span></small>
 			{% elseif detail.progress.overallRank != 0 %}
-				<small><span rel="tooltip" title="No change in rank..." class="glyphicon glyphicon-minus"></span></small>
+				<small><span rel="tooltip" title="No change in rank..." class="glyphicon glyphicon-minus green"></span></small>
+			{% else %}
+				<small><span rel="tooltip" title="Rank ignored." class="glyphicon glyphicon-minus"></span></small>
 			{% endif %}
 			</th>
 	{% endif %}
@@ -103,12 +105,14 @@
 		{% set recentRank = ( detail.ranks.recentRank is defined ? detail.ranks.recentRank | number_format(0) : '-') %}
         	<th class="" style="text-align: right;">
 			<strong>{{ recentRank }}</strong>
-			{% if detail.progress.recentRank < recentRank and detail.progress.recentRank != 0 %}
+			{% if detail.progress.recentRank > detail.ranks.recentRank and detail.progress.recentRank != 0 %}
 				<small><span rel="tooltip" title="Ranked #{{ detail.progress.recentRank|number_format(0) }} on {{ detail.progress.dttm }}" class="glyphicon glyphicon-arrow-up green"></span></small>
-			{% elseif detail.progress.recentRank > detail.ranks.recentRank and detail.progress.recentRank != 0 %}
+			{% elseif detail.progress.recentRank < detail.ranks.recentRank and detail.progress.recentRank > 0 %}
 				<small><span rel="tooltip" title="Ranked #{{ detail.progress.recentRank|number_format(0) }} on {{ detail.progress.dttm }}" class="glyphicon glyphicon-arrow-down red"></span></small>
 			{% elseif detail.progress.recentRank != 0 %}
-				<small><span rel="tooltip" title="No change in rank..." class="glyphicon glyphicon-minus"></span></small>
+				<small><span rel="tooltip" title="No change in rank..." class="glyphicon glyphicon-minus green"></span></small>
+			{% else %}
+				<small><span rel="tooltip" title="Rank ignored." class="glyphicon glyphicon-minus"></span></small>
 			{% endif %}
 			</th>
 	{% endif %}
