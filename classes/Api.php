@@ -240,10 +240,10 @@ class Api
 				$demoteCharacter = true;
 				break;
 			case 222: // account has expired
-			$clearAllCharacters = true;
-			$clearApiEntry = true;
-			$cacheUntil = time() + (7 * 24 * 3600); // Try again in a week
-			break;
+				$clearAllCharacters = true;
+				$clearApiEntry = true;
+				$cacheUntil = time() + (7 * 24 * 3600); // Try again in a week
+				break;
 			case 403:
 			case 211: // Login denied by account status
 				// Remove characters, will revalidate with next doPopulate
@@ -299,7 +299,7 @@ class Api
 		Db::execute("update zz_api_characters set errorCode = :code where keyID = :keyID and characterID = :charID", array(":keyID" => $keyID, ":charID" => $charID, ":code" => $code));
 	}
 
-    public static function fetchApis()
+	public static function fetchApis()
 	{
 		global $baseDir;
 
@@ -320,6 +320,7 @@ class Api
 			else foreach ($allChars as $char) {
 				if (Util::isMaintenanceMode()) return;
 				if ($timer->stop() > $maxTime) return;
+				if (Util::is904Error()) return;
 
 				$apiRowID = $char["apiRowID"];
 				Db::execute("update zz_api_characters set cachedUntil = date_add(if(cachedUntil=0, now(), cachedUntil), interval 5 minute), lastChecked = now() where apiRowID = :id", array(":id" => $apiRowID));
@@ -335,7 +336,7 @@ class Api
 		}
 	}
 
-    public static function doApiSummary()
+	public static function doApiSummary()
 	{
 		$lastActualKills = Db::queryField("select contents count from zz_storage where locker = 'actualKills'", "count", array(), 0);
 		$actualKills = Db::queryField("select count(*) count from zz_killmails where processed = 1", "count", array(), 0);
@@ -357,36 +358,24 @@ class Api
 	 * @param string $keyID string
 	 * @param $charID int
 	 * @param $killlog string
-     * @return int
+	 * @return int
 	 */
 	public static function processRawApi($keyID, $charID, $killlog)
 	{
 		$count = 0;
-		$maxKillID = Db::queryField("select maxKillID from zz_api_characters where keyID = :keyID and characterID = :charID", "maxKillID",
-				array(":keyID" => $keyID, ":charID" => $charID), 0);
-		if ($maxKillID === null) $maxKillID = 0;
-		$insertedMaxKillID = $maxKillID;
 		foreach ($killlog->kills as $kill) {
 			$killID = $kill->killID;
-			//if ($killID < $maxKillID) continue;
-			$insertedMaxKillID = max($insertedMaxKillID, $killID);
 
 			$json = json_encode($kill->toArray());
 			$hash = Util::getKillHash(null, $kill);
-			try {
-						$mKillID = Db::queryField("select killID from zz_killmails where killID < 0 and processed = 1 and hash = :hash", "killID", array(":hash" => $hash), 0);
-			} catch (Exception $ex) {
-			$mKillID = 0;
-				//Log::log("Error: $keyID " . $ex->getMessage());
+
+			$inDb = Db::queryField("select count(1) count from zz_killmails where killID = :killID", "count", array(":killID" => $killID), 0);
+			if ($inDb == 0)
+			{
+				$added = Db::execute("insert ignore into zz_killmails (killID, hash, source, kill_json) values (:killID, :hash, :source, :json)",
+						array(":killID" => $killID, ":hash" => $hash, ":source" => "keyID:$keyID", ":json" => $json));
+				$count += $added;
 			}
-			if ($mKillID) Kills::cleanDupe($mKillID, $killID);
-			$added = Db::execute("insert ignore into zz_killmails (killID, hash, source, kill_json) values (:killID, :hash, :source, :json)",
-					array(":killID" => $killID, ":hash" => $hash, ":source" => "keyID:$keyID", ":json" => $json));
-			$count += $added;
-		}
-		if ($maxKillID != $insertedMaxKillID) {
-			Db::execute("INSERT INTO zz_api_characters (keyID, characterID, maxKillID) VALUES (:keyID, :characterID, :maxKillID) ON DUPLICATE KEY UPDATE maxKillID = :maxKillID",
-				array(":keyID" => $keyID, ":characterID" => $charID, ":maxKillID" => $insertedMaxKillID));
 		}
 		return $count;
 	}

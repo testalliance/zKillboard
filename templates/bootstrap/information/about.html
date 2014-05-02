@@ -1,5 +1,45 @@
-<em>zKillboard</em> is a collaborative effort by Karbowiak and Squizz Caphinator.
-At present it is completely populated by API verified kills obtained from EVE-KILL.
-If you'd like to see your kills here please provide your API key at this location: <a href="http://eve-kill.net/?a=apikey">http://eve-kill.net/?a=apikey</a>
+{% extends "base.html" %}
 
-You can find the source for zKillboard at <a href="https://github.com/EVE-KILL/zKillboard">https://github.com/EVE-KILL/zKillboard</a>
+{% set pageTitle = 'Information - About' %}
+{% block title %}{% include 'components/title.html' %}{% endblock %}
+
+{% block content %}
+<h2>zKillboard - About</h2>
+<p><em>zKillboard</em> is a collaborative effort by many people, see our <a href='https://github.com/EVE-KILL/zKillboard'>GitHub repository</a> for a complete history.</p>
+
+<h4>Contacts</h4>
+<pre>
+Squizz Caphinator:
+    Twitter: <a href="http://twitter.com/squizzc" target="_blank">@squizzc</a>
+    EMail: <a href="mailto:squizzc@gmail.com" target="_blank">squizzc@gmail.com</a>
+Karbowiak:
+    Facebook: <a href="http://facebook.com/Karbowiak" target="_blank">http://facebook.com/Karbowiak</a>
+    EMail: <a href="mailto:karbowiak@gmail.com" target="_blank">karbowiak@gmail.com</a>
+    Twitter: <a href="http://twitter.com/mkarbowiak" target="_blank">@mkarbowiak</a>
+    G+: <a href="https://plus.google.com/101258731039997526770/" target="_blank">Michael Karbowiak</a>
+</pre>
+</hr>
+
+<h4>3rd Parties</h4>
+<p>Information from 3rd party sites, are owned by the 3rd party site, and are made available to us (and possibly others) via APIs. If you want access to the same information for your site, you need to contact the owner of the 3rd party.</p>
+
+<p>Example of 3rd parties:</p>
+<a href="http://evewho.com/" target="_blank">EVEWho</a><br/>
+<a href="http://eveboard.com/" target="_blank">EVE-Board</a><br/>
+<a href="http://eve-search.com/" target="_blank">EVE-Search</a><br/>
+<a href="https://gate.eveonline.com/" target="_blank">EVE-Gate</a><br/>
+<a href="http://evemaps.dotlan.net/" target="_blank">DOTLAN</a><br/>
+<a href="http://www.eveskunk.com/" target="_blank">EVE Skunk</a><br/>
+<a href="http://o.smium.org/" target="_blank">Osmium</a><br/>
+<a href="http://evefit.org/" target="_blank">EVEFit</a><br/>
+<a href="http://www.eveonline.com/" target="_blank">EVE-Online</a><br/>
+<a href="http://eveeye.com/" target="_blank">EVEEye</a><br/>
+<a href="http://wormhol.es/" target="_blank">Wormhol.es</a><br/>
+<br/>
+<p>Social images by <a href="http://www.pinkmoustache.net/">http://www.pinkmoustache.net/</a></p>
+{% endblock %}
+
+{% block robots %}
+        <meta name="robots" content="nofollow">
+{% endblock %}
+

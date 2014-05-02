@@ -118,6 +118,7 @@ class cli_calculateAllTimeStatsAndRanks implements cliCommand
 			$db->execute("insert into zz_ranks select * from zz_ranks_temporary");
 		}
 		$db->execute("drop table zz_ranks_temporary");
+		$db->execute("insert into zz_ranks_progress select date(now()), type, typeID, 0, overallRank from zz_ranks r where overallRank <= 100000 on duplicate key update overallRank = r.overallRank");
 	}
 
 	private static function stats($db)
@@ -135,11 +136,7 @@ class cli_calculateAllTimeStatsAndRanks implements cliCommand
 
 		$db->execute("set session wait_timeout = 6000");
 		if (!Util::isMaintenanceMode()) {
-			$db->execute("replace into zz_storage values ('MaintenanceReason', 'Full stats calculation in progress')");
-			$db->execute("replace into zz_storage values ('maintenance', 'true')");
-			Log::log("Maintenance mode engaged");
-			Log::irc("|r|Engaging maintenance mode for full stat calculations...");
-			sleep(60); // Wait for processes to finish and cleanup
+			Log::irc("|r|Beginning full stat calculations...");
 		}
 
 		$db->execute("truncate zz_stats");
@@ -157,8 +154,7 @@ class cli_calculateAllTimeStatsAndRanks implements cliCommand
 			print_r($e);
 		}
 
-		$db->execute("delete from zz_storage where locker = 'maintenance'");
-		Log::irc("|g|Stat recalculations have completed, leaving Maintenance mode and now reverting to business as usual...");
+		Log::irc("|g|Stat recalculations have completed...");
 	}
 
 	/**
@@ -185,12 +181,12 @@ class cli_calculateAllTimeStatsAndRanks implements cliCommand
 					PRIMARY KEY (`killID`,`groupName`,`groupNum`,`groupID`)
 					) ENGINE=InnoDB");
 
-		$db->execute("insert ignore into zz_stats_temporary select killID, '$type', $column, groupID, points, total_price from zz_participants where $column != 0 and isVictim = 1");
+		$db->execute("insert ignore into zz_stats_temporary select killID, '$type', $column, groupID, points, total_price from zz_participants where $column != 0 and isVictim = 1 and characterID != 0");
 		$db->execute("replace into zz_stats (type, typeID, groupID, lost, pointsLost, iskLost) select groupName, groupNum, groupID, count(killID), sum(points), sum(price) from zz_stats_temporary group by 1, 2, 3");
 
 		if ($calcKills) {
 			$db->execute("truncate table zz_stats_temporary");
-			$db->execute("insert ignore into zz_stats_temporary select killID, '$type', $column, vGroupID, points, total_price from zz_participants where $column != 0 and isVictim = 0");
+			$db->execute("insert ignore into zz_stats_temporary select killID, '$type', $column, vGroupID, points, total_price from zz_participants where $column != 0 and isVictim = 0 and characterID != 0");
 			$db->execute("insert into zz_stats (type, typeID, groupID, destroyed, pointsDestroyed, iskDestroyed) (select groupName, groupNum, groupID, count(killID), sum(points), sum(price) from zz_stats_temporary group by 1, 2, 3) on duplicate key update destroyed = values(destroyed), pointsDestroyed = values(pointsDestroyed), iskDestroyed = values(iskDestroyed)");
 		}
 

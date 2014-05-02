@@ -7,7 +7,7 @@
     {% if related.destroyed > 0 %}
 		{% set class='error' %}
 		{% autoescape false %}
-		{% set onClick = 'window.location = \'/detail/' ~ related.destroyed ~ '/\''%}
+		{% set onClick = 'window.location = \'/kill/' ~ related.destroyed ~ '/\''%}
 		{% set shipImageLinkOverride = related.destroyed %}
 		{% endautoescape %}
     {% endif %}

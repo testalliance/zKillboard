@@ -30,25 +30,24 @@ class cli_apiFetchCharacters implements cliCommand
 
 	public function execute($parameters, $db)
 	{
+		if (Util::is904Error()) return;
 		$keyID = (int) $parameters[0];
 		$vCode = $db->queryField("select vCode from zz_api where keyID = :keyID", "vCode", array(":keyID" => $keyID), 0);
 
 		if ($keyID == 0 && strlen($vCode) == 0) return;
 
-		// Update lastValidation
-		$db->execute("update zz_api set lastValidation = now() where keyID = :keyID", array(":keyID" => $keyID));
-
 		$pheal = Util::getPheal($keyID, $vCode);
 		try {
 			$apiKeyInfo = $pheal->ApiKeyInfo();
 		} catch (Exception $ex) {
+			$db->execute("update zz_api set lastValidation = now() where keyID = :keyID", array(":keyID" => $keyID));
 			Log::log("Error Validating $keyID: " . $ex->getCode() . " " . $ex->getMessage());
 			Api::handleApiException($keyID, null, $ex);
 			return;
 		}
 
 		// Clear the error code
-		$db->execute("update zz_api set errorCode = 0 where keyID = :keyID", array(":keyID" => $keyID));
+		$db->execute("update zz_api set lastValidation = now(), errorCode = 0 where keyID = :keyID", array(":keyID" => $keyID));
 
 		$key = $apiKeyInfo->key;
 		$accessMask = $key->accessMask;

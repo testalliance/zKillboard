@@ -16,12 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-$ip = substr(IP::get(), 0, 64);
-$uri = substr($_SERVER["REQUEST_URI"], 0, 256);
-if ($uri != "/killslasthour/" && $uri != "/autocomplete/") Db::execute("insert into zz_analytics values (:ip, :uri, now())", array(":ip" => $ip, ":uri" => $uri));
-
 $app->notFound(function () use ($app) {
-    $app->render('404.html');
+    $app->redirect("..", 301);
 });
 
 // Default route
@@ -89,9 +85,13 @@ $app->get("/raw/:id/", function($id) use ($app) {
 });
 
 // Kill Detail View
-$app->map("/detail/:id(/:pageview)/", function($id, $pageview = "overview") use ($app) {
+$app->get("/detail/:id(/:pageview)/", function($id, $pageview = "overview") use ($app) {
+    $app->redirect("/kill/$id/", 301); // Permanent redirect
+    die();
+});
+$app->get("/kill/:id(/:pageview)/", function($id, $pageview = "overview") use ($app) {
     include( "view/detail.php" );
-})->via("GET", "POST");
+});
 
 // Search
 $app->map("/search(/:search)/", function($search = NULL) use ($app) {
@@ -150,9 +150,6 @@ $app->get("/item/:id/", function($id) use ($app) {
     include ("view/item.php" );
 });
 
-// Give list of character id's to evewho
-$app->get("/evewhoc/:page/", function($page) use ($app) { include("view/evewhoc.php");});
-
 // StackTrace
 $app->get("/stacktrace/:hash/", function($hash) use ($app) {
     $q = Db::query("SELECT error, url FROM zz_errors WHERE id = :hash", array(":hash" => $hash));
@@ -177,6 +174,7 @@ $app->get("/api/:input+", function($input) use ($app) {
 // Kills in the last hour
 $app->get("/killslasthour/", function() use ($app) {
     echo number_format(Storage::retrieve("KillsLastHour", null));
+    die();
 });
 
 // Post
@@ -205,6 +203,13 @@ $app->get("/evekillrelatedintercept/:id/", function($id) use ($app) {
 // primer
 $app->get("/primer/", function() use ($app) {
 	include("view/primer.php");
+});
+
+$app->get("/poploss/", function() use ($app) {
+	include("view/poploss.php");
+});
+$app->get("/poploss/:detail/", function($detail) use ($app) {
+	include("view/poploss.php");
 });
 
 // The Overview stuff

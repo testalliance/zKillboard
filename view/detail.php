@@ -20,7 +20,7 @@ $involved = array();
 $message = "";
 
 if($pageview == "comments")
-	$app->redirect("/detail/$id/#comment", 301);
+$app->redirect("/detail/$id/#comment", 301);
 
 $info = User::getUserInfo();
 $name = $info["username"];
@@ -37,21 +37,12 @@ if($_POST)
 		{
 			$tags = "Reported Kill";
 			Db::execute("INSERT INTO zz_tickets (userid, name, email, tags, ticket, killID) VALUES (:userid, :name, :email, :tags, :ticket, :killid)",
-			array(":userid" => $userID, ":name" => $name, ":email" => $email, ":tags" => $tags, ":ticket" => $report, ":killid" => $id));
+					array(":userid" => $userID, ":name" => $name, ":email" => $email, ":tags" => $tags, ":ticket" => $report, ":killid" => $id));
 			global $baseAddr;
 			$reportID = Db::queryField("SELECT id FROM zz_tickets WHERE killID = :killID AND name = :name", "id", array(":killID" => $id, ":name" => $name));
 			Log::ircAdmin("Kill Reported by $name: https://$baseAddr/detail/$id/ - https://$baseAddr/moderator/reportedkills/$reportID/");
 			$app->redirect("/detail/$id/");
 		}
-	}
-}
-
-if ($id < 0) {
-	// See if this manual mail has an api verified version
-	$mKillID = -1 * $id;
-	$killID = Db::queryField("select killID from zz_manual_mails where mKillID = :mKillID", "killID", array(":mKillID" => $mKillID), 1);
-	if ($killID > 0) {
-		$app->redirect("/detail/$killID/");
 	}
 }
 
@@ -76,18 +67,22 @@ while($cnt < 10)
 	continue;
 }
 $topDamage = $finalBlow = null;
+$first = null;
 if (sizeof($killdata["involved"]) > 1){
-	$topDamage = $killdata["involved"][0];
 	foreach($killdata["involved"] as $inv) {
+		if ($first == null) $first = $inv;
 		if ($inv["finalBlow"] == 1) $finalBlow = $inv;
+		if ($topDamage == null && $inv["characterID"] != 0) $topDamage = $inv;
 	}
+	// If only NPC's are on the mail give them credit for top damage...
+	if ($topDamage == null) $topDamage = $first;
 }
 
 $extra = array();
 // And now give all the arrays and whatnots to twig..
 if($pageview == "overview")
 {
-	$extra["items"] = combineditems(md5($id), $killdata["items"]);
+	$extra["items"] = Detail::combineditems(md5($id), $killdata["items"]);
 	$extra["invAll"] = involvedCorpsAndAllis(md5($id), $killdata["involved"]);
 	$extra["involved"] = $involved;
 	$extra["allinvolved"] = $allinvolved;
@@ -102,7 +97,7 @@ $extra["droppedisk"] = droppedIsk(md5($id), $killdata["items"]);
 $extra["lostisk"] = $killdata["info"]["total_price"] - $extra["droppedisk"];
 $extra["fittedisk"] = fittedIsk(md5($id), $killdata["items"]);
 $extra["relatedtime"] = date("YmdH00", strtotime($killdata["info"]["killTime"]));
-$extra["fittingwheel"] = eftarray(md5($id), $killdata["items"], $killdata["victim"]["characterID"]);
+$extra["fittingwheel"] = Detail::eftarray(md5($id), $killdata["items"], $killdata["victim"]["characterID"]);
 $extra["involvedships"] = involvedships($killdata["involved"]);
 $extra["involvedshipscount"] = count($extra["involvedships"]);
 $extra["totalprice"] = usdeurgbp($killdata["info"]["total_price"]);
@@ -115,7 +110,7 @@ $extra["edkrawmail"] = Kills::getRawMail($id);
 $extra["zkbrawmail"] = Kills::getRawMail($id, array(), false);
 $extra["reports"] = Db::queryField("SELECT count(*) as cnt FROM zz_tickets WHERE killID = :killid", "cnt", array(":killid" => $id), 0);
 $extra["slotCounts"] = Info::getSlotCounts($killdata["victim"]["shipTypeID"]);
-$extra["commentID"] = Info::commentID($id);
+$extra["commentID"] = $id;
 $extra["crest"] = Db::queryRow("select killID, hash from zz_crest_killmail where killID = :killID and processed = 1", array(":killID" => $id), 300);
 
 $systemID = $killdata["info"]["solarSystemID"];
@@ -123,6 +118,12 @@ $data = Info::getWormholeSystemInfo($systemID);
 $extra["wormhole"] = $data;
 
 $url = "https://". $_SERVER["SERVER_NAME"] ."/detail/$id/";
+
+if ($killdata["victim"]["groupID"] == 29) $relatedShip = Db::queryRow("select killID, shipTypeID from zz_participants where killID >= (:killID - 200) and killID < :killID and groupID != 29 and isVictim = 1 and characterID = :charID order by killID desc limit 1", array(":killID" => $id, ":charID" => $killdata["victim"]["characterID"]));
+else $relatedShip = Db::queryRow("select killID, shipTypeID from zz_participants where killID <= (:killID + 200) and killID > :killID and groupID = 29 and isVictim = 1 and characterID = :charID order by killID asc limit 1", array(":killID" => $id, ":charID" => $killdata["victim"]["characterID"]));
+Info::addInfo($relatedShip);
+$killdata["victim"]["related"] = $relatedShip;
+
 $app->render("detail.html", array("pageview" => $pageview, "killdata" => $killdata, "extra" => $extra, "message" => $message, "flags" => Info::$effectToSlot, "topDamage" => $topDamage, "finalBlow" => $finalBlow, "url" => $url));
 
 function involvedships($array)
@@ -151,169 +152,15 @@ function sortByOrder($a, $b)
 
 function usdeurgbp($totalprice)
 {
-    $usd = 17;
-    $eur = 13;
-    $gbp = 10;
-    $plex = Price::getItemPrice("29668", date("Ymd"));
-    $usdval = $plex / $usd;
-    $eurval = $plex / $eur;
-    $gbpval = $plex / $gbp;
+	$usd = 17;
+	$eur = 13;
+	$gbp = 10;
+	$plex = Price::getItemPrice("29668", date("Ymd"));
+	$usdval = $plex / $usd;
+	$eurval = $plex / $eur;
+	$gbpval = $plex / $gbp;
 
-    return array("usd" => $totalprice / $usdval, "eur" => $totalprice / $eurval, "gbp" => $totalprice / $gbpval);
-}
-
-function eftarray($md5, $items, $victimID = 0)
-{
-	$Cache = Cache::get($md5."eftarray");
-	if ($Cache) return $Cache;
-
-	// EFT / Fitting Wheel
-	$eftarray["high"] = array(); // high
-	$eftarray["mid"] = array(); // mid
-	$eftarray["low"] = array(); // low
-	$eftarray["rig"] = array(); // rig
-	$eftarray["drone"] = array(); // drone
-	$eftarray["sub"] = array(); // sub
-	$eftammo["high"] = array(); // high ammo
-	$eftammo["mid"] = array(); // mid ammo
-
-	foreach($items as $itm)
-	{
-
-		if ($victimID >= 2100000000 && $victimID <= 2999999999) $itm["flagName"] = Info::getGroupName(Info::getGroupID($itm["typeID"]));
-		else if (!isset($itm["flagName"])) $itm["flagName"] = Info::getFlagName($itm["flag"]);
-
-		if ($itm["flagName"] == "Infantry Modules") $itm["flagName"] = "Mid Slots";
-		if ($itm["flagName"] == "Infantry Weapons") $itm["flagName"] = "High Slots";
-		if ($itm["flagName"] == "Infantry Equipment") $itm["flagName"] = "Low Slots";
-
-		if (!isset($itm["flag"]) || $itm["flag"] == 0) {
-			if ($itm["flagName"] == "High Slots") $itm["flag"] = 27;
-			if ($itm["flagName"] == "Mid Slots") $itm["flag"] = 19;
-			if ($itm["flagName"] == "Low Slots") $itm["flag"] = 11;
-		}
-
-		$key = $itm["typeName"] . "|" . $itm["flagName"];
-		if(isset($itm["flagName"]))
-		{
-			if($itm["fittable"] && $itm["inContainer"] == 0) // not ammo or whatever
-			{
-				$repeats = $itm["qtyDropped"] + $itm["qtyDestroyed"];
-				$i = 0;
-				while($i < $repeats)
-				{
-					if($itm["flagName"] == "High Slots")
-					{
-						high:
-						if(isset($eftarray["high"][$itm["flag"]]))
-						{
-							$itm["flag"] = $itm["flag"]+1;
-							goto high;
-						}
-						$eftarray["high"][$itm["flag"]][] = array("typeName" => $itm["typeName"], "typeID" => $itm["typeID"]);
-					}
-					if($itm["flagName"] == "Mid Slots")
-					{
-						mid:
-						if(isset($eftarray["mid"][$itm["flag"]]))
-						{
-							$itm["flag"] = $itm["flag"]+1;
-							goto mid;
-						}
-						$eftarray["mid"][$itm["flag"]][] = array("typeName" => $itm["typeName"], "typeID" => $itm["typeID"]);
-					}
-					if($itm["flagName"] == "Low Slots")
-					{
-						low:
-						if(isset($eftarray["low"][$itm["flag"]]))
-						{
-							$itm["flag"] = $itm["flag"]+1;
-							goto low;
-						}
-						$eftarray["low"][$itm["flag"]][] = array("typeName" => $itm["typeName"], "typeID" => $itm["typeID"]);
-					}
-					if($itm["flagName"] == "Rigs")
-					{
-						rigs:
-						if(isset($eftarray["rig"][$itm["flag"]]))
-						{
-							$itm["flag"] = $itm["flag"]+1;
-							goto rigs;
-						}
-						$eftarray["rig"][$itm["flag"]][] = array("typeName" => $itm["typeName"], "typeID" => $itm["typeID"]);
-					}
-					if($itm["flagName"] == "SubSystems")
-					{
-						subs:
-						if(isset($eftarray["sub"][$itm["flag"]]))
-						{
-							$itm["flag"] = $itm["flag"]+1;
-							goto subs;
-						}
-						$eftarray["sub"][$itm["flag"]][] = array("typeName" => $itm["typeName"], "typeID" => $itm["typeID"]);
-					}
-					$i++;
-				}
-			}
-			else
-			{
-				if($itm["flagName"] == "Drone Bay")
-					$eftarray["drone"][$itm["flag"]][] = array("typeName" => $itm["typeName"], "typeID" => $itm["typeID"], "qty" => $itm["qtyDropped"] + $itm["qtyDestroyed"]);
-			}
-		}
-	}
-
-	// Ammo shit
-	foreach($items as $itm) {
-		if($itm["inContainer"] == 0 && !$itm["fittable"] && isset($itm["flagName"])) // possibly ammo
-		{
-			if($itm["flagName"] == "High Slots") // high slot ammo
-				$eftarray["high"][$itm["flag"]][] = array("typeName" => $itm["typeName"], "typeID" => $itm["typeID"], "charge" => true);
-			if($itm["flagName"] == "Mid Slots") // mid slot ammo
-				$eftarray["mid"][$itm["flag"]][] = array("typeName" => $itm["typeName"], "typeID" => $itm["typeID"], "charge" => true);
-		}
-	}
-	foreach($eftarray as $key=>$value) {
-		if (sizeof($value)) {
-			asort($value);
-			$eftarray[$key] = $value;
-		} else unset($eftarray[$key]);
-	}
-	Cache::set($md5."eftarray", $eftarray);
-	return $eftarray;
-}
-
-function combineditems($md5, $items)
-{
-	$Cache = Cache::get($md5."combineditems");
-	if($Cache) return $Cache;
-
-	// Create the new item array with combined items and whatnot
-	$itemList = array();
-	foreach($items as $itm)
-	{
-		if ($itm["inContainer"] == 1) $itm["flag"] = 0;
-		if (!isset($itm["flagName"])) $itm["flagName"] = Info::getFlagName($itm["flag"]);
-		for ($i = 0; $i <= 1; $i++) {
-			$mItem = $itm;
-			if ($i == 0) $mItem["qtyDropped"] = 0;
-			if ($i == 1) $mItem["qtyDestroyed"] = 0;
-			if ($mItem["qtyDropped"] == 0 && $mItem["qtyDestroyed"] == 0) continue;
-			$key = buildItemKey($mItem);
-
-			if(!isset($itemList[$key])) {
-				$itemList[$key] = $mItem;
-				$itemList[$key]["price"] = $mItem["price"] * ($mItem["qtyDropped"] + $mItem["qtyDestroyed"]);
-			}
-			else {
-				$itemList[$key]["qtyDropped"] += $mItem["qtyDropped"];
-				$itemList[$key]["qtyDestroyed"] += $mItem["qtyDestroyed"];
-				$itemList[$key]["price"] += $mItem["price"] * ($mItem["qtyDropped"] + $mItem["qtyDestroyed"]);
-			}
-		}
-	}
-	Cache::set($md5."combineditems", $itemList);
-	return $itemList;
+	return array("usd" => $totalprice / $usdval, "eur" => $totalprice / $eurval, "gbp" => $totalprice / $gbpval);
 }
 
 function buildItemKey($itm)
@@ -384,7 +231,9 @@ function droppedIsk($md5, $items)
 	if($Cache) return $Cache;
 
 	$droppedisk = 0;
-	foreach($items as $dropped) $droppedisk += $dropped["price"] * $dropped["qtyDropped"];
+	foreach($items as $dropped) {
+		$droppedisk += $dropped["price"] * ($dropped["singleton"] ? $dropped["qtyDropped"] / 100 : $dropped["qtyDropped"]);
+	}
 
 	Cache::set($md5."droppedisk", $droppedisk);
 	return $droppedisk;

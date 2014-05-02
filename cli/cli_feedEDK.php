@@ -238,14 +238,6 @@ class cli_feedEDK implements cliCommand
 			$mKillID = $db->queryField("select killID from zz_killmails where killID < 0 and processed = 1 and hash = :hash", "killID", array(":hash" => $hash), 0);
 			if ($mKillID) Kills::cleanDupe($mKillID, $killID);
 
-			// If the killID is negative at this point, we need to create a raw mail, and use that to insert it into the zz_manual_mails table, so we can get a manual mail id
-			if($killID < 0)
-			{
-				$rawText = Kills::getRawMail(null, Info::addInfo($killArray));
-				$db->execute("INSERT IGNORE INTO zz_manual_mails (hash, rawText) VALUES (:hash, :rawText)", array(":hash" => $hash, ":rawText" => $rawText));
-				$killID = $db->queryField("SELECT mKillID FROM zz_manual_mails WHERE hash = :hash ORDER BY mKillID DESC LIMIT 1", array(":hash" => $hash), 0);
-			}
-
 			$added = $db->execute("insert ignore into zz_killmails (killID, hash, source, kill_json) values (:killID, :hash, :source, :json)",
 					array(":killID" => $killID, ":hash" => $hash, ":source" => $source, ":json" => $json));
 			$count += $added;

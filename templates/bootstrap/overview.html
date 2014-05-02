@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 
 {% if pageType and pageType != 'overview' %}
-	{% set pageTitle = firstUpper(key) ~ ' / ' ~ pageName ~ ' / ' ~ firstUpper(pageType) %}
+	{% set pageTitle = key|capitalize ~ ' / ' ~ pageName ~ ' / ' ~ pageType|capitalize %}
 {% else %}
-	{% set pageTitle = firstUpper(key) ~ ' / ' ~ pageName %}
+	{% set pageTitle = key|capitalize ~ ' / ' ~ pageName %}
 {% endif %}
 {% block title %}{% include 'components/title.html' %}{% endblock %}
 
@@ -38,9 +38,7 @@
 	{% else %}
 		<li class="{{ isActive('top', pageType) }} hidden-xs"><a href="/{{ key }}/{{ id }}/top/">Monthly Top</a></li>
 	{% endif %}
-	{% if key == "character" or key == "corporation" or key == "alliance" %}
-		<li class="{{ isActive('history', pageType) }} hidden-xs"><a href="/{{ key }}/{{ id }}/history/">History</a></li>
-	{% endif %}
+	<li class="{{ isActive('stats', pageType) }} hidden-xs"><a href="/{{ key }}/{{ id }}/stats/">Stats</a></li>
 	{% if key == "alliance" %}
 		<li class="{{ isActive('Corpstats', pageType) }} hidden-xs"><a href="/{{ key }}/{{ id }}/corpstats/">Corp Stats</a></li>
 		<li class="{{ isActive('api', pageType) }} hidden-xs"><a href="/{{ key }}/{{ id }}/api/">API</a></li>
@@ -65,7 +63,6 @@
 	{% elseif key == "system" %}
 		<li><a href="http://evemaps.dotlan.net/system/{{ pageName|url_encode }}/" target="_blank">DOTLAN</a></li>
 		<li><a href="http://eveeye.com/?system={{ pageName|url_encode }}" target="_blank">EVEEye</a></li>
-		<li><a href="http://wormhol.es/{{ pageName|url_encode }}" target="_blank">Wormhol.es</a></li>
 	{% elseif key == "region" %}
 		<li><a href="http://evemaps.dotlan.net/region/{{ pageName|url_encode }}/" target="_blank">DOTLAN</a></li>
 	{% elseif key == "ship" %}
@@ -75,8 +72,9 @@
 </div>
 </div>
 
-{% if pageType == 'overview' %}
-    {% if isTablet == true or isMobile == false %}{% if useSummaryAccordion == "true" %}{% include 'components/summary_accordion.html' %}{% else %}{% include 'components/summary.html' %}{% endif %}{% endif %}
+<div class="row">
+{% if pageType == 'overview' or pageType == 'kills' or pageType == 'solo' or pageType == 'losses' %}
+  <div class="col-lg-10 pull-left" style="padding-left: 0px;">
     {% if mixed %}
         {% set killListTitle = 'Recent Activity' %}
     {% else %}
@@ -86,28 +84,39 @@
     {% set mixed = 0 %}
 	{% set numPages = combinedPages %}
 	{% set isEmbedded = true %}
-    {% include 'components/kill_list.html' %}
-{% elseif pageType == 'kills' %}
+{% if pageType == 'kills' %}
+      {% set topTitle = 'Most Valuable Kills - Last 7 Days' %}
     {% set killListTitle = 'Kills' %}
     {% set numPages = killPages %}
 	{% set killList = kills %}
 	{% set isEmbedded = true %}
-    {% include 'components/kill_list.html' %}
 {% elseif pageType == 'solo' %}
+      {% set topTitle = 'Most Valuable Solo Kills - Last 7 Days' %}
     {% set killListTitle = 'Solo' %}
     {% set numPages = soloPages %}
 	{% set killList = solo %}
 	{% set isEmbedded = true %}
-    {% include 'components/kill_list.html' %}
 {% elseif pageType == 'losses' %}
+      {% set topTitle = 'Most Valuable Losses - Last 7 Days' %}
     {% set killListTitle = 'Losses' %}
     {% set numPages = lossPages %}
 	{% set killList = losses %}
 	{% set isEmbedded = true %}
+{% endif %}
+    {% set topSet = topKills %}
+    {% include 'components/big_top_list.html' %}
     {% include 'components/kill_list.html' %}
+  </div>
+  <div class="col-lg-2 pull-left" style="padding: 0px;">
+        {% for topSet in topLists %}
+        {% include 'components/top_killer_list.html' %}
+        {% endfor %}
+  </div>
 {% elseif pageType == 'api' %}
     {% include 'components/corp_list.html' %}
-{% elseif pageType == 'history' %}
+{% elseif pageType == 'stats' %}
+    {% include 'components/summary.html' %}
+    <div class="clearfix"></div>
     {% include 'components/history.html' %}
 {% elseif pageType == 'top' %}
 	{% set showImage = true %}
@@ -119,6 +128,7 @@
 {% elseif pageType == 'corpstats' %}
 	{% include 'components/corpstats.html' %}
 {% endif %}
+</div>
 
 {% endblock %}
 

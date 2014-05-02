@@ -3,14 +3,16 @@
 # zKillboard
 zKillboard is a killboard created for EVE-Online, for use on EVE-KILL.net, but can also be used for single entities.
 
+# WARNING
+This is BETA, which means it is a work in progress.  It lacks complete documentation and is currently not meant for use in production.
+
+Since zKillboard is a beta product, it has a code base that is far from complete and enjoys numerous updates, deletions, and modifications to the code and accompanying tables. Please feel free to attempt to install zKillboard on your own server, however, we are not responsible for any difficulties you come across during installation and continuing execution of the product.
+
 ## Credits
 zKillboard is released under the GNU Affero General Public License, version 3. The full license is available in the `AGPL.md` file.
 zKillboard also uses data and images from EVE-Online, which is covered by a seperate license from [CCP](http://www.ccpgames.com/en/home). You can see the full license in the `CCP.md` file.
 It also uses various 3rd party libraries, which all carry their own licensing. Please refer to them for more info.
 
-## WARNING
-This is BETA, which means it is a work in progress.  It lacks documentation and is currently
-not meant for use in production.
 
 ## Contact
 `#esc` on `irc.coldfront.net`
@@ -68,6 +70,7 @@ Apache rewrite is handled by the .htaccess, located in the /public directory.
 
         DocumentRoot /path/to/zkb_install/public/
         <Directory /path/to/zkb_install/public/>
+          Require all granted
           Options FollowSymLinks MultiViews
           AllowOverride All
           Order allow,deny
@@ -155,26 +158,6 @@ For example the following would disable stompReceive entirely, and increase the 
         "300":""
     }
 }
-```
-
-If you don't want to use the automated cron script, you can run each command manualy in your crontab:
-```
-* * * * * /var/killboard/zkillboard.com/cliLock.sh minutely all
-* * * * * /var/killboard/zkillboard.com/cliLock.sh apiFetch
-* * * * * /var/killboard/zkillboard.com/cliLock.sh parseKills
-* * * * * /var/killboard/zkillboard.com/cliLock.sh p120s
-* * * * * /var/killboard/zkillboard.com/cliLock.sh stompReceive
-* * * * * /var/killboard/zkillboard.com/cliLock.sh updateCharacters
-* * * * * /var/killboard/zkillboard.com/cliLock.sh updateCorporations
-* * * * * /var/killboard/zkillboard.com/cliLock.sh populateCharacters
-1 * * * * /var/killboard/zkillboard.com/cliLock.sh summary
-1 * * * * /var/killboard/zkillboard.com/cliLock.sh hourly
-1 * * * * /var/killboard/zkillboard.com/cliLock.sh feed fetch
-0 */6 * * * /var/killboard/zkillboard.com/cliLock.sh itemUpdate
-9 */8 * * * /var/killboard/zkillboard.com/cliLock.sh populateAlliances
-0 12 * * * /var/killboard/zkillboard.com/cliLock.sh priceUpdate
-0 16 * * * /var/killboard/zkillboard.com/cliLock.sh calculateAllTimeStatsAndRanks ranks
-0 20 * * * /var/killboard/zkillboard.com/cliLock.sh calculateRecentTimeStatsAndRanks stats
 ```
 
 All cronjobs can be launched manually with the cli interface.

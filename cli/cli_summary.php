@@ -30,15 +30,16 @@ class cli_summary implements cliCommand
 
 	public function getCronInfo()
 	{
-		return array(
-			3600 => ""
-		);
+		return array(0 => "");
 	}
 
 	public function execute($parameters, $db)
 	{
+                $minute = date("i");
+                if ($minute != "00") return;
+	
 		$lastActualKills = $db->queryField("select contents count from zz_storage where locker = 'actualKills'", "count", array(), 0);
-		$actualKills = $db->queryField("select count(*) count from zz_killmails where processed = 1", "count", array(), 0);
+		$actualKills = $db->queryField("select count(*) count from zz_killmails where processed != 0", "count", array(), 0);
 
 		$lastTotalKills = $db->queryField("select contents count from zz_storage where locker = 'totalKills'", "count", array(), 0);
 		$totalKills = $db->queryField("select count(*) count from zz_killmails", "count", array(), 0);

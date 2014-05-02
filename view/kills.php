@@ -17,6 +17,9 @@
  */
 
 $limit = 50;
+$maxPage = 100;
+if ($page > $maxPage && $type == '') $app->redirect("/kills/page/$maxPage/");
+if ($page > $maxPage && $type != '') $app->redirect("/kills/$type/page/$maxPage/");
 
 switch($type)
 {
@@ -85,4 +88,4 @@ switch($type)
 	break;
 }
 
-$app->render("kills.html", array("kills" => $kills, "page" => $page, "pageType" => $type, "pager" => true));
+$app->render("kills.html", array("kills" => $kills, "page" => $page, "killsType" => $type, "pager" => true));

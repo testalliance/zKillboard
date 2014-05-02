@@ -17,10 +17,13 @@
  */
 
 $key = $input[0];
+if (!isset($input[1])) $app->redirect("/");
 $id = $input[1];
 $pageType = @$input[2];
 
-$validPageTypes = array("overview", "kills", "losses", "top", "topalltime", "solo", "history");
+if ($pageType == "history") $app->redirect("../stats/");
+
+$validPageTypes = array("overview", "kills", "losses", "top", "topalltime", "solo", "stats");
 if ($key == "alliance")
 {
 	$validPageTypes[] = "api";
@@ -83,6 +86,7 @@ $solo = Kills::mergeKillArrays($soloKills, array(), $limit, $columnName, $id);
 
 $validAllTimePages = array("character", "corporation", "alliance");
 $topLists = array();
+$topKills = array();
 if ($pageType == "top" || ($pageType == "topalltime" && in_array($key, $validAllTimePages))) {
 	$topParameters = $parameters; // array("limit" => 10, "kills" => true, "$columnName" => $id);
 	$topParameters["limit"] = 10;
@@ -95,10 +99,12 @@ if ($pageType == "top" || ($pageType == "topalltime" && in_array($key, $validAll
 			$topParameters["month"] = date("m");
 	}
 	if (!array_key_exists("kills", $topParameters) && !array_key_exists("losses", $topParameters)) $topParameters["kills"] = true;
-
-	$topLists[] = array("type" => "character", "data" => Stats::getTopPilots($topParameters, true));
-	$topLists[] = array("type" => "corporation", "data" => Stats::getTopCorps($topParameters, true));
-	$topLists[] = array("type" => "alliance", "data" => Stats::getTopAllis($topParameters, true));
+	
+	if($key != "character") {
+		$topLists[] = array("type" => "character", "data" => Stats::getTopPilots($topParameters, true));
+		$topLists[] = array("type" => "corporation", "data" => Stats::getTopCorps($topParameters, true));
+		$topLists[] = array("type" => "alliance", "data" => Stats::getTopAllis($topParameters, true));
+	}
 	$topLists[] = array("type" => "ship", "data" => Stats::getTopShips($topParameters, true));
 	$topLists[] = array("type" => "system", "data" => Stats::getTopSystems($topParameters, true));
 	$topLists[] = array("type" => "weapon", "data" => Stats::getTopWeapons($topParameters, true));
@@ -109,6 +115,26 @@ if ($pageType == "top" || ($pageType == "topalltime" && in_array($key, $validAll
 		$topLists[] = array("name" => "Top Faction Corporations", "type" => "corporation", "data" => Stats::getTopCorps($topParameters, true));
 		$topLists[] = array("name" => "Top Faction Allianes", "type" => "alliance", "data" => Stats::getTopAllis($topParameters, true));
 	}
+} else {
+                $p = $parameters;
+                $numDays = 7;
+                $p["limit"] = 10;
+                $p["pastSeconds"] = $numDays * 86400;
+                $p["kills"] = $pageType != "losses";
+
+		if ($key != "character") {
+			$topLists[] = Info::doMakeCommon("Top Characters", "characterID", Stats::getTopPilots($p));
+			if ($key != "corporation") {
+				$topLists[] = Info::doMakeCommon("Top Corporations", "corporationID", Stats::getTopCorps($p));
+				if ($key != "alliance") {
+					$topLists[] = Info::doMakeCommon("Top Alliances", "allianceID", Stats::getTopAllis($p));
+				}
+			}
+		}
+		if ($key != "ship") $topLists[] = Info::doMakeCommon("Top Ships", "shipTypeID", Stats::getTopShips($p));
+		if ($key != "system") $topLists[] = Info::doMakeCommon("Top Systems", "solarSystemID", Stats::getTopSystems($p));
+		$p["limit"] = 5;
+		$topKills = Stats::getTopIsk($p);
 }
 
 $corpList = array();
@@ -118,7 +144,7 @@ $corpStats = array();
 if ($pageType == "corpstats") $corpStats = Info::getCorpStats($id, $parameters);
 
 $onlyHistory = array("character", "corporation", "alliance");
-if ($pageType == "history" && in_array($key, $onlyHistory)) {
+if ($pageType == "stats" && in_array($key, $onlyHistory)) {
 	$detail["history"] = Summary::getMonthlyHistory($columnName, $id);
 } else $detail["history"] = array();
 
@@ -154,7 +180,7 @@ foreach($detail["stats"] as $q)
 }
 if ($mixedKills) $kills = Kills::mergeKillArrays($mixed, array(), $limit, $columnName, $id);
 
-$renderParams = array("pageName" => $pageName, "kills" => $kills, "losses" => $losses, "detail" => $detail, "page" => $page,
+$renderParams = array("pageName" => $pageName, "kills" => $kills, "losses" => $losses, "detail" => $detail, "page" => $page, "topKills" => $topKills,
 		"mixed" => $mixedKills, "key" => $key, "id" => $id, "pageType" => $pageType, "solo" => $solo, "topLists" => $topLists,
 		"corps" => $corpList, "corpStats" => $corpStats, "summaryTable" => $stats, "pager" => true, "datepicker" => true, "apiVerified" => $apiVerified);
 

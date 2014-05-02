@@ -24,8 +24,10 @@
 				<li class="{{ isActive('api', key) }}"><a href="/account/api/">API</a></li>
 				<li class="{{ isActive('sitesettings', key) }}"><a href="/account/sitesettings/">Site Settings</a></li>
 				<li class="{{ isActive('tracker', key) }}"><a href="/account/tracker/">Tracker</a></li>
-				<li class="{{ isActive('killdetail', key) }}"><a href="/account/killdetail/">Kill Detail Setup</a></li>
-				<li class="{{ isActive('sessins', key) }}"><a href="/account/sessions/">Active Sessions</a></li>
+				{% if adFreeMonthCost > 0 %}
+				<li class="{{ isActive('payments', key) }}"><a href="/account/payments/">Payments</a></li>
+				{% endif %}
+				<li class="{{ isActive('sessions', key) }}"><a href="/account/sessions/">Active Sessions</a></li>
 			</ul>
 		</div>
 	</div>
@@ -43,13 +45,11 @@
 	{% elseif key == 'subdomains' and reqid %}
 		{% include 'account/subdomain_management.html' %}
 	{% elseif key == 'subdomains' %}
-        	{% include 'account/subdomains.html' %}
-	{% elseif key == 'killdetail' %}
-		{% include 'account/killdetail.html' %}
+       		{% include 'account/subdomains.html' %}
 	{% elseif key == 'sessions' %}
 		{% include 'account/sessions.html' %}
-	{% elseif key == 'campaigns' %}
-		{% include 'account/campaigns.html' %}
+	{% elseif key == 'payments' %}
+		{% include 'account/payments.html' %}
 	{% endif %}
 {% endblock %}
 {% block script %}

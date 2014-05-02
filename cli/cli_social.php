@@ -28,6 +28,11 @@ class cli_social implements cliCommand
 		return ""; // Space seperated list
 	}
 
+        public function getCronInfo()
+        {
+                return array(0 => ""); // always run
+        }
+
 	public function execute($parameters, $db)
 	{
 		Social::findConversations();

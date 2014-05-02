@@ -53,7 +53,7 @@ if($_POST)
 			global $baseAddr;
 			$message = "$ticname, there is a new reply to your ticket from $name - https://$baseAddr/tickets/view/$id/";
 			if ($moderator == 0) Log::ircAdmin("User replied to ticket: |g|$name|n|  https://$baseAddr/moderator/tickets/$id/");
-			Email::send($ticmail, $subject, $message);
+			if ($moderator != 0) Email::send($ticmail, $subject, $message);
 			if(isset($report))
 				$app->redirect("/moderator/reportedkills/$id/");
 			$app->redirect("/moderator/tickets/$id/");
@@ -97,11 +97,10 @@ elseif($req == "tickets")
 {
 	$limit = 30;
 	$offset = ($page - 1) * $limit;
-	$info = Db::query("SELECT * FROM zz_tickets WHERE killID = 0 ORDER BY status DESC, datePosted DESC LIMIT $offset, $limit", array(), 0);
+	$info = Db::query("SELECT t.*, count(r.belongsTo) replyCount FROM zz_tickets t left join zz_tickets_replies r on (t.id = r.belongsTo)  WHERE killID = 0 GROUP BY 1 ORDER BY status DESC, count(r.belongsTo) != 0, datePosted DESC LIMIT $offset, $limit", array(), 0);
 	foreach($info as $key => $val)
 	{
-		if($val["tags"])
-			$info[$key]["tags"] = explode(",", $val["tags"]);
+		//if($val["tags"]) $info[$key]["tags"] = explode(",", $val["tags"]);
 	}
 }
 elseif($req == "users")
@@ -120,8 +119,7 @@ elseif($req == "reportedkills")
 	$info = Db::query("SELECT * FROM zz_tickets WHERE killID != 0 ORDER BY status DESC LIMIT $offset, $limit", array(), 0);
 	foreach($info as $key => $val)
 	{
-		if($val["tags"])
-			$info[$key]["tags"] = explode(",", $val["tags"]);
+		//if($val["tags"]) $info[$key]["tags"] = explode(",", $val["tags"]);
 	}
 }
 

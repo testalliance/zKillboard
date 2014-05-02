@@ -32,5 +32,12 @@ class PhealLogger implements \Pheal\Log\CanLog
 	public function errorLog($scope,$name,$opts,$message) {
 		Db::execute("insert into zz_api_log (scope, name, options, errorCode) values (:scope, :name, :options, :error)",
 				array(":scope" => $scope, ":name" => $name, ":options" => json_encode($opts), ":error" => substr($message, 0, 127)));
+		if (Util::startsWith($message, "904:"))
+		{
+			global $debug;
+			Db::execute("replace into zz_storage values ('ApiStop904', date_add(now(), interval 5 minute))");
+			if ($debug) Log::log("Killing API transactions in this thread: $message");
+			die();
+		}
 	}
 }

@@ -272,11 +272,8 @@ class Info
 	 */
 	public static function getFactionID($name)
 	{
-		$factions = array("Caldari State" => 500001, "Minmatar Republic" => 500002, "Amarr Empire" => 500003, "Gallente Federation" => 500004);
-
-		if(isset($factions[$name]))
-			return $factions[$name];
-		return false;
+		$data = Db::queryRow("select * from zz_factions where name = :name", array(":name" => $name));
+		return isset($data["factionID"]) ? $data["factionID"] : null;
 	}
 
 	/**
@@ -286,11 +283,8 @@ class Info
 	 */
 	public static function getFactionName($id)
 	{
-		$factions = array(500001 => "Caldari State", 500002 => "Minmatar Republic", 500003 => "Amarr Empire", 500004 => "Gallente Federation");
-
-		if(isset($factions[$id]))
-			return $factions[$id];
-		return false;
+		$data = Db::queryRow("select * from zz_factions where factionID = :id", array(":id" => $id));
+		return isset($data["name"]) ? $data["name"] : "Faction $id";
 	}
 
 	/**
@@ -532,14 +526,16 @@ class Info
 	 * @var array
 	 */
 	private static $entities = array(
-			array("alliance", "SELECT allianceID FROM zz_alliances WHERE name "),
-			array("alliance", "SELECT allianceID FROM zz_alliances WHERE ticker "),
-			array("corporation", "SELECT corporationID FROM zz_corporations WHERE name "),
-			array("corporation", "SELECT corporationID FROM zz_corporations WHERE ticker "),
-			array("character", "SELECT characterID FROM zz_characters WHERE name "),
-			array("item", "select typeID from ccp_invTypes where published = 1 and typeName "),
-			array("system", "select solarSystemID from ccp_systems where solarSystemName "),
-			array("region", "select regionID from ccp_regions where regionName "),
+			array("faction", "SELECT factionID, factionID id FROM zz_factions WHERE name "),
+			array("faction", "SELECT factionID, factionID id FROM zz_factions WHERE ticker "),
+			array("alliance", "SELECT allianceID, allianceID id FROM zz_alliances WHERE name "),
+			array("alliance", "SELECT allianceID, allianceID id FROM zz_alliances WHERE ticker ", true),
+			array("corporation", "SELECT corporationID, corporationID id FROM zz_corporations WHERE name "),
+			array("corporation", "SELECT corporationID, corporationID id FROM zz_corporations WHERE ticker ", true),
+			array("character", "SELECT characterID, characterID id FROM zz_characters WHERE name "),
+			array("item", "select typeID, typeID id from ccp_invTypes where published = 1 and typeName ", true),
+			array("system", "select solarSystemID, solarSystemID id from ccp_systems where solarSystemName "),
+			array("region", "select regionID, regionID id from ccp_regions where regionName "),
 			);
 
 	/**
@@ -549,17 +545,19 @@ class Info
 	 * @param string $search
 	 * @return string
 	 */
-	public static function findEntity($search)
+	public static function findEntity($search, $exact = false)
 	{
 		$search = trim($search);
 		if (!isset($search)) return "";
 
 		$names = array();
 		for ($i = 0; $i <= 1; $i++) {
+			if ($i == 1 && $exact) continue;
 			$match = $i == 0 ? " = " : " like ";
 			foreach (self::$entities as $entity) {
 				$type = $entity[0];
 				$query = $entity[1];
+				if (isset($entity[2]) && $entity[2] == true) continue;
 				self::findEntitySearch($names, $type, "$query $match :search limit 9", $search . ($i == 0 ? "" : "%"));
 			}
 		}
@@ -586,6 +584,7 @@ class Info
 			else if (isset($row["typeName"])) $retValue[] = $row["typeName"];
 			else if (isset($row["solarSystemName"])) $retValue[] = $row["solarSystemName"];
 			else if (isset($row["regionName"])) $retValue[] = $row["regionName"];
+			else if (isset($row["factionName"])) $retValue[] = $row["factionName"];
 		}
 		return $retValue;
 	}
@@ -628,7 +627,7 @@ class Info
 	{
 		$data = Db::queryRow("select corporationID, allianceID, factionID from zz_participants where corporationID = :id  and dttm >= date_sub(now(), interval 7 day) order by killID desc limit 1",  array(":id" => $id), 3600);
 		if (sizeof($data) == 0) $data = Db::queryRow("select corporationID, allianceID, 0 factionID from zz_corporations where corporationID = :id", array(":id" => $id), 3600);
-		if (sizeof($data) == 0) $data["corporationID"] == $id;
+		if (sizeof($data) == 0) $data["corporationID"] = $id;
 		$moreData = Db::queryRow("select * from zz_corporations where corporationID = :id", array(":id" => $id), 3600);
 		if ($moreData) {
 			$data["memberCount"] = $moreData["memberCount"];
@@ -798,19 +797,21 @@ class Info
 					break;
 				case "solarSystemID":
 					$info = self::getSystemInfo($value);
-					$element["solarSystemName"] = $info["solarSystemName"];
-					$element["sunTypeID"] = $info["sunTypeID"];
-					$securityLevel = number_format($info["security"], 1);
-					if ($securityLevel == 0 && $info["security"] > 0) $securityLevel = 0.1;
-					$element["solarSystemSecurity"] = $securityLevel;
-					$element["systemColorCode"] = self::getSystemColorCode($securityLevel);
-					$regionInfo = self::getRegionInfoFromSystemID($value);
-					$element["regionID"] = $regionInfo["regionID"];
-					$element["regionName"] = $regionInfo["regionName"];
-					$wspaceInfo = self::getWormholeSystemInfo($value);
-					if ($wspaceInfo) {
-						$element["systemClass"] = $wspaceInfo["class"];
-						$element["systemEffect"] = $wspaceInfo["effectName"];
+					if (sizeof($info)) {
+						$element["solarSystemName"] = $info["solarSystemName"];
+						$element["sunTypeID"] = $info["sunTypeID"];
+						$securityLevel = number_format($info["security"], 1);
+						if ($securityLevel == 0 && $info["security"] > 0) $securityLevel = 0.1;
+						$element["solarSystemSecurity"] = $securityLevel;
+						$element["systemColorCode"] = self::getSystemColorCode($securityLevel);
+						$regionInfo = self::getRegionInfoFromSystemID($value);
+						$element["regionID"] = $regionInfo["regionID"];
+						$element["regionName"] = $regionInfo["regionName"];
+						$wspaceInfo = self::getWormholeSystemInfo($value);
+						if ($wspaceInfo) {
+							$element["systemClass"] = $wspaceInfo["class"];
+							$element["systemEffect"] = $wspaceInfo["effectName"];
+						}
 					}
 					break;
 				case "regionID":
@@ -867,6 +868,15 @@ class Info
 		}
 		return "";
 	}
+
+
+	public static $effectFitToSlot = array(
+			"12" => "High Slots",
+			"13" => "Mid Slots",
+			"11" => "Low Slots",
+			"2663" => "Rigs",
+			"3772" => "SubSystems",
+			"87" => "Drone Bay",);
 
 	/**
 	 * [$effectToSlot description]
@@ -970,37 +980,10 @@ class Info
 			$data = $row;
 			$data["id"] = $row[$field];
 			if (isset($row[$retArray["type"] . "Name"])) $data["name"] = $row[$retArray["type"] . "Name"];
-			else if (isset($row["shipName"])) $data["name"] = $row["shipName"];
-			else if (isset($row["typeName"])) $data["name"] = $row["typeName"];
-			else $data["name"] = $data["id"];
+			else if(isset($row["shipName"])) $data["name"] = $row["shipName"];
 			$data["kills"] = $row["kills"];
 			$retArray["values"][] = $data;
 		}
 		return $retArray;
-	}
-
-	/**
-	 * [commentID description]
-	 * @param  int $id
-	 * @return int
-	 */
-	public static function commentID($id)
-	{
-		// Find the old killID or EVE-KILL ID
-		$checkID = $id;
-		if($checkID < 0) 
-			$checkID = -1 * $checkID;
-		$okID = Db::queryRow("SELECT mKillID, killID, eveKillID FROM zz_manual_mails WHERE (mKillID = :mKillID OR killID = :killID)", array(":mKillID" => $checkID, ":killID" => $checkID));
-
-		if(isset($okID["eveKillID"]))
-			$commentID = $okID["eveKillID"];
-		elseif(isset($okID["mKillID"]))
-			$commentID = $okID["mKillID"];
-		elseif(isset($okID["killID"]))
-			$commentID = $okID["killID"];
-		else
-			$commentID = $id;
-
-		return $commentID;
 	}
 }

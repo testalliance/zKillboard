@@ -1,113 +1,94 @@
-{% if isEmbedded == true %}
-{% set headingType = 'h3' %}
-{% else %}
-{% set headingType = 'h2' %}
-{% endif %}
-{% if killList|length == 0 %}
-<{{ headingType }}>{{ killListTitle }}</{{ headingType }}>
-<div class="alert">Nothing to display here...</div>
-{% else %}
-<{{ headingType }} class="pull-left">{{ killListTitle }}</{{ headingType }}>
+{% set txtLength = 60 %}
 {% include 'components/pager.html' %}
-{% set CurrentYear = '' %}
-{% set CurrentMonth = '' %}
-{% set CurrentDay = ''%}
-<table class="table table-condensed table-striped table-hover">
-    <thead>
+{% if killList|length == 0 %}
+  <h4>{{ killListTitle }}</h4>
+  <div class="alert"><em>Nothing to display here...</em></div>
+{% else %}
+  <h3 class="pull-left">{{ killListTitle }}</h3>
+  {% set CurrentYear = '' %}
+  {% set CurrentMonth = '' %}
+  {% set CurrentDay = ''%}
+  <div class="clearfix"></div>
+  <table class="table table-condensed table-striped table-hover" style="margin-bottom: 0px;">
+  <thead>
+    <tr>
+      <th>Time</th>
+      <th class="hidden-xs" style="width: 50px; text-align: center;">Ship</th>
+      <th class="hidden-xs" style="width:115px;">Place</th>
+      <th class="hidden-xs" style="width: 64px;">&nbsp;</th>
+      <th class="hidden-xs">Victim</th>
+      <th class="hidden-xs" style="width: 64px;">&nbsp;</th>
+      <th class="hidden-xs">Final Blow</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for kill in killList %}
+      {% set shipImageLinkOverride = kill.info.killID %}
+      {% set date = (kill.info.killTime|date('M d, Y')) %}
+      {% if currentDate != date %}
+        {% set currentDate = (kill.info.killTime|date('M d, Y')) %}
         <tr>
-            <th style="width: 124px;">Time</th>
-            <th style="width:115px;">Place</th>
-            <th class="hidden-xs" style="width: 50px; text-align: center;">Ship</th>
-            <th class="hidden-sm hidden-xs" colspan="2" style="text-align: center;">Victim</th>
-            <th class="hidden-lg hidden-md" style="text-align: center;">Victim</th>
-            <th class="hidden-xs">Final Blow</th>
-            <th style="width: 80px; text-align: right;">Link</th>
+          <th class="no-stripe" colspan="7"><strong><em>{{ date }}</em></strong></th>
         </tr>
-    </thead>
-    <tbody>{% for kill in killList %}
-		{% set shipImageLinkOverride = kill.info.killID %}
-      {% set test = kill.info.MonthDayYear|split(",") %}
-      {% set Year = test[1] %}
-      {% set test = test[0]|split(" ")%}
-      {% set Month = test[0]%}
-      {% set Day = test[1]%}
-      {% if CurrentDay != Day and ddmonthyear == "true" %}
-      {% set CurrentDay = Day %}
-      <tr>
-        <td colspan="7"><h4><em>
-         {{Month}} 
-        {{Day}},
-        {{Year}}</em></h4></td>
-      </tr> 
       {% endif %}
-      {% if CurrentMonth != Month and ddmonthyear == "false" %}
-      {% set CurrentMonth = Month %}
-      <tr>
-        <td colspan="7"><h4><em>
-         {{Month}} 
-        {{Year}}</em></h4></td>
-      </tr> 
-	  {% endif %} 
-        {% set imageSize = 64 %}
-	{% set resizeImage = 40 %}
-	
-        {% set field = kill.victim %}
-        {% set lossDisplay = '' %}
-        {% if kill.displayAsLoss == true and key != 'system' and key != 'region' %}{% set lossDisplay = 'error' %}{% endif %}
-		<tr class="{{lossDisplay}} killListRow" onclick="window.location='/detail/{{kill.info.killID}}/'">
-			<td>
-			{% if timeago == "true" %}<abbr class="timeago" title="{{ kill.info.ISO8601 }}">{{ kill.info.ISO8601}}</abbr>{% else %}{{ kill.info.killTime }}{% endif %}
-			</td>
-            <td>
-                <a href="/system/{{ kill.info.solarSystemID }}/">{{ shortString(kill.info.solarSystemName, 13) }}</a> <span style="color: {{ kill.info.systemColorCode }}">{{ "%1.1f"|format(kill.info.solarSystemSecurity) }}</span> <br/>
-                <a href="/region/{{ kill.info.regionID }}/">{{ shortString(kill.info.regionName, 17) }}</a>
-            </td>
-            <td class="icon hidden-xs" style="text-align: center; vertical-align: middle;">
-                {% include 'components/image_ship.html' %}
-            </td>
-            <td class="hidden-xs hidden-sm" style="width: 145px; vertical-align: middle;">
-                {% include 'components/image_char.html' %}
-                {% include 'components/image_corp.html' %}
-                {% include 'components/image_alli.html' %}
-            </td>
-			{% if kill.victim.allianceID != 0 %}
-		  		{% set txtLength = 20 %}
-			{% else %}
-		  		{% set txtLength = 40 %}
-			{% endif %}
-            <td class="victim" style="vertical-align: top;">
-                <a href="/character/{{ kill.victim.characterID }}/">{{ kill.victim.characterName }}</a> ({{ kill.victim.shipName }})<br />
-                <a href="/corporation/{{ kill.victim.corporationID }}/">{{ shortString(kill.victim.corporationName, txtLength) }}</a>
-                {% if kill.victim.allianceID != 0 %}
-                    / <a href="/alliance/{{ kill.victim.allianceID }}/">{{ shortString(kill.victim.allianceName, txtLength) }}</a>
-                {% endif %}
-            </td>
-			{% if kill.finalBlow.allianceID != 0 %}
-		  		{% set txtLength = 20 %}
-			{% else %}
-		  		{% set txtLength = 40 %}
-			{% endif %}
-            <td class="finalBlow hidden-xs" style="vertical-align: top;">
-                <a href="/character/{{ kill.finalBlow.characterID }}/">{{ kill.finalBlow.characterName }}</a> ({{ kill.info.number_involved }})<br />
-                <a href="/corporation/{{ kill.finalBlow.corporationID }}/">{{ shortString(kill.finalBlow.corporationName, txtLength) }}</a>
-                {% if kill.finalBlow.allianceID != 0 %}
-                    / <a href="/alliance/{{ kill.finalBlow.allianceID }}/">{{ shortString(kill.finalBlow.allianceName, txtLength) }}</a>
-				{% endif %}
-            </td>
-            <td class="link">
-                <a href="/detail/{{ kill.info.killID }}/" class="pull-right">
-                    View
-                </a>
-				<br/>
-				<small class="pull-right">{{ formatIsk(kill.info.total_price) }}</small>
-        {% if disqusLoad %}
-        <br>
-        <small class="pull-right"> <a href="/detail/{{ kill.info.killID }}/#comments" data-disqus-identifier="{{ kill.info.commentID }}"></a></small>
-        {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
+  
+      {% set imageSize = 64 %}
+      {% set resizeImage = 40 %}
+  
+      {% set field = kill.victim %}
+      {% set lossDisplay = '' %}
+      {% if (kill.displayAsLoss == true and key != 'system' and key != 'region') or pageType == 'losses' %}{% set lossDisplay = 'error' %}{% elseif pageType == 'overview' or pageType == 'kills' or pageType == 'solo' %}{% set lossDisplay = 'winwin' %}{% endif %}
+      <tr class="{{lossDisplay}} killListRow" onclick="window.location='/kill/{{kill.info.killID}}/'">
+        <td>
+          {% if timeago == "true" %}
+            <abbr class="timeago" title="{{ kill.info.ISO8601 }}">{{ kill.info.ISO8601}}</abbr>
+          {% else %}
+            {{ kill.info.killTime|slice(10) }}
+          {% endif %}
+          {% if disqusLoad %}
+            <small><a href="/kill/{{ kill.info.killID }}/#comments" data-disqus-identifier="{{ kill.info.commentID }}" rel="tooltip" title="Comments"></a></small>
+          {% endif %}
+          <br/><a href="/kill/{{ kill.info.killID }}/">{{ formatIsk(kill.info.total_price) }}</a>
+        </td>
+        <td class="icon hidden-xs" style="text-align: center; vertical-align: middle;">
+          {% include 'components/image_ship.html' %}
+        </td>
+        <td>
+          <a href="/system/{{ kill.info.solarSystemID }}/">{{ shortString(kill.info.solarSystemName, 13) }}</a> <span style="color: {{ kill.info.systemColorCode }}">{{ "%1.1f"|format(kill.info.solarSystemSecurity) }}</span><br/>
+          <a href="/region/{{ kill.info.regionID }}/">{{ shortString(kill.info.regionName, 17) }}</a>
+        </td>
+        <td class="hidden-xs" style="text-align: center; vertical-align: middle; width: 64px;">
+          {% if kill.victim.allianceID != 0 %}
+            {% include 'components/image_alli.html' %}
+          {% else %}
+            {% include 'components/image_corp.html' %}
+          {% endif %}
+        </td>
+        <td class="victim" style="text-align: left; vertical-align: top;">
+          <a href="/character/{{ kill.victim.characterID }}/">{{ kill.victim.characterName }}</a> ({{ kill.victim.shipName }})<br />
+          <a href="/corporation/{{ kill.victim.corporationID }}/">{{ shortString(kill.victim.corporationName, txtLength) }}</a>
+          {% if kill.victim.allianceID != 0 %}
+            / <a href="/alliance/{{ kill.victim.allianceID }}/">{{ shortString(kill.victim.allianceName, txtLength) }}</a>
+          {% endif %}
+        </td>
+        {% set field = kill.finalBlow %}
+        <td class="hidden-xs" style="text-align: center; vertical-align: middle; width: 64px;">
+          {% if kill.finalBlow.allianceID != 0 %}
+            {% include 'components/image_alli.html' %}
+          {% else %}
+            {% include 'components/image_corp.html' %}
+          {% endif %}
+        </td>
+        <td class="finalBlow hidden-xs" style="vertical-align: top;">
+          <a href="/character/{{ kill.finalBlow.characterID }}/">{{ kill.finalBlow.characterName }}</a> ({{ kill.info.number_involved }})<br />
+          <a href="/corporation/{{ kill.finalBlow.corporationID }}/">{{ shortString(kill.finalBlow.corporationName, txtLength) }}</a>
+          {% if kill.finalBlow.allianceID != 0 %}
+            / <a href="/alliance/{{ kill.finalBlow.allianceID }}/">{{ shortString(kill.finalBlow.allianceName, txtLength) }}</a>
+          {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
 </table>
 {% include 'components/pager.html' %}
 {% endif %}

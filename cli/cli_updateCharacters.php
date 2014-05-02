@@ -47,9 +47,11 @@ class cli_updateCharacters implements cliCommand
 			$db->execute("insert ignore into zz_characters (characterID) select ceoID from zz_corporations");
 			$db->execute("insert ignore into zz_characters (characterID) select characterID from zz_api_characters where characterID != 0");
 		}
-		$result = $db->query("select characterID, name from zz_characters where lastUpdated < date_sub(now(), interval 7 day) and corporationID != 1000001 order by lastUpdated limit 600", array(), 0);
+		$result = $db->query("select characterID, name from zz_characters where lastUpdated < date_sub(now(), interval 7 day) order by lastUpdated limit 600", array(), 0);
+		$timer = new Timer();
 		foreach ($result as $row) {
 			if (Util::isMaintenanceMode()) return;
+			if (Util::is904Error()) return;
 			$id = $row["characterID"];
 			$db->execute("update zz_characters set lastUpdated = now() where characterID = :id", array(":id" => $id));
 			if ($id >= 2100000000 && $id < 2199999999) continue; // Dust Characters
@@ -64,19 +66,14 @@ class cli_updateCharacters implements cliCommand
 				$name = $charInfo->characterName;
 				$corpID = $charInfo->corporationID;
 				$alliID = $charInfo->allianceID;
-				//CLI::out("|g|$name|n| $id $corpID $alliID");
 				if ($name != "") $db->execute("update zz_characters set name = :name, corporationID = :corpID, allianceID = :alliID where characterID = :id", array(":id" => $id, ":name" => $name, ":corpID" => $corpID, ":alliID" => $alliID));
 			}
 			catch (Exception $ex)
 			{
-				// Is this name even a participant?
-				$count = $db->queryField("select count(*) count from zz_participants where characterID = :id", "count", array(":id" => $id));
-				if ($count == 0)
-					$db->execute("delete from zz_characters where characterID = :id", array(":id" => $id));
-				elseif ($ex->getCode() != 503)
 					Log::log("ERROR Validating Character $id" . $ex->getMessage());
 			}
 			usleep(100000); // Try not to spam the API servers (pauses 1/10th of a second)
+			if ($timer->stop() > 60000) return;
 		}
 	}
 }

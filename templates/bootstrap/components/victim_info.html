@@ -40,6 +40,15 @@
 		<th>Ship:</th>
 		<td style="width: 100%">{% include 'components/text_ship.html' %}</td>
 	</tr>
+        {% if killdata.victim.related.killID %}
+		{% set shipImageLinkOverride = killdata.victim.related.killID %}
+		{% set field = killdata.victim.related %}
+	<tr>
+		<th>Related:</th>
+		<td>{% include 'components/text_ship.html' %}</td>
+	</tr>
+	{% set field = killdata.victim %}
+        {% endif %}
 	<tr>
 		<th>System:</th>
 		<td>{% include 'components/text_system.html' %} <span>(<span style="color: {{ field.systemColorCode }}">{{ "%1.1f"|format(field.solarSystemSecurity) }}</span>)</span></td>

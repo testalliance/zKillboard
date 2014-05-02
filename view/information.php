@@ -16,15 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-$info = array();
-if($page == "statistics")
-{
-    $info["kills"] = Storage::retrieve("KillCount");
-    $info["ignored"] = Db::queryField("select count(*) count from zz_killmails where processed = 3", "count", array(), 300);
-    $info["total"] = Storage::retrieve("ActualKillCount");
-	//$info["apicallsprhour"] = json_encode(Db::query("select hour(requestTime) as x, count(*) as y from ( select requestTime from zz_api_log where requestTime >= date_sub(now(), interval 24 hour)) as foo group by 1 order by requestTime", array(), 300));
-	//var_dump($info);
-}
-$info["pointValues"] = Points::getPointValues();
+$validPages = array("about", "legal", "killmails", "payments");
+if (!in_array($page, $validPages)) $app->redirect("/");
 
-$app->render("information.html", array("pageview" => $page, "info" => $info));
+$info = array();
+$info["kills"] = Storage::retrieve("totalKills");
+$info["total"] = Storage::retrieve("actualKills");
+$info["pointValues"] = Points::getPointValues();
+$info["NextWalletFetch"] = Storage::retrieve("NextWalletFetch");
+$info["apistats"] = Db::query("select errorCode, count(*) count from zz_api_log where requestTime >= date_sub(now(), interval 1 hour) group by 1");
+
+$app->render("information/$page.html", array("pageview" => $page, "info" => $info));

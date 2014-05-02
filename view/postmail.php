@@ -66,7 +66,7 @@ if($_POST)
 					else if ($processed == 1) $app->redirect("/detail/$killID/");
 					else if ($processed == 2) $error = "There was an error while processing the killmail. Please open a ticket and include the external killmail link so we can examine what happened. Thank you.";
 					else if ($processed == 3) $error = "Only PvP mails are accepted, the mail you just submitted was a PvE killmail.";
-					else usleep(200);
+					else usleep(200000);
 				} while ($timer->stop() < 20000 && $error == "");
 				if ($error == "") $error = "We waited 20 seconds for the kill to be processed but the server must be busy atm, please wait!";
 			}

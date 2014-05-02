@@ -1,5 +1,5 @@
 {% if finalBlow or topDamage %}
-<table class="table table-condensed">
+<table class="table table-condensed" style="margin: 0px;">
 	{% set imageSize = 64 %}
 	<thead>
 		<tr class="titles centered">
@@ -9,10 +9,16 @@
 	</thead>
 	<tbody>
 		<tr>
-			<td style="text-align: center;">{% set field = finalBlow %}{% include 'components/image_char.html'%}</td>
+			<td style="text-align: center;">
+			{% set field = finalBlow %}
+			{% if field.characterID != 0 %}
+				{% include 'components/image_char.html'%}
+			{% else %}
+				{% include 'components/image_corp.html'%}
+			{%endif%}
 			<td style="text-align: center;">
 			{% set field = topDamage %}
-			{% if field.characterID != 0%}
+			{% if field.characterID != 0 %}
 				{% include 'components/image_char.html'%}
 			{% else %}
 				{% include 'components/image_corp.html'%}
@@ -20,12 +26,20 @@
 			</td>
 		</tr>
 		<tr>
-			<td style="text-align: center;"><a href="/character/{{ finalBlow.characterID }}/">{{ finalBlow.characterName }}</a></td>
 			<td style="text-align: center;">
+			{% set field = finalBlow %}
 			{% if field.characterID != 0 %}
-				<a href="/character/{{ topDamage.characterID }}/">{{ topDamage.characterName }}</a>
+				<a href="/character/{{ topDamage.characterID }}/">{{ field.characterName }}</a>
 			{% else %}
-				<a href="/corporation/{{ topDamage.corporationID }}/">{{ topDamage.corporationName }}</a>
+				<a href="/corporation/{{ topDamage.corporationID }}/">{{ field.corporationName }}</a>
+			{% endif %}
+			</td>
+			<td style="text-align: center;">
+			{% set field = topDamage %}
+			{% if field.characterID != 0 %}
+				<a href="/character/{{ topDamage.characterID }}/">{{ field.characterName }}</a>
+			{% else %}
+				<a href="/corporation/{{ topDamage.corporationID }}/">{{ field.corporationName }}</a>
 			{% endif %}
 			</td>
 		</tr>

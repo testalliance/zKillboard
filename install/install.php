@@ -34,12 +34,8 @@ if (file_exists("$base/../config.php"))
 
 out("We will prompt you with a few questions. If at any time you are unsure and want to back out of the installation hit |g|CTRL+C.|n|
 
-|g|Questions will always have a default answer specified in []'s.  Example:
-What is 1+1? [2]|n|
-
-Hitting enter will let you select the default answer.
-
-Some database questions:");
+Questions will always have a default answer specified in []'s. Example: |g|What is 1+1? [2]|n|
+Hitting enter will let you select the default answer.");
 
 $settings = array();
 
@@ -92,6 +88,12 @@ out("A secret key is needed for your cookies to be encrypted.");
 $cookiesecret = prompt("Secret key for cookies?", uniqid(time()));
 $settings["cookiesecret"] = sha1($cookiesecret);
 
+// Set admin password
+require $base.'/../classes/Password.php';
+out("Set password for 'admin' user. It's recommend to change this!");
+$admpw = prompt("Password", substr(str_shuffle('abcefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'), 0, 12));
+$admpw = Password::genPassword($admpw);
+
 // Get default config
 $configFile = file_get_contents("$base/config.new.php");
 
@@ -137,15 +139,30 @@ catch (Exception $ex)
 	throw $ex;
 }
 
+$ln = false;
 // Move bash_complete_zkillboard to the bash_complete folder
 try
 {
 	file_put_contents("/etc/bash_completion.d/zkillboard", file_get_contents("$base/bash_complete_zkillboard"));
 	exec("chmod +x $base/../cli.php");
+	$ln = true;
 }
 catch (Exception $ex)
 {
 	out("|r|Error! Couldn't move the bash_complete file into /etc/bash_completion.d/, please do this after the installer is done.");
+}
+
+// ln the cli into /usr/sbin/zkillboard
+if($ln == true)
+{
+	try
+	{
+		passthru("ln -s $base/../cli.php /usr/sbin/zkillboard");
+	}
+	catch(Exception $e)
+	{
+		out("|r|Error!|n| file most likely already exists. Check after the installer is done, and if it doesn't, run: ln -s $base/../cli.php /usr/sbin/zkillboard");
+	}
 }
 
 // Now install the db structure
@@ -179,8 +196,7 @@ try
 {
 	out("|g|Installing default admin user...");
 	// Install the default admin user
-	Db::execute("INSERT INTO zz_users (username, moderator, admin, password) VALUES ('admin', 1, 1, '$2y$10\$maxuZ/qozcjIgr7ZSnrWJemywbThbPiJDYIuOk9eLxF0pGE5SkNNu')");
-	out("\n\n|r|*** NOTICE ***\nDefault admin user has password 'admin'\nIt is strongly recommended you change this password!\n*** NOTICE ***\n");
+	Db::execute("INSERT INTO zz_users (username, moderator, admin, password) VALUES ('admin', 1, 1, '".$admpw."')");
 }
 catch (Exception $ex)
 {
@@ -242,7 +258,6 @@ function prompt($prompt, $default = "")
 {
 	out("$prompt [$default] ", false, false);
 	$answer = trim(fgets(STDIN));
-	echo "\n";
 	if (strlen($answer) == 0)
 		return $default;
 

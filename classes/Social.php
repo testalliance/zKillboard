@@ -40,16 +40,6 @@ class Social
 		$ircMin = 5000000000;
 		$twitMin = 10000000000;
 
-		// This is an array of characters we like to laugh at :)
-		$laugh = array(
-				1633218082, // Squizz Caphinator
-				924610627, // fr0gOfWar (petllama)
-				619471207, // Flyboy
-				268946627, // Karbowiak
-				179004085, // Peter Powers
-				428663616, // HyperBeanie (Beansman)
-				);
-
 		$count = Db::queryField("select count(*) count from zz_social where killID = :killID", "count", array(":killID" => $killID), 0);
 		if ($count != 0) return;
 
@@ -58,14 +48,24 @@ class Social
 		if ($victimInfo == null) return;
 		$totalPrice = $victimInfo["total_price"];
 
-		if (!in_array($victimInfo["characterID"], $laugh)) { // If in laugh array, skip the checks
-			// Check the minimums, min. price and happened in last 12 hours
-			if ($totalPrice < $ircMin) return;
-		}
-
 		Info::addInfo($victimInfo);
 
-		$url = "https://zkillboard.com/detail/$killID/";
+		// Reduce spam of freighters and jump freighters
+		$shipGroupID = $victimInfo["groupID"];
+		if (in_array($shipGroupID, array(513, 902))) {
+			$shipPrice = Price::getItemPrice($victimInfo["shipTypeID"], $victimInfo["dttm"]);
+			$ircMin += $shipPrice;
+			$twitMin += $shipPrice;
+		}
+
+		$worthIt = false;
+		$worthIt |= $totalPrice >= $ircMin;
+		if (!$worthIt) return;
+
+		$tweetIt = false;
+		$tweetIt |= $totalPrice >= $twitMin;
+
+		$url = "https://zkillboard.com/kill/$killID/";
 		if ($totalPrice >= $twitMin) $url = Twit::shortenUrl($url);
 		$message = "|g|" . $victimInfo["shipName"] . "|n| worth |r|" . Util::formatIsk($totalPrice) . " ISK|n| was destroyed! $url";
 		if (!isset($victimInfo["characterName"])) $victimInfo["characterName"] = $victimInfo["corporationName"];
@@ -75,17 +75,18 @@ class Social
 			else $name .= "'s";
 			$message = "$name $message";
 		}
+		if ($victimInfo["corporationID"] == 1000197) $message = "[Live Event] $message";
 
 		Db::execute("insert into zz_social (killID) values (:killID)", array(":killID" => $killID));
 
 		Log::irc("$message");
 		$message = Log::stripIRCColors($message);
 
-		if ($totalPrice >= $twitMin) {
+		if ($tweetIt) {
 			$message .= " #tweetfleet #eveonline";
 			$return = Twit::sendMessage($message);
-			$twit = "https://twitter.com/eve_kill/status/" . $return->id;
+			$twit = "https://twitter.com/zkillboard/status/" . $return->id;
 			Log::irc("Message was also tweeted: |g|$twit");
-		}
+		}	
 	}
 }

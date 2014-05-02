@@ -18,7 +18,11 @@
 			</td>
 			<td class="hidden-xs" style="width: 64px; vertical-align: middle;">
 				{% set imageSize = 64 %}
-				{% include 'components/image_char.html' %}
+				{% if field.characterID != 0 %}
+					{% include 'components/image_char.html' %}
+				{% else %}
+					{% include 'components/image_corp.html' %}
+				{% endif %}
 			</td>
 			<td class="hidden-xs" style="width: 35px; vertical-align: middle;">
 				{% set imageSize = 32 %}

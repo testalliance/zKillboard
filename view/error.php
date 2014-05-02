@@ -47,7 +47,7 @@ $ip = IP::get();
 
 try {
 	Db::execute("INSERT INTO zz_errors (id, error, message, url, ip) VALUES (:id, :error, :message, :url, :ip) ON DUPLICATE KEY UPDATE ip = :ip, date = :date", array(":id" => $codeHash, ":error" => $html, ":message" => $message, ":url" => $url, ":ip" => $ip, ":date" => $date));
-	$app->render("error.html", array("code" => $codeHash, "errorMessage" => $message, "error" => $html));
+	$app->render("error.html", array("code" => $codeHash, "message" => $message, "error" => $html));
 } catch (Exception $ex) {
     $html = "<html>";
     $html .= "<head>";

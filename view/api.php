@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+global $apiWhiteList;
+
 //make sure the requester is not being a naughty boy
 Util::scrapeCheck();
 
@@ -23,9 +25,11 @@ $parameters = Util::convertUriToParameters();
 
 // Enforcement
 if (sizeof($parameters) < 2) die("Invalid request.  Must provide at least two request parameters");
+
 // At least one of these modifiers is required
-$requiredM = array("characterID", "corporationID", "allianceID", "factionID", "shipTypeID", "groupID", "solarSystemID", "regionID", "solo", "w-space");
+$requiredM = array("characterID", "corporationID", "allianceID", "factionID", "shipTypeID", "groupID", "solarSystemID", "solo", "w-space");
 $hasRequired = false;
+$hasRequired |= in_array(IP::get(), $apiWhiteList);
 foreach($requiredM as $required) {
 	$hasRequired |= array_key_exists($required, $parameters);
 }
@@ -49,7 +53,7 @@ elseif(isset($_GET["callback"]) && Util::isValidCallback($_GET["callback"]) )
 {
 	$app->contentType("application/javascript; charset=utf-8");
 	header("X-JSONP: true");
-	echo $_GET["callback"] . "(" . json_encode($array, JSON_NUMERIC_CHECK) .")";
+	echo $_GET["callback"] . "(" . json_encode($array) .")";
 }
 else
 {
@@ -57,5 +61,5 @@ else
 	if(isset($parameters["pretty"]))
 		echo json_encode($array, JSON_PRETTY_PRINT);
 	else
-		echo json_encode($array, JSON_NUMERIC_CHECK);
+		echo json_encode($array);
 }

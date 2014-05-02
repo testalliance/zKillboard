@@ -120,6 +120,7 @@ class cli_calculateRecentStatsAndRanks implements cliCommand
 			$db->execute("insert into zz_ranks_recent select * from zz_ranks_temporary");
 		}
 		$db->execute("drop table zz_ranks_temporary");
+		$db->execute("insert into zz_ranks_progress select date(now()), type, typeID, overallRank, 0 from zz_ranks_recent r where overallRank <= 100000 on duplicate key update recentRank = r.overallRank");
 	}
 
 	private static function stats($db)
@@ -180,13 +181,13 @@ class cli_calculateRecentStatsAndRanks implements cliCommand
 			$exclude = "$column != 0";
 
 			echo " losses ";
-			$db->execute("insert ignore into zz_stats_temporary select killID, '$type', $column, groupID, points, total_price from zz_participants where $exclude and isVictim = 1 and dttm > date_sub(now(), interval 90 day)");
+			$db->execute("insert ignore into zz_stats_temporary select killID, '$type', $column, groupID, points, total_price from zz_participants where $exclude and isVictim = 1 and dttm > date_sub(now(), interval 90 day) and characterID != 0");
 			$db->execute("insert into zz_stats_recent (type, typeID, groupID, lost, pointsLost, iskLost) select groupName, groupNum, groupID, count(killID), sum(points), sum(price) from zz_stats_temporary group by 1, 2, 3");
 
 			if ($calcKills) {
 				echo " kills ";
 				$db->execute("truncate table zz_stats_temporary");
-				$db->execute("insert ignore into zz_stats_temporary select killID, '$type', $column, vGroupID, points, total_price from zz_participants where $exclude and isVictim = 0 and dttm > date_sub(now(), interval 90 day)");
+				$db->execute("insert ignore into zz_stats_temporary select killID, '$type', $column, vGroupID, points, total_price from zz_participants where $exclude and isVictim = 0 and dttm > date_sub(now(), interval 90 day) and characterID != 0");
 				$db->execute("insert into zz_stats_recent (type, typeID, groupID, destroyed, pointsDestroyed, iskDestroyed) (select groupName, groupNum, groupID, count(killID), sum(points), sum(price) from zz_stats_temporary group by 1, 2, 3) on duplicate key update destroyed = values(destroyed), pointsDestroyed = values(pointsDestroyed), iskDestroyed = values(iskDestroyed)");
 			}
 

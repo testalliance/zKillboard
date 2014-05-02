@@ -16,7 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-if($_POST)
+$password = Util::getPost("password");
+$password2 = Util::getPost("password2");
+if($password && $password2)
 {
     $message = "";
     $messagetype = "";
@@ -43,6 +45,7 @@ if($_POST)
     }
     $app->render("changepassword.html" , array("message" => $message, "messagetype" => $messagetype));
 }
+
 else
 {
 	$date = date("Y-m-d H:i:s");

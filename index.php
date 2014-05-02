@@ -1,21 +1,4 @@
 <?php
-$newRelic = false;
-if(stristr(phpversion(), "hiphop"))
-{
-	if(extension_loaded("newrelic"))
-	{
-		$newRelic = true;
-	}
-}
-
-if($newRelic)
-{
-	// Load New Relic
-	hhvm_newrelic_transaction_begin();
-	$request_url = strtok($_SERVER["REQUEST_URI"], "?");
-	hhvm_newrelic_transaction_set_request_url($request_url);
-}
-
 // Include Init
 require_once( "init.php" );
 
@@ -38,6 +21,7 @@ if(!User::isLoggedIn()) User::autoLogin();
 $viewtheme = null;
 if(User::isLoggedIn())
 	$viewtheme = UserConfig::get("viewtheme");
+if (!is_dir("templates/$viewtheme")) $viewtheme = "bootstrap";
 $app->config(array("templates.path" => $baseDir."templates/" . ($viewtheme ? $viewtheme : "bootstrap")));
 
 // Error handling
@@ -63,10 +47,3 @@ if($debug)
 
 // Run the thing!
 $app->run();
-
-if($newRelic)
-{
-	// New Relic
-	hhvm_newrelic_transaction_set_name($uri);
-	hhvm_newrelic_transaction_end();
-}

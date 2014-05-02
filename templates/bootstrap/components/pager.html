@@ -1,30 +1,32 @@
-{% if pageType == "kills" %}
-    {% set pageBase = '/kills/page/' %}
+{% if pageType == "kills" or pageType == "overview" or pageType == "solo" or pageType=="losses" %}
+	{% set pageBase = requestUriPager|last == '/' ? requestUriPager ~ 'page/' : requestUriPager ~ '/page/' %}
+{% elseif pageType == "index" %}
+	{% set pageBase = "/kills/page/" %}
 {% else %}
-    {% if actualURI|last == '/' %}
-        {% set pageBase = actualURI ~ 'page/' %}
-    {% else %}
-        {% set pageBase = actualURI ~ '/page/' %}
-    {% endif %}
+	{% set pageBase = requesturi|last == '/' ? requesturi ~ 'page/' : requesturi ~ '/page/' %}
 {% endif %}
 
-<ul class="pagination pull-right">
-    {% if datepicker == true %}
-    <li class="pull-left"><input style="background: transparent; color: white; border: 0px; width:60px; height:35px;" type="text" name="datepicker" class="datepicker" value="{{ month }}/{{ year }}">&nbsp;<i class="fa fa-calendar-o"></i>&nbsp;&nbsp;</li>
-    {% endif %}
-    {% if pager == true %}
-        {% if page > 1 %}
-            <li><a href="{{ pageBase }}{{ page - 1 }}/" rel="nofollow prev">&laquo;</a></li>
-        {% endif %}
-
-        {% set startIndex = page - 3 %}
-        {% set endIndex = page + 3 %}
-
-        {% for pageIndex in startIndex..endIndex %}
-            {% if pageIndex > 0 %}
-                <li class="{{ isActive(pageIndex, page, 'active') }}"><a href="{{ pageBase }}{{pageIndex}}/" rel="nofollow">{{ pageIndex }}</a></li>
-            {% endif %}
-        {% endfor %}
-        <li><a href="{{ pageBase }}{{ page + 1 }}/" rel="nofollow next">&raquo;</a></li>
-    {% endif %}
-</ul>
+<div class="pull-right">
+	{% if datepicker == true %}
+	<ul class="pagination pagination-sm">
+		<li class="pull-left"><input type="text" name="datepicker" class="datepicker" value="{{ month }}/{{ year }}"></li>
+	</ul>
+	{% endif %}
+	<ul class="pagination pagination-sm">
+		{% if pager == true %}
+			{% if page > 1 %}
+				<li><a href="{{ pageBase }}{{ page - 1 }}/" rel="nofollow prev">&laquo;</a></li>
+			{% endif %}
+	
+			{% set startIndex = page - 3 %}
+			{% set endIndex = page + 3 %}
+	
+			{% for pageIndex in startIndex..endIndex %}
+				{% if pageIndex > 0 %}
+					<li class="{{ isActive(pageIndex, page, 'active') }}"><a href="{{ pageBase }}{{pageIndex}}/" rel="nofollow">{{ pageIndex }}</a></li>
+				{% endif %}
+			{% endfor %}
+			<li><a href="{{ pageBase }}{{ page + 1 }}/" rel="nofollow next">&raquo;</a></li>
+		{% endif %}
+	</ul>
+</div>

@@ -56,7 +56,7 @@ class cli_apiFetchKillLog implements cliCommand
 				$result = null;
 
 				// Update last checked
-				$db->execute("update zz_api_characters set errorCode = 0, lastChecked = now() where apiRowID = :id", array(":id" => $apiRowID));
+				//$db->execute("update zz_api_characters set errorCode = 0, lastChecked = now() where apiRowID = :id", array(":id" => $apiRowID));
 
 				$params = array();
 				if ($isDirector != "T") $params['characterID'] = $charID;
@@ -68,10 +68,7 @@ class cli_apiFetchKillLog implements cliCommand
 
 				$cachedUntil = $result->cached_until;
 				if ($cachedUntil == "" || !$cachedUntil) $cachedUntil = date("Y-m-d H:i:s", time()+3600);
-				$db->execute("UPDATE zz_api_characters SET cachedUntil = :cachedUntil, errorCount = 0, errorCode = 0 WHERE apiRowID = :id", array(":id" => $apiRowID, ":cachedUntil" => $cachedUntil));
 				$keyID = trim($keyID);
-				$file = "/var/killboard/zkb_killlogs/{$keyID}_{$charID}_$beforeKillID.xml";
-				@unlink($file);
 
 				$aff = Api::processRawApi($keyID, $charID, $result);
 				if ($aff > 0) {
@@ -85,10 +82,10 @@ class cli_apiFetchKillLog implements cliCommand
 					if ($beforeKillID == 0) $beforeKillID = $killID;
 					else $beforeKillID = min($beforeKillID, $killID);
 				}
-				if ($beforeKillID < $notRecentKillID) $db->execute("update zz_api_characters set cachedUntil = date_add(cachedUntil, interval 2 hour) where apiRowID = :id", array(":id" => $apiRowID));
-				$hour = date("H");
-				if ($hour >= 12 && $hour <= 15) @error_log($pheal->xml, 3, $file); // Write all files once a day
-				else if ($aff > 0) @error_log($pheal->xml, 3, $file);
+				if (sizeof($result->kills) == 0 || $beforeKillID < $notRecentKillID) $db->execute("update zz_api_characters set lastChecked = now(), errorCount = 0, errorCode = 0, cachedUntil = date_add(cachedUntil, interval 4 hour) where apiRowID = :id", array(":id" => $apiRowID));
+				else $db->execute("update zz_api_characters set lastChecked = now(), cachedUntil = :cachedUntil, errorCount = 0, errorCode = 0 where apiRowID = :id", array(":id" => $apiRowID, ":cachedUntil" => $cachedUntil));
+
+				if ($aff > 0) Util::sendToEveKill("{$keyID}_{$charID}_$beforeKillID.xml", $pheal->xml);
 			} while ($aff > 25 || ($beforeKillID > 0 && $maxKillID == 0));
 		} catch (Exception $ex) {
 			$errorCode = $ex->getCode();

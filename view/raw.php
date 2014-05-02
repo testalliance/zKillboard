@@ -16,7 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-$jsonRaw = Db::queryField("select kill_json from zz_killmails where killID = :id", "kill_json", array(":id" => $id));
+Util::scrapeCheck();
+
+$jsonRaw = Killmail::get($id);
 header("Content-Type: application/json");
 $json = json_decode($jsonRaw, true);
 

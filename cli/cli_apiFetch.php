@@ -30,14 +30,13 @@ class cli_apiFetch implements cliCommand
 
 	public function getCronInfo()
 	{
-		return array(
-			60 => ""
-		);
+		return array(0 => "");
 	}
 
 	public function execute($parameters, $db)
 	{
 		if (Util::isMaintenanceMode()) return;
+		if (Util::is904Error()) return;
 		Api::fetchApis();
 	}
 }

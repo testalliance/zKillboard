@@ -27,6 +27,17 @@ class Util
 		return Storage::retrieve("MaintenanceReason", "");
 	}
 
+	public static function getNotification()
+	{
+		return Storage::retrieve("notification", null);
+	}
+
+	public static function is904Error()
+	{
+		$stop904 = Db::queryField("select count(*) count from zz_storage where locker = 'ApiStop904' and contents > now()", "count", array(), 1);
+		return $stop904 > 0;
+	}
+
 	/**
 	 * @param integer $keyID
 	 * @param string $vCode
@@ -34,6 +45,13 @@ class Util
 	public static function getPheal($keyID = null, $vCode = null)
 	{
 		global $phealCacheLocation, $apiServer, $baseAddr, $ipsAvailable;
+
+		if (static::is904Error()) 
+		{
+			Log::log("Aborting thread because of API 904");
+			exit();
+		}
+
 		\Pheal\Core\Config::getInstance()->http_method = "curl";
 		\Pheal\Core\Config::getInstance()->http_user_agent = "API Fetcher for http://$baseAddr";
 		if(!empty($ipsAvailable))
@@ -51,8 +69,8 @@ class Util
 		\Pheal\Core\Config::getInstance()->api_customkeys = true;
 		\Pheal\Core\Config::getInstance()->api_base = $apiServer;
 
-			if ($keyID != null && $vCode != null) $pheal = new \Pheal\Pheal($keyID, $vCode);
-			else $pheal = new \Pheal\Pheal();
+		if ($keyID != null && $vCode != null) $pheal = new \Pheal\Pheal($keyID, $vCode);
+		else $pheal = new \Pheal\Pheal();
 		return $pheal;
 	}
 
@@ -77,17 +95,10 @@ class Util
 		return substr($haystack, -strlen($needle)) === $needle;
 	}
 
-	public static function firstUpper($str)
-	{
-		if (strlen($str) == 1) return strtoupper($str);
-		$str = strtolower($str);
-		return strtoupper(substr($str, 0, 1)) . substr($str, 1);
-	}
-
 	public static function getKillHash($killID = null, $kill = null)
 	{
 		if ($killID != null) {
-			$json = Db::queryField("select kill_json from zz_killmails where killID = :killID", "kill_json", array(":killID" => $killID), 0);
+			$json = Killmail::get($killID);
 			if ($json === null) throw new Exception("Cannot find kill $killID");
 			$kill = json_decode($json);
 			if ($kill === null) throw new Exception("Cannot json_decode $killID");
@@ -184,7 +195,7 @@ class Util
 				break;
 				case "page":
 					$value = (int)$value;
-					if ($value < 1) throw new Exception("page must be greater than or equal to 1");
+					if ($value < 1) $value = 1;
 					$parameters[$key] = $value;
 				break;
 				case "orderDirection":
@@ -211,6 +222,10 @@ class Util
 				break;
 				case "beforeKillID":
 				case "afterKillID":
+					if (!is_numeric($value)) throw new Exception("$value is not a valid entry for $key");
+					$parameters[$key] = (int) $value;
+				break;
+				case "iskValue":
 					if (!is_numeric($value)) throw new Exception("$value is not a valid entry for $key");
 					$parameters[$key] = (int) $value;
 				break;
@@ -302,18 +317,18 @@ class Util
 
 	public static function scrapeCheck()
 	{
-		global $apiWhiteList, $apiRequestsPrDay;
-		if(!$apiRequestsPrDay)
-			$maxRequestsPerDay = 17280;
-		else
-			$maxRequestsPerDay = $apiRequestsPrDay;
+		global $apiWhiteList, $maxRequestsPerHour;
+		$maxRequestsPerHour = isset($maxRequestsPerHour) ? $maxRequestsPerHour : 360;
 
-		$ip = substr(IP::get(), 0, 64);
+		$uri = substr($_SERVER["REQUEST_URI"], 0, 256);
+        	$ip = substr(IP::get(), 0, 64);
+        	Db::execute("insert into zz_scrape_prevention values (:ip, :uri, now())", array(":ip" => $ip, ":uri" => $uri));
+
 		if(!in_array($ip, $apiWhiteList))
 		{
-			$count = Db::queryField("select count(*) count from zz_analytics where ip = :ip and uri like '/api/%' and dttm >= date_sub(now(), interval 24 hour)", "count", array(":ip" => $ip), 0);
+			$count = Db::queryField("select count(*) count from zz_scrape_prevention where ip = :ip and dttm >= date_sub(now(), interval 1 hour)", "count", array(":ip" => $ip), 0);
 
-			if($count > $maxRequestsPerDay)
+			if($count > $maxRequestsPerHour)
 			{
 				$date = date("Y-m-d H:i:s");
 				$cachedUntil = date("Y-m-d H:i:s", time() + 3600);
@@ -323,7 +338,7 @@ class Util
 					$data .= "<eveapi version=\"2\" zkbapi=\"1\">";
 					$data .= "<currentTime>$date</currentTime>";
 					$data .= "<result>";
-					$data .= "<error>You have too many API requests in the last 24 hours.  You are allowed a maximum of $maxRequestsPerDay requests.</error>";
+					$data .= "<error>You have too many API requests in the last hour.  You are allowed a maximum of $maxRequestsPerHour requests.</error>";
 					$data .= "</result>";
 					$data .= "<cachedUntil>$cachedUntil</cachedUntil>";
 					$data .= "</eveapi>";
@@ -332,10 +347,10 @@ class Util
 				else
 				{
 					header("Content-type: application/json; charset=utf-8");
-					$data = json_encode(array("Error" => "You have too many API requests in the last 24 hours.  You are allowed a maximum of $maxRequestsPerDay requests.", "cachedUntil" => $cachedUntil));
+					$data = json_encode(array("Error" => "You have too many API requests in the last hour.  You are allowed a maximum of $maxRequestsPerHour requests.", "cachedUntil" => $cachedUntil));
 				}
 				header("X-Bin-Request-Count: ". $count);
-				header("X-Bin-Max-Requests: ". $maxRequestsPerDay);
+				header("X-Bin-Max-Requests: ". $maxRequestsPerHour);
 				header("Retry-After: " . $cachedUntil . " GMT");
 				header("HTTP/1.1 429 Too Many Requests");
 				header("Etag: ".(md5(serialize($data))));
@@ -343,7 +358,7 @@ class Util
 				die();
 			}
 			header("X-Bin-Request-Count: ". $count);
-			header("X-Bin-Max-Requests: ". $maxRequestsPerDay);
+			header("X-Bin-Max-Requests: ". $maxRequestsPerHour);
 		}
 	}
 
@@ -422,7 +437,7 @@ class Util
 	 */
 	public static function getData($url, $cacheTime = 3600)
 	{
-		global $ipsAvailable;
+		global $ipsAvailable, $baseAddr;
 
 		$md5 = md5($url);
 		$result = $cacheTime > 0 ? Cache::get($md5) : null;
@@ -431,7 +446,7 @@ class Util
 		{
 			$curl = curl_init();
 			curl_setopt_array($curl, array(
-				CURLOPT_USERAGENT 			=> "zKillboard dataGetter",
+				CURLOPT_USERAGENT 			=> "zKillboard dataGetter for site: {$baseAddr}",
 				CURLOPT_TIMEOUT 			=> 30,
 				CURLOPT_POST 				=> false,
 				CURLOPT_FORBID_REUSE 		=> false,
@@ -463,6 +478,20 @@ class Util
 	public static function getPost($var)
 	{
 		return isset($_POST[$var]) ? $_POST[$var] : null;
+	}
+
+	public static function sendToEveKill($name, $content)
+	{
+		try {
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL, "http://eve-kill.net/?a=zkb");
+			curl_setopt($ch, CURLOPT_POST, true);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, array("name" => $name, "content" => $content));
+			curl_exec($ch);
+			curl_close($ch);
+		} catch (Exception $ex) {
+			Log::log("sendToEveKill exception: " . $ex->getMessage());
+		}
 	}
 
 	public static function xmlOut($array, $parameters)

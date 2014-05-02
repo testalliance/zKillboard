@@ -30,13 +30,14 @@ class cli_hourly implements cliCommand
 
 	public function getCronInfo()
 	{
-		return array(
-			3600 => ""
-		);
+		return array(0 => ""); // Run every minute but let the code decide the top of the hour
 	}
 
 	public function execute($parameters, $db)
 	{
+		$minute = date("i");
+		if ($minute != 0) return;
+
 		global $enableAnalyze;
 
 		$actualKills = Storage::retrieve("ActualKillCount");
@@ -53,7 +54,7 @@ class cli_hourly implements cliCommand
 		}
 
 		$highKillID = $db->queryField("select max(killID) highKillID from zz_killmails", "highKillID");
-		if ($highKillID > 2000000) Storage::store("notRecentKillID", ($highKillID - 2000000));
+		if ($highKillID > 1000000) Storage::store("notRecentKillID", ($highKillID - 1000000));
 
 		self::apiPercentage($db);
 
@@ -64,7 +65,7 @@ class cli_hourly implements cliCommand
 		$fileCache = new FileCache();
 		$fileCache->cleanup();
 
-		$tableQuery = $db->query("show tables");
+		$tableQuery = $db->query("show tables", array(), 0, false);
 		$tables = array();
 		foreach($tableQuery as $row) {
 			foreach($row as $column) $tables[] = $column;
@@ -81,8 +82,9 @@ class cli_hourly implements cliCommand
 				if (Util::isMaintenanceMode())
 					continue;
 
-				$result = $db->queryRow("analyze table $table");
+				$result = $db->queryRow("analyze table $table", array(), 0, false);
 				if (!in_array($result["Msg_text"], $tableisgood)) Log::ircAdmin("|r|Error analyzing table |g|$table|r|: " . $result["Msg_text"]);
+else Log::log("Analyzed $table");
 			}
 		}
 

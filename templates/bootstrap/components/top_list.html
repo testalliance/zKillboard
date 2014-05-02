@@ -9,12 +9,12 @@
 			{% if list.name is defined %}
 			<caption><strong>{{ list.name }}</strong></caption>
 			{% else %}
-			<caption><strong>Top {{ pluralize(firstUpper(list.type)) }}</strong></caption>
+			<caption><strong>Top {{ pluralize(list.type|capitalize) }}</strong></caption>
 			{% endif %}
 			<thead>
 				<tr>
 					<th>Rank</th>
-					<th style="width: 100%;">{{ firstUpper(list.type) }}</th>
+					<th style="width: 100%;">{{ list.type|capitalize }}</th>
 					<th style="text-align: right">{% if list.ranked is defined %}{{ list.ranked}}{%else%}Kills{% endif %}</th>
 				</tr>
 			</thead>

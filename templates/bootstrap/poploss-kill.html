@@ -1,0 +1,26 @@
+<span class="pull-left" style="width: 400px;">
+<div style="position: relative; top: -35px;" class="top">
+<div style="position: relative; top: 35px; z-index: 10;" class="top">
+<h4><small><a data-toggle="modal" data-target="#EFT" href="#">EFT</a> / <a data-toggle="modal" onclick="try {CCPEVE.showFitting('{{ extra.dnatext}}');} catch (err) { alert('DNA links only work in game...'); }" href="#">DNA</a></small></h4>
+</div>
+<div>
+<table class="hidden-xs" style="background-color:transparent;">
+{% include 'components/fitting_wheel.html' %}
+</table>
+{% include 'components/pop_item_list.html' %}
+</div>
+</div>
+</span>
+<span class="pull-left hidden-md" style="padding: 1em; width: 300px;">
+{% if disqusLoad and false %}
+        {% set disqusID = extra.commentID %}
+        <a name="comments"></a>
+        {% include 'components/disqus.html' %}
+{% endif %}
+</span>
+
+<div class="fade" id="raweft">[{{ killdata.victim.shipName }}, Popular Loss]
+{{ extra.efttext }}</div>
+<script type="text/javascript">
+$("#eft-text").text($("#raweft").html());
+</script>
