@@ -100,11 +100,9 @@ if ($pageType == "top" || ($pageType == "topalltime" && in_array($key, $validAll
 	}
 	if (!array_key_exists("kills", $topParameters) && !array_key_exists("losses", $topParameters)) $topParameters["kills"] = true;
 	
-	if($key != "character") {
-		$topLists[] = array("type" => "character", "data" => Stats::getTopPilots($topParameters, true));
-		$topLists[] = array("type" => "corporation", "data" => Stats::getTopCorps($topParameters, true));
-		$topLists[] = array("type" => "alliance", "data" => Stats::getTopAllis($topParameters, true));
-	}
+	$topLists[] = array("type" => "character", "data" => Stats::getTopPilots($topParameters, true));
+	$topLists[] = array("type" => "corporation", "data" => Stats::getTopCorps($topParameters, true));
+	$topLists[] = array("type" => "alliance", "data" => Stats::getTopAllis($topParameters, true));
 	$topLists[] = array("type" => "ship", "data" => Stats::getTopShips($topParameters, true));
 	$topLists[] = array("type" => "system", "data" => Stats::getTopSystems($topParameters, true));
 	$topLists[] = array("type" => "weapon", "data" => Stats::getTopWeapons($topParameters, true));
