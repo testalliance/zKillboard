@@ -50,6 +50,8 @@
 		{% include 'account/sessions.html' %}
 	{% elseif key == 'payments' %}
 		{% include 'account/payments.html' %}
+	{% elseif key == 'campaigns' %}
+		{% include 'account/campaigns.html' %}
 	{% endif %}
 {% endblock %}
 {% block script %}

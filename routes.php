@@ -17,7 +17,7 @@
  */
 
 $app->notFound(function () use ($app) {
-    $app->redirect("..", 301);
+    $app->redirect("..", 302);
 });
 
 // Default route
@@ -25,7 +25,7 @@ $app->get("/", function () use ($app){
     include( "view/index.php" );
 });
 
-//  information about zKillboard
+//  Information about zKillboard
 $app->get("/information(/:page)/", function($page = "about") use ($app) {
     include( "view/information.php" );
 });
@@ -45,8 +45,8 @@ $app->map("/tickets/view/:id/", function($id) use ($app) {
 })->via("GET", "POST");
 
 // Campaigns
-$app->map("/campaigns/:type(/:id)/", function($type = "all", $id = NULL) use($app) {
-    include( "view/campaigns.php" );
+$app->map("/campaign/:uri/", function($uri) use($app) {
+    include( "view/campaign.php" );
 })->via("GET");
 
 // Tracker
@@ -91,7 +91,7 @@ $app->get("/detail/:id(/:pageview)/", function($id, $pageview = "overview") use 
 });
 $app->get("/kill/:id(/:pageview)/", function($id, $pageview = "overview") use ($app) {
     include( "view/detail.php" );
-});
+})->via("GET", "POST");
 
 // Search
 $app->map("/search(/:search)/", function($search = NULL) use ($app) {
@@ -173,8 +173,7 @@ $app->get("/api/:input+", function($input) use ($app) {
 
 // Kills in the last hour
 $app->get("/killslasthour/", function() use ($app) {
-    echo number_format(Storage::retrieve("KillsLastHour", null));
-    die();
+    die(number_format(Storage::retrieve("KillsLastHour", null)));
 });
 
 // Post
@@ -189,16 +188,6 @@ $app->post("/post/", function() use ($app) {
 $app->map("/autocomplete/", function() use ($app) {
 	include( "view/autocomplete.php" );
 })->via("POST");
-
-// EVE-KILL kill_detail intercept
-$app->get("/evekilldetailintercept/:id/", function($id) use ($app) {
-	include( "view/evekilldetailintercept.php" );
-});
-
-// EVE-KILL kill_related intercept
-$app->get("/evekillrelatedintercept/:id/", function($id) use ($app) {
-	include( "view/evekillrelatedintercept.php" );
-});
 
 // primer
 $app->get("/primer/", function() use ($app) {
