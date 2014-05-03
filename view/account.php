@@ -179,10 +179,6 @@ if($_POST)
 	$ddmonthyear = Util::getPost("ddmonthyear");
 	if(isset($ddmonthyear))
 		UserConfig::set("ddmonthyear",$ddmonthyear);
-
-	$useSummaryAccordion = Util::getPost("useSummaryAccordion");
-	if(isset($useSummaryAccordion))
-		UserConfig::set("useSummaryAccordion", $useSummaryAccordion);
 }
 
 $data["entities"] = Account::getUserTrackerData();
