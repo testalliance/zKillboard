@@ -108,10 +108,12 @@
     {% include 'components/kill_list.html' %}
   </div>
   <div class="col-lg-2 pull-left" style="padding: 0px;">
-        {% for topSet in topLists %}
-        {% include 'components/top_killer_list.html' %}
-        {% endfor %}
-	<center><em><small>Last 7 days...<br/></small></em></center>
+	{% if topSet|length %}
+        	{% for topSet in topLists %}
+        		{% include 'components/top_killer_list.html' %}
+        	{% endfor %}
+		<center><em><small>Last 7 days...<br/></small></em></center>
+	{% endif %}
   </div>
 {% elseif pageType == 'api' %}
     {% include 'components/corp_list.html' %}

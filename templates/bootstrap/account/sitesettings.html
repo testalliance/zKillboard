@@ -54,20 +54,5 @@
 			</form>
 			<p>Will replace all killlist timestamps with Facebook style timestamps, instead of saying "2012-11-01 12:00:00" it will say "2 hours ago", "3 months ago" etc.</p>
 		</div>
-		<h3>Use Collapsible Summary Table</h3>
-		<div class="well">
-			<form class="form-horizontal" name="turnonoffsummaryaccordion" method="post" action="/account/sitesettings/">
-				<div class="form-group col-lg-3">
-					<select name="useSummaryAccordion" class="form-control input-sm">
-						<option value="true" {% if data.useSummaryAccordion == "true" %}selected{% endif %}>Yes</option>
-						<option value="false" {% if data.useSummaryAccordion == "false" %}selected{% endif %}>No</option>
-					</select>
-				</div>
-				<div class="form-group col-lg-2">
-					<input type="submit" class="btn btn-primary btn-sm" value="Set">
-				</div>
-			</form>
-			<p>Will replace the summary table with a collapsed summary table.</p>
-		</div>
 	</div>
 </div>
