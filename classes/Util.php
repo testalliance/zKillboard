@@ -482,15 +482,10 @@ class Util
 
 	public static function sendToEveKill($name, $content)
 	{
-		try {
-			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_URL, "http://eve-kill.net/?a=zkb");
-			curl_setopt($ch, CURLOPT_POST, true);
-			curl_setopt($ch, CURLOPT_POSTFIELDS, array("name" => $name, "content" => $content));
-			curl_exec($ch);
-			curl_close($ch);
-		} catch (Exception $ex) {
-			Log::log("sendToEveKill exception: " . $ex->getMessage());
+		$name = trim($name);
+		if (is_dir("/var/www/ek_transfer/"))
+		{
+			file_put_contents("/var/www/ek_transfer/" . $name, $content);
 		}
 	}
 
