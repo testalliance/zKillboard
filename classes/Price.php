@@ -116,11 +116,12 @@ class Price
 		// Base lookups for today have been populated - do it here to allow later recursion
 		Storage::store($todaysLookup, "true");
 
-		$motherships = Db::query("select typeid from ccp_invTypes where groupid = 659");
+		$motherships = Db::query("select typeid from ccp_invTypes where groupid = 659 and typeID != 3514");
 		foreach ($motherships as $mothership) {
 			$typeID = $mothership["typeid"];
 			static::setPrice($typeID, 20000000000); // 20b
 		}
+		static::setPrice(3514, 100000000000); // Revenant, 100b
 
 		$titans = Db::query("select typeid from ccp_invTypes where groupid = 30");
 		foreach ($titans as $titan) {
