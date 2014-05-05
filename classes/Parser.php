@@ -87,8 +87,6 @@ class Parser
 				if ($killID > 0) { // Check for manual mails to remove
 					$manualMailIDs = Db::query("select killID from zz_killmails where hash = :hash and killID < 0", array(":hash" => $hash), 0);
 					foreach($manualMailIDs as $row) {
-						Log::log("Manual mail purge check");
-						die();
 						$manualMailID = $row["killID"];
 						Log::log("Purging $manualMailID");
 						Stats::calcStats($manualMailID, false);
