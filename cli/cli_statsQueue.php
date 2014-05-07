@@ -62,6 +62,7 @@ class cli_statsQueue implements cliCommand
 				}
 				Db::execute("delete from zz_stats_queue where killID = :killID", array(":killID" => $killID));
 				Db::execute("insert ignore into zz_dna_queue values (:killID)", array(":killID" => $killID));
+				Social::beSocial($killID);
 			}
 		}
 	}

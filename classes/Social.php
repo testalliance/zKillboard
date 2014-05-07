@@ -18,22 +18,6 @@
 
 class Social
 {
-
-	public static function findConversations()
-	{
-		$locker = "Social:lastSocialTime";
-		$lastSocialTime = Storage::retrieve($locker, null);
-		if ($lastSocialTime == null)
-			$result = Db::query("select killID, insertTime from zz_killmails where killID > 0 and processed = 1 and insertTime >= date_sub(now(), interval 10 minute)", array(), 0);
-		else 
-			$result = Db::query("select killID, insertTime from zz_killmails where killID > 0 and processed = 1 and insertTime >= :last", array(":last" => $lastSocialTime), 0);
-		foreach ($result as $row) {
-			$lastSocialTime = $row["insertTime"];
-			self::beSocial($row["killID"]);
-		}
-		Storage::store($locker, $lastSocialTime);
-	}
-
 	public static function beSocial($killID)
 	{
 		if ($killID < 0) return;
@@ -75,8 +59,6 @@ class Social
 			else $name .= "'s";
 			$message = "$name $message";
 		}
-		if ($victimInfo["corporationID"] == 1000197) $message = "[Live Event] $message";
-
 		Db::execute("insert into zz_social (killID) values (:killID)", array(":killID" => $killID));
 
 		Log::irc("$message");
