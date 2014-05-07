@@ -38,9 +38,9 @@ class cli_killwriter implements cliCommand
 		global $fsKillmails;
 		if ($fsKillmails !== true) return;
 
-		$start = Db::queryField("select min(killID) min from zz_killid where writ = 0", "min", array(), 0);
+		$start = Db::queryField("select min(killID) min from zz_killmails where processed != 0 and kill_json != ''", "min", array(), 0);
 		$start = floor($start / 1000);
-		$end = Db::queryField("select max(killID) min from zz_killid where writ = 0", "min", array(), 0);
+		$end = Db::queryField("select max(killID) max from zz_killmails where processed != 0 and kill_json != ''", "max", array(), 0);
 		$end = floor($end / 1000);
 
 		$totalKillsWritten = 0;
@@ -49,7 +49,7 @@ class cli_killwriter implements cliCommand
 		{
 			$min = $i >= 0 ? $i * 1000 : ($i * 1000) + 1;
 			$max = $min + 999;
-			$kills = Db::query("select killID from zz_killid where killID >= $min and killID <= $max and writ = 0");
+			$kills = Db::query("select killID from zz_killmails where killID >= $min and killID <= $max and processed != 0 and kill_json != '' and insertTime < date_sub(now(), interval 1 hour)");
 
 			if (count($kills) == 0) continue;
 			$totalKillsWritten += count($kills);

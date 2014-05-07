@@ -7,16 +7,12 @@ class Killmail
 		$kill = Cache::get("Kill$killID");
 		if ($kill != null) return $kill;
 
-		$writ = Db::queryField("select writ from zz_killid where killID = :killID", "writ", array(":killID" => $killID));
-		if (!$writ)
-		{
-			$kill = Db::queryField("select kill_json from zz_killmails where killID = :killID", "kill_json", array(":killID" => $killID));
-			if ($kill != '') {
-				Cache::set("Kill$killID", $kill);
-				return $kill;
-			}
+		$kill = Db::queryField("select kill_json from zz_killmails where killID = :killID", "kill_json", array(":killID" => $killID));
+		if ($kill != '') {
+			Cache::set("Kill$killID", $kill);
+			return $kill;
 		}
-
+		
 		$file = static::getFile($killID);
 		if (!file_exists($file)) return null;
 		
@@ -27,30 +23,6 @@ class Killmail
 		if ($kill != '') Cache::set("Kill$killID", $kill);
 		return $kill;
 	}
-
-	/*public static function set($killID, $json)
-	{
-		$writ = Db::queryField("select writ from zz_killid where killID = :killID", "writ", array(":killID" => $killID));
-		if ($writ) return;
-
-		$file = static::getFile($killID, true);
-
-		$sem = sem_get(1234);
-		if (!sem_acquire($sem)) throw new Exception("Unable to obtain semaphore");
-		if (!file_exists($file)) $kills = array();
-		else
-		{
-			$contents = file_get_contents($file);
-			$kills = json_decode($contents, true);
-			$contents = null;
-		}
-		if (isset($kills["$killID"])) return;
-		$kills["$killID"] = $json;
-		$contents = json_encode($kills);
-		file_put_contents($file, $contents, LOCK_EX);
-		sem_release($sem);
-		Db::execute("insert into zz_killid values (:killID, 1) on duplicate key update writ = 1", array(":killID" => $killID));
-	}*/
 
 	public static function massSet($kills)
 	{
@@ -87,8 +59,6 @@ class Killmail
 
                 $contents = json_encode($json);
                 file_put_contents($file, $contents, LOCK_EX);
-                Db::execute("insert ignore into zz_killid (killID) values (" . implode("),(", $killIDs) . ")");
-		Db::execute("update zz_killid set writ = 1 where killID in (" . implode(",", $killIDs) . ")");
 		Db::execute("update zz_killmails set kill_json = '' where killID in (" . implode(",", $killIDs) . ")");
                 sem_release($sem);
 	}
