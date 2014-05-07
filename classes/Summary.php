@@ -47,7 +47,7 @@ class Summary
 
 		$rank = Db::queryRow("select * from zz_ranks where type = :type and typeID = :id", array(":type" => $type, ":id" => $id), 300);
 		$recentRank = Db::queryField("select overallRank from zz_ranks_recent where type = :type and typeID = :id", "overallRank", array(":type" => $type, ":id" => $id), 300);
-		$progress = Db::queryRow("select * from zz_ranks_progress where type = :type and typeID = :id and dttm >= date(date_sub(now(), interval 30 day)) order by dttm limit 1", array(":type" => $type, ":id" => $id), 300);
+		$progress = Db::queryRow("select * from zz_ranks_progress where type = :type and typeID = :id and dttm >= date(date_sub(now(), interval 7 day)) order by dttm limit 1", array(":type" => $type, ":id" => $id), 300);
 
 		if ($overRide) {
 			$rank = $recentRank = array();

@@ -30,13 +30,12 @@ class cli_calculateRecentStatsAndRanks implements cliCommand
 
 	public function getCronInfo()
 	{
-		return array(
-			86400 => "all"
-		);
+		return array(0 => "all");
 	}
 
 	public function execute($parameters, $db)
 	{
+		if (date("Gi") != 5) return; // Run at 00:05
 		if (Util::isMaintenanceMode()) return;
 		if (sizeof($parameters) == 0 || $parameters[0] == "") CLI::out("Usage: |g|recentStatsAndRanks <type>|n| To see a list of commands, use: |g|methods recentStatsAndRanks", true);
 		$command = $parameters[0];
@@ -63,7 +62,8 @@ class cli_calculateRecentStatsAndRanks implements cliCommand
 	{
 		CLI::out("|g|Ranks calculation started");
 		$db->execute("drop table if exists zz_ranks_temporary");
-		$db->execute("create table zz_ranks_temporary like zz_ranks_recent");
+		$db->execute("create table if not exists zz_ranks_temporary like zz_ranks_recent");
+		$db->execute("truncate zz_ranks_temporary");
 
 		$types = array("faction", "alli", "corp", "pilot", "ship", "group", "system", "region");
 		$indexed = array();
@@ -180,7 +180,7 @@ class cli_calculateRecentStatsAndRanks implements cliCommand
 
 			$exclude = "$column != 0";
 
-			echo " losses ";
+			echo "$type losses ";
 			$db->execute("insert ignore into zz_stats_temporary select killID, '$type', $column, groupID, points, total_price from zz_participants where $exclude and isVictim = 1 and dttm > date_sub(now(), interval 90 day) and characterID != 0");
 			$db->execute("insert into zz_stats_recent (type, typeID, groupID, lost, pointsLost, iskLost) select groupName, groupNum, groupID, count(killID), sum(points), sum(price) from zz_stats_temporary group by 1, 2, 3");
 

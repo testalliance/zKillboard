@@ -30,13 +30,12 @@ class cli_calculateAllTimeStatsAndRanks implements cliCommand
 
 	public function getCronInfo()
 	{
-		return array(
-			86400 => "ranks"
-		);
+		return array(0 => "ranks");
 	}
 
 	public function execute($parameters, $db)
 	{
+		if (date("Gi") != 115) return; // Run at 01:15
 		if (sizeof($parameters) == 0 || $parameters[0] == "") CLI::out("Usage: |g|recentStatsAndRanks <type>|n| To see a list of commands, use: |g|methods calculateAllTimeStatsAndRanks", true);
 		$command = $parameters[0];
 
@@ -61,8 +60,8 @@ class cli_calculateAllTimeStatsAndRanks implements cliCommand
 	private static function ranks($db)
 	{
 		if (Util::isMaintenanceMode()) return;
-		$db->execute("drop table if exists zz_ranks_temporary");
-		$db->execute("create table zz_ranks_temporary like zz_ranks");
+		$db->execute("create table if not exists zz_ranks_temporary like zz_ranks");
+		$db->execute("truncate table zz_ranks_temporary");
 
 		$types = array("faction", "alli", "corp", "pilot", "ship", "group", "system", "region");
 		$indexed = array();
