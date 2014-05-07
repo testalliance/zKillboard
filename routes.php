@@ -158,6 +158,10 @@ $app->get("/stacktrace/:hash/", function($hash) use ($app) {
     $app->render("/components/stacktrace.html", array("stacktrace" => $trace, "url" => $url));
 });
 
+$app->get("/comments/", function() use ($app) {
+    $app->render("/comments.html");
+});
+
 // API
 $app->get("/api/stats/:flags+/", function($flags) use ($app) {
     include( "view/apistats.php" );
