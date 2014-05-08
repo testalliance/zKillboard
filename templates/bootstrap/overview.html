@@ -7,6 +7,9 @@
 {% endif %}
 {% block title %}{% include 'components/title.html' %}{% endblock %}
 
+{% set description = pageName ~ ( detail.ranks.overallRank ? ": Ranked #" ~ detail.ranks.overallRank|number_format(0) ~ " with " : ": " ) ~ detail.shipsDestroyed|number_format(0) ~ " ships destroyed and " ~ detail.shipsLost|number_format(0) ~ " ships lost." %}
+{% set canonical = fullsiteurl ~ "/" ~  key ~ "/" ~ id ~ "/" %}
+
 {% block content %}
 {% include 'components/info_top.html' %}
 
@@ -136,12 +139,12 @@
 {% endblock %}
 
 {% block opengraph %}
-		<meta name="twitter:title" content="zKillboard.com / {{ pageTitle }}">
+	<meta name="twitter:title" content="{{ pageTitle }}">
         <meta name="twitter:card" content="summary">
-        <meta name="og:title" content="zKillboard.com / {{ pageTitle }}">
-        <meta name="og:url" content="http://{{ siteurl }}/{{ key }}/{{ id }}/">
-		<meta name="twitter:description" content="{% if key == 'group' %}-- Group: {{ pageName }}{% endif %}{% if detail.shipName %} -- Ship: {{ detail.shipName }}{% endif %}{% if detail.regionName %} -- Region: {{ detail.regionName }}{% endif %}{% if detail.solarSystemName %} -- Solar System: {{ detail.solarSystemName }}{% endif %}{% if detail.characterName %} -- Character: {{ detail.characterName}}{% endif %}{% if detail.corporationName %} -- Corporation: {{ detail.corporationName }}{% endif %}{% if detail.allianceName %} -- Alliance: {{ detail.allianceName }}{% endif %}{% if detail.factionName %} -- Faction: {{ detail.factionName }}{% endif %}{% if detail.shipsDestroyed %} -- Kills: {{ detail.shipsDestroyed | number_format(0) }}{% endif %}{% if detail.shipsLost %} -- Losses: {{ detail.shipsLost | number_format(0) }}{% endif %}{% if detail.shipsDestroyed %} -- Killed ISK: {{ detail.iskDestroyed | number_format(0) }}{% endif %} -- Lost ISK: {% if detail.shipsLost %}{{ detail.iskLost | number_format(0) }}{% endif %}{% if detail.ranks is defined %} -- All-Time Rank: {{ detail.ranks.overallRank | number_format(0) }}{% endif %}">
-        <meta name="og:description" content="{% if key == 'group' %}-- Group: {{ pageName }}{% endif %}{% if detail.shipName %} -- Ship: {{ detail.shipName }}{% endif %}{% if detail.regionName %} -- Region: {{ detail.regionName }}{% endif %}{% if detail.solarSystemName %} -- Solar System: {{ detail.solarSystemName }}{% endif %}{% if detail.characterName %} -- Character: {{ detail.characterName}}{% endif %}{% if detail.corporationName %} -- Corporation: {{ detail.corporationName }}{% endif %}{% if detail.allianceName %} -- Alliance: {{ detail.allianceName }}{% endif %}{% if detail.factionName %} -- Faction: {{ detail.factionName }}{% endif %}{% if detail.shipsDestroyed %} -- Kills: {{ detail.shipsDestroyed | number_format(0) }}{% endif %}{% if detail.shipsLost %} -- Losses: {{ detail.shipsLost | number_format(0) }}{% endif %}{% if detail.shipsDestroyed %} -- Killed ISK: {{ detail.iskDestroyed | number_format(0) }}{% endif %} -- Lost ISK: {% if detail.shipsLost %}{{ detail.iskLost | number_format(0) }}{% endif %}{% if detail.ranks is defined %} -- All-Time Rank: {{ detail.ranks.overallRank | number_format(0) }}{% endif %}">
+        <meta name="og:title" content="{{ pageTitle }}">
+        <meta name="og:url" content="{{ fullsiteurl }}/{{ key }}/{{ id }}/">
+	<meta name="twitter:description" content="{{ description }}">
+	<meta name="og:description" content="{{ description }}">
 {% if key == "character" %}
 		<meta name="twitter:image" content="https://image.eveonline.com/{{ key }}/{{ id }}_128.jpg">
         <meta name="og:image" content="https://image.eveonline.com/{{ key }}/{{ id }}_128.jpg">
