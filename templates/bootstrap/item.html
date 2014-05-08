@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
-{% block title %}zKillboard.com / Item Info / {{ info.typeName }}{% endblock %}
+{% set pageTitle = info.typeName ~ ' | Item' %}
+{% block title %}{% include 'components/title.html' %}{% endblock %}
 
 {% block content %}
 <h2>

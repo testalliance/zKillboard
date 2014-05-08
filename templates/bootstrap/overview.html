@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 
 {% if pageType and pageType != 'overview' %}
-	{% set pageTitle = key|capitalize ~ ' / ' ~ pageName ~ ' / ' ~ pageType|capitalize %}
+	{% set pageTitle = pageName ~ ' | ' ~ pageType|capitalize ~ ' | ' ~ key|capitalize %}
 {% else %}
-	{% set pageTitle = key|capitalize ~ ' / ' ~ pageName %}
+	{% set pageTitle = pageName ~ ' | ' ~ key|capitalize %}
 {% endif %}
 {% block title %}{% include 'components/title.html' %}{% endblock %}
 

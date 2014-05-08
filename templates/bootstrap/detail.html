@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
 
-{% set pageTitle = 'Kill Detail / ' ~ killdata.victim.characterName ~ ' / ' ~ killdata.victim.shipName %}
+{% if killdata.victim.characterID != 0 %}
+	{% set victim = killdata.victim.characterName %}
+{% else %}
+	{% set victim = killdata.victim.corporationName %}
+{% endif %}
+{% set pageTitle = killdata.victim.shipName ~ ' | ' ~ victim ~ ' | Killmail' %}
 {% block title %}{% include 'components/title.html' %}{% endblock %}
 
 {% block header %}
