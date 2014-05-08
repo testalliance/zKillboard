@@ -96,7 +96,7 @@
 			<div class="alert" style="padding: 0px; margin: 0px; psition: relative; top: -15px;"><center>{{ getNotification()|raw }}</center></div>
 		{% endif %}
 
-		{% if accountBalance >= adFreeMonthCost %}
+		{% if accountBalance >= adFreeMonthCost and accountBalance > 0 %}
 			<div class="alert alert-success" style="font-weight: bold"><center><a href='/account/payments'>You have an account balance of {{ accountBalance|number_format(2) }} ISK.  Click here to do something with it!</a></center></div>
 		{% endif %}
 
