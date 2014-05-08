@@ -198,13 +198,6 @@ $app->get("/primer/", function() use ($app) {
 	include("view/primer.php");
 });
 
-$app->get("/poploss/", function() use ($app) {
-	include("view/poploss.php");
-});
-$app->get("/poploss/:detail/", function($detail) use ($app) {
-	include("view/poploss.php");
-});
-
 // The Overview stuff
 $app->get("/:input+/", function($input) use ($app) {
 	include("view/overview.php");
