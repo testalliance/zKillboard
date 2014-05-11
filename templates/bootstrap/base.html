@@ -1,189 +1,225 @@
 <!DOCTYPE html>
 <html prefix="og: http://ogp.me/ns#" lang="en" class="no-js">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-{% if description is not defined %}
-{% set description = "zKillboard is a killboard for the Massively Multiplayer Online Role Playing Game (MMORPG) EVE-Online." %}
-{% endif %}
-        <meta name="description" content="{{ description }}">
-        <meta name="title" content="{{ pageTitle }} | zKillboard">
-        <meta name="keywords" content="eve-online, eve, ccp, ccp games, kills, kill, massively, multiplayer, online, role, playing, game, mmorpg, rank, isk, mmorpg, killboard, zkillboard">
-        <meta name="robots" content="index,follow">
-        <meta name="og:locale" content="en_US">
-        <meta name="og:type" content="website">
-        <meta name="og:site_name" content="zKillboard.com">
-        <meta name="fb:app_id" content="{{ fbAppID }}">
-        <meta name="twitter:site" content="@zKillboard">
-        <meta name="twitter:domain" content="https://zkillboard.com">
-        <meta name="application-name" content="zKillboard"/>
-        <meta name="msapplication-TileColor" content="#000000"/>
-        <meta name="mobile-web-app-capable" content="yes">
-        <link rel="shortcut icon" sizes="310x310" href="/img/tile/large.png">
-        <link rel="shortcut icon" sizes="70x70" href="/img/tile/tiny.png">
-        <link rel="shortcut icon" sizes="150x150" href="/img/tile/square.png">
-        <link rel="shortcut icon" sizes="310x150" href="/img/tile/wide.png">
-        <link rel="shortcut icon" sizes="16x16" href="/favicon.ico" />
-        <meta name="msapplication-square70x70logo" content="/img/tile/tiny.png"/>
-        <meta name="msapplication-square150x150logo" content="/img/tile/square.png"/>
-        <meta name="msapplication-wide310x150logo" content="/img/tile/wide.png"/>
-        <meta name="msapplication-square310x310logo" content="/img/tile/large.png"/>
-        <meta name="quicklink" content="{{ fullsiteurl }}/kills/">
-        <meta name="quicklink" content="{{ fullsiteurl }}/post/">
-        <meta name="quicklink" content="{{ fullsiteurl }}/top/lasthour/">
-        <meta name="quicklink" content="{{ fullsiteurl }}/ranks/recent/killers/">
-        <meta name="quicklink" content="{{ fullsiteurl }}/ranks/recent/losers/">
-        <meta name="quicklink" content="{{ fullsiteurl }}/map/">
-        <meta name="quicklink" content="{{ fullsiteurl }}/information/api/">
-        <meta name="quicklink" content="{{ fullsiteurl }}/tickets/">
-        <meta name="quicklink" content="{{ fullsiteurl }}/livechat/">
-{% block opengraph %}
-        <meta name="twitter:title" content="{{ pageTitle }} | zKillboard">
-        <meta name="twitter:card" content="summary">
-        <meta name="twitter:description" content="{{ description }}">
-        <meta name="twitter:image" content="{{ fullsiteurl }}/3D.png">
-        <meta name="og:title" content="{{ siteurl }} / {{ pageTitle }}">
-        <meta name="og:url" content="{{ fullsiteurl }}">
-        <meta name="og:description" content="{{ description }}">
-        <meta name="og:image" content="{{ fullsiteurl }}/3D.png">
-        <meta name="google-site-verification" content="4YdeWaZKjMbr1Fnia-8e2DMgfn4nBT6OVuXqtZc2suA" />
-{% endblock %}
-{% block robots %}
-{% endblock %}
-       {% if isMobile %}
-       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-       {% endif %}
-       <title>{% block title %}{{ siteurl }}{% endblock %}</title>
-{% if canonical is not defined %}
-	{% set canonical = fullsiteurl ~ requesturi %}
-{% endif %}
-       <link rel="canonical" href="{{ canonical }}">
-       <link rel="search" type="application/opensearchdescription+xml" href="//{{ siteurl }}/xml/zkbsearch.xml" title="zKillboard">
-{% if theme is not defined %}{% set theme = 'cyborg' %}{% endif %}
-{% if theme == "cyborg" %}{% set version = "3.1.1" %}{% else %}{% set version = "latest" %}{% endif %}
-        {% if theme == "default" %}
-            <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">
-        {% else %}
-            <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootswatch/{{ version }}/{{ theme }}/bootstrap.min.css">
-        {% endif %}
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		{% if description is not defined %}
+			{% set description = "zKillboard is a killboard for the Massively Multiplayer Online Role Playing Game (MMORPG) EVE-Online." %}
+		{% endif %}
+		<meta name="description" content="{{ description }}">
+		<meta name="title" content="{{ pageTitle }} | zKillboard">
+		<meta name="keywords" content="eve-online, eve, ccp, ccp games, kills, kill, massively, multiplayer, online, role, playing, game, mmorpg, rank, isk, mmorpg, killboard, zkillboard">
+		<meta name="robots" content="index,follow">
+		<meta name="og:locale" content="en_US">
+		<meta name="og:type" content="website">
+		<meta name="og:site_name" content="zKillboard.com">
+		<meta name="fb:app_id" content="{{ fbAppID }}">
+		<meta name="twitter:site" content="@zKillboard">
+		<meta name="twitter:domain" content="https://zkillboard.com">
+		<meta name="application-name" content="zKillboard"/>
+		<meta name="msapplication-TileColor" content="#000000"/>
+		<meta name="mobile-web-app-capable" content="yes">
+		<link rel="shortcut icon" sizes="310x310" href="/img/tile/large.png">
+		<link rel="shortcut icon" sizes="70x70" href="/img/tile/tiny.png">
+		<link rel="shortcut icon" sizes="150x150" href="/img/tile/square.png">
+		<link rel="shortcut icon" sizes="310x150" href="/img/tile/wide.png">
+		<link rel="shortcut icon" sizes="16x16" href="/favicon.ico" />
+		<meta name="msapplication-square70x70logo" content="/img/tile/tiny.png"/>
+		<meta name="msapplication-square150x150logo" content="/img/tile/square.png"/>
+		<meta name="msapplication-wide310x150logo" content="/img/tile/wide.png"/>
+		<meta name="msapplication-square310x310logo" content="/img/tile/large.png"/>
+		<meta name="quicklink" content="{{ fullsiteurl }}/kills/">
+		<meta name="quicklink" content="{{ fullsiteurl }}/post/">
+		<meta name="quicklink" content="{{ fullsiteurl }}/top/lasthour/">
+		<meta name="quicklink" content="{{ fullsiteurl }}/ranks/recent/killers/">
+		<meta name="quicklink" content="{{ fullsiteurl }}/ranks/recent/losers/">
+		<meta name="quicklink" content="{{ fullsiteurl }}/map/">
+		<meta name="quicklink" content="{{ fullsiteurl }}/information/api/">
+		<meta name="quicklink" content="{{ fullsiteurl }}/tickets/">
+		<meta name="quicklink" content="{{ fullsiteurl }}/livechat/">
+		{% block opengraph %}
+			<meta name="twitter:title" content="{{ pageTitle }} | zKillboard">
+			<meta name="twitter:card" content="summary">
+			<meta name="twitter:description" content="{{ description }}">
+			<meta name="twitter:image" content="{{ fullsiteurl }}/3D.png">
+			<meta name="og:title" content="{{ siteurl }} / {{ pageTitle }}">
+			<meta name="og:url" content="{{ fullsiteurl }}">
+			<meta name="og:description" content="{{ description }}">
+			<meta name="og:image" content="{{ fullsiteurl }}/3D.png">
+		{% endblock %}
 
-        <link rel="stylesheet" href="/css/theme-edits/{{theme}}-main.css">
-        <link rel="stylesheet" href="/css/datepicker.css">
-        <link rel="stylesheet" href="/css/main.css">
-        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.min.css">
-        {% block style %}
-        {% endblock %}
-        {% if showAnalytics != false %}
-            {{ analytics|raw }}
-        {% endif %}
+		{% block robots %}
+		{% endblock %}
+
+		{% if isMobile %}
+			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		{% endif %}
+
+		<title>
+			{% block title %}
+				{{ siteurl }}
+			{% endblock %}
+		</title>
+
+		{% if canonical is not defined %}
+			{% set canonical = fullsiteurl ~ requesturi %}
+		{% endif %}
+
+		<link rel="canonical" href="{{ canonical }}">
+		<link rel="search" type="application/opensearchdescription+xml" href="//{{ siteurl }}/xml/zkbsearch.xml" title="zKillboard">
+
+		{% if theme is not defined %}
+			{% set theme = 'cyborg' %}
+		{% endif %}
+
+		{% if theme == "cyborg" %}
+			{% set version = "3.1.1" %}
+		{% else %}
+			{% set version = "latest" %}
+		{% endif %}
+
+		{% if theme == "default" %}
+			<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">
+		{% else %}
+			<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootswatch/{{ version }}/{{ theme }}/bootstrap.min.css">
+		{% endif %}
+
+		<link rel="stylesheet" href="/css/theme-edits/{{theme}}-main.css">
+		<link rel="stylesheet" href="/css/datepicker.css">
+		<link rel="stylesheet" href="/css/main.css">
+		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.min.css">
+
+		{% block style %}
+		{% endblock %}
+
+		{% if showAnalytics != false %}
+			{{ analytics|raw }}
+		{% endif %}
+
 		<style type="text/css">
-		.topBoxes td {
+			.topBoxes td {
 			vertical-align: middle !important;
-		}
+			}
 		</style>
-    </head>
-    <body>
+	</head>
+	<body>
 		<div class="content">
-		<div class="container nobackground" style="mgin: 0px; padding: 0px;">
-    		{% include "navigationbar.html" %}
 
-        {% if noparsetime %}
-          <div class="container">
-    			<div class="row alert"><center><strong>Between 00:00 and 01:05 no kills are processed while we wait for CCP's Market CREST cache to clear...</strong></center></div>
-          </div>
-        {% endif %}
+			<!-- The navbar -->
+			<div class="container nobackground" style="mgin: 0px; padding: 0px;">
+				{% include "navigationbar.html" %}
+			</div>
 
-    		{% if isMaintenance() %}
-    			<div class="alert alert-danger"><center>Site is in maintenance mode<br/><small>During this time no kills are processed<br/>{{ getMaintenanceReason() }}</small></center></div>
-    		{% endif %}
+			<!-- CREST Market fetching / no parsing information header -->
+			{% if noparsetime %}
+				<div class="container">
+					<div class="row alert"><center><strong>Between 00:00 and 01:05 no kills are processed while we wait for CCP's Market CREST cache to clear...</strong></center></div>
+				</div>
+			{% endif %}
 
-            <div class="container">
-		{% if getNotification() %}
-			<div class="alert" style="padding: 0px; margin: 0px; psition: relative; top: -15px;"><center>{{ getNotification()|raw }}</center></div>
-		{% endif %}
+			<!-- Maintenance alert -->
+			{% if isMaintenance() %}
+				<div class="alert alert-danger"><center>Site is in maintenance mode<br/><small>During this time no kills are processed<br/>{{ getMaintenanceReason() }}</small></center></div>
+			{% endif %}
 
-		{% if accountBalance >= adFreeMonthCost and accountBalance > 0 %}
-			<div class="alert alert-success" style="font-weight: bold"><center><a href='/account/payments'>You have an account balance of {{ accountBalance|number_format(2) }} ISK.  Click here to do something with it!</a></center></div>
-		{% endif %}
+			<div class="container">
+				<!-- Notification header -->
+				{% if getNotification() %}
+					<div class="alert" style="padding: 0px; margin: 0px; psition: relative; top: -15px;"><center>{{ getNotification()|raw }}</center></div>
+				{% endif %}
 
-                {% if showAds != false %}
-                <div class="centered" id="adsensetop" style="margin-bottom: 5px;">
-                    {% if eveigb %}{{ igbtopad|raw }}{% elseif isMobile and isTablet == false %}{{ mobiletopad|raw }}{% else %}{{ topad|raw }}{% endif %}
-			<br/><small><a href='/information/payments/'>Click here to remove ads!</a></small>
-                </div>
-                {% endif %}
+				<!-- Account balance information -->
+				{% if accountBalance >= adFreeMonthCost and accountBalance > 0 %}
+					<div class="alert alert-success" style="font-weight: bold"><center><a href='/account/payments'>You have an account balance of {{ accountBalance|number_format(2) }} ISK.  Click here to do something with it!</a></center></div>
+				{% endif %}
 
-                {% block header %}{% endblock %}
+				<!-- Top ad -->
+				{% if showAds != false %}
+					<div class="centered" id="adsensetop" style="margin-bottom: 5px;">
+						{% if eveigb %}{{ igbtopad|raw }}{% elseif isMobile and isTablet == false %}{{ mobiletopad|raw }}{% else %}{{ topad|raw }}{% endif %}
+						<br/><small><a href='/information/payments/'>Click here to remove ads!</a></small>
+					</div>
+				{% endif %}
 
-                {% block content %}Default content{% endblock %}
+				<!-- The text header -->
+				{% block header %}{% endblock %}
+				<!-- The actual site content-->
+				{% block content %}Default content{% endblock %}
 
-		<div class="clearfix"></div>
-                {% if showAds != false %}
-                <div class="centered" id="adsensebottom" style="margin-bottom: 5px;">
-                    {% if eveigb %}{{ igbbottomad|raw }}{% elseif isMobile and isTablet == false %}{{ mobilebottomad|raw }}{% else %}{{ bottomad|raw }}{% endif %}
-                </div>
-                {% endif %}
+				<div class="clearfix"></div>
 
-                <div class="hidden-xs">{% include "footer.html" %}</div>
-            </div>		
-            <div class="container">
-                {% block modal %}{% endblock %}
-            </div>
-        </div>
-	</div>
-        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.1.0/jquery.timeago.min.js"></script>
-        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/jquery.dataTables.min.js"></script>
+				<!-- Bottom ad -->
+				{% if showAds != false %}
+					<div class="centered" id="adsensebottom" style="margin-bottom: 5px;">
+					{% if eveigb %}{{ igbbottomad|raw }}{% elseif isMobile and isTablet == false %}{{ mobilebottomad|raw }}{% else %}{{ bottomad|raw }}{% endif %}
+					</div>
+				{% endif %}
+
+				<!-- Footer -->
+				<div class="hidden-xs">{% include "footer.html" %}</div>
+			</div>
+
+			<!-- Modals -->
+			<div class="container nobackground">
+				{% block modal %}{% endblock %}
+			</div>
+		</div>
+
+		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.1.0/jquery.timeago.min.js"></script>
+		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/jquery.dataTables.min.js"></script>
 		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
-        <script type="text/javascript" src="/js/bootstrap-datepicker.js"></script>
-        <script type="text/javascript" src="/js/search.js"></script>
-        <script type="text/javascript" src="/js/common.js?a=1"></script>
-        <script type="text/javascript" src="/js/sclock1.js"></script>
-        {% if disqusLoad %}
-        <script type="text/javascript">
-        var disqus_shortname = 'zkillboard';
-        (function () {
-            var s = document.createElement('script'); s.async = true;
-            s.type = 'text/javascript';
-            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
-            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-        }());
-        </script>
-        {% endif %}
-	{% if showFacebook != false %}
-    <script>
-        (function(d, s, id) {
-          var js, fjs = d.getElementsByTagName(s)[0];
-          if (d.getElementById(id)) return;
-          js = d.createElement(s); js.id = id;
-          js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId={{ fbAppID }}";
-          fjs.parentNode.insertBefore(js, fjs);
-        }(document, 'script', 'facebook-jssdk'));
-    </script>
+		<script type="text/javascript" src="/js/bootstrap-datepicker.js"></script>
+		<script type="text/javascript" src="/js/search.js"></script>
+		<script type="text/javascript" src="/js/common.js?a=1"></script>
+		<script type="text/javascript" src="/js/sclock1.js"></script>
+		{% if disqusLoad %}
+			<script type="text/javascript">
+				var disqus_shortname = 'zkillboard';
+				(function () {
+				var s = document.createElement('script'); s.async = true;
+				s.type = 'text/javascript';
+				s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+				(document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+				}());
+			</script>
+		{% endif %}
 
-    <script type="text/javascript">
-    var sUrl = '{{ fullsiteurl }}';
-    document.getElementById('fb').setAttribute('data-href', sUrl);
-    FB.XFBML.parse();
-    </script>
-	{% endif %}
+		{% if showFacebook != false %}
+			<script>
+				(function(d, s, id) {
+				var js, fjs = d.getElementsByTagName(s)[0];
+				if (d.getElementById(id)) return;
+				js = d.createElement(s); js.id = id;
+				js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId={{ fbAppID }}";
+				fjs.parentNode.insertBefore(js, fjs);
+				}(document, 'script', 'facebook-jssdk'));
+			</script>
 
-    <script type="text/javascript">
-        var datepicker = $('.datepicker').datepicker({
-            format: "mm/yyyy",
-            viewMode: 1,
-            minViewMode: 1,
-            autoclose: true
-        }).on("changeDate", function(ev){
-            console.log(ev);
-            date = new Date(ev.date);
-            var year = date.getFullYear();
-            var month = date.getMonth() +1;
-            location.href = '{{ actualURI }}' + 'year/' + year + '/month/' + month + '/';
-            console.log(month)
-        });
-    </script>
-{% block script %}
-{% endblock %}
-    </body>
+			<script type="text/javascript">
+				var sUrl = '{{ fullsiteurl }}';
+				document.getElementById('fb').setAttribute('data-href', sUrl);
+				FB.XFBML.parse();
+			</script>
+		{% endif %}
+
+		<script type="text/javascript">
+			var datepicker = $('.datepicker').datepicker({
+				format: "mm/yyyy",
+				viewMode: 1,
+				minViewMode: 1,
+				autoclose: true
+			}).on("changeDate", function(ev){
+				console.log(ev);
+				date = new Date(ev.date);
+				var year = date.getFullYear();
+				var month = date.getMonth() +1;
+				location.href = '{{ actualURI }}' + 'year/' + year + '/month/' + month + '/';
+				console.log(month)
+			});
+		</script>
+
+		{% block script %}
+		{% endblock %}
+	</body>
 </html>
