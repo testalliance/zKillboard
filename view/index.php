@@ -16,21 +16,44 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+$pageTitle = "";
 $serverName = $_SERVER["SERVER_NAME"];
 if ($serverName != "zkillboard.com") {
 	$split = explode(".", $serverName);
-	$board = $split[0];
+	$board = str_replace("_", " ", $split[0]);
 	$numDays = 7;
 
-	$p = array("factionID" => 500001);
+	$faction = Db::queryRow("select * from zz_factions where ticker = :board", array(":board" => $board), 3600);
+	$alli = Db::queryRow("select * from zz_alliances where ticker = :board order by memberCount desc limit 1", array(":board" => $board), 3600);
+	if ($alli) {
+		$killID = Db::queryField("select killID from zz_participants where allianceID = :alliID and dttm >= date_sub(now(), interval 6 month) limit 1", "killID", array(":alliID" => $alli["allianceID"]), 3600);
+		if (!$killID) $alli = null;
+	}
+	$corp = Db::queryRow("select * from zz_corporations where ticker = :board and memberCount > 0 order by memberCount desc limit 1", array(":board" => $board), 3600);
+	if ($corp) {
+		$killID = Db::queryField("select killID from zz_participants where corporationID = :corpID and dttm >= date_sub(now(), interval 6 month) limit 1", "killID", array(":corpID" => $corp["corporationID"]), 3600);
+		if (!$killID) $corp = null;
+	}
+
+	$columnName = null;
+	$id = null;
+	if ($faction) $p = array("factionID" => $faction["factionID"]);
+	else if ($alli) $p = array("allianceID" => $alli["allianceID"]);
+	else if ($corp) $p = array("corporationID" => $corp["corporationID"]);
+	else $p = array();
+
+	$columnName = key($p);
+	$id = reset($p);
+
+	if (sizeof($p) < 1) die($board . " ticker not found or entity has not had a kill in the last 6 months...");
 
 	$topPoints = array();
 	$topPods = array();
 
 	$top = array();
 	$top[] = Info::doMakeCommon("Top Characters", "characterID", Stats::getTopPilots($p));
-	$top[] = Info::doMakeCommon("Top Corporations", "corporationID", Stats::getTopCorps($p));
-	$top[] = Info::doMakeCommon("Top Alliances", "allianceID", Stats::getTopAllis($p));
+	$top[] = ($columnName != "corporationID" ? Info::doMakeCommon("Top Corporations", "corporationID", Stats::getTopCorps($p)) : array());
+	$top[] = ($columnName != "corporationID" && $columnName != "allianceID" ? Info::doMakeCommon("Top Alliances", "allianceID", Stats::getTopAllis($p)) : array());
 	$top[] = Info::doMakeCommon("Top Ships", "shipTypeID", Stats::getTopShips($p));
 	$top[] = Info::doMakeCommon("Top Systems", "solarSystemID", Stats::getTopSystems($p));
 
@@ -43,6 +66,15 @@ if ($serverName != "zkillboard.com") {
 	$killsLimit = 50;
 	$p["limit"] = $killsLimit;
 	$kills = Kills::getKills($p);
+
+	$kills = Kills::mergeKillArrays($kills, array(), $killsLimit, $columnName, $id);
+
+	Info::addInfo($p);
+	$pageTitle = array();
+	foreach($p as $key=>$value) {
+		if (strpos($key, "Name") !== false) $pageTitle[] = $value;
+	}
+	$pageTitle = implode(",", $pageTitle);
 } else {
 	$topPoints = array();
 	$topIsk = json_decode(Storage::retrieve("TopIsk"), true);
@@ -63,4 +95,4 @@ if ($serverName != "zkillboard.com") {
 	$kills = Kills::getKills(array("limit" => $killsLimit));
 
 }
-$app->render("index.html", array("topPods" => $topPods, "topIsk" => $topIsk, "topPoints" => $topPoints, "topKillers" => $top, "kills" => $kills, "page" => 1, "pageType" => "index", "pager" => true));
+$app->render("index.html", array("topPods" => $topPods, "topIsk" => $topIsk, "topPoints" => $topPoints, "topKillers" => $top, "kills" => $kills, "page" => 1, "pageType" => "index", "pager" => true, "pageTitle" => $pageTitle));

@@ -25,6 +25,8 @@ $userID = User::getUserID();
 $key = "me";
 $error = "";
 
+$bannerUpdates = array();
+
 if(isset($req))
 	$key = $req;
 
@@ -179,6 +181,13 @@ if($_POST)
 	$ddmonthyear = Util::getPost("ddmonthyear");
 	if(isset($ddmonthyear))
 		UserConfig::set("ddmonthyear",$ddmonthyear);
+
+	$subdomain = Util::getPost("subdomain");
+	if ($subdomain) {
+		$banner = Util::getPost("banner");
+		$bannerUpdates = array("$subdomain" => $banner);
+		// table is updated if user is ceo/executor in code thta loads this information below
+	}
 }
 
 $data["entities"] = Account::getUserTrackerData();
@@ -198,5 +207,47 @@ $data["ddmonthyear"] = UserConfig::get("ddmonthyear");
 $data["useSummaryAccordion"] = UserConfig::get("useSummaryAccordion", true);
 $data["sessions"] = User::getSessions($userID);
 $data["history"] = User::getPaymentHistory($userID);
+
+$apiChars = Api::getCharacters($userID);
+$domainChars = array();
+foreach($apiChars as $apiChar) {
+	$char = Info::getPilotDetails($apiChar["characterID"], null);
+	$char["corpTicker"] = str_replace(" ", "_", Db::queryField("select ticker from zz_corporations where corporationID = :corpID", "ticker", array(":corpID" => $char["corporationID"])));
+	$char["alliTicker"] = str_replace(" ", "_", Db::queryField("select ticker from zz_alliances where allianceID = :alliID", "ticker", array(":alliID" => $char["allianceID"])));
+
+	$domainChars[] = $char;
+}
+
+$corps = array();
+$allis = array();
+foreach ($domainChars as $domainChar) {
+	if ($domainChar["isCEO"]) {
+		$subdomain = strtolower($domainChar["corpTicker"]) . ".zkillboard.com";
+		if (isset($bannerUpdates[$subdomain])) {
+			$banner = $bannerUpdates[$subdomain];
+			Db::execute("insert into zz_subdomains (subdomain, banner) values (:subdomain, :banner) on duplicate key update banner = :banner", array(":subdomain" => $subdomain, ":banner" => $banner));
+			$error = "Banner updated for $subdomain, please wait 2 minutes for the change to take effect.";
+		}
+		$corpStatus = Db::queryRow("select adfreeUntil, banner from zz_subdomains where subdomain = :subdomain", array(":subdomain" => $subdomain), 0);
+		$domainChar["adfreeUntil"] = @$corpStatus["adfreeUntil"];
+		$domainChar["banner"] = @$corpStatus["banner"];
+		$corps[] = $domainChar;
+	}
+	if ($domainChar["isExecutorCEO"]) {
+		$subdomain = strtolower($domainChar["alliTicker"]) . ".zkillboard.com";
+		if (isset($bannerUpdates[$subdomain])) {
+			$banner = $bannerUpdates[$subdomain];
+			Db::execute("insert into zz_subdomains (subdomain, banner) values (:subdomain, :banner) on duplicate key update banner = :banner", array(":subdomain" => $subdomain, ":banner" => $banner));
+			$error = "Banner updated for $subdomain, please wait 2 minutes for the change to take effect.";
+		}
+		$status = Db::queryRow("select adfreeUntil, banner from zz_subdomains where subdomain = :subdomain", array(":subdomain" => $subdomain), 0);
+		$domainChar["adfreeUntil"] = @$status["adfreeUntil"];
+		$domainChar["banner"] = @$status["banner"];
+		$alli[] = $domainChar;
+	}
+}
+$data["domainCorps"] = $corps;
+$data["domainAllis"] = $allis;
+$data["domainChars"] = $domainChars;
 
 $app->render("account.html", array("data" => $data, "message" => $error, "key" => $key, "reqid" => $reqid));

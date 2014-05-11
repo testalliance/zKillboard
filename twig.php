@@ -98,7 +98,6 @@ foreach($noAdPages as $noAdPage) {
 	$showAds &= !Util::startsWith($uri, $noAdPage);
 	$showAds &= $userShowAds;
 }
-$twig->addGlobal("showAds", $showAds);
 $twig->addglobal("showAnalytics", $showAnalytics);
 $twig->addGlobal("showFacebook", $showFacebook);
 if($disqus)
@@ -110,6 +109,14 @@ if($disqus)
 // User's account balance
 $twig->addGlobal("accountBalance", $accountBalance);
 $twig->addGlobal("adFreeMonthCost", $adFreeMonthCost);
+
+// Display a banner?
+$banner = Db::queryField("select banner from zz_subdomains where subdomain = :server", "banner", array(":server" => $_SERVER["SERVER_NAME"]), 60);
+if ($banner) $twig->addGlobal("headerImage", $banner);
+
+$adfree = Db::queryField("select count(*) count from zz_subdomains where adfreeUntil >= now() and subdomain = :server", "count", array(":server" => $_SERVER["SERVER_NAME"]), 60);
+if ($adfree) $twig->addGlobal("showAds", false);
+else $twig->addGlobal("showAds", $showAds);
 
 
 $detect = new Mobile_Detect();

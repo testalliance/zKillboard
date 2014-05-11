@@ -71,6 +71,19 @@ class cli_fetchWallet implements cliCommand
 			$userID = null;
 
 			$reason = $row["reason"];
+			if (strpos($reason, ".zkillboard.com") !== false) {
+				global $adFreeMonthCost;
+				$months = $row["amount"] / $adFreeMonthCost;
+				$bonusMonths = floor($months / 6);
+				$months += $bonusMonths;
+				$subdomain = trim(str_replace("DESC: ", "", $reason));
+				$subdomain = str_replace("http://", "", $subdomain);
+				$subdomain = str_replace("https://", "", $subdomain);
+
+				$aff = Db::execute("insert into zz_subdomains (subdomain, adfreeUntil) values (:subdomain, date_add(now(), interval $months month)) on duplicate key update adfreeUntil = date_add(adfreeUntil, interval $months month)", array(":subdomain" => $subdomain));
+				if ($aff) Db::execute("update zz_account_wallet set paymentApplied = 1 where refID = :refID", array(":refID" => $row["refID"]));
+				continue;
+			}
 			if ($reason)
 			{
 				$reason = trim(str_replace("DESC: ", "", $reason));

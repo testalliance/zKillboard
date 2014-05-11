@@ -16,7 +16,7 @@
 <div class="pull-left">
 <ul>
 	<li> You can make payments to zKillboard that will remove ads when you are logged in.</li>
-	<li> You can be ad free on zKillboard.com and all subdomains when they are implemented Soon(TM).</li>
+	<li> You can be ad free on zKillboard.com and all subdomains when you are logged into your account.</li>
 	<li> Each month of ad free time costs <strong>{{ adFreeMonthCost|number_format(2) }} ISK.</strong></li>
 	<li> Each 6 months you purchase will give you a bonus month. </li>
 	<li> To make a payment send ISK to the character <a href="https://zkillboard.com/character/93382481/">zKillboard</a>, or use this handy in game link: <a href="#" onClick="CCPEVE.showInfo(1377, 93382481);">zKillboard</a>.</li>
@@ -24,8 +24,8 @@
 </ul>
 </div>
 </div>
-<div class="row">
-<br/>
+<hr/>
+<h3>Account</h3>
 Two methods of payment, pick one!<br/>
 <ul>
 	<li> Include your account name in the reason code.  E.g., if your login is <strong>squizz</strong>, then include <strong>squizz</strong> in the payment reason. Must be an exact match!<br/>
@@ -34,5 +34,11 @@ Two methods of payment, pick one!<br/>
 	<li> Have an <a href='/account/api/'>API tied to your account</a> that includes the character you sent the ISK from.
 </ul>
 <br/>
-</div>
+<hr/>
+<h3>Subdomain</h3>
+<ul>
+	<li>To make a payment for a subdomain, all you have to do is include the <strong>URL</strong>, and only the <strong>URL</strong> of the subdomain in the payment reason.<br/>
+		<img src="/img/squizz_subdomain_example.png"/>
+	</li>
+</ul>
 {% endblock%}

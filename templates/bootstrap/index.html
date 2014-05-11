@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% set pageTitle = 'Home' %}
+{% if pageTitle is not defined or pageTitle == '' %}{% set pageTitle = 'Home' %}{% endif %}
 {% block title %}{% include 'components/title.html' %}
 {% endblock %}
 

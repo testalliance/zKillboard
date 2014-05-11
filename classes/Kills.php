@@ -187,6 +187,7 @@ class Kills
 			if (!isset($kill["victim"])) continue;
 			$victim = $kill["victim"];
 			if ($victim[$key] == $id) $kill["displayAsLoss"] = true;
+			else $kill["displayAsKill"] = true;
 			$resultArray[$killID] = $kill;
 		}
 		return $resultArray;
