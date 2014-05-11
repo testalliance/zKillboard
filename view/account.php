@@ -208,7 +208,7 @@ $data["useSummaryAccordion"] = UserConfig::get("useSummaryAccordion", true);
 $data["sessions"] = User::getSessions($userID);
 $data["history"] = User::getPaymentHistory($userID);
 
-$apiChars = Api::getCharacters($userID);
+$apiChars = array();//Api::getCharacters($userID);
 $domainChars = array();
 foreach($apiChars as $apiChar) {
 	$char = Info::getPilotDetails($apiChar["characterID"], null);
@@ -221,7 +221,7 @@ foreach($apiChars as $apiChar) {
 $corps = array();
 $allis = array();
 foreach ($domainChars as $domainChar) {
-	if ($domainChar["isCEO"]) {
+	if (@$domainChar["isCEO"]) {
 		$subdomain = strtolower($domainChar["corpTicker"]) . ".zkillboard.com";
 		if (isset($bannerUpdates[$subdomain])) {
 			$banner = $bannerUpdates[$subdomain];
@@ -233,7 +233,7 @@ foreach ($domainChars as $domainChar) {
 		$domainChar["banner"] = @$corpStatus["banner"];
 		$corps[] = $domainChar;
 	}
-	if ($domainChar["isExecutorCEO"]) {
+	if (@$domainChar["isExecutorCEO"]) {
 		$subdomain = strtolower($domainChar["alliTicker"]) . ".zkillboard.com";
 		if (isset($bannerUpdates[$subdomain])) {
 			$banner = $bannerUpdates[$subdomain];
