@@ -1,0 +1,18 @@
+
+DROP TABLE IF EXISTS `zz_corporations`;
+CREATE TABLE `zz_corporations` (
+  `corporationID` int(16) NOT NULL DEFAULT '0',
+  `allianceID` int(16) NOT NULL DEFAULT '0',
+  `name` varchar(128) NOT NULL,
+  `ceoID` int(16) NOT NULL DEFAULT '0',
+  `ticker` varchar(6) NOT NULL,
+  `memberCount` int(4) DEFAULT NULL,
+  `lastUpdated` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `description` text NOT NULL,
+  PRIMARY KEY (`corporationID`),
+  KEY `name` (`name`),
+  KEY `ticker` (`ticker`),
+  KEY `lastUpdated` (`lastUpdated`),
+  KEY `allianceID` (`allianceID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+

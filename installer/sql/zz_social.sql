@@ -1,0 +1,8 @@
+
+DROP TABLE IF EXISTS `zz_social`;
+CREATE TABLE `zz_social` (
+  `killID` bigint(16) NOT NULL,
+  `insertTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`killID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+
