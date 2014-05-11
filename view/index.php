@@ -18,7 +18,8 @@
 
 $pageTitle = "";
 $serverName = $_SERVER["SERVER_NAME"];
-if ($serverName != "zkillboard.com") {
+global $baseAddr;
+if ($serverName != $baseAddr) {
 	$split = explode(".", $serverName);
 	$board = str_replace("_", " ", $split[0]);
 	$numDays = 7;
