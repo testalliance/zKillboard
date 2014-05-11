@@ -30,7 +30,8 @@ class cli_twitterReplies implements cliCommand
 
 	public function execute($parameters, $db)
 	{
-		$url = "https://twitter.com/eve_kill/status/";
+		global $fullAddr, $twitterName;
+		$url = "https://twitter.com/$twitterName/status/";
 		$storageName = "twitterLatestRepliesID";
 
 		$latest = $db->queryField("SELECT contents FROM zz_storage WHERE locker = '$storageName'", "contents", array(), 0);

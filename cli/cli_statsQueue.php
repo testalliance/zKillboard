@@ -28,10 +28,10 @@ class cli_statsQueue implements cliCommand
 		return ""; // Space seperated list
 	}
 
-        public function getCronInfo()
-        {
-                return array(0 => ""); // Always run
-        }
+	public function getCronInfo()
+	{
+		return array(0 => ""); // Always run
+	}
 
 	public function execute($parameters, $db)
 	{
