@@ -49,7 +49,7 @@ class Social
 		$tweetIt = false;
 		$tweetIt |= $totalPrice >= $twitMin;
 
-		global $fullAddr;
+		global $fullAddr, $twitterName;
 		$url = "$fullAddr/kill/$killID/";
 		if ($totalPrice >= $twitMin) $url = Twit::shortenUrl($url);
 		$message = "|g|" . $victimInfo["shipName"] . "|n| worth |r|" . Util::formatIsk($totalPrice) . " ISK|n| was destroyed! $url";
@@ -68,7 +68,7 @@ class Social
 		if ($tweetIt) {
 			$message .= " #tweetfleet #eveonline";
 			$return = Twit::sendMessage($message);
-			$twit = "https://twitter.com/zkillboard/status/" . $return->id;
+			$twit = "https://twitter.com/{$twitterName}/status/" . $return->id;
 			Log::irc("Message was also tweeted: |g|$twit");
 		}	
 	}

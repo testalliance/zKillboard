@@ -90,6 +90,7 @@ $sentfromemail = "";
 $sentfromdomain = "";
 
 // Twitter
+$twitterName = "";
 $consumerKey = "";
 $consumerSecret = "";
 $accessToken = "";
