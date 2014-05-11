@@ -51,6 +51,8 @@ if ($serverName != $baseAddr) {
 	$topPoints = array();
 	$topPods = array();
 
+	$p["kills"] = true;
+
 	$top = array();
 	$top[] = Info::doMakeCommon("Top Characters", "characterID", Stats::getTopPilots($p));
 	$top[] = ($columnName != "corporationID" ? Info::doMakeCommon("Top Corporations", "corporationID", Stats::getTopCorps($p)) : array());
@@ -60,8 +62,10 @@ if ($serverName != $baseAddr) {
 
 	$p["pastSeconds"] = ($numDays*86400);
 	$p["limit"] = 5;
+	$p["kills"] = true;
 	$topIsk = Stats::getTopIsk($p);
 	unset($p["pastSeconds"]);
+	unset($p["kills"]);
 
 	// get latest kills
 	$killsLimit = 50;
