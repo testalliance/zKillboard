@@ -30,7 +30,8 @@ class cli_twitterSearch implements cliCommand
 
 	public function execute($parameters, $db)
 	{
-		$url = "https://twitter.com/eve_kill/status/";
+		global $twitterName;
+		$url = "https://twitter.com/$twitterName/status/";
 		$storageName = "twitterLatestSearchID";
 
 		$latest = $db->queryField("SELECT contents FROM zz_storage WHERE locker = '$storageName'", "contents", array(), 0);
@@ -47,16 +48,15 @@ class cli_twitterSearch implements cliCommand
 			$screenName = (array) $status->user->screen_name;
 			$id = (int) $status->id;
 
-		    if($screenName[0] == "eve_kill") continue;
+		    if($screenName[0] == $twitterName) continue;
 			if ($id <= $latest) continue;
 			$maxID = max($id, $maxID);
 
-			if (strpos($text[0], "@eve_kill") !== false) continue;
+			if (strpos($text[0], "@$twitterName") !== false) continue;
 
 			$message = array("message" => $text[0], "postedAt" => $createdAt[0], "postedBy" => $postedBy[0], "screenName" => $screenName[0], "url" => $url.$id[0]);
 			$url = "https://twitter.com/".$screenName[0]."/status/".$id;
 			$msg = "|g|@|n|". $screenName[0] ." (|g|". $message["postedBy"] ."|n|) |g|/|n| ". date("H:i:s", strtotime($message["postedAt"])) ." |g|/|n| ". Twit::shortenUrl($url) ." |g|/|n| |g|". $message["message"];
-			//$msg = "|g|" . $message["postedBy"] . "|n| (|g|@". $screenName[0] ."|n|) / |g|" . date("Y-m-d H:i:s", strtotime($message["postedAt"])) . " Message:|n| " . $message["message"];
 			$messages[$id] = $msg;
 		}
 		ksort($messages);
