@@ -70,8 +70,10 @@ class cli_fetchWallet implements cliCommand
 		{
 			if ($row["ownerID2"] != $walletCharacterID) continue;
 			$userID = null;
+print_r($row);
 
 			$reason = $row["reason"];
+echo "$baseAddr\n";
 			if (strpos($reason, ".{$baseAddr}") !== false) {
 				global $adFreeMonthCost;
 				$months = $row["amount"] / $adFreeMonthCost;
@@ -80,6 +82,8 @@ class cli_fetchWallet implements cliCommand
 				$subdomain = trim(str_replace("DESC: ", "", $reason));
 				$subdomain = str_replace("http://", "", $subdomain);
 				$subdomain = str_replace("https://", "", $subdomain);
+				$subdomain = str_replace("/", "", $subdomain);
+echo "'$subdomain'\n";
 
 				$aff = Db::execute("insert into zz_subdomains (subdomain, adfreeUntil) values (:subdomain, date_add(now(), interval $months month)) on duplicate key update adfreeUntil = date_add(adfreeUntil, interval $months month)", array(":subdomain" => $subdomain));
 				if ($aff) Db::execute("update zz_account_wallet set paymentApplied = 1 where refID = :refID", array(":refID" => $row["refID"]));
