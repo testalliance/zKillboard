@@ -19,37 +19,37 @@
 /* Price check aisle 5! */
 class cli_priceCheck implements cliCommand
 {
-  public function getDescription()
-  {
-    return "Updates prices for all published items";
-  }
+	public function getDescription()
+	{
+		return "Updates prices for all published items";
+	}
 
-  public function getAvailMethods()
-  {
-    return "";
-  }
+	public function getAvailMethods()
+	{
+		return "";
+	}
 
-  public function getCronInfo()
-  {
-    return array(0 => ""); // Always (somewhat) run
-  }
+	public function getCronInfo()
+	{
+		return array(0 => ""); // Always (somewhat) run
+	}
 
-  public function execute($parameters, $db)
-  {
-    if (date("Gi") != 105) return; // Only execute at 01:05
-    global $debug;
-
-    $typeIDs = Db::query("select typeID from ccp_invTypes where published = 1", array(), 0);
-    $size = count($typeIDs);
-    $count = 0;
-    foreach ($typeIDs as $row) {
-      $typeID = $row["typeID"];
-      $today = date("Y-m-d");
-      $price = Price::getItemPrice($typeID, $today, true);
-      $name = Info::getItemName($typeID);
-      $count++;
-      $price = Util::formatIsk($price);
-      if ($debug) Log::log("$count/$size\t$typeID\t$price\t$name");
-    }
-  }
+	public function execute($parameters, $db)
+	{
+		if (date("Gi") != 105) return; // Only execute at 01:05
+		global $debug;
+		$typeIDs = Db::query("select typeID from ccp_invTypes where published = 1", array(), 0);
+		$size = count($typeIDs);
+		$count = 0;
+		foreach ($typeIDs as $row)
+		{
+			$typeID = $row["typeID"];
+			$today = date("Y-m-d");
+			$price = Price::getItemPrice($typeID, $today, true);
+			$name = Info::getItemName($typeID);
+			$count++;
+			$price = Util::formatIsk($price);
+			if ($debug) Log::log("$count/$size\t$typeID\t$price\t$name");
+		}
+	}
 }

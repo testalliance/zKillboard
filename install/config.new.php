@@ -99,6 +99,7 @@ $accessTokenSecret = "";
 // Ads / Analytics
 $showAds = false;
 $adFreeMonthCost = 0;
+$walletCharacterID = 0;
 $showAnalytics = false;
 $topCaPub = ""; // ca-pub-<number>
 $topAdSlot = ""; // google_ad_slot number

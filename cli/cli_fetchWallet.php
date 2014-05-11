@@ -64,10 +64,11 @@ class cli_fetchWallet implements cliCommand
 
 	protected function applyBalances()
 	{
+		global $walletCharacterID;
 		$toBeApplied = Db::query("select * from zz_account_wallet where paymentApplied = 0", array(), 0);
 		foreach($toBeApplied as $row)
 		{
-			if ($row["ownerID2"] != 93382481) continue; // Only process payments to zKillboard
+			if ($row["ownerID2"] != $walletCharacterID) continue;
 			$userID = null;
 
 			$reason = $row["reason"];
