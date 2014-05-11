@@ -64,7 +64,7 @@ class cli_fetchWallet implements cliCommand
 
 	protected function applyBalances()
 	{
-		global $walletCharacterID;
+		global $walletCharacterID, $baseAddr;
 		$toBeApplied = Db::query("select * from zz_account_wallet where paymentApplied = 0", array(), 0);
 		foreach($toBeApplied as $row)
 		{
@@ -72,7 +72,7 @@ class cli_fetchWallet implements cliCommand
 			$userID = null;
 
 			$reason = $row["reason"];
-			if (strpos($reason, ".zkillboard.com") !== false) {
+			if (strpos($reason, ".{$baseAddr}") !== false) {
 				global $adFreeMonthCost;
 				$months = $row["amount"] / $adFreeMonthCost;
 				$bonusMonths = floor($months / 6);
