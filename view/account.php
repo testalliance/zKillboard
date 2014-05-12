@@ -210,7 +210,7 @@ $data["history"] = User::getPaymentHistory($userID);
 
 $apiChars = Api::getCharacters($userID);
 $domainChars = array();
-foreach($apiChars as $apiChar) {
+if ($apiChars != null) foreach($apiChars as $apiChar) {
 	$char = Info::getPilotDetails($apiChar["characterID"], null);
 	$char["corpTicker"] = modifyTicker(Db::queryField("select ticker from zz_corporations where corporationID = :corpID", "ticker", array(":corpID" => $char["corporationID"])));
 	$char["alliTicker"] = modifyTicker(Db::queryField("select ticker from zz_alliances where allianceID = :alliID", "ticker", array(":alliID" => $char["allianceID"])));
