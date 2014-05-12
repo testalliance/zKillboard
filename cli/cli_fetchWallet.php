@@ -59,10 +59,10 @@ class cli_fetchWallet implements cliCommand
 		}
 		$db->execute("replace into zz_storage values ('NextWalletFetch', date_add(now(), interval 35 minute))");
 
-		$this->applyBalances();
+		$this->applyBalances($db);
 	}
 
-	protected function applyBalances()
+	protected function applyBalances($db)
 	{
 		global $walletCharacterID, $baseAddr;
 		$toBeApplied = $db->query("select * from zz_account_wallet where paymentApplied = 0", array(), 0);
