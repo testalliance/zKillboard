@@ -18,93 +18,93 @@
 
 class cli_stompSend implements cliCommand
 {
-	public function getDescription()
-	{
-		return "Sends out data via STOMP. |w|Beware, this is a persistent script. It's run and forget!.|n| Usage: |g|stompSend";
-	}
+        public function getDescription()
+        {
+                return "Sends out data via STOMP. |w|Beware, this is a persistent script. It's run and forget!.|n| Usage: |g|stompSend";
+        }
 
-	public function getAvailMethods()
-	{
-		return ""; // Space seperated list
-	}
+        public function getAvailMethods()
+        {
+                return ""; // Space seperated list
+        }
 
-	public function getCronInfo()
-	{
-		global $stompUser;
-		return class_exists("Stomp") && $stompUser != "guest" ? array(55 => "") : array();
-	}
+        public function getCronInfo()
+        {
+                global $stompUser;
+                return class_exists("Stomp") && $stompUser != "guest" ? array(55 => "") : array();
+        }
 
 
-	public function execute($parameters, $db)
-	{
-		global $stompServer, $stompUser, $stompPassword;
+        public function execute($parameters, $db)
+        {
+                global $stompServer, $stompUser, $stompPassword;
 
-		// Ensure the class exists
-		if (!class_exists("Stomp")) {
-			die("ERROR! Stomp not installed!  Check the README to learn how to install Stomp...\n");
-		}
+                // Ensure the class exists
+                if (!class_exists("Stomp")) {
+                        die("ERROR! Stomp not installed!  Check the README to learn how to install Stomp...\n");
+                }
 
-		$stomp = new Stomp($stompServer, $stompUser, $stompPassword);
+                $stomp = new Stomp($stompServer, $stompUser, $stompPassword);
 
-		$stompKey = "StompSend::lastFetch";
-		$lastFetch = date("Y-m-d H:i:s", time() - (12 * 3600));
-		$lastFetch = Storage::retrieve($stompKey, $lastFetch);
-		$stompCount = 0;
+                $stompKey = "StompSend::lastFetch";
+                $lastFetch = date("Y-m-d H:i:s", time() - (12 * 3600));
+                $lastFetch = Storage::retrieve($stompKey, $lastFetch);
+                $stompCount = 0;
 
-		$timer = new Timer();
-		while ($timer->stop() < 55000)
-		{
-			if (Util::isMaintenanceMode()) return;
-			$result = $db->query("SELECT killID, insertTime, kill_json FROM zz_killmails WHERE insertTime > :lastFetch AND processed > 0 ORDER BY killID limit 1000", array(":lastFetch" => $lastFetch), 0);
-			foreach($result as $kill)
-			{
-				$lastFetch = max($lastFetch, $kill["insertTime"]);
-				if(!empty($kill["kill_json"]))
-				{
-					if($kill["killID"] > 0)
-					{
-						$stompCount++;
-						$destinations = self::getDestinations($kill["kill_json"]);
-						foreach ($destinations as $destination)
-						{
-							$stomp->send($destination, $kill["kill_json"]);
-						}
-					}
+                $timer = new Timer();
+                while ($timer->stop() < 55000)
+                {
+                        if (Util::isMaintenanceMode()) return;
+                        $result = $db->query("SELECT killID, insertTime FROM zz_killmails WHERE processed > 0 AND killID > 0 ORDER BY killID limit 1000", array(":lastFetch" => $lastFetch), 0);
+                        foreach($result as $kill)
+                        {
+                                $json = Killmail::get($kill["killID"]);
+                                $lastFetch = max($lastFetch, $kill["insertTime"]);
+                                if(!empty($json))
+                                {
+                                        if($kill["killID"] > 0)
+                                        {
+                                                $stompCount++;
+                                                $destinations = self::getDestinations($json);
+                                                foreach ($destinations as $destination)
+                                                {
+                                                        $stomp->send($destination, $json);
+                                                }
+                                        }
+                                        $data = json_decode($json, true);
+                                        $map = json_encode(array("solarSystemID" => $data["solarSystemID"], "killID" => $data["killID"], "characterID" => $data["victim"]["characterID"], "corporationID" => $data["victim"]["corporationID"], "allianceID" => $data["victim"]["allianceID"], "shipTypeID" => $data["victim"]["shipTypeID"], "killTime" => $data["killTime"]));
+                                        $stomp->send("/topic/starmap.systems.active", $json);
+                                }
+                        }
+                        Storage::store($stompKey, $lastFetch);
+                        sleep(5);
+                }
+                if($stompCount > 0) Log::log("Stomped $stompCount killmails");
+        }
 
-					$data = json_decode($kill["kill_json"], true);
-					$json = json_encode(array("solarSystemID" => $data["solarSystemID"], "killID" => $data["killID"], "characterID" => $data["victim"]["characterID"], "corporationID" => $data["victim"]["corporationID"], "allianceID" => $data["victim"]["allianceID"], "shipTypeID" => $data["victim"]["shipTypeID"], "killTime" => $data["killTime"]));
-					$stomp->send("/topic/starmap.systems.active", $json);
-				}
-			}
-			Storage::store($stompKey, $lastFetch);
-			sleep(5);
-		}
-		if($stompCount > 0) Log::log("Stomped $stompCount killmails");
-	}
+        private function getDestinations($kill)
+        {
+                $kill = json_decode($kill, true);
+                $destinations = array();
 
-	private function getDestinations($kill)
-	{
-		$kill = json_decode($kill, true);
-		$destinations = array();
+                $destinations[] = "/topic/kills";
+                $destinations[] = "/topic/location.solarsystem.".$kill["solarSystemID"];
 
-		$destinations[] = "/topic/kills";
-		$destinations[] = "/topic/location.solarsystem.".$kill["solarSystemID"];
+                // victim
+                if($kill["victim"]["characterID"] > 0) $destinations[] = "/topic/involved.character.".$kill["victim"]["characterID"];
+                if($kill["victim"]["corporationID"] > 0) $destinations[] = "/topic/involved.corporation.".$kill["victim"]["corporationID"];
+                if($kill["victim"]["factionID"] > 0) $destinations[] = "/topic/involved.faction.".$kill["victim"]["factionID"];
+                if($kill["victim"]["allianceID"] > 0) $destinations[] = "/topic/involved.alliance.".$kill["victim"]["allianceID"];
 
-		// victim
-		if($kill["victim"]["characterID"] > 0) $destinations[] = "/topic/involved.character.".$kill["victim"]["characterID"];
-		if($kill["victim"]["corporationID"] > 0) $destinations[] = "/topic/involved.corporation.".$kill["victim"]["corporationID"];
-		if($kill["victim"]["factionID"] > 0) $destinations[] = "/topic/involved.faction.".$kill["victim"]["factionID"];
-		if($kill["victim"]["allianceID"] > 0) $destinations[] = "/topic/involved.alliance.".$kill["victim"]["allianceID"];
+                // attackers
+                foreach($kill["attackers"] as $attacker)
+                {
+                        if($attacker["characterID"] > 0) $destinations[] = "/topic/involved.character." . $attacker["characterID"];
+                        if($attacker["corporationID"] > 0) $destinations[] = "/topic/involved.corporation." . $attacker["corporationID"];
+                        if($attacker["factionID"] > 0) $destinations[] = "/topic/involved.faction." . $attacker["factionID"];
+                        if($attacker["allianceID"] > 0) $destinations[] = "/topic/involved.alliance." . $attacker["allianceID"];
+                }
 
-		// attackers
-		foreach($kill["attackers"] as $attacker)
-		{
-			if($attacker["characterID"] > 0) $destinations[] = "/topic/involved.character." . $attacker["characterID"];
-			if($attacker["corporationID"] > 0) $destinations[] = "/topic/involved.corporation." . $attacker["corporationID"];
-			if($attacker["factionID"] > 0) $destinations[] = "/topic/involved.faction." . $attacker["factionID"];
-			if($attacker["allianceID"] > 0) $destinations[] = "/topic/involved.alliance." . $attacker["allianceID"];
-		}
-
-		return $destinations;
-	}
+                return $destinations;
+        }
 }
