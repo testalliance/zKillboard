@@ -3,7 +3,7 @@ $(document).ready(function() {
 
 	// Check to see if the user has ads enabled
 	if ( $("iframe").length == 0 ) {
-		$("#adsensetop, #adsensebottom").html("<div><small><a href='/information/payments/'>Advertising seems to be blocked by your browser. Click here to learn how to disable ads. Otherwise, may all your ships quickly become wrecks!</a></small></div>");
+		//$("#adsensetop, #adsensebottom").html("<div><small><a href='/information/payments/'>Advertising seems to be blocked by your browser. Click here to learn how to disable ads. Otherwise, may all your ships quickly become wrecks!</a></small></div>");
 	}
 
     if ($("[rel=tooltip]").length) {
