@@ -55,7 +55,7 @@ class cli_stompSend implements cliCommand
                 while ($timer->stop() < 55000)
                 {
                         if (Util::isMaintenanceMode()) return;
-                        $result = $db->query("SELECT killID, insertTime FROM zz_killmails WHERE processed > 0 AND killID > 0 ORDER BY killID limit 1000", array(":lastFetch" => $lastFetch), 0);
+                        $result = $db->query("SELECT killID, insertTime FROM zz_killmails WHERE insertTime > :lastFetch AND processed > 0 ORDER BY killID limit 1000", array(":lastFetch" => $lastFetch), 0);
                         foreach($result as $kill)
                         {
                                 $json = Killmail::get($kill["killID"]);
