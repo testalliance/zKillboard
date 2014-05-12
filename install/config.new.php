@@ -76,6 +76,11 @@ $stompServer = "tcp://stomp.zkillboard.com:61613";
 $stompUser = "guest";
 $stompPassword = "guest";
 
+// Websocket server
+$wsServer = "http://eve-kill.net";
+$pubLocation = "";
+$subLocation = "";
+
 // Disqus
 $disqus = false;
 $disqusShortName = "";
