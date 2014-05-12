@@ -208,7 +208,7 @@ $data["useSummaryAccordion"] = UserConfig::get("useSummaryAccordion", true);
 $data["sessions"] = User::getSessions($userID);
 $data["history"] = User::getPaymentHistory($userID);
 
-$apiChars = array();//Api::getCharacters($userID);
+$apiChars = Api::getCharacters($userID);
 $domainChars = array();
 foreach($apiChars as $apiChar) {
 	$char = Info::getPilotDetails($apiChar["characterID"], null);
