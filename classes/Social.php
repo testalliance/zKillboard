@@ -28,7 +28,7 @@ class Social
 		if ($count != 0) return;
 
 		// Get victim info
-		$victimInfo = Db::queryRow("select * from zz_participants where killID = :killID and isVictim = 1", array(":killID" => $killID));
+		$victimInfo = Db::queryRow("select * from zz_participants where dttm >= date_sub(now(), interval 1 day) and killID = :killID and isVictim = 1", array(":killID" => $killID));
 		if ($victimInfo == null) return;
 		$totalPrice = $victimInfo["total_price"];
 
