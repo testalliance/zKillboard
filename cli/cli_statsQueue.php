@@ -37,7 +37,7 @@ class cli_statsQueue implements cliCommand
 	{
 		$timer = new Timer();
 		while ($timer->stop() < 65000) {
-			$processedKills = Db::query("select killID from zz_stats_queue limit 100", array(), 0);
+			$processedKills = $db->query("select killID from zz_stats_queue limit 100", array(), 0);
 			if (count($processedKills) == 0) {
 				sleep(5);
 				continue;
@@ -50,7 +50,7 @@ class cli_statsQueue implements cliCommand
 				$json = json_decode($raw, true);
 				unset($json["_stringValue"]);
 				unset($json["zkb"]);
-				$stuff = Db::queryRow("select * from zz_participants where killID = :killID and isVictim = 1", array(":killID" => $killID), 0);
+				$stuff = $db->queryRow("select * from zz_participants where killID = :killID and isVictim = 1", array(":killID" => $killID), 0);
 				if ($stuff != null) {
 					$zkb = array();
 					$zkb["totalValue"] = $stuff["total_price"];
@@ -58,9 +58,9 @@ class cli_statsQueue implements cliCommand
 					$json["zkb"] = $zkb;
 
 					$raw = json_encode($json);
-					Db::execute("update zz_killmails set kill_json = :raw where killID = :killID", array(":killID" => $killID, ":raw" => $raw));
+					$db->execute("update zz_killmails set kill_json = :raw where killID = :killID", array(":killID" => $killID, ":raw" => $raw));
 				}
-				Db::execute("delete from zz_stats_queue where killID = :killID", array(":killID" => $killID));
+				$db->execute("delete from zz_stats_queue where killID = :killID", array(":killID" => $killID));
 				Social::beSocial($killID);
 			}
 		}

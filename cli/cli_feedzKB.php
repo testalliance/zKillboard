@@ -40,8 +40,8 @@ class cli_feedzKB implements cliCommand
 		$totalCount = 0;
 		$data = "";
 		// Build the feeds from Admin's tracker list
-		$adminID = Db::queryField("select id from zz_users where username = 'admin'", "id", array());
-		$trackers = Db::query("select locker, content from zz_users_config where locker like 'tracker_%' and id = :id", array(":id" => $adminID), 0);
+		$adminID = $db->queryField("select id from zz_users where username = 'admin'", "id", array());
+		$trackers = $db->query("select locker, content from zz_users_config where locker like 'tracker_%' and id = :id", array(":id" => $adminID), 0);
 		$feeds = array();
 		foreach ($trackers as $row) {
 			$entityType = str_replace("tracker_", "", $row["locker"]);
