@@ -55,9 +55,9 @@ class cli_fetchWallet implements cliCommand
 			else continue;
 
 			//$cachedUntil = $q->cached_until;
-			if (count($q->transactions)) $this->insertRecords($charID, $q->transactions);
+			if (count($q->transactions)) $this->insertRecords($charID, $q->transactions, $db);
 		}
-		Db::execute("replace into zz_storage values ('NextWalletFetch', date_add(now(), interval 35 minute))");
+		$db->execute("replace into zz_storage values ('NextWalletFetch', date_add(now(), interval 35 minute))");
 
 		$this->applyBalances();
 	}
@@ -65,7 +65,7 @@ class cli_fetchWallet implements cliCommand
 	protected function applyBalances()
 	{
 		global $walletCharacterID, $baseAddr;
-		$toBeApplied = Db::query("select * from zz_account_wallet where paymentApplied = 0", array(), 0);
+		$toBeApplied = $db->query("select * from zz_account_wallet where paymentApplied = 0", array(), 0);
 		foreach($toBeApplied as $row)
 		{
 			if ($row["ownerID2"] != $walletCharacterID) continue;
@@ -82,34 +82,34 @@ class cli_fetchWallet implements cliCommand
 				$subdomain = str_replace("https://", "", $subdomain);
 				$subdomain = str_replace("/", "", $subdomain);
 
-				$aff = Db::execute("insert into zz_subdomains (subdomain, adfreeUntil) values (:subdomain, date_add(now(), interval $months month)) on duplicate key update adfreeUntil = date_add(adfreeUntil, interval $months month)", array(":subdomain" => $subdomain));
-				if ($aff) Db::execute("update zz_account_wallet set paymentApplied = 1 where refID = :refID", array(":refID" => $row["refID"]));
+				$aff = $db->execute("insert into zz_subdomains (subdomain, adfreeUntil) values (:subdomain, date_add(now(), interval $months month)) on duplicate key update adfreeUntil = date_add(adfreeUntil, interval $months month)", array(":subdomain" => $subdomain));
+				if ($aff) $db->execute("update zz_account_wallet set paymentApplied = 1 where refID = :refID", array(":refID" => $row["refID"]));
 				continue;
 			}
 			if ($reason)
 			{
 				$reason = trim(str_replace("DESC: ", "", $reason));
-				$userID = Db::queryField("select id from zz_users where username = :reason", "id", array(":reason" => $reason));
+				$userID = $db->queryField("select id from zz_users where username = :reason", "id", array(":reason" => $reason));
 			}
 
 			if ($userID == null) 
 			{
 				$charID = $row["ownerID1"];
-				$keyID = Db::queryField("select keyID from zz_api_characters where characterID = :charID", "keyID", array(":charID" => $charID), 1);
-				$userID = Db::queryField("select userID from zz_api where keyID = :keyID", "userID", array(":keyID" => $keyID), 1);
+				$keyID = $db->queryField("select keyID from zz_api_characters where characterID = :charID", "keyID", array(":charID" => $charID), 1);
+				$userID = $db->queryField("select userID from zz_api where keyID = :keyID", "userID", array(":keyID" => $keyID), 1);
 			}
 
 			if ($userID)
 			{
-				Db::execute("insert into zz_account_balance values (:userID, :amount) on duplicate key update balance = balance + :amount", array(":userID" => $userID, ":amount" => $row["amount"]));
-				Db::execute("update zz_account_wallet set paymentApplied = 1 where refID = :refID", array(":refID" => $row["refID"]));
+				$db->execute("insert into zz_account_balance values (:userID, :amount) on duplicate key update balance = balance + :amount", array(":userID" => $userID, ":amount" => $row["amount"]));
+				$db->execute("update zz_account_wallet set paymentApplied = 1 where refID = :refID", array(":refID" => $row["refID"]));
 			}
 		}
 	}
 
-	protected function insertRecords($charID, $records) {
+	protected function insertRecords($charID, $records, $db) {
 		foreach ($records as $record) {
-			Db::execute("insert ignore into zz_account_wallet (characterID, dttm, refID, refTypeID, ownerName1, ownerID1, ownerName2, ownerID2, argName1, argID1,amount, balance, reason, taxReceiverID, taxAmount) values (:charID, :dttm , :refID, :refTypeID, :ownerName1, :ownerID1, :ownerName2, :ownerID2, :argName1, :argID1, :amount, :balance, :reason, :taxReceiverID, :taxAmount)",
+			$db->execute("insert ignore into zz_account_wallet (characterID, dttm, refID, refTypeID, ownerName1, ownerID1, ownerName2, ownerID2, argName1, argID1,amount, balance, reason, taxReceiverID, taxAmount) values (:charID, :dttm , :refID, :refTypeID, :ownerName1, :ownerID1, :ownerName2, :ownerID2, :argName1, :argID1, :amount, :balance, :reason, :taxReceiverID, :taxAmount)",
 					array(
 						":charID"        => $charID,
 						":dttm"          => $record["date"],

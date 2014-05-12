@@ -47,7 +47,7 @@ class cli_crestapi implements cliCommand
 		$timer = new Timer();
 
 		do {
-			$crests = Db::query("select * from zz_crest_killmail where processed = 0 order by killID limit 30", array(), 0);
+			$crests = $db->query("select * from zz_crest_killmail where processed = 0 order by killID limit 30", array(), 0);
 			foreach ($crests as $crest) {
 				try {
 					$killID = $crest["killID"];
@@ -72,8 +72,8 @@ class cli_crestapi implements cliCommand
 					$json = json_encode($killmail);
 					$killmailHash = Util::getKillHash(null, json_decode($json));
 
-					Db::execute("insert ignore into zz_killmails (killID, hash, source, kill_json) values (:killID, :hash, :source, :json)", array(":killID" => $killID, ":hash" => $killmailHash, ":source" => "crest:$killID", ":json" => $json));
-					Db::execute("update zz_crest_killmail set processed = 1 where killID = :killID", array(":killID" => $killID));
+					$db->execute("insert ignore into zz_killmails (killID, hash, source, kill_json) values (:killID, :hash, :source, :json)", array(":killID" => $killID, ":hash" => $killmailHash, ":source" => "crest:$killID", ":json" => $json));
+					$db->execute("update zz_crest_killmail set processed = 1 where killID = :killID", array(":killID" => $killID));
 
 					// Write this file to eve-kill's parse directory
 					$xml = Util::xmlOut(array($killmail), array());
@@ -82,7 +82,7 @@ class cli_crestapi implements cliCommand
 					$count++;
 				} catch (Exception $ex) {
 					Log::log("CREST exception: $killID - " . $ex->getMessage());
-					Db::execute("update zz_crest_killmail set processed = -1 where killID = :killID", array(":killID" => $killID));
+					$db->execute("update zz_crest_killmail set processed = -1 where killID = :killID", array(":killID" => $killID));
 				}
 			}
 			if (count($crests) == 0) sleep(1);
