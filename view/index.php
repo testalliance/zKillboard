@@ -20,8 +20,8 @@ $pageTitle = "";
 $serverName = $_SERVER["SERVER_NAME"];
 global $baseAddr;
 if ($serverName != $baseAddr) {
-	$split = explode(".", $serverName);
-	$board = str_replace("_", " ", $split[0]);
+	$board = str_replace(".zkillboard.com", "", $serverName);
+	$board = str_replace("_", " ", $board);
 	$numDays = 7;
 
 	$faction = Db::queryRow("select * from zz_factions where ticker = :board", array(":board" => $board), 3600);
