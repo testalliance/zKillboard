@@ -54,6 +54,7 @@ if ($serverName != $baseAddr) {
 	$topPods = array();
 
 	$p["kills"] = true;
+	$p["pastSeconds"] = ($numDays*86400);
 
 	$top = array();
 	$top[] = Info::doMakeCommon("Top Characters", "characterID", Stats::getTopPilots($p));
@@ -62,9 +63,7 @@ if ($serverName != $baseAddr) {
 	$top[] = Info::doMakeCommon("Top Ships", "shipTypeID", Stats::getTopShips($p));
 	$top[] = Info::doMakeCommon("Top Systems", "solarSystemID", Stats::getTopSystems($p));
 
-	$p["pastSeconds"] = ($numDays*86400);
 	$p["limit"] = 5;
-	$p["kills"] = true;
 	$topIsk = Stats::getTopIsk($p);
 	unset($p["pastSeconds"]);
 	unset($p["kills"]);
