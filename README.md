@@ -169,7 +169,7 @@ After that you make a `20-stomp.ini` in `/etc/php5/conf.d/` and add `extension=s
 
 The stomp service is read only. If you need to send data via it, come by IRC and have a chat with us.
 
-- Stomp server: tcp://stomp.zkillboard.com:61613
+- Stomp server: tcp://eve-kill.net:61613
 - Stomp user: guest
 - Stomp pass: guest
 

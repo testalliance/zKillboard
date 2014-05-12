@@ -72,7 +72,7 @@ $apiRequestsPrDay = 17280; // Once every 5 seconds
 $apiWhiteList = array();
 
 // Stomp
-$stompServer = "tcp://stomp.zkillboard.com:61613";
+$stompServer = "tcp://eve-kill.net:61613";
 $stompUser = "guest";
 $stompPassword = "guest";
 
