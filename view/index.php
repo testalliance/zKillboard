@@ -22,6 +22,8 @@ global $baseAddr;
 if ($serverName != $baseAddr) {
 	$board = str_replace(".zkillboard.com", "", $serverName);
 	$board = str_replace("_", " ", $board);
+	$board = preg_replace('/^dot\./i', '.', $board);
+	$board = preg_replace('/\.dot$/i', '.', $board);
 	$numDays = 7;
 
 	$faction = Db::queryRow("select * from zz_factions where ticker = :board", array(":board" => $board), 3600);

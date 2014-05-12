@@ -212,8 +212,8 @@ $apiChars = Api::getCharacters($userID);
 $domainChars = array();
 foreach($apiChars as $apiChar) {
 	$char = Info::getPilotDetails($apiChar["characterID"], null);
-	$char["corpTicker"] = str_replace(" ", "_", Db::queryField("select ticker from zz_corporations where corporationID = :corpID", "ticker", array(":corpID" => $char["corporationID"])));
-	$char["alliTicker"] = str_replace(" ", "_", Db::queryField("select ticker from zz_alliances where allianceID = :alliID", "ticker", array(":alliID" => $char["allianceID"])));
+	$char["corpTicker"] = modifyTicker(Db::queryField("select ticker from zz_corporations where corporationID = :corpID", "ticker", array(":corpID" => $char["corporationID"])));
+	$char["alliTicker"] = modifyTicker(Db::queryField("select ticker from zz_alliances where allianceID = :alliID", "ticker", array(":alliID" => $char["allianceID"])));
 
 	$domainChars[] = $char;
 }
@@ -222,7 +222,7 @@ $corps = array();
 $allis = array();
 foreach ($domainChars as $domainChar) {
 	if (@$domainChar["isCEO"]) {
-		$subdomain = strtolower($domainChar["corpTicker"]) . ".zkillboard.com";
+		$subdomain = modifyTicker($domainChar["corpTicker"]) . ".zkillboard.com";
 		if (isset($bannerUpdates[$subdomain])) {
 			$banner = $bannerUpdates[$subdomain];
 			Db::execute("insert into zz_subdomains (subdomain, banner) values (:subdomain, :banner) on duplicate key update banner = :banner", array(":subdomain" => $subdomain, ":banner" => $banner));
@@ -234,7 +234,7 @@ foreach ($domainChars as $domainChar) {
 		$corps[] = $domainChar;
 	}
 	if (@$domainChar["isExecutorCEO"]) {
-		$subdomain = strtolower($domainChar["alliTicker"]) . ".zkillboard.com";
+		$subdomain = modifyTicker($domainChar["alliTicker"]) . ".zkillboard.com";
 		if (isset($bannerUpdates[$subdomain])) {
 			$banner = $bannerUpdates[$subdomain];
 			Db::execute("insert into zz_subdomains (subdomain, banner) values (:subdomain, :banner) on duplicate key update banner = :banner", array(":subdomain" => $subdomain, ":banner" => $banner));
@@ -251,3 +251,10 @@ $data["domainAllis"] = $allis;
 $data["domainChars"] = $domainChars;
 
 $app->render("account.html", array("data" => $data, "message" => $error, "key" => $key, "reqid" => $reqid));
+
+function modifyTicker($ticker) {
+	$ticker = str_replace(" ", "_", $ticker);
+	$ticker = preg_replace('/^\./', "dot.", $ticker);
+	$ticker = preg_replace('/\.$/', ".dot", $ticker);
+	return strtolower($ticker);
+}
