@@ -1,19 +1,19 @@
 {
 	"require": {
 		"slim/slim": "2.2.0",
-			"slim/extras": "*",
-			"twig/twig": "*",
-			"twig/extensions": "*",
-			"3rdpartyeve/phealng": "0.3.*",
-			"3rdpartyeve/perry": "0.2.*",
-			"phpmailer/phpmailer": "*",
-			"mobiledetect/mobiledetectlib": "*",
-			"realityking/pchart": "@dev",
-			"dg/twitter-php": "*",
-			"ircmaxell/password-compat": "*",
-			"ccampbell/chromephp": "*",
-			"cvweiss/zlibrary" : "*"
+		"slim/extras": "*",
+		"twig/twig": "*",
+		"twig/extensions": "*",
+		"3rdpartyeve/phealng": "0.3.*",
+		"3rdpartyeve/perry": "0.2.*",
+		"phpmailer/phpmailer": "*",
+		"mobiledetect/mobiledetectlib": "*",
+		"realityking/pchart": "@dev",
+		"dg/twitter-php": "*",
+		"ircmaxell/password-compat": "*",
+		"ccampbell/chromephp": "*",
+		"cvweiss/zlibrary" : "*"
 	},
-		"minimum-stability": "stable",
-		"prefer-stable": true
+	"minimum-stability": "stable",
+	"prefer-stable": true
 }
