@@ -17,16 +17,6 @@
 	opacity: 0.95;
 }
 
-.nobackground {
-	-moz-border-radius: 15px;
-	-webkit-border-radius: 15px;
-	border-radius: 15px;
-	background: #060606;
-	background-color: rgba(6,6,6,0.9);
-	box-shadow: 0 0 15px 15px rgba(6,6,6,0.9);
-	opacity: 0.98;
-}
-
 .table tbody tr.error td
 {
   background-color: #2F0202;
