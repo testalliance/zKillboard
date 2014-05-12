@@ -54,5 +54,10 @@ class cli_minutely implements cliCommand
 
 		$fc = new FileCache("$base/cache/queryCache/");
 		$fc->cleanUp();
+
+		// Cleanup subdomain stuff
+		$db->execute("update zz_subdomains set adfreeUntil = null where adfreeUntil < now()");
+		$db->execute("update zz_subdomains set banner = null where banner = ''");
+		$db->execute("delete from zz_subdomains where adfreeUntil is null and banner is null");
 	}
 }
