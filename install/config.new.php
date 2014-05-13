@@ -49,6 +49,7 @@ $debug = true;
 $logfile = "%logfile%";
 $ircLogFile = "";
 $ircAdminLogFile = "";
+$ircLogFrom = "$baseAddr - ";
 
 // Memcache
 $memcacheServer = "%memcache%";
