@@ -1,12 +1,14 @@
-<table class="table table-condensed table-striped table-hover">
+<table class="table table-condensed table-striped table-hover" style="margin-bottom: 0px;">
+	{% if not hideTableHeading %}
 	<thead>
 		<tr class="titles">
 			<th colspan="2" class="hidden-md hidden-xs">{{ killdata.info.number_involved }} Involved</th>
-			<th class="hidden-lg hidden-sm">{{ killdata.info.number_involved }} Involved</th>
-			<th>&nbsp;</th>
-			<th class="pull-right">Damage</th>
+			<th clasS="hidden-lg" colspan="2">{{ killdata.info.number_involved }} Involved</th>
+			<th style="text-align: right" colspan="2" class="hidden-md hidden-xs">Damage</th>
+			<th style="text-align: right" class="hidden-lg">Damage</th>
 		</tr>
 	</thead>
+	{% endif %}
 	<tbody>
 	{% for attacker in attackList %}
 	{% set field = attacker %}
