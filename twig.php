@@ -99,7 +99,7 @@ foreach($noAdPages as $noAdPage) {
 	$showAds &= $userShowAds;
 }
 $twig->addglobal("showAnalytics", $showAnalytics);
-$twig->addGlobal("showFacebook", $showFacebook);
+$twig->addGlobal("showFacebook", $showFacebook && UserConfig::get("showFacebook", true));
 if($disqus)
 {
     $twig->addGlobal("disqusShortName", $disqusShortName);

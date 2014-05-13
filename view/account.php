@@ -245,10 +245,18 @@ foreach ($domainChars as $domainChar) {
 		$domainChar["banner"] = @$status["banner"];
 		$alli[] = $domainChar;
 	}
+
+	$showFacebook = Util::getPost("showFacebook");
+	if ($showFacebook)
+	{
+		UserConfig::set("showFacebook", $showFacebook == "true");
+		$error = "Facebook setting updated to " . ($showFacebook ? " display." : " not display.") . " The next page load will reflect the change.";
+	}
 }
 $data["domainCorps"] = $corps;
 $data["domainAllis"] = $allis;
 $data["domainChars"] = $domainChars;
+$data["showFacebook"] = UserConfig::get("showFacebook", true);
 
 $app->render("account.html", array("data" => $data, "message" => $error, "key" => $key, "reqid" => $reqid));
 
