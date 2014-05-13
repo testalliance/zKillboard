@@ -125,3 +125,6 @@ $semaphoreModulus = 10;
 
 # Save killmails to file system if enabled.
 $fsKillmails = false;
+
+# Be Social, or not by default
+$beSocial = false;

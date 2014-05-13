@@ -20,6 +20,10 @@ class Social
 {
 	public static function beSocial($killID)
 	{
+		global $beSocial;
+		if (!isset($beSocial)) $beSocial = false;
+		if ($beSocial == false) return;
+
 		if ($killID < 0) return;
 		$ircMin = 5000000000;
 		$twitMin = 10000000000;
