@@ -6,3 +6,5 @@ RewriteRule ^(.*)$ /$1/ [L,R=301]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^(.*)$ /index.php/$1 [L]
+
+RewriteRule  ^robots\.txt$ /robots.php [NC,L]
