@@ -1,18 +1,18 @@
 {
 	"require": {
-		"slim/slim": "2.2.0",
-		"slim/extras": "*",
-		"twig/twig": "*",
-		"twig/extensions": "*",
 		"3rdpartyeve/phealng": "1.0.*",
 		"3rdpartyeve/perry": "1.0.*",
 		"phpmailer/phpmailer": "*",
 		"mobiledetect/mobiledetectlib": "*",
-		"realityking/pchart": "@dev",
 		"dg/twitter-php": "*",
 		"ircmaxell/password-compat": "*",
 		"ccampbell/chromephp": "*",
-		"cvweiss/zlibrary" : "*"
+		"cvweiss/zlibrary" : "*",
+		"slim/slim": "2.*",
+		"slim/views": "0.1.*",
+		"filp/whoops": "1.*",
+		"zeuxisoo/slim-whoops": "0.2.0",
+		"twig/twig": "1.*"
 	},
 	"minimum-stability": "stable",
 	"prefer-stable": true
