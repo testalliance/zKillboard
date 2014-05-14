@@ -17,7 +17,7 @@
  */
 
 // Load Twig globals
-$app->view(new \Slim\Extras\Views\Twig());
+$app->view(new \Slim\Views\Twig());
 
 // Theme
 $viewtheme = null;
@@ -33,13 +33,15 @@ if(User::isLoggedIn())
 }
 $cachepath = "cache/templates/" . ($viewtheme ? $viewtheme : "bootstrap");
 
-\Slim\Extras\Views\Twig::$twigOptions = array(
-    'charset'           => 'utf-8',
-    'cache'             => $cachepath,
-    'auto_reload'       => true,
-    'strict_variables'  => false,
-    'autoescape'        => true
+// Setup Twig
+$view = $app->view();
+$view->parserOptions = array(
+    "debug" => $debug,
+    "cache" => $cachepath
 );
+
+// Load Whoops
+$app->add(new \Zeuxisoo\Whoops\Provider\Slim\WhoopsMiddleware);
 
 $twig = $app->view()->getEnvironment();
 
