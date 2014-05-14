@@ -35,7 +35,7 @@ class cli_calculateAllTimeStatsAndRanks implements cliCommand
 
 	public function execute($parameters, $db)
 	{
-		if (date("Gi") != 115) return; // Run at 01:15
+		if (date("Gi") != 115 && !in_array('-f', $parameters)) return; // Run at 01:15
 		if (sizeof($parameters) == 0 || $parameters[0] == "") CLI::out("Usage: |g|recentStatsAndRanks <type>|n| To see a list of commands, use: |g|methods calculateAllTimeStatsAndRanks", true);
 		$command = $parameters[0];
 

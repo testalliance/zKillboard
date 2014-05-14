@@ -36,8 +36,8 @@ class cli_summary implements cliCommand
 	public function execute($parameters, $db)
 	{
 		$minute = date("i");
-		if ($minute != "00") return;
-	
+		if ($minute != "00" && !in_array('-f', $parameters)) return;
+
 		$lastActualKills = $db->queryField("select contents count from zz_storage where locker = 'actualKills'", "count", array(), 0);
 		$actualKills = $db->queryField("select count(*) count from zz_killmails where processed != 0", "count", array(), 0);
 

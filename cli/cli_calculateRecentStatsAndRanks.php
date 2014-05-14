@@ -35,7 +35,7 @@ class cli_calculateRecentStatsAndRanks implements cliCommand
 
 	public function execute($parameters, $db)
 	{
-		if (date("Gi") != 5) return; // Run at 00:05
+		if (date("Gi") != 5 && !in_array('-f', $parameters)) return; // Run at 00:05
 		if (Util::isMaintenanceMode()) return;
 		if (sizeof($parameters) == 0 || $parameters[0] == "") CLI::out("Usage: |g|recentStatsAndRanks <type>|n| To see a list of commands, use: |g|methods recentStatsAndRanks", true);
 		$command = $parameters[0];

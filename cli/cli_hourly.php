@@ -36,7 +36,7 @@ class cli_hourly implements cliCommand
 	public function execute($parameters, $db)
 	{
 		$minute = date("i");
-		if ($minute != 0) return;
+		if ($minute != 0 && !in_array('-f', $parameters)) return;
 
 		global $enableAnalyze;
 
