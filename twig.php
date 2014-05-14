@@ -120,6 +120,7 @@ $adfree = Db::queryField("select count(*) count from zz_subdomains where adfreeU
 if ($adfree) $twig->addGlobal("showAds", false);
 else $twig->addGlobal("showAds", $showAds);
 
+$twig->addGlobal("KillboardName", (isset($killboardName) ? $killboardName : "zKillboard"));
 
 $detect = new Mobile_Detect();
 $twig->addGlobal("isMobile", ($detect->isMobile() ? true : false));
