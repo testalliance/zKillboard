@@ -29,11 +29,8 @@ $info["description"] = str_replace("<br>", "\n", $info["description"]);
 $info["description"] = strip_tags($info["description"]);
 $hasKills = 1 == Db::queryField("select 1 as hasKills from zz_participants where shipTypeID = :id limit 1", "hasKills", array(":id" => $id), 3600);
 
-$buyOrders = array();
-$sellOrders = array();
-
 $info["attributes"] = Db::query("SELECT categoryName, coalesce(displayName, attributeName) attributeName, coalesce(valueint,valuefloat) value  FROM ccp_invTypes JOIN ccp_dgmTypeAttributes ON (ccp_invTypes.typeid = ccp_dgmTypeAttributes.typeid) JOIN ccp_dgmAttributeTypes ON (ccp_dgmTypeAttributes.attributeid = ccp_dgmAttributeTypes.attributeid) LEFT JOIN ccp_dgmAttributeCategories ON (ccp_dgmAttributeTypes.categoryid=ccp_dgmAttributeCategories.categoryid) WHERE ccp_invTypes.typeid = :typeID and ccp_dgmAttributeCategories.categoryid is not null and displayName is not null and ccp_dgmAttributeTypes.categoryID not in (8,9) ORDER BY ccp_dgmAttributeCategories.categoryid,   ccp_dgmAttributeTypes.attributeid", array(":typeID" => $id));
-Info::addInfo($buyOrders);
-Info::addInfo($sellOrders);
 
-$app->render("item.html", array("info" => $info, "hasKills" => $hasKills, "buyOrders" => $buyOrders, "sellOrders" => $sellOrders));
+$info["market"] = Db::query("select * from zz_item_price_lookup where typeID = :typeID order by priceDate desc limit 30", array(":typeID" => $id));
+
+$app->render("item.html", array("info" => $info, "hasKills" => $hasKills));
