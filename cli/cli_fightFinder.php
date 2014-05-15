@@ -35,6 +35,9 @@ class cli_fightFinder implements cliCommand
 
 	public function execute($parameters, $db)
 	{
+		global $beSocial;
+		if (!isset($beSocial) || $beSocial == false) return;
+
 		$db->execute("delete from zz_social where insertTime < date_sub(now(), interval 23 hour)");
 		$minPilots = 200;
 		$minWrecks = 200;
