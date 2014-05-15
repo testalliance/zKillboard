@@ -28,7 +28,7 @@ class Kills
 	 * @param $allTime gets all mails from the beginning of time or not
 	 * @return array
 	 */
-	public static function getKills($parameters = array(), $allTime = true)
+	public static function getKills($parameters = array(), $allTime = true, $includeKillDetails = true)
 	{
 		$tables = array();
 		$orWhereClauses = array();
@@ -66,6 +66,7 @@ class Kills
 		$cacheTime = max(120, $cacheTime);
 		if (array_key_exists("log", $parameters)) Db::log($query, array());
 		$kills = Db::query($query, array(), $cacheTime);
+		if ($includeKillDetails == false) return $kills;
 		$merged = self::getKillsDetails($kills);
 		return $merged;
 	}
