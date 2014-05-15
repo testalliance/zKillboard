@@ -30,7 +30,7 @@ class cli_sitemap implements cliCommand
 
         public function getCronInfo()
         {
-                return array((48 * 3600) => "");
+                return array((24 * 3600) => "");
         }
 
 	public function execute($parameters, $db)
