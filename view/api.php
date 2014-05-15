@@ -35,7 +35,14 @@ foreach($requiredM as $required) {
 }
 if (!isset($parameters["killID"]) && !$hasRequired) throw new Exception("Must pass at least two required modifier.  Please read API Information.");
 
-$return = Feed::getKills($parameters);
+$exploded = explode("?", $_SERVER["REQUEST_URI"]);
+$uri = $exploded[0];
+$key = md5("related:$uri");
+$return = Cache::get($key);
+if (!$return) {
+	$return = Feed::getKills($parameters);
+	Cache::set($key, $return, 3600);
+}
 
 $array = array();
 foreach($return as $json) $array[] = json_decode($json, true);
