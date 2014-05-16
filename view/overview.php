@@ -111,7 +111,7 @@ if ($pageType == "top" || ($pageType == "topalltime" && in_array($key, $validAll
 		$topParameters["!factionID"] = 0;
 		$topLists[] = array("name" => "Top Faction Characters", "type" => "character", "data" => Stats::getTopPilots($topParameters, true));
 		$topLists[] = array("name" => "Top Faction Corporations", "type" => "corporation", "data" => Stats::getTopCorps($topParameters, true));
-		$topLists[] = array("name" => "Top Faction Allianes", "type" => "alliance", "data" => Stats::getTopAllis($topParameters, true));
+		$topLists[] = array("name" => "Top Faction Alliances", "type" => "alliance", "data" => Stats::getTopAllis($topParameters, true));
 	}
 } else {
                 $p = $parameters;
