@@ -33,6 +33,6 @@ if (!$mc) {
 	$kills = Kills::getKills($parameters);
 	$summary = Summary::buildSummary($kills, $parameters, "$systemName:$time:$exHours");
 	$mc = array("summary" => $summary, "systemName" => $systemName, "regionName" => $regionName, "time" => $time, "exHours" => $exHours);
-	Cache::set($key, $mc, 900);
+	Cache::set($key, $mc, 300);
 }
 $app->render("related.html", $mc);
