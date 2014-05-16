@@ -35,7 +35,7 @@ switch($type)
 	case "awox":
 		$page = (int) $page;
 		$page = max(1, min(25, $page));
-		$awox = Db::query("select p1.killID from zz_participants p1 left join zz_participants p2 on (p1.killID = p2.killID) where p1.corporationID != 0 and p1.corporationID = p2.corporationID and p1.isVictim = 0 and p2.isVictim = 1 order by p1.killID desc limit $page, 50");
+		$awox = Db::query("select p1.killID from zz_participants p1 left join zz_participants p2 on (p1.killID = p2.killID) where p1.corporationID != 0 and p1.corporationID = p2.corporationID and p1.isVictim = 1 and p2.isVictim = 0 and p2.finalBlow = 1 and p1.groupID not in (29) and p1.total_price > 25000000 order by p1.killID desc limit $page, 50");
 		$kills = Kills::getKillsDetails($awox);
 	break;
 	case "t1":
