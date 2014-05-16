@@ -29,6 +29,15 @@ switch($type)
 	case "10b":
 		$kills = Kills::getKillsDetails(json_decode(Storage::retrieve("Kills10b+", "[]"), true));
 	break;
+	case "bigkills":
+		$kills = Kills::getKills(array("groupID" => array(547,485,513,902,941,30, 659), "limit" => $limit, "cacheTime" => 300, "losses" => true, "page" => $page));
+	break;
+	case "awox":
+		$page = (int) $page;
+		$page = max(1, min(25, $page));
+		$awox = Db::query("select p1.killID from zz_participants p1 left join zz_participants p2 on (p1.killID = p2.killID) where p1.corporationID != 0 and p1.corporationID = p2.corporationID and p1.isVictim = 0 and p2.isVictim = 1 order by p1.killID desc limit $page, 50");
+		$kills = Kills::getKillsDetails($awox);
+	break;
 	case "t1":
 		$kills = Kills::getKills(array("groupID" => array(419,27,29,547,26,420,25,28,941,463,237,31), "limit" => $limit, "cacheTime" => 300, "losses" => true, "page" => $page));
 	break;
