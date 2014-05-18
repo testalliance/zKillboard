@@ -81,8 +81,9 @@ class cli_fetchWallet implements cliCommand
 				$subdomain = str_replace("http://", "", $subdomain);
 				$subdomain = str_replace("https://", "", $subdomain);
 				$subdomain = str_replace("/", "", $subdomain);
+echo "$subdomain\n";
 
-				$aff = $db->execute("insert into zz_subdomains (subdomain, adfreeUntil) values (:subdomain, date_add(now(), interval $months month)) on duplicate key update adfreeUntil = date_add(adfreeUntil, interval $months month)", array(":subdomain" => $subdomain));
+				$aff = $db->execute("insert into zz_subdomains (subdomain, adfreeUntil) values (:subdomain, date_add(now(), interval $months month)) on duplicate key update adfreeUntil = date_add(if(adfreeUntil is null, now(), adfreeUntil), interval $months month)", array(":subdomain" => $subdomain));
 				if ($aff) $db->execute("update zz_account_wallet set paymentApplied = 1 where refID = :refID", array(":refID" => $row["refID"]));
 				continue;
 			}
