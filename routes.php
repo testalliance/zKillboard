@@ -193,6 +193,11 @@ $app->map("/autocomplete/", function() use ($app) {
 	include( "view/autocomplete.php" );
 })->via("POST");
 
+// Intel
+$app->get("/intel/supers/", function() use ($app) {
+	include( "view/intel.php" );
+});
+
 // primer
 $app->get("/primer/", function() use ($app) {
 	include("view/primer.php");
