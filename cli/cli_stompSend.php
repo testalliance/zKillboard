@@ -52,10 +52,17 @@ class cli_stompSend implements cliCommand
                 $stompCount = 0;
 
                 $timer = new Timer();
-                while ($timer->stop() < 55000)
+                while ($timer->stop() < 65000)
                 {
                         if (Util::isMaintenanceMode()) return;
-                        $result = $db->query("SELECT killID, insertTime FROM zz_killmails WHERE insertTime > :lastFetch AND processed > 0 ORDER BY killID limit 1000", array(":lastFetch" => $lastFetch), 0);
+			$statsCount = Db::queryField("select count(*) count from zz_stats_queue", "count", array(), 0);
+			if ($statsCount > 0)
+			{
+				// Some kills don't have their totalValue yet, wait for it
+				sleep(1);
+				continue;
+			}
+                        $result = $db->query("SELECT killID, insertTime FROM zz_killmails WHERE insertTime > :lastFetch AND processed > 0 ORDER BY insertTime limit 1000", array(":lastFetch" => $lastFetch), 0);
                         foreach($result as $kill)
                         {
                                 $json = Killmail::get($kill["killID"]);
