@@ -1,5 +1,5 @@
 $(document).ready(function() {
-	setTimeout(updateKillsLastHour, 60000);
+	//setTimeout(updateKillsLastHour, 60000);
 
 	// Check to see if the user has ads enabled
 	if ( $("iframe").length == 0 ) {

@@ -25,6 +25,10 @@ $app->get("/", function () use ($app){
     include( "view/index.php" );
 });
 
+$app->get("/kills.html/", function($page = "about") use ($app) {
+die("<script type='text/javascript'>location.reload();</script>");
+});
+
 //  Information about zKillboard
 $app->get("/information(/:page)/", function($page = "about") use ($app) {
     include( "view/information.php" );
@@ -177,6 +181,7 @@ $app->get("/api/:input+", function($input) use ($app) {
 
 // Kills in the last hour
 $app->get("/killslasthour/", function() use ($app) {
+die("<script type='text/javascript'>location.reload();</script>");
     die(number_format(Storage::retrieve("KillsLastHour", null)));
 });
 
