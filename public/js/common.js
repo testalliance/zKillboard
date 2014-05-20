@@ -86,7 +86,7 @@ function updateKillsLastHour() {
 $('body').on('touchstart.dropdown', '.dropdown-menu', function (e) { e.stopPropagation(); });
 
 $(function() {
-    $('.nav-wrapper').height($("#nav").height());
+    //$('.nav-wrapper').height($("#nav").height());
     
     $('#nav').affix({
         offset: { top: $('#nav').offset().top }
