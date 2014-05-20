@@ -113,6 +113,12 @@ $app->map("/login/", function() use ($app) {
     include( "view/login.php" );
 })->via("GET", "POST");
 
+// Sitemap
+$app->get("/sitemap/", function() use ($app) {
+    global $cookie_name, $cookie_time, $baseAddr;
+    include( "view/sitemap.php" );
+});
+
 // Logout
 $app->get("/logout/", function() use ($app) {
     global $cookie_name, $cookie_time, $baseAddr;

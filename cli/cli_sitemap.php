@@ -51,7 +51,7 @@ class cli_sitemap implements cliCommand
 			$xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd"/>');
 			foreach ($result as $row) {
 				$url = $xml->addChild("url");
-				$loc = $url->addChild("loc", "https://$baseAddr/${type}ID/" . $row["${type}ID"] . "/");
+				$loc = $url->addChild("loc", "https://$baseAddr/${type}/" . $row["${type}ID"] . "/");
 			}
 			file_put_contents("$baseDir/public/sitemaps/${type}s.xml", $xml->asXML());
 			$locations[] = "https://$baseAddr/sitemaps/${type}s.xml";
@@ -68,6 +68,8 @@ class cli_sitemap implements cliCommand
 		$locations[] = "https://$baseAddr/sitemaps/kills.xml";
 
 		$xml = new SimpleXmlElement("<?xml version=\"1.0\" encoding=\"UTF-8\"?><sitemapindex xmlns=\"http://www.google.com/schemas/sitemap/0.84\"/>");
+		$sitemap = $xml->addChild("sitemap");
+		$sitemap->addChild("loc",  "https://$baseAddr/sitemap/");
 		foreach ($locations as $location)
 		{
 			$sitemap = $xml->addChild("sitemap");
