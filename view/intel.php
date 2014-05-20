@@ -18,10 +18,11 @@
 
 $months = 3;
 $data = Cache::get("Intel-Supers-$months", null);
-if ($data === null || true) {
+if ($data === null) {
 	$data = array();
 	$data["titans"]["data"] = Db::query("select distinct characterID, count(distinct killID) kills, shipTypeID from zz_participants where dttm >= date_sub(now(), interval $months month) and isVictim = 0 and groupID = 30 group by characterID order by 2 desc");
 	$data["titans"]["title"] = "Titans";
+
 	$data["moms"]["data"] = Db::query("select distinct characterID, count(distinct killID) kills, shipTypeID from zz_participants where dttm >= date_sub(now(), interval $months month) and isVictim = 0 and groupID = 659 group by characterID order by 2 desc");
 	$data["moms"]["title"] = "Supercarriers";	
 
