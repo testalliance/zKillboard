@@ -35,6 +35,9 @@ class cli_summary implements cliCommand
 
 	public function execute($parameters, $db)
 	{
+		global $beSocial;
+		if (!isset($beSocial)) $beSocial = false;
+
 		$minute = date("i");
 		if ($minute != "00" && !in_array('-f', $parameters)) return;
 
@@ -51,6 +54,6 @@ class cli_summary implements cliCommand
 		$actualDifference = number_format($actualKills - $lastActualKills, 0);
 		$totalDifference = number_format($totalKills - $lastTotalKills, 0);
 
-		Log::irc("|g|$actualDifference|n| mails processed | |g|$totalDifference|n| kills added");
+		if ($beSocial) Log::irc("|g|$actualDifference|n| mails processed | |g|$totalDifference|n| kills added");
 	}
 }
