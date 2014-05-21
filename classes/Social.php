@@ -55,7 +55,7 @@ class Social
 
 		global $fullAddr, $twitterName;
 		$url = "$fullAddr/kill/$killID/";
-		if ($totalPrice >= $twitMin) $url = Twit::shortenUrl($url);
+		//if ($totalPrice >= $twitMin) $url = Twit::shortenUrl($url);
 		if ($url == "") $url = "$fullAddr/kill/$killID/";
 		$message = "|g|" . $victimInfo["shipName"] . "|n| worth |r|" . Util::formatIsk($totalPrice) . " ISK|n| was destroyed! $url";
 		if (!isset($victimInfo["characterName"])) $victimInfo["characterName"] = $victimInfo["corporationName"];
