@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+$page = 1;
 $pageTitle = "";
 $pageType = "index";
 $serverName = $_SERVER["SERVER_NAME"];
@@ -29,7 +30,7 @@ if ($serverName != $baseAddr) {
 	$columnName = key($p);
 	$id = reset($p);
 
-	if (sizeof($p) < 1) $app->redirect("https://zkillboard.com", 302);
+	if (sizeof($p) <= 1) $app->redirect("https://zkillboard.com", 302);
 
 	$topPoints = array();
 	$topPods = array();
