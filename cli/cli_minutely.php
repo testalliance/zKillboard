@@ -59,5 +59,8 @@ class cli_minutely implements cliCommand
 		$db->execute("update zz_subdomains set adfreeUntil = null where adfreeUntil < now()");
 		$db->execute("update zz_subdomains set banner = null where banner = ''");
 		$db->execute("delete from zz_subdomains where adfreeUntil is null and banner is null");
+
+		// Expire change expirations
+		$db->execute("update zz_users set change_expiration = null, change_hash = null where change_expiration < date_sub(now(), interval 3 day)");
 	}
 }
