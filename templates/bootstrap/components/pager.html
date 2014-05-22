@@ -1,5 +1,7 @@
 {% if pageType == "kills" or pageType == "overview" or pageType == "solo" or pageType=="losses" %}
 	{% set pageBase = requestUriPager|last == '/' ? requestUriPager ~ 'page/' : requestUriPager ~ '/page/' %}
+{% elseif pageType == "subdomain" %}
+	{% set pageBase = '/page/' %}
 {% elseif pageType == "index" %}
 	{% set pageBase = "/kills/page/" %}
 {% else %}
@@ -14,7 +16,9 @@
 	{% endif %}
 	<ul class="pagination pagination-sm">
 		{% if pager == true %}
-			{% if page > 1 %}
+			{% if page == 2 %}
+				<li><a href="{{ pageBase|last(-5) }}" rel="nofollow prev">&laquo;</a></li>
+			{% elseif page > 2 %}
 				<li><a href="{{ pageBase }}{{ page - 1 }}/" rel="nofollow prev">&laquo;</a></li>
 			{% endif %}
 	
@@ -22,7 +26,9 @@
 			{% set endIndex = page + 3 %}
 	
 			{% for pageIndex in startIndex..endIndex %}
-				{% if pageIndex > 0 %}
+				{% if pageIndex == 1 %}
+					<li class="{{ isActive(pageIndex, page, 'active') }}"><a href="{{ pageBase|last(-5) }}" rel="nofollow">{{ pageIndex }}</a></li>
+				{% elseif pageIndex > 1 %}
 					<li class="{{ isActive(pageIndex, page, 'active') }}"><a href="{{ pageBase }}{{pageIndex}}/" rel="nofollow">{{ pageIndex }}</a></li>
 				{% endif %}
 			{% endfor %}

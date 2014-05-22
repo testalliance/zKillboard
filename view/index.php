@@ -17,39 +17,19 @@
  */
 
 $pageTitle = "";
+$pageType = "index";
 $serverName = $_SERVER["SERVER_NAME"];
 global $baseAddr;
 if ($serverName != $baseAddr) {
-	$board = str_replace(".zkillboard.com", "", $serverName);
-	$board = str_replace("_", " ", $board);
-	$board = preg_replace('/^dot\./i', '.', $board);
-	$board = preg_replace('/\.dot$/i', '.', $board);
-	if ($board == "www") $app->redirect("https://zkillboard.com", 302);
 	$numDays = 7;
-
-	$faction = Db::queryRow("select * from zz_factions where ticker = :board", array(":board" => $board), 3600);
-	$alli = Db::queryRow("select * from zz_alliances where ticker = :board order by memberCount desc limit 1", array(":board" => $board), 3600);
-	if ($alli) {
-		$killID = Db::queryField("select killID from zz_participants where allianceID = :alliID and dttm >= date_sub(now(), interval 6 month) limit 1", "killID", array(":alliID" => $alli["allianceID"]), 3600);
-		if (!$killID) $alli = null;
-	}
-	$corp = Db::queryRow("select * from zz_corporations where ticker = :board and memberCount > 0 order by memberCount desc limit 1", array(":board" => $board), 3600);
-	if ($corp) {
-		$killID = Db::queryField("select killID from zz_participants where corporationID = :corpID and dttm >= date_sub(now(), interval 6 month) limit 1", "killID", array(":corpID" => $corp["corporationID"]), 3600);
-		if (!$killID) $corp = null;
-	}
-
-	$columnName = null;
-	$id = null;
-	if ($faction) $p = array("factionID" => $faction["factionID"]);
-	else if ($alli) $p = array("allianceID" => $alli["allianceID"]);
-	else if ($corp) $p = array("corporationID" => $corp["corporationID"]);
-	else $p = array();
+	$p = Subdomains::getSubdomainParameters($serverName);
+	$page = max(1, min(25, $page));
+	$p["page"] = $page;
 
 	$columnName = key($p);
 	$id = reset($p);
 
-	if (sizeof($p) < 1) die($board . " ticker not found or entity has not had a kill in the last 6 months...");
+	if (sizeof($p) < 1) $app->redirect("https://zkillboard.com", 302);
 
 	$topPoints = array();
 	$topPods = array();
@@ -78,10 +58,12 @@ if ($serverName != $baseAddr) {
 
 	Info::addInfo($p);
 	$pageTitle = array();
-	foreach($p as $key=>$value) {
+	foreach($p as $key=>$value) 
+	{
 		if (strpos($key, "Name") !== false) $pageTitle[] = $value;
 	}
 	$pageTitle = implode(",", $pageTitle);
+	$pageType = "subdomain";
 } else {
 	$topPoints = array();
 	$topIsk = json_decode(Storage::retrieve("TopIsk"), true);
@@ -100,6 +82,6 @@ if ($serverName != $baseAddr) {
 	// get latest kills
 	$killsLimit = 50;
 	$kills = Kills::getKills(array("limit" => $killsLimit));
-
 }
-$app->render("index.html", array("topPods" => $topPods, "topIsk" => $topIsk, "topPoints" => $topPoints, "topKillers" => $top, "kills" => $kills, "page" => 1, "pageType" => "index", "pager" => true, "pageTitle" => $pageTitle));
+
+$app->render("index.html", array("topPods" => $topPods, "topIsk" => $topIsk, "topPoints" => $topPoints, "topKillers" => $top, "kills" => $kills, "page" => $page, "pageType" => $pageType, "pager" => true, "pageTitle" => $pageTitle));

@@ -21,7 +21,7 @@ $app->notFound(function () use ($app) {
 });
 
 // Default route
-$app->get("/", function () use ($app){
+$app->get("/(page/:page/)", function ($page = 1) use ($app){
     include( "view/index.php" );
 });
 
