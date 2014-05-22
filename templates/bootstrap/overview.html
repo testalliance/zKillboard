@@ -23,6 +23,9 @@
 	</div>
 	<div class="collapse navbar-collapse navbar-sub">
 	<ul class="nav navbar-nav">
+		{% if prevID %}
+		<li class="hidden-xs"><a href="/{{ key }}/{{ prevID }}/">&lt;</a></li>
+		{% endif %}
 		<li class="{{ isActive('Overview', pageType) }}"><a href="/{{ key }}/{{ id }}/">Overview</a></li>
 		<li class="{{ isActive('Kills', pageType) }}"><a href="/{{ key }}/{{ id }}/kills/{{YWMurl}}">Kills</a></li>
 		<li class="{{ isActive('Solo', pageType) }} hidden-xs"><a href="/{{ key }}/{{ id }}/solo/{{YWMurl}}">Solo</a></li>
@@ -71,6 +74,9 @@
 	{% elseif key == "ship" %}
 		<li><a href="http://o.smium.org/search?q={{ pageName|url_encode }}" target="_blank">Osmium</a></li>
 	{% endif %}
+		{% if nextID %}
+		<li class="hidden-xs"><a href="/{{ key }}/{{ nextID }}/">&gt;</a></li>
+		{% endif %}
 	</ul>
 </div>
 </div>

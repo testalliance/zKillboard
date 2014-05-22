@@ -32,8 +32,11 @@
 	</div>
 	<div class="collapse navbar-collapse navbar-sub">
 		<ul class="nav navbar-nav">
+			{% if extra.prevKillID %}
+			<li class="hidden-xs"><a href="/kill/{{ extra.prevKillID }}/">&lt;</a></li>
 			<li class="{{ isActive('overview', pageview) }}"><a href="/kill/{{ killdata.info.killID }}/overview/">Overview</a></li>
 			<li class="visible-lg {{ isActive('involved', pageview) }} hidden-xs"><a href="/kill/{{ killdata.info.killID }}/involved/">Involved Pilots ({{ killdata.info.number_involved }})</a></li>
+			{% endif %}
 		</ul>
 		<ul class="nav navbar-nav pull-right">
 			{% if killdata.info.killID < 0 %}
@@ -84,6 +87,9 @@
 				</ul>
 			</li>
 			<li><a href="/related/{{ killdata.info.solarSystemID }}/{{ extra.relatedtime }}/">Related</a></li>
+			{% if extra.nextKillID %}
+			<li class="hidden-xs"><a href="/kill/{{ extra.nextKillID }}/">&gt;</a></li>
+			{% endif %}
 		</ul>
 	</div>
 </div>

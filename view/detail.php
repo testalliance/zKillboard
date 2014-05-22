@@ -112,6 +112,8 @@ $extra["reports"] = Db::queryField("SELECT count(*) as cnt FROM zz_tickets WHERE
 $extra["slotCounts"] = Info::getSlotCounts($killdata["victim"]["shipTypeID"]);
 $extra["commentID"] = $id;
 $extra["crest"] = Db::queryRow("select killID, hash from zz_crest_killmail where killID = :killID and processed = 1", array(":killID" => $id), 300);
+$extra["prevKillID"] = Db::queryField("select killID from zz_participants where killID < :killID order by killID desc limit 1", "killID", array(":killID" => $id), 300);
+$extra["nextKillID"] = Db::queryField("select killID from zz_participants where killID > :killID order by killID asc limit 1", "killID", array(":killID" => $id), 300);
 
 $systemID = $killdata["info"]["solarSystemID"];
 $data = Info::getWormholeSystemInfo($systemID);

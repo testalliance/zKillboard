@@ -178,9 +178,20 @@ foreach($detail["stats"] as $q)
 }
 if ($mixedKills) $kills = Kills::mergeKillArrays($mixed, array(), $limit, $columnName, $id);
 
+$prevID = null;
+$nextID = null;
+if (in_array($key, array("character", "corporation", "alliance", "faction")))
+{
+	$table = "zz_${key}s";
+	$column = "${key}ID";
+	$prevID = Db::queryField("select $column from $table where $column < :id order by $column desc limit 1", $column, array(":id" => $id), 300);
+	$nextID = Db::queryField("select $column from $table where $column > :id order by $column asc limit 1", $column, array(":id" => $id), 300);
+}
+
 $renderParams = array("pageName" => $pageName, "kills" => $kills, "losses" => $losses, "detail" => $detail, "page" => $page, "topKills" => $topKills,
 		"mixed" => $mixedKills, "key" => $key, "id" => $id, "pageType" => $pageType, "solo" => $solo, "topLists" => $topLists,
-		"corps" => $corpList, "corpStats" => $corpStats, "summaryTable" => $stats, "pager" => true, "datepicker" => true, "apiVerified" => $apiVerified);
+		"corps" => $corpList, "corpStats" => $corpStats, "summaryTable" => $stats, "pager" => true, "datepicker" => true, "apiVerified" => $apiVerified,
+		"prevID" => $prevID, "nextID" => $nextID);
 
 //$app->etag(md5(serialize($renderParams)));
 //$app->expires("+5 minutes");
