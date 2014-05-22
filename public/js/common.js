@@ -76,6 +76,11 @@ $(document).ready(function() {
 	if(window.location.hash.match(/comment/)) {
 		$('a[href="#comment"]').tab('show');
 	}
+
+	if (top !== self) {
+		$("#iframed").modal('show');
+	}
+
 });
 
 function updateKillsLastHour() {
