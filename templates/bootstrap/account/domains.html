@@ -1,4 +1,4 @@
-{% if data.domainCorps %}
+{% if data.domainCorps or data.domainAllis %}
 <h3>Your Boards</h3>
 <table class="table table-striped table-condensed">
 	<thead>
@@ -22,6 +22,19 @@
 			{% endif %}
 				<td><form method="post" action="." name="banner"><input class="form-control" type="url" placeholder="No banner..." name="banner" value="{{ field.banner }}"><input class="btn btn-default btn-xs btn-success" type="submit" value="Update"><input type="hidden" name="subdomain" value="{{ field.corpTicker|lower }}.zkillboard.com"></form></td>
 		</tr>
+        {% endfor %}
+        {% for data in data.domainAllis %}
+                {% set field = data %}
+                <tr>   
+                        <td>{% include 'components/text_alli.html' %}</td>
+                        <td><a href="http://{{ field.alliTicker|lower }}.zkillboard.com" target="_blank">http://{{ field.alliTicker|lower }}.zkillboard.com</a></td>
+                        {% if field.adfreeUntil %}
+                                <td>Adfree until {{ field.adfreeUntil }}</td>
+                        {% else %}
+                                <td><em>Ads are displayed...</em></td>
+                        {% endif %}
+                                <td><form method="post" action="." name="banner"><input class="form-control" type="url" placeholder="No banner..." name="banner" value="{{ field.banner }}"><input class="btn btn-default btn-xs btn-success" type="submit" value="Update"><input type="hidden" name="subdomain" value="{{ field.alliTicker|lower }}.zkillboard.com"></form></td>
+                </tr>
         {% endfor %}
 	<tr><td colspan="3"><td class="text-align: right" colspan="4">Banner Example: <a href="http://i.imgur.com/qZ4ETsf.png" target="_blank">http://i.imgur.com/qZ4ETsf.png</a></td></tr>
     </tbody>

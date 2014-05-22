@@ -243,7 +243,7 @@ foreach ($domainChars as $domainChar) {
 		$status = Db::queryRow("select adfreeUntil, banner from zz_subdomains where subdomain = :subdomain", array(":subdomain" => $subdomain), 0);
 		$domainChar["adfreeUntil"] = @$status["adfreeUntil"];
 		$domainChar["banner"] = @$status["banner"];
-		$alli[] = $domainChar;
+		$allis[] = $domainChar;
 	}
 
 	$showFacebook = Util::getPost("showFacebook");
