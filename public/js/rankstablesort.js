@@ -26,6 +26,27 @@ jQuery.extend( jQuery.fn.dataTableExt.oSort, {
     }
 } );
 
+	$(".corpstats").dataTable({
+        "bPaginate": false,
+        "bLengthChange": false,
+        "bFilter": false,
+        "bSort": true,
+        "bInfo": false,
+        "bAutoWidth": false,
+		"aoColumns": [
+			{ "sType" : "string" },
+			{ "sType" : "string" },
+			{ "sType" : "numeric-comma" },
+			{ "sType" : "string" },
+			{ "sType" : "numeric-comma" },
+			{ "sType" : "numeric-comma" },
+			{ "sType" : "numeric-comma" },
+			{ "sType" : "numeric-comma" },
+			{ "sType" : "numeric-comma" },
+			{ "sType" : "numeric-comma" },
+			{ "sType" : "numeric-comma" },
+		]	
+	});
         $(".rank-table").dataTable( {
         "bPaginate": false,
         "bLengthChange": false,
