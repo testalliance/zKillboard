@@ -190,7 +190,7 @@ if (in_array($key, array("character", "corporation", "alliance", "faction")))
 
 $renderParams = array("pageName" => $pageName, "kills" => $kills, "losses" => $losses, "detail" => $detail, "page" => $page, "topKills" => $topKills,
 		"mixed" => $mixedKills, "key" => $key, "id" => $id, "pageType" => $pageType, "solo" => $solo, "topLists" => $topLists,
-		"corps" => $corpList, "corpStats" => $corpStats, "summaryTable" => $stats, "pager" => true, "datepicker" => true, "apiVerified" => $apiVerified,
+		"corps" => $corpList, "corpStats" => $corpStats, "summaryTable" => $stats, "pager" => (sizeof($kills) >= $limit), "datepicker" => true, "apiVerified" => $apiVerified,
 		"prevID" => $prevID, "nextID" => $nextID);
 
 //$app->etag(md5(serialize($renderParams)));
