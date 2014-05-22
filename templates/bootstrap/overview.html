@@ -52,20 +52,19 @@
 	</ul>
 	<ul class="nav navbar-nav pull-right hidden-xs">
 	{% if key == "character" %}
-		<li><a href="http://eveboard.com/pilot/{{ pageName }}/" target="_blank">EVE-Board</a></li>
-		<li><a href="http://eve-search.com/search/author/{{ pageName|url_encode }}/" target="_blank">EVE-Search</a></li>
+		<li class="hidden-md hidden-sm"><a href="http://eveboard.com/pilot/{{ pageName }}/" target="_blank">EVE-Board</a></li>
+		<li class="hidden-md hidden-sm"><a href="http://eve-search.com/search/author/{{ pageName|url_encode }}/" target="_blank">EVE-Search</a></li>
 		<li class="hidden-md hidden-sm"><a href="https://gate.eveonline.com/Profile/{{ pageName }}/" target="_blank">EVE-Gate</a></li>
-		<li><a href="http://evewho.com/pilot/{{ pageName|url_encode }}/" target="_blank">EVEWho</a></li>
-		<li><a href="http://cogdev.net/blink/?act=profile&id={{ id|url_encode }}" target="_blank">Blink</a></li>
+		<li class="hidden-md hidden-sm"><a href="http://evewho.com/pilot/{{ pageName|url_encode }}/" target="_blank">EVEWho</a></li>
 	{% elseif key == "corporation" %}
 		<li class="hidden-md hidden-sm"><a href="https://gate.eveonline.com/Corporation/{{ pageName }}/" target="_blank">EVE-Gate</a></li>
-		<li><a href="http://evemaps.dotlan.net/corp/{{ pageName|url_encode }}/" target="_blank">DOTLAN</a></li>
-		<li><a href="http://evewho.com/corp/{{ pageName|url_encode }}/" target="_blank">EVEWho</a></li>
+		<li class="hidden-md hidden-sm"><a href="http://evemaps.dotlan.net/corp/{{ pageName|url_encode }}/" target="_blank">DOTLAN</a></li>
+		<li class="hidden-md hidden-sm"><a href="http://evewho.com/corp/{{ pageName|url_encode }}/" target="_blank">EVEWho</a></li>
 	{% elseif key == "alliance" %}
-		<li><a href="http://www.eveskunk.com/?allianceID={{ id }}" target="_blank">EVE Skunk</a></li>
+		<li class="hidden-md hidden-sm"><a href="http://www.eveskunk.com/?allianceID={{ id }}" target="_blank">EVE Skunk</a></li>
 		<li class="hidden-sm hidden-md"><a href="https://gate.eveonline.com/Alliance/{{ pageName }}/" target="_blank">EVE-Gate</a></li>
-		<li><a href="http://evemaps.dotlan.net/alliance/{{ pageName|url_encode }}/" target="_blank">DOTLAN</a></li>
-		<li><a href="http://evewho.com/alli/{{ pageName|url_encode }}/" target="_blank">EVEWho</a></li>
+		<li class="hidden-md hidden-sm"><a href="http://evemaps.dotlan.net/alliance/{{ pageName|url_encode }}/" target="_blank">DOTLAN</a></li>
+		<li class="hidden-md hidden-sm"><a href="http://evewho.com/alli/{{ pageName|url_encode }}/" target="_blank">EVEWho</a></li>
 	{% elseif key == "system" %}
 		<li><a href="http://evemaps.dotlan.net/system/{{ pageName|url_encode }}/" target="_blank">DOTLAN</a></li>
 		<li><a href="http://eveeye.com/?system={{ pageName|url_encode }}" target="_blank">EVEEye</a></li>
