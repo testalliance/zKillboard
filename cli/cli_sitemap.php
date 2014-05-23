@@ -68,8 +68,6 @@ class cli_sitemap implements cliCommand
 		$locations[] = "https://$baseAddr/sitemaps/kills.xml";
 
 		$xml = new SimpleXmlElement("<?xml version=\"1.0\" encoding=\"UTF-8\"?><sitemapindex xmlns=\"http://www.google.com/schemas/sitemap/0.84\"/>");
-		$sitemap = $xml->addChild("sitemap");
-		$sitemap->addChild("loc",  "https://$baseAddr/sitemap/");
 		foreach ($locations as $location)
 		{
 			$sitemap = $xml->addChild("sitemap");
