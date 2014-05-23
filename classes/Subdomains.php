@@ -24,6 +24,8 @@ class Subdomains
 {
 	public static function getSubdomainParameters($serverName)
 	{
+		global $app;
+
 		$board = str_replace(".zkillboard.com", "", $serverName);
 		$board = str_replace("_", " ", $board);
 		$board = preg_replace('/^dot\./i', '.', $board);
