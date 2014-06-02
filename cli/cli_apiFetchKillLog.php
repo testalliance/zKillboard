@@ -83,12 +83,12 @@ class cli_apiFetchKillLog implements cliCommand
 					if ($beforeKillID == 0) $beforeKillID = $killID;
 					else $beforeKillID = min($beforeKillID, $killID);
 				}
-				if ($firstIteration && (sizeof($result->kills) == 0 || $beforeKillID < $notRecentKillID)) $db->execute("update zz_api_characters set lastChecked = now(), errorCount = 0, errorCode = 0, cachedUntil = date_add(cachedUntil, interval 4 hour) where apiRowID = :id", array(":id" => $apiRowID));
+				if ($firstIteration && sizeof($result->kills) == 0) $db->execute("update zz_api_characters set lastChecked = now(), errorCount = 0, errorCode = 0, cachedUntil = date_add(:cachedUntil, interval 2 hour) where apiRowID = :id", array(":id" => $apiRowID, ":cachedUntil" => $cachedUntil));
 				else $db->execute("update zz_api_characters set lastChecked = now(), cachedUntil = :cachedUntil, errorCount = 0, errorCode = 0 where apiRowID = :id", array(":id" => $apiRowID, ":cachedUntil" => $cachedUntil));
 
 				if ($aff > 0) Util::sendToEveKill("{$keyID}_{$charID}_$beforeKillID.xml", $pheal->xml);
 				$firstIteration = false;
-			} while ($aff > 25 || ($beforeKillID > 0 && $maxKillID == 0));
+			} while ($aff > 24 || ($beforeKillID > 0 && $maxKillID == 0));
 		} catch (Exception $ex) {
 			$errorCode = $ex->getCode();
 			$db->execute("update zz_api_characters set cachedUntil = date_add(now(), interval 1 hour), errorCount = errorCount + 1, errorCode = :code where apiRowID = :id", array(":id" => $apiRowID, ":code" => $errorCode));
