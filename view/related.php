@@ -28,12 +28,12 @@ if (((int) $exHours) < 1 || ((int) $exHours > 12)) $exHours = 1;
 
 $key = "$systemID:$relatedTime:$exHours";
 
-$key = "$systemID:$relatedTime:$exHours";
-$mc = Cache::get($key);
+$key = "|$systemID:$relatedTime:$exHours";
+$mc = null;// Cache::get($key);
 if (!$mc) {
 	$parameters = array("solarSystemID" => $systemID, "relatedTime" => $relatedTime, "exHours" => $exHours);
 	$kills = Kills::getKills($parameters);
-	$summary = Related::buildSummary($kills, $parameters, "$systemName:$time:$exHours");
+	$summary = Summary::buildSummary($kills, $parameters, "$systemName:$time:$exHours");
 	$mc = array("summary" => $summary, "systemName" => $systemName, "regionName" => $regionName, "time" => $time, "exHours" => $exHours);
 	Cache::set($key, $mc, 300);
 }
