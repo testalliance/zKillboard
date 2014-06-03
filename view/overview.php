@@ -61,7 +61,13 @@ $loadGroupShips = $key == "group";
 $limit = 50;
 $parameters["limit"] = $limit;
 $parameters["page"] = $page;
-$detail = call_user_func($map[$key]["details"], $id, $parameters);
+try {
+	$detail = call_user_func($map[$key]["details"], $id, $parameters);
+} catch (Exception $ex) 
+{
+	$app->render("error.html", array("message" => "There was an error fetching information for the $key you specified."));
+	return;
+}
 //$totalKills = isset($detail["shipsDestroyed"]) ? $detail["shipsDestroyed"] : 0;
 //$totalLosses = isset($detail["shipsLost"]) ? $detail["shipsLost"] : 0;
 $pageName = isset($detail[$map[$key]["column"] . "Name"]) ? $detail[$map[$key]["column"] . "Name"] : "???";
