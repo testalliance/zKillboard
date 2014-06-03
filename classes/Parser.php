@@ -44,7 +44,7 @@ class Parser
 			}
 			Db::execute("delete from zz_participants_temporary");
 
-			if($desc = true)
+			if($desc == true)
 				$id = Db::queryField("select max(killID) killID from zz_killmails where processed = 0 and killID > 0", "killID", array(), 0);
 			else
 				$id = Db::queryField("select min(killID) killID from zz_killmails where processed = 0 and killID > 0", "killID", array(), 0);
