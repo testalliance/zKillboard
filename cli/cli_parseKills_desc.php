@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-class cli_parseKills implements cliCommand
+class cli_parseKills_desc implements cliCommand
 {
 	public function getDescription()
 	{
