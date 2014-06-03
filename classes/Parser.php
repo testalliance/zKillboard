@@ -22,10 +22,11 @@
 
 class Parser
 {
-	public static function parseKills($desc = false)
+	public static function parseKills()
 	{
-		global $debug;
+		global $debug, $parseAscending;
 		if (Util::isMaintenanceMode()) return;
+		if (!isset($parseAscending)) $parseAscending = true;
 
 		$timer = new Timer();
 
@@ -44,10 +45,8 @@ class Parser
 			}
 			Db::execute("delete from zz_participants_temporary");
 
-			if($desc == true)
-				$id = Db::queryField("select max(killID) killID from zz_killmails where processed = 0 and killID > 0", "killID", array(), 0);
-			else
-				$id = Db::queryField("select min(killID) killID from zz_killmails where processed = 0 and killID > 0", "killID", array(), 0);
+			$minMax = $parseAscending ? "min" : "max";
+			$id = Db::queryField("select $minMax(killID) killID from zz_killmails where processed = 0 and killID > 0", "killID", array(), 0);
 
 			if ($id === null) $id = Db::queryField("select min(killID) killID from zz_killmails where processed = 0", "killID", array(), 0);
 			if ($id === null) {

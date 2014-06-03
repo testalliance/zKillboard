@@ -129,3 +129,6 @@ $fsKillmails = false;
 
 # Be Social, or not by default
 $beSocial = false;
+
+# Parse kills in ascending killID order
+$parseAscending = true;
