@@ -27,7 +27,11 @@ getIDs("factionID", $parameters, UserConfig::get("tracker_faction"));
 getIDs("shipTypeID", $parameters, UserConfig::get("tracker_item"));
 getIDs("solarSystemID", $parameters, UserConfig::get("tracker_system"));
 getIDs("regionID", $parameters, UserConfig::get("tracker_region"));
-if(empty($parameters)) throw new Exception("Nothing to track, please add entities to the tracker from your account page.");
+if(empty($parameters)) 
+{
+	$app->render("error.html", array("message" => "Nothing to track, please add entities to the tracker from your account page."));
+	return;
+}
 
 GetNames("character", $names, UserConfig::get("tracker_character"));
 GetNames("corporation", $names, UserConfig::get("tracker_corporation"));
