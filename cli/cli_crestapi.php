@@ -47,7 +47,7 @@ class cli_crestapi implements cliCommand
 		$timer = new Timer();
 
 		do {
-			$crests = $db->query("select * from zz_crest_killmail where processed = 0 order by killID limit 30", array(), 0);
+			$crests = $db->query("select * from zz_crest_killmail where processed = 0 order by killID desc limit 30", array(), 0);
 			foreach ($crests as $crest) {
 				try {
 					$killID = $crest["killID"];
