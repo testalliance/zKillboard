@@ -602,7 +602,8 @@ class Info
 		}
 		if (sizeof($data) == 0) $data["characterID"] = $id;
 		self::addInfo($data);
-		$data["isCEO"] = Db::queryField("select count(*) count from zz_corporations where ceoID = :charID and corporationID = :corpID", "count", array(":charID" => $id, ":corpID" => $data["corporationID"]));
+		if (isset($data["corporationID"])) $data["isCEO"] = Db::queryField("select count(*) count from zz_corporations where ceoID = :charID and corporationID = :corpID", "count", array(":charID" => $id, ":corpID" => $data["corporationID"]));
+		else $data["isCEO"] = false;
 		if ($data["isCEO"] && $data["allianceID"] != 0) {
 			$data["isExecutorCEO"] = Db::queryField("select count(*) count from zz_alliances where executorCorpID = :corpID and allianceID = :alliID", "count", array(":corpID" => $data["corporationID"], ":alliID" => $data["allianceID"]));
 		} else $data["isExecutorCEO"] = 0;
