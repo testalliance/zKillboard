@@ -1,7 +1,7 @@
 {% if detail.shipsDestroyed or detail.shipsLost %}
-{% set shipEff = detail.shipsLost == 0 ? 100 : (detail.shipsDestroyed / (detail.shipsDestroyed + detail.shipsLost)) * 100 %}
-{% set pointsEff = detail.pointsLost == 0 ? 100 : (detail.pointsDestroyed / (detail.pointsDestroyed + detail.pointsLost)) * 100 %}
-{% set iskEff = detail.iskLost == 0 ? 100 : (detail.iskDestroyed / (detail.iskDestroyed + detail.iskLost)) * 100 %}
+{% set shipEff = (detail.shipsDestroyed + detail.shipsLost) == 0 ? 100 : (detail.shipsDestroyed / (detail.shipsDestroyed + detail.shipsLost)) * 100 %}
+{% set pointsEff = (detail.pointsDestroyed + detail.pointsLost) == 0 ? 100 : (detail.pointsDestroyed / (detail.pointsDestroyed + detail.pointsLost)) * 100 %}
+{% set iskEff = (detail.iskDestroyed + detail.iskLost) == 0 ? 100 : (detail.iskDestroyed / (detail.iskDestroyed + detail.iskLost)) * 100 %}
 <table class="table table-condensed col-lg-6">
 	<tbody>
 	<tr>
