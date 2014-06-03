@@ -49,17 +49,21 @@ class cli_wars implements cliCommand
 			//$warInfo = json_decode(file_get_contents($href), true);
 			$warInfo = Perry::fromUrl($href);
 
-			$kmHref = $warInfo->killmails;
-			$killmails = json_decode(file_get_contents($kmHref), true);
-
-			foreach($killmails["items"] as $kill)
+			// Don't fetch killmail api for wars with no kills.. duh
+			if (($warInfo->aggressor->shipsKilled + $warInfo->defender->shipsKilled) > 0)
 			{
-				$href = $kill["href"];
-				$exploded = explode("/", $href);
-				$killID = $exploded[4];
-				$hash = $exploded[5];
+				$kmHref = $warInfo->killmails;
+				$killmails = json_decode(file_get_contents($kmHref), true);
 
-				$added += Db::execute("insert ignore into zz_crest_killmail (killID, hash) values (:killID, :hash)", array(":killID" => $killID, ":hash" => $hash));
+				foreach($killmails["items"] as $kill)
+				{
+					$href = $kill["href"];
+					$exploded = explode("/", $href);
+					$killID = $exploded[4];
+					$hash = $exploded[5];
+
+					$added += Db::execute("insert ignore into zz_crest_killmail (killID, hash) values (:killID, :hash)", array(":killID" => $killID, ":hash" => $hash));
+				}
 			}
 
 			Db::execute("update zz_wars set defender = :defender, aggressor = :aggressor, timeDeclared = :timeDeclared, timeStarted = :timeStarted, timeFinished = :timeFinished, agrShipsKilled = :agrShipsKilled, dfdShipsKilled = :dfdShipsKilled, mutual = :mutual, openForAllies = :openForAllies, lastChecked = now() where warID = :warID", array(
