@@ -10,4 +10,3 @@ CREATE TABLE `zz_users_sessions` (
   UNIQUE KEY `sessionHash` (`sessionHash`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
-

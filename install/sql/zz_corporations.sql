@@ -13,6 +13,7 @@ CREATE TABLE `zz_corporations` (
   KEY `name` (`name`),
   KEY `ticker` (`ticker`),
   KEY `lastUpdated` (`lastUpdated`),
-  KEY `allianceID` (`allianceID`)
+  KEY `allianceID` (`allianceID`),
+  KEY `ceoID` (`ceoID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 

@@ -11,7 +11,8 @@ CREATE TABLE `zz_killmails` (
   KEY `processed` (`processed`) KEY_BLOCK_SIZE=8192,
   KEY `hash` (`hash`),
   KEY `source` (`source`),
-  KEY `insertTime` (`insertTime`)
+  KEY `insertTime` (`insertTime`),
+  KEY `processed_2` (`processed`,`killID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPRESSED KEY_BLOCK_SIZE=8
 /*!50100 PARTITION BY HASH (killid)
 PARTITIONS 10 */;

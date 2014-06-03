@@ -6,6 +6,8 @@ CREATE TABLE `zz_ranks_progress` (
   `typeID` int(16) NOT NULL,
   `recentRank` mediumint(16) NOT NULL DEFAULT '0',
   `overallRank` mediumint(16) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`dttm`,`type`,`typeID`)
+  PRIMARY KEY (`dttm`,`type`,`typeID`),
+  KEY `type` (`type`,`typeID`),
+  KEY `overallRank` (`overallRank`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

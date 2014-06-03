@@ -44,15 +44,7 @@ CREATE TABLE `zz_participants` (
   KEY `groupID_dttm` (`groupID`,`dttm`),
   KEY `vGroupID_dttm` (`vGroupID`,`dttm`),
   KEY `weaponTypeID_dttm` (`weaponTypeID`,`dttm`),
-  KEY `allianceID_number_involved` (`allianceID`,`number_involved`),
-  KEY `characterID_number_involved` (`characterID`,`number_involved`),
-  KEY `corporationID_number_involved` (`corporationID`,`number_involved`),
-  KEY `regionID_number_involved` (`regionID`,`number_involved`),
-  KEY `solarSystemID_number_involved` (`solarSystemID`,`number_involved`),
-  KEY `shipTypeID_number_involved` (`shipTypeID`,`number_involved`),
-  KEY `groupID_number_involved` (`groupID`,`number_involved`),
-  KEY `vGroupID_number_involved` (`vGroupID`,`number_involved`),
-  KEY `weaponTypeID_number_involved` (`weaponTypeID`,`number_involved`)
+  KEY `factionID` (`factionID`,`isVictim`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPRESSED
 /*!50100 PARTITION BY RANGE (year(dttm))
 (PARTITION y2007 VALUES LESS THAN (2008) ENGINE = InnoDB,
