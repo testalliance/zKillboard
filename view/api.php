@@ -33,7 +33,12 @@ $hasRequired |= in_array(IP::get(), $apiWhiteList);
 foreach($requiredM as $required) {
 	$hasRequired |= array_key_exists($required, $parameters);
 }
-if (!isset($parameters["killID"]) && !$hasRequired) throw new Exception("Must pass at least two required modifier.  Please read API Information.");
+if (!isset($parameters["killID"]) && !$hasRequired) 
+{
+	header("Error: Must pass at least two required modifier.  Please read API Information.");
+	http_response_code(406);
+	exit;
+}
 
 $exploded = explode("?", $_SERVER["REQUEST_URI"]);
 $uri = $exploded[0];
