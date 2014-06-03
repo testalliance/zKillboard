@@ -62,7 +62,7 @@ class cli_sitemap implements cliCommand
 		foreach ($killIDs as $row) {
 			$killID = $row["killID"];
 			$url = $xml->addChild("url");
-			$loc = $url->addChild("loc", "https://$baseAddr/kill/killID/");
+			$loc = $url->addChild("loc", "https://$baseAddr/kill/$killID/");
 		}
 		file_put_contents("$baseDir/public/sitemaps/kills.xml", $xml->asXML());
 		$locations[] = "https://$baseAddr/sitemaps/kills.xml";
