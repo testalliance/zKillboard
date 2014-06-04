@@ -41,7 +41,7 @@ class cli_apiFetchCharacters implements cliCommand
 			$apiKeyInfo = $pheal->ApiKeyInfo();
 		} catch (Exception $ex) {
 			$db->execute("update zz_api set lastValidation = now() where keyID = :keyID", array(":keyID" => $keyID));
-			Log::log("Error Validating $keyID: " . $ex->getCode() . " " . $ex->getMessage());
+			//Log::log("Error Validating $keyID: " . $ex->getCode() . " " . $ex->getMessage());
 			Api::handleApiException($keyID, null, $ex);
 			return;
 		}
