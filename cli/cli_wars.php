@@ -38,12 +38,12 @@ class cli_wars implements cliCommand
 	{
 		$added = 0;
 		$timer = new Timer();
-		$wars = $db->query("select warID from zz_wars where lastChecked < date_sub(now(), interval 1 hour) and (timeFinished is null or timeFinished > date_sub(now(), interval 36 hour)) order by warID desc limit 1000", array(), 0);
-		foreach($wars as $war)
+		while ($timer->stop() < 65000)
 		{
-			if ($timer->stop() > 65000) break; 
-			$id = $war["warID"];
-			$warRow = Db::queryRow("select * from zz_wars where warID = :warID", array(":warID" => $id), 0);
+			$now = $timer->stop();
+			$warRow = $db->queryRow("select * from zz_wars where timeStarted < now() and lastChecked < date_sub(now(), interval 1 hour) and (timeFinished is null or timeFinished > date_sub(now(), interval 36 hour)) order by lastChecked desc limit 1", array(), 0);
+
+			$id = $warRow["warID"];
 			$href = "https://public-crest.eveonline.com/wars/$id/";
 			$warInfo = Perry::fromUrl($href);
 
@@ -54,18 +54,25 @@ class cli_wars implements cliCommand
 			if ($prevKills != $currKills)
 			{
 				$kmHref = $warInfo->killmails;
-				$killmails = json_decode(file_get_contents($kmHref), true);
-
-				foreach($killmails["items"] as $kill)
+				while ($kmHref != null)
 				{
-					$href = $kill["href"];
-					$exploded = explode("/", $href);
-					$killID = $exploded[4];
-					$hash = $exploded[5];
+					$killmails = json_decode(file_get_contents($kmHref), true);
 
-					$aff = $db->execute("insert ignore into zz_crest_killmail (killID, hash) values (:killID, :hash)", array(":killID" => $killID, ":hash" => $hash));
-					$db->execute("insert ignore into zz_warmails values (:killID, :warID)", array(":killID" => $killID, ":warID" => $id));
-					$added += $aff;
+					foreach($killmails["items"] as $kill)
+					{
+						$href = $kill["href"];
+						$exploded = explode("/", $href);
+						$killID = $exploded[4];
+						$hash = $exploded[5];
+
+						$aff = $db->execute("insert ignore into zz_crest_killmail (killID, hash) values (:killID, :hash)", array(":killID" => $killID, ":hash" => $hash));
+						$db->execute("insert ignore into zz_warmails values (:killID, :warID)", array(":killID" => $killID, ":warID" => $id));
+						$added += $aff;
+					}
+					$next = @$killmails["next"]["href"];
+					if ($next != $kmHref) $kmHref = $next;
+					/* else */$kmHref = null;
+					if ($kmHref != null) Log::log($kmHref);
 				}
 			}
 
@@ -81,6 +88,12 @@ class cli_wars implements cliCommand
 						":openForAllies" => $warInfo->openForAllies,
 						":warID" => $id,
 						));
+			$diff = $timer->stop() - $now;
+			if ($diff < 200)
+			{
+				$sleep = 200 - $diff;
+				usleep(1000 * $sleep);
+			}
 		}
 		if ($added > 0) Log::log("Added $added CREST killmails from wars");
 	}
