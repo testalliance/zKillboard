@@ -43,11 +43,15 @@ class cli_wars implements cliCommand
 		{
 			if ($timer->stop() > 65000) break; 
 			$id = $war["warID"];
+			$warRow = Db::queryRow("select * from zz_wars where warID = :warID", array(":warID" => $id), 0);
 			$href = "https://public-crest.eveonline.com/wars/$id/";
 			$warInfo = Perry::fromUrl($href);
 
-			// Don't fetch killmail api for wars with no kills.. duh
-			if (($warInfo->aggressor->shipsKilled + $warInfo->defender->shipsKilled) > 0)
+			$prevKills = $warRow["agrShipsKilled"] + $warRow["dfdShipsKilled"];
+			$currKills = $warInfo->aggressor->shipsKilled + $warInfo->defender->shipsKilled;
+
+			// Don't fetch killmail api for wars with no kill count change
+			if ($prevKills != $currKills)
 			{
 				$kmHref = $warInfo->killmails;
 				$killmails = json_decode(file_get_contents($kmHref), true);
@@ -60,6 +64,7 @@ class cli_wars implements cliCommand
 					$hash = $exploded[5];
 
 					$aff = $db->execute("insert ignore into zz_crest_killmail (killID, hash) values (:killID, :hash)", array(":killID" => $killID, ":hash" => $hash));
+					$db->execute("insert ignore into zz_warmails values (:killID, :warID)", array(":killID" => $killID, ":warID" => $id));
 					$added += $aff;
 				}
 			}
