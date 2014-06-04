@@ -62,6 +62,7 @@ class cli_statsQueue implements cliCommand
 				}
 				$db->execute("delete from zz_stats_queue where killID = :killID", array(":killID" => $killID));
 				Social::beSocial($killID);
+				StompUtil::sendKill($killID);
 			}
 		}
 	}
