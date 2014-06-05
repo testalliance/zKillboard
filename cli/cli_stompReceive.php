@@ -18,95 +18,82 @@
 
 class cli_stompReceive implements cliCommand
 {
-        public function getDescription()
-        {
-                return "Receives data from the STOMP server. |w|Beware, this is a persistent script. It's run and forget!.|n| Usage: |g|stompReceive";
-        }
+	public function getDescription()
+	{
+		return "Receives data from the STOMP server. |w|Beware, this is a persistent script. It's run and forget!.|n| Usage: |g|stompReceive";
+	}
 
-        public function getAvailMethods()
-        {
-                return "";
-        }
+	public function getAvailMethods()
+	{
+		return "";
+	}
 
-        public function getCronInfo()
-        {
-                return class_exists("Stomp") ? array(55 => "") : array();
-        }
+	public function getCronInfo()
+	{
+		return class_exists("Stomp") ? array(0 => "") : array(); // Always run if stomp class exists
+	}
 
-        public function execute($parameters, $db)
-        {
-                global $stompServer, $stompUser, $stompPassword, $baseAddr, $debug;
+	public function execute($parameters, $db)
+	{
+		global $stompServer, $stompUser, $stompPassword, $baseAddr, $debug;
 
-                // Ensure the class exists
-                if (!class_exists("Stomp")) {
-                        die("ERROR! Stomp not installed!  Check the README to learn how to install Stomp...\n");
-                }
+		// Ensure the class exists
+		if (!class_exists("Stomp")) {
+			die("ERROR! Stomp not installed!  Check the README to learn how to install Stomp...\n");
+		}
 
-                // Build the topic from Admin's tracker list
-                $adminID = $db->queryField("select id from zz_users where username = 'admin'", "id", array(), 0);
-                $trackers = $db->query("select locker, content from zz_users_config where locker like 'tracker_%' and id = :id", array(":id" => $adminID), 0);
-                $topics = array();
-                foreach ($trackers as $row) {
-                        $entityType = str_replace("tracker_", "", $row["locker"]);
-                        $entities = json_decode($row["content"], true);
-                        foreach($entities as $entity) {
-                                $id = $entity["id"];
-                                $topic = "/topic/involved.$entityType.$id";
-                                $topics[] = $topic;
-                        }
-                }
-                if (sizeof($topics) == 0) $topics[] =  "/topic/kills";
+		// Build the topic from Admin's tracker list
+		$adminID = $db->queryField("select id from zz_users where username = 'admin'", "id", array(), 0);
+		$trackers = $db->query("select locker, content from zz_users_config where locker like 'tracker_%' and id = :id", array(":id" => $adminID), 0);
+		$topics = array();
+		foreach ($trackers as $row) {
+			$entityType = str_replace("tracker_", "", $row["locker"]);
+			$entities = json_decode($row["content"], true);
+			foreach($entities as $entity) {
+				$id = $entity["id"];
+				$topic = "/topic/involved.$entityType.$id";
+				$topics[] = $topic;
+			}
+		}
+		if (sizeof($topics) == 0) $topics[] =  "/topic/kills";
 
-                try {
-                        $stomp = new Stomp($stompServer, $stompUser, $stompPassword);
+		try {
+			$stomp = new Stomp($stompServer, $stompUser, $stompPassword);
 
-                        $stomp->setReadTimeout(1);
-                        foreach($topics as $topic) {
-                                $stomp->subscribe($topic, array("id" => "zkb-".$baseAddr, "persistent" => "true", "ack" => "client", "prefetch-count" => 1));
-                        }
+			$stomp->setReadTimeout(1);
+			foreach($topics as $topic) {
+				$stomp->subscribe($topic, array("id" => "zkb-".$baseAddr, "persistent" => "true", "ack" => "client", "prefetch-count" => 1));
+			}
 
-                        $stompCount = 0;
-                        $timer = new Timer();
-                        while($timer->stop() < 55000)
-                        {
-                                $frame = $stomp->readFrame();
-                                if(!empty($frame))
-                                {
-                                        $killdata = json_decode($frame->body, true);
-                                        if(!empty($killdata))
-                                        {
-                                                $killID = $killdata["killID"];
-                                                $count = $db->queryField("SELECT count(1) AS count FROM zz_killmails WHERE killID = :killID LIMIT 1", "count", array(":killID" => $killID), 0);
-                                                if($count == 0)
-                                                {
-                                                        if($killID > 0)
-                                                        {
-                                                                $hash = Util::getKillHash(null, json_decode($frame->body));
-                                                                $aff = $db->execute("INSERT IGNORE INTO zz_killmails (killID, hash, source, kill_json) values (:killID, :hash, :source, :json)",
-                                                                                array("killID" => $killID, ":hash" => $hash, ":source" => "stompQueue", ":json" => json_encode($killdata)));
-                                                                $stomp->ack($frame->headers["message-id"]);
-                                                                $stompCount++;
-                                                                if ($debug && $aff) Log::log("Added kill $killID");
-                                                                continue;
-                                                        }
-                                                        else
-                                                        {
-                                                                $stomp->ack($frame->headers["message-id"]);
-                                                                continue;
-                                                        }
-                                                }
-                                                else
-                                                {
-                                                        $stomp->ack($frame->headers["message-id"]);
-                                                        continue;
-                                                }
-                                        }
-                                }
-                        }
-                        if ($stompCount > 0) Log::log("StompReceive Ended - Received $stompCount kills");
-                } catch (Exception $ex) {
-                        $e = print_r($ex, true);
-                        Log::log("StompReceive ended with the error:\n$e\n");
-                }
-        }
+			$stompCount = 0;
+			$timer = new Timer();
+			while($timer->stop() < 65000)
+			{
+				$frame = $stomp->readFrame();
+				if(!empty($frame))
+				{
+					$killdata = json_decode($frame->body, true);
+					if(!empty($killdata))
+					{
+						$killID = $killdata["killID"];
+						$count = $db->queryField("SELECT count(1) AS count FROM zz_killmails WHERE killID = :killID LIMIT 1", "count", array(":killID" => $killID), 0);
+						if($count == 0 && $killID > 0)
+						{
+							$hash = Util::getKillHash(null, json_decode($frame->body));
+							$aff = $db->execute("INSERT IGNORE INTO zz_killmails (killID, hash, source, kill_json) values (:killID, :hash, :source, :json)",
+									array("killID" => $killID, ":hash" => $hash, ":source" => "stompQueue", ":json" => json_encode($killdata)));
+							$stompCount++;
+							if ($debug && $aff) Log::log("Added kill $killID");
+							continue;
+						}
+					}
+				}
+				$stomp->ack($frame->headers["message-id"]);
+			}
+			if ($stompCount > 0) Log::log("StompReceive Ended - Received $stompCount kills");
+		} catch (Exception $ex) {
+			$e = print_r($ex, true);
+			Log::log("StompReceive ended with the error:\n$e\n");
+		}
+	}
 }
