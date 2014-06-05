@@ -214,6 +214,10 @@ $app->get("/primer/", function() use ($app) {
 	include("view/primer.php");
 });
 
+$app->get("/crestmail/:killID/:hash/", function($killID, $hash) use ($app) {
+	include("view/crestmail.php");
+});
+
 // The Overview stuff
 $app->get("/:input+/", function($input) use ($app) {
 	include("view/overview.php");

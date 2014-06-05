@@ -42,7 +42,7 @@ class cli_crestapi implements cliCommand
 	 */
 	public function execute($parameters, $db)
 	{
-		global $debug;
+		global $debug, $baseAddr;
 		$count = 0;
 		$timer = new Timer();
 
@@ -74,6 +74,8 @@ class cli_crestapi implements cliCommand
 
 					$db->execute("insert ignore into zz_killmails (killID, hash, source, kill_json) values (:killID, :hash, :source, :json)", array(":killID" => $killID, ":hash" => $killmailHash, ":source" => "crest:$killID", ":json" => $json));
 					$db->execute("update zz_crest_killmail set processed = 1 where killID = :killID", array(":killID" => $killID));
+					// Share with zKillboard
+					if ($baseAddr != "zkillboard.com") file_get_contents("https://zkillboard.com/crestmail/$killID/$hash/");
 
 					// Write this file to eve-kill's parse directory
 					$xml = Util::xmlOut(array($killmail), array());
