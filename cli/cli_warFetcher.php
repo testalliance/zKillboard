@@ -16,8 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 use Perry\Perry;
-use Perry\Setup;
-use Perry\Cache\File\FilePool;
 
 class cli_warFetcher implements cliCommand
 {
@@ -41,8 +39,9 @@ class cli_warFetcher implements cliCommand
 
 	public function execute($parameters, $db)
 	{
-		Setup::getInstance()->cacheImplementation = new FilePool("/tmp/wars/");
-		Setup::$cacheTTL = 60000;
+                global $fetchWars;
+                if (!isset($fetchWars)) $fetchWars = false;
+                if ($fetchWars == false) return;
 
 		$next = "http://public-crest.eveonline.com/wars/";
 		do {

@@ -36,12 +36,16 @@ class cli_wars implements cliCommand
 
 	public function execute($parameters, $db)
 	{
+		global $fetchWars;
+		if (!isset($fetchWars)) $fetchWars = false;
+		if ($fetchWars == false) return;
+
 		$added = 0;
 		$timer = new Timer();
 		while ($timer->stop() < 65000)
 		{
 			$now = $timer->stop();
-			$warRow = $db->queryRow("select * from zz_wars where timeStarted < now() and lastChecked < date_sub(now(), interval 1 hour) and (timeFinished is null or timeFinished > date_sub(now(), interval 36 hour)) order by lastChecked desc limit 1", array(), 0);
+			$warRow = $db->queryRow("select * from zz_wars where (timeStarted is null or timeStarted < now()) and lastChecked < date_sub(now(), interval 1 hour) and (timeFinished is null or timeFinished > date_sub(now(), interval 36 hour)) order by lastChecked limit 1", array(), 0);
 
 			$id = $warRow["warID"];
 			$href = "https://public-crest.eveonline.com/wars/$id/";

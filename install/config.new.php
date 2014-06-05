@@ -132,3 +132,6 @@ $beSocial = false;
 
 # Parse kills in ascending killID order
 $parseAscending = true;
+
+# Fetch all war killmails
+$fetchWars = false;
