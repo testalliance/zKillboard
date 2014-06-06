@@ -214,8 +214,14 @@ $app->get("/primer/", function() use ($app) {
 	include("view/primer.php");
 });
 
+// Sharing Crest Mails
 $app->get("/crestmail/:killID/:hash/", function($killID, $hash) use ($app) {
 	include("view/crestmail.php");
+});
+
+// War!
+$app->get("/war/:warID/", function($warID) use ($app) {
+	include("view/war.php");
 });
 
 // The Overview stuff

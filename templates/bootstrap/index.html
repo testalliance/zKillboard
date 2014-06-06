@@ -5,6 +5,11 @@
 {% endblock %}
 
 {% block content %}
+{% if pageType == 'war' %}
+<h2>War!</h2>
+<h4>This page is a work in progress, we aren't even close to done yet</h4>
+<i>FYI - There is a bug in the CREST war API that only allows us to fetch 2,000 mails of a war and no more.</i>
+{% endif %}
 {% set killListTitle = 'Most recent kills' %}
 {% set killList = kills %}
 <div class="row">

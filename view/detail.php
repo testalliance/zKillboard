@@ -114,6 +114,7 @@ $extra["commentID"] = $id;
 $extra["crest"] = Db::queryRow("select killID, hash from zz_crest_killmail where killID = :killID and processed = 1", array(":killID" => $id), 300);
 $extra["prevKillID"] = Db::queryField("select killID from zz_participants where killID < :killID order by killID desc limit 1", "killID", array(":killID" => $id), 300);
 $extra["nextKillID"] = Db::queryField("select killID from zz_participants where killID > :killID order by killID asc limit 1", "killID", array(":killID" => $id), 300);
+$extra["warInfo"] = getWarInfo($id);
 
 $systemID = $killdata["info"]["solarSystemID"];
 $data = Info::getWormholeSystemInfo($systemID);
@@ -260,4 +261,30 @@ function fittedIsk($md5, $items)
 	}
 	Cache::set($key, $fittedIsk);
 	return $fittedIsk;
+}
+
+function getWarInfo($killID)
+{
+	$warInfo = array();
+	$warID = Db::queryField("select warID from zz_warmails where killID = :killID", "warID", array(":killID" => $killID));
+	if ($warID == null) return $warInfo;
+	$warInfo["warID"] = $warID;
+	$warData = Db::queryRow("select * from zz_wars where warID = :warID", array(":warID" => $warID));
+
+	$agg = $warData["aggressor"];
+
+	if (isAlliance($agg)) $aggName = Info::getAlliName($agg);
+	else $aggName = Info::getCorpName($agg);
+
+	$dfd = $warData["defender"];
+	if (isAlliance($dfd)) $dfdName = Info::getAlliName($dfd);
+	else $dfdName = Info::getCorpName($dfd);
+
+	$warInfo["dscr"] = "$aggName vs $dfdName";
+	return $warInfo;
+}
+
+function isAlliance($entityID)
+{
+	return null != Db::queryField("select allianceID from zz_alliances where allianceID = :id", "allianceID", array(":id" => $entityID));
 }

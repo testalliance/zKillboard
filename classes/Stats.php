@@ -148,9 +148,14 @@ class Stats
 
 		$limit = array_key_exists("limit", $parameters) ? (int)$parameters["limit"] : 10;
 
+		$tablePrefixes = array();
+		if (sizeof($tables) > 1) {
+			foreach($tables as $table) $tablePrefixes[] = substr($table, strlen($table) - 1, 1) . ".killID";
+		}
+
 		$query = "select $groupByColumn, count(distinct p.killID) kills from ";
-		if (sizeof(array_unique($tables)) > 1) die("Multiple table joins not ready in Stats just yet");
-		$query .= implode(",", array_unique($tables));
+		$query .= implode(" left join ", array_unique($tables));
+		if (sizeof($tables) > 1) $query .= " on (" . implode(" = ", $tablePrefixes) . ") ";
 		if (sizeof($whereClauses) > 0) $query .= " where " . implode(" and ", $whereClauses);
 
 		$query .= " group by 1 order by 2 desc limit $limit";
@@ -246,8 +251,8 @@ class Stats
 	{
 		if ($typeID == 0) return;
 		Db::execute("insert into zz_stats (type, typeID, groupID, lost, pointsLost, iskLost) values (:type, :typeID, :groupID, :modifier, :points, :isk)
-						on duplicate key update lost = lost + :modifier, pointsLost = pointsLost + :points, iskLost = iskLost + :isk",
-					array(":type" => $type, ":typeID" => $typeID, ":groupID" => $groupID, ":modifier" => $modifier, ":points" => $points, ":isk" => $isk));
+				on duplicate key update lost = lost + :modifier, pointsLost = pointsLost + :points, iskLost = iskLost + :isk",
+				array(":type" => $type, ":typeID" => $typeID, ":groupID" => $groupID, ":modifier" => $modifier, ":points" => $points, ":isk" => $isk));
 	}
 
 	/**
@@ -257,7 +262,7 @@ class Stats
 	{
 		if ($typeID == 0) return;
 		Db::execute("insert into zz_stats (type, typeID, groupID, destroyed, pointsDestroyed, iskDestroyed) values (:type, :typeID, :groupID, :modifier, :points, :isk)
-						on duplicate key update destroyed = destroyed + :modifier, pointsDestroyed = pointsDestroyed + :points, iskDestroyed = iskDestroyed + :isk",
-					array(":type" => $type, ":typeID" => $typeID, ":groupID" => $groupID, ":modifier" => $modifier, ":points" => $points, ":isk" => $isk));
+				on duplicate key update destroyed = destroyed + :modifier, pointsDestroyed = pointsDestroyed + :points, iskDestroyed = iskDestroyed + :isk",
+				array(":type" => $type, ":typeID" => $typeID, ":groupID" => $groupID, ":modifier" => $modifier, ":points" => $points, ":isk" => $isk));
 	}
 }

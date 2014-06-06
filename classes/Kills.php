@@ -38,12 +38,11 @@ class Kills
 		$tables = array_unique($tables);
 		if (sizeof($tables) == 0) $tables[] = "zz_participants p";
 
-		if (sizeof($tables) == 2) $tablePrefix = "k";
-		else $tablePrefix = substr($tables[0], strlen($tables[0]) - 1, 1);
+		$tablePrefix = substr($tables[0], strlen($tables[0]) - 1, 1);
 
 		$query = "select distinct ${tablePrefix}.killID from ";
 		$query .= implode(" left join ", array_unique($tables));
-		if (sizeof($tables) == 2) $query .= " on (k.killID = p.killID) ";
+		if (sizeof($tables) == 2) $query .= " on ($tablePrefix.killID = p.killID) ";
 		if (sizeof($andWhereClauses) || sizeof($orWhereClauses)) {
 			$query .= " where ";
 			if (sizeof($orWhereClauses) > 0) {
@@ -58,7 +57,8 @@ class Kills
 		$page = array_key_exists("page", $parameters) ? (int)$parameters["page"] : 1;
 		$offset = ($page - 1) * $limit;
 
-		$orderBy = array_key_exists("orderBy", $parameters) ? $parameters["orderBy"] : "${tablePrefix}.dttm";
+		if ($tablePrefix == "w") $orderBy = "w.killID";
+		else $orderBy = array_key_exists("orderBy", $parameters) ? $parameters["orderBy"] : "${tablePrefix}.dttm";
 		$orderDirection = array_key_exists("orderDirection", $parameters) ? $parameters["orderDirection"] : "desc";
 		$query .= " order by $orderBy $orderDirection limit $offset, $limit";
 
