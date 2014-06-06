@@ -26,6 +26,8 @@ class Subdomains
 	{
 		global $app;
 
+		$adfree = Db::queryField("select count(*) count from zz_subdomains where adfreeUntil >= now() and subdomain = :serverName", "count", array(":serverName" => $serverName));
+
 		$board = str_replace(".zkillboard.com", "", $serverName);
 		$board = str_replace("_", " ", $board);
 		$board = preg_replace('/^dot\./i', '.', $board);
@@ -35,12 +37,12 @@ class Subdomains
 
 		$faction = Db::queryRow("select * from zz_factions where ticker = :board", array(":board" => $board), 3600);
 		$alli = Db::queryRow("select * from zz_alliances where ticker = :board order by memberCount desc limit 1", array(":board" => $board), 3600);
-		if ($alli) {
+		if ($alli && !$adfree) {
 			$killID = Db::queryField("select killID from zz_participants where allianceID = :alliID and dttm >= date_sub(now(), interval 6 month) limit 1", "killID", array(":alliID" => $alli["allianceID"]), 3600);
 			if (!$killID) $alli = null;
 		}
 		$corp = Db::queryRow("select * from zz_corporations where ticker = :board and memberCount > 0 order by memberCount desc limit 1", array(":board" => $board), 3600);
-		if ($corp) {
+		if ($corp && !$adfree) {
 			$killID = Db::queryField("select killID from zz_participants where corporationID = :corpID and dttm >= date_sub(now(), interval 6 month) limit 1", "killID", array(":corpID" => $corp["corporationID"]), 3600);
 			if (!$killID) $corp = null;
 		}
