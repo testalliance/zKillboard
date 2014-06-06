@@ -119,6 +119,7 @@ if ($banner) $twig->addGlobal("headerImage", $banner);
 $adfree = Db::queryField("select count(*) count from zz_subdomains where adfreeUntil >= now() and subdomain = :server", "count", array(":server" => $_SERVER["SERVER_NAME"]), 60);
 if ($adfree) $twig->addGlobal("showAds", false);
 else $twig->addGlobal("showAds", $showAds);
+Subdomains::getSubdomainParameters($_SERVER["SERVER_NAME"]);
 
 $twig->addGlobal("KillboardName", (isset($killboardName) ? $killboardName : "zKillboard"));
 

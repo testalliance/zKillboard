@@ -24,7 +24,7 @@ class Subdomains
 {
 	public static function getSubdomainParameters($serverName)
 	{
-		global $app;
+		global $app, $twig;
 
 		$adfree = Db::queryField("select count(*) count from zz_subdomains where adfreeUntil >= now() and subdomain = :serverName", "count", array(":serverName" => $serverName));
 
@@ -49,10 +49,16 @@ class Subdomains
 
 		$columnName = null;
 		$id = null;
-		if ($faction) $p = array("factionID" => $faction["factionID"]);
-		else if ($alli) $p = array("allianceID" => $alli["allianceID"]);
-		else if ($corp) $p = array("corporationID" => $corp["corporationID"]);
-		else $p = array();
+		if ($faction) {
+			$p = array("factionID" => $faction["factionID"]);
+			$twig->addGlobal("statslink", "/faction/" . $faction["factionID"] . "/");
+		} else if ($alli) {
+			$p = array("allianceID" => $alli["allianceID"]);
+			$twig->addGlobal("statslink", "/alliance/" . $alli["allianceID"] . "/");
+		} else if ($corp) {
+			$p = array("corporationID" => $corp["corporationID"]);
+			$twig->addGlobal("statslink", "/corporation/" . $corp["corporationID"] . "/");
+		} else $p = array();
 
 		return $p;
 	}
