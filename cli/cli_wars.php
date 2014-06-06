@@ -47,6 +47,8 @@ class cli_wars implements cliCommand
 			$now = $timer->stop();
 			$warRow = $db->queryRow("select * from zz_wars where (timeStarted is null or timeStarted < now()) and lastChecked < date_sub(now(), interval 1 hour) and (timeFinished is null or timeFinished > date_sub(now(), interval 36 hour)) order by lastChecked limit 1", array(), 0);
 
+			if ($warRow == null) return;
+
 			$id = $warRow["warID"];
 			$href = "https://public-crest.eveonline.com/wars/$id/";
 			$warInfo = Perry::fromUrl($href);
@@ -80,7 +82,7 @@ class cli_wars implements cliCommand
 				}
 			}
 
-			$db->execute("update zz_wars set defender = :defender, aggressor = :aggressor, timeDeclared = :timeDeclared, timeStarted = :timeStarted, timeFinished = :timeFinished, agrShipsKilled = :agrShipsKilled, dfdShipsKilled = :dfdShipsKilled, mutual = :mutual, openForAllies = :openForAllies, lastChecked = now() where warID = :warID", array(
+			$db->execute("update zz_wars set defender = :defender, aggressor = :aggressor, timeDeclared = :timeDeclared, timeStarted = :timeStarted, timeFinished = :timeFinished, agrShipsKilled = :agrShipsKilled, dfdShipsKilled = :dfdShipsKilled, mutual = :mutual, openForAllies = :openForAllies, agrIskKilled = :agrIskKilled, dfdIskKilled = :dfdIskKilled, lastChecked = now() where warID = :warID", array(
 						":aggressor" => $warInfo->aggressor->id,
 						":defender" => $warInfo->defender->id,
 						":timeDeclared" => $warInfo->timeDeclared,
@@ -88,6 +90,8 @@ class cli_wars implements cliCommand
 						":timeFinished" => $warInfo->timeFinished,
 						":agrShipsKilled" => $warInfo->aggressor->shipsKilled,
 						":dfdShipsKilled" => $warInfo->defender->shipsKilled,
+						":agrIskKilled" => $warInfo->aggressor->iskKilled,
+						":dfdIskKilled" => $warInfo->defender->iskKilled,
 						":mutual" => $warInfo->mutual,
 						":openForAllies" => $warInfo->openForAllies,
 						":warID" => $id,
@@ -99,6 +103,6 @@ class cli_wars implements cliCommand
 				usleep(1000 * $sleep);
 			}
 		}
-		if ($added > 0) Log::log("Added $added CREST killmails from wars");
+		if ($added > 0) Log::log("CREST (war): Added $added killmails");
 	}
 }

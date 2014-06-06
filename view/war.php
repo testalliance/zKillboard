@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-$warData = Db::queryRow("select * from zz_wars where warID = :warID", array(":warID" => $warID));
+$warData = War::getWarInfo($warID);
 $warFinished = Db::queryField("select timeFinished < now() finished from zz_wars where warID = :warID", "finished", array(":warID" => $warID));
 
 $p = array("war" => $warID);
@@ -26,7 +26,6 @@ $topPods = array();
 $topIsk = array();
 $topPoints = array();
 $topKillers = array();
-$pageType = "war";
 $page = 1;
 $pageTitle = "War $warID";
 
@@ -48,6 +47,17 @@ unset($p["kills"]);
 // get latest kills
 $killsLimit = 50;
 $p["limit"] = $killsLimit;
-$kills = Kills::getKills($p);
+$preKills = Kills::getKills($p);
+$kills = array();
+$agrID = $warData["aggressor"];
+$dfdID = $warData["defender"];
 
-$app->render("index.html", array("topPods" => $topPods, "topIsk" => $topIsk, "topPoints" => $topPoints, "topKillers" => $top, "kills" => $kills, "page" => $page, "pageType" => $pageType, "pager" => false, "pageTitle" => $pageTitle));
+foreach($preKills as $kill)
+{
+	$victim = $kill["victim"];
+	if ($victim["corporationID"] == $dfdID || $victim["allianceID"] == $dfdID) $kill["displayAsKill"] = true;
+	else $kill["displayAsLoss"] = true;
+	$kills[] = $kill;
+}
+
+$app->render("index.html", array("war" => $warData, "wars" => array($warData), "topPods" => $topPods, "topIsk" => $topIsk, "topPoints" => $topPoints, "topKillers" => $top, "kills" => $kills, "page" => $page, "pageType" => "war", "pager" => false, "pageTitle" => $pageTitle));
