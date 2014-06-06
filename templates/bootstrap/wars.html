@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% set pageTitle = 'Wars' %}
+{% block title %}{% include 'components/title.html' %}{% endblock %}
+
+{% block content %}
+{% for wars in warTables %}
+	{% if loop.index0 is even %}
+	<div class="row">
+	{% endif %}
+
+	<div class="pull-left col-lg-6">
+	<center><h4>{{ wars.name }}</h4></center>
+	{% include 'components/wars_table.html' %}
+	</div>
+
+	{% if loop.index0 is odd %}
+		</div>
+	{% endif %}
+{% endfor %}
+</div>
+{% endblock %}

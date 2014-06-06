@@ -223,6 +223,9 @@ $app->get("/crestmail/:killID/:hash/", function($killID, $hash) use ($app) {
 $app->get("/war/:warID/", function($warID) use ($app) {
 	include("view/war.php");
 });
+$app->get("/wars/", function() use ($app) {
+	include("view/wars.php");
+});
 
 // The Overview stuff
 $app->get("/:input+/", function($input) use ($app) {
