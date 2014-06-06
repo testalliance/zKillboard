@@ -22,7 +22,7 @@
 
 class War
 {
-	public static function getWars($id, $active = true)
+	public static function getWars($id, $active = true, $combined = false)
 	{
 		if (!self::isAlliance($id))
 		{
@@ -32,6 +32,7 @@ class War
 		$active = $active ? "" : "not";
 		$aggressing = Db::query("select * from zz_wars where aggressor = :id and timeFinished is $active null", array(":id" => $id));
 		$defending = Db::query("select * from zz_wars where defender = :id and timeFinished is $active null", array(":id" => $id));
+		if ($combined) return array_merge($aggressing, $defending);
 		return array("agr" => $aggressing, "dfd" => $defending);
 	}
 
@@ -57,7 +58,7 @@ class War
 		$dfdIsAlliance = self::isAlliance($dfd);
 		$dfdName = $dfdIsAlliance ? Info::getAlliName($dfd) : Info::getCorpName($dfd);
 		$warInfo["dfdName"] = $dfdName;
-		$warInfo["agrLink"] = ($dfdIsAlliance ? "/alliance/" : "/corporation/") . "$dfd/";
+		$warInfo["dfdLink"] = ($dfdIsAlliance ? "/alliance/" : "/corporation/") . "$dfd/";
 
 		$warInfo["dscr"] = "$agrName vs $dfdName";
 		return $warInfo;
@@ -68,4 +69,14 @@ class War
 		return null != Db::queryField("select allianceID from zz_alliances where allianceID = :id", "allianceID", array(":id" => $entityID));
 	}
 
+	public static function getNamedWars($name, $query)
+	{
+		$warIDs = Db::query($query);
+		$wars = array();
+		foreach($warIDs as $row)
+		{
+			$wars[] = War::getWarInfo($row["warID"]);
+		}
+		return array("name" => $name, "wars" => $wars);
+	}
 }

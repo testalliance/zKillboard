@@ -45,6 +45,9 @@
 		<li class="{{ isActive('top', pageType) }} hidden-xs"><a href="/{{ key }}/{{ id }}/top/">Monthly Top</a></li>
 	{% endif %}
 	<li class="{{ isActive('stats', pageType) }} hidden-xs"><a href="/{{ key }}/{{ id }}/stats/">Stats</a></li>
+	{% if extra.hasWars > 0 %}
+	<li class="{{ isActive('wars', pageType) }} hidden-xs"><a href="/{{ key }}/{{ id }}/wars/">Wars</a></li>
+	{% endif %}
 	{% if key == "alliance" %}
 		<li class="{{ isActive('Corpstats', pageType) }} hidden-xs"><a href="/{{ key }}/{{ id }}/corpstats/">Corp Stats</a></li>
 		<li class="{{ isActive('api', pageType) }} hidden-xs"><a href="/{{ key }}/{{ id }}/api/">API</a></li>
@@ -61,7 +64,7 @@
 		<li class="hidden-md hidden-sm"><a href="http://evemaps.dotlan.net/corp/{{ pageName|url_encode }}/" target="_blank">DOTLAN</a></li>
 		<li class="hidden-md hidden-sm"><a href="http://evewho.com/corp/{{ pageName|url_encode }}/" target="_blank">EVEWho</a></li>
 	{% elseif key == "alliance" %}
-		<li class="hidden-md hidden-sm"><a href="http://www.eveskunk.com/?allianceID={{ id }}" target="_blank">EVE Skunk</a></li>
+		<!-- <li class="hidden-md hidden-sm"><a href="http://www.eveskunk.com/?allianceID={{ id }}" target="_blank">EVE Skunk</a></li> -->
 		<li class="hidden-sm hidden-md"><a href="https://gate.eveonline.com/Alliance/{{ pageName }}/" target="_blank">EVE-Gate</a></li>
 		<li class="hidden-md hidden-sm"><a href="http://evemaps.dotlan.net/alliance/{{ pageName|url_encode }}/" target="_blank">DOTLAN</a></li>
 		<li class="hidden-md hidden-sm"><a href="http://evewho.com/alli/{{ pageName|url_encode }}/" target="_blank">EVEWho</a></li>
@@ -138,6 +141,20 @@
 	{% include 'components/top_list.html' %}
 {% elseif pageType == 'corpstats' %}
 	{% include 'components/corpstats.html' %}
+{% elseif pageType == 'wars' %}
+{% for row in extra.wars %}
+        <div class="pull-left col-lg-6">
+        <center><h4>{{ row.name }}</h4></center>
+	{% set wars = row.wars %}
+        {% include 'components/wars_table.html' %}
+        </div>
+
+        {% if loop.index0 is odd %}
+                <div class="clearfix"></div>
+        {% endif %}
+{% endfor %}
+<div class="clearfix"></div>
+
 {% endif %}
 </div>
 

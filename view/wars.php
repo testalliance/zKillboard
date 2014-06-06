@@ -17,22 +17,11 @@
  */
 
 $wars = array();
-$wars[] = getWars("Active Wars by Kills", "select warID from zz_wars where timeFinished is not null order by (agrShipsKilled + dfdShipsKilled) desc limit 10");
-$wars[] = getWars("Active Wars by ISK", "select warID from zz_wars where timeFinished is not null order by (agrIskKilled + dfdIskKilled) desc limit 10");
-$wars[] = getWars("Closed Wars by Kills", "select warID from zz_wars where timeFinished is null order by (agrShipsKilled + dfdShipsKilled) desc limit 10");
-$wars[] = getWars("Closed Wars by ISK", "select warID from zz_wars where timeFinished is null order by (agrIskKilled + dfdIskKilled) desc limit 10");
+$wars[] = War::getNamedWars("Active Wars by Kills", "select warID from zz_wars where timeFinished is not null order by (agrShipsKilled + dfdShipsKilled) desc limit 10");
+$wars[] = War::getNamedWars("Active Wars by ISK", "select warID from zz_wars where timeFinished is not null order by (agrIskKilled + dfdIskKilled) desc limit 10");
+$wars[] = War::getNamedWars("Closed Wars by Kills", "select warID from zz_wars where timeFinished is null order by (agrShipsKilled + dfdShipsKilled) desc limit 10");
+$wars[] = War::getNamedWars("Closed Wars by ISK", "select warID from zz_wars where timeFinished is null order by (agrIskKilled + dfdIskKilled) desc limit 10");
 
 Info::addInfo($wars);
 
 $app->render("wars.html", array("warTables" => $wars));
-
-function getWars($name, $query)
-{
-	$warIDs = Db::query($query);
-	$wars = array();
-	foreach($warIDs as $row)
-	{
-		$wars[] = War::getWarInfo($row["warID"]);
-	}
-	return array("name" => $name, "wars" => $wars);
-}

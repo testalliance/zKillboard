@@ -1,16 +1,16 @@
 <table class="table table-condensed">
 	<tr>
-		<th style="text-align: right">Aggressor</th>
+		<th>Aggressor</th>
 		<th style="text-align: right">Kills</th>
 		<th style="text-align: right">ISK</th>
 		<th>&nbsp;</th>
-		<th>ISK</th>
-		<th>Kills</th>
+		<th style="text-align: right">ISK</th>
+		<th style="text-align: right">Kills</th>
 		<th>Defender</th>
 	</tr>
-	{% for war in wars.wars %}
+	{% for war in wars %}
 	<tr>
-		<td style="text-align: right"><a href="{{ war.agrLink }}">{{ war.agrName }}</a></td>
+		<td><a href="{{ war.agrLink }}">{{ war.agrName }}</a></td>
 		{% set color = (war.agrShipsKilled >= war.dfdShipsKilled) ? "green" : "red" %}
 		<td class="{{ color }}" style="text-align: right">{{ shortNum(war.agrShipsKilled) }}</td>
 		{% set color = (war.agrIskKilled >= war.dfdIskKilled) ? "green" : "red" %}

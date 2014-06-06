@@ -23,7 +23,7 @@ $pageType = @$input[2];
 
 if ($pageType == "history") $app->redirect("../stats/");
 
-$validPageTypes = array("overview", "kills", "losses", "top", "topalltime", "solo", "stats");
+$validPageTypes = array("overview", "kills", "losses", "top", "topalltime", "solo", "stats", "wars");
 if ($key == "alliance")
 {
 	$validPageTypes[] = "api";
@@ -194,10 +194,19 @@ if (in_array($key, array("character", "corporation", "alliance", "faction")))
 	$nextID = Db::queryField("select $column from $table where $column > :id order by $column asc limit 1", $column, array(":id" => $id), 300);
 }
 
-$renderParams = array("pageName" => $pageName, "kills" => $kills, "losses" => $losses, "detail" => $detail, "page" => $page, "topKills" => $topKills,
-		"mixed" => $mixedKills, "key" => $key, "id" => $id, "pageType" => $pageType, "solo" => $solo, "topLists" => $topLists,
-		"corps" => $corpList, "corpStats" => $corpStats, "summaryTable" => $stats, "pager" => (sizeof($kills) >= $limit), "datepicker" => true, "apiVerified" => $apiVerified,
-		"prevID" => $prevID, "nextID" => $nextID);
+$warID = (int) $id;
+$extra = array();
+$extra["hasWars"] = Db::queryField("select count(distinct warID) count from zz_wars where aggressor = $warID or defender = $warID", "count");
+$extra["wars"] = array();
+if ($pageType == "wars" && $extra["hasWars"])
+{
+	$extra["wars"][] = War::getNamedWars("Active Wars - Aggressor", "select * from zz_wars where aggressor = $warID and timeFinished is null order by timeStarted desc");
+	$extra["wars"][] = War::getNamedWars("Active Wars - Defending", "select * from zz_wars where defender = $warID and timeFinished is null order by timeStarted desc");
+	$extra["wars"][] = War::getNamedWars("Closed Wars - Aggressor", "select * from zz_wars where aggressor = $warID and timeFinished is not null order by timeFinished desc");
+	$extra["wars"][] = War::getNamedWars("Closed Wars - Defending", "select * from zz_wars where defender = $warID and timeFinished is not null order by timeFinished desc");
+}
+
+$renderParams = array("pageName" => $pageName, "kills" => $kills, "losses" => $losses, "detail" => $detail, "page" => $page, "topKills" => $topKills, "mixed" => $mixedKills, "key" => $key, "id" => $id, "pageType" => $pageType, "solo" => $solo, "topLists" => $topLists, "corps" => $corpList, "corpStats" => $corpStats, "summaryTable" => $stats, "pager" => (sizeof($kills) >= $limit), "datepicker" => true, "apiVerified" => $apiVerified, "prevID" => $prevID, "nextID" => $nextID, "extra" => $extra);
 
 //$app->etag(md5(serialize($renderParams)));
 //$app->expires("+5 minutes");

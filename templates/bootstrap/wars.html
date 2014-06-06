@@ -3,19 +3,16 @@
 {% block title %}{% include 'components/title.html' %}{% endblock %}
 
 {% block content %}
-{% for wars in warTables %}
-	{% if loop.index0 is even %}
-	<div class="row">
-	{% endif %}
-
+{% for row in warTables %}
 	<div class="pull-left col-lg-6">
-	<center><h4>{{ wars.name }}</h4></center>
+	<center><h4>{{ row.name }}</h4></center>
+	{% set wars = row.wars %}
 	{% include 'components/wars_table.html' %}
 	</div>
 
 	{% if loop.index0 is odd %}
-		</div>
+		<div class="clearfix"></div>
 	{% endif %}
 {% endfor %}
-</div>
+<div class="clearfix"></div>
 {% endblock %}
