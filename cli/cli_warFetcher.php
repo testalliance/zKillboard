@@ -43,7 +43,10 @@ class cli_warFetcher implements cliCommand
                 if (!isset($fetchWars)) $fetchWars = false;
                 if ($fetchWars == false) return;
 
-		$next = "http://public-crest.eveonline.com/wars/";
+		$page = Db::queryField("select floor(count(*) / 2000) page from zz_wars", "page", array(), 0);
+		if ($page == 0) $page = 1;
+
+		$next = "http://public-crest.eveonline.com/wars/?page=$page";
 		do {
 			$perrywars = Perry::fromUrl($next);
 			$next = @$perrywars->next->href;
