@@ -45,62 +45,65 @@ class cli_wars implements cliCommand
 		while ($timer->stop() < 65000)
 		{
 			$now = $timer->stop();
-			$warRow = $db->queryRow("select * from zz_wars where (timeStarted is null or timeStarted < now()) and lastChecked < date_sub(now(), interval 1 hour) and (timeFinished is null or timeFinished > date_sub(now(), interval 36 hour)) order by lastChecked limit 1", array(), 0);
+			$warRows = $db->query("select * from zz_wars where lastChecked < date_sub(now(), interval 1 hour) and (timeFinished is null or timeFinished > date_sub(now(), interval 36 hour)) order by lastChecked limit 100", array(), 0);
 
-			if ($warRow == null) return;
+			if (count($warRows) == 0) return;
 
-			$id = $warRow["warID"];
-			$href = "https://public-crest.eveonline.com/wars/$id/";
-			$warInfo = Perry::fromUrl($href);
-
-			$prevKills = $warRow["agrShipsKilled"] + $warRow["dfdShipsKilled"];
-			$currKills = $warInfo->aggressor->shipsKilled + $warInfo->defender->shipsKilled;
-
-			// Don't fetch killmail api for wars with no kill count change
-			if ($prevKills != $currKills)
+			foreach ($warRows as $warRow)
 			{
-				$kmHref = $warInfo->killmails;
-				while ($kmHref != null)
+				$id = $warRow["warID"];
+				$href = "https://public-crest.eveonline.com/wars/$id/";
+				$warInfo = Perry::fromUrl($href);
+
+				$prevKills = $warRow["agrShipsKilled"] + $warRow["dfdShipsKilled"];
+				$currKills = $warInfo->aggressor->shipsKilled + $warInfo->defender->shipsKilled;
+
+				// Don't fetch killmail api for wars with no kill count change
+				if ($prevKills != $currKills)
 				{
-					$killmails = json_decode(file_get_contents($kmHref), true);
-
-					foreach($killmails["items"] as $kill)
+					$kmHref = $warInfo->killmails;
+					while ($kmHref != null)
 					{
-						$href = $kill["href"];
-						$exploded = explode("/", $href);
-						$killID = $exploded[4];
-						$hash = $exploded[5];
+						$killmails = json_decode(file_get_contents($kmHref), true);
 
-						$aff = $db->execute("insert ignore into zz_crest_killmail (killID, hash) values (:killID, :hash)", array(":killID" => $killID, ":hash" => $hash));
-						$db->execute("insert ignore into zz_warmails values (:killID, :warID)", array(":killID" => $killID, ":warID" => $id));
-						$added += $aff;
+						foreach($killmails["items"] as $kill)
+						{
+							$href = $kill["href"];
+							$exploded = explode("/", $href);
+							$killID = $exploded[4];
+							$hash = $exploded[5];
+
+							$aff = $db->execute("insert ignore into zz_crest_killmail (killID, hash) values (:killID, :hash)", array(":killID" => $killID, ":hash" => $hash));
+							$db->execute("insert ignore into zz_warmails values (:killID, :warID)", array(":killID" => $killID, ":warID" => $id));
+							$added += $aff;
+						}
+						$next = @$killmails["next"]["href"];
+						if ($next != $kmHref) $kmHref = $next;
+						/* else */$kmHref = null;
+						if ($kmHref != null) Log::log($kmHref);
 					}
-					$next = @$killmails["next"]["href"];
-					if ($next != $kmHref) $kmHref = $next;
-					/* else */$kmHref = null;
-					if ($kmHref != null) Log::log($kmHref);
 				}
-			}
 
-			$db->execute("update zz_wars set defender = :defender, aggressor = :aggressor, timeDeclared = :timeDeclared, timeStarted = :timeStarted, timeFinished = :timeFinished, agrShipsKilled = :agrShipsKilled, dfdShipsKilled = :dfdShipsKilled, mutual = :mutual, openForAllies = :openForAllies, agrIskKilled = :agrIskKilled, dfdIskKilled = :dfdIskKilled, lastChecked = now() where warID = :warID", array(
-						":aggressor" => $warInfo->aggressor->id,
-						":defender" => $warInfo->defender->id,
-						":timeDeclared" => $warInfo->timeDeclared,
-						":timeStarted" => $warInfo->timeStarted,
-						":timeFinished" => $warInfo->timeFinished,
-						":agrShipsKilled" => $warInfo->aggressor->shipsKilled,
-						":dfdShipsKilled" => $warInfo->defender->shipsKilled,
-						":agrIskKilled" => $warInfo->aggressor->iskKilled,
-						":dfdIskKilled" => $warInfo->defender->iskKilled,
-						":mutual" => $warInfo->mutual,
-						":openForAllies" => $warInfo->openForAllies,
-						":warID" => $id,
-						));
-			$diff = $timer->stop() - $now;
-			if ($diff < 200)
-			{
-				$sleep = 200 - $diff;
-				usleep(1000 * $sleep);
+				$db->execute("update zz_wars set defender = :defender, aggressor = :aggressor, timeDeclared = :timeDeclared, timeStarted = :timeStarted, timeFinished = :timeFinished, agrShipsKilled = :agrShipsKilled, dfdShipsKilled = :dfdShipsKilled, mutual = :mutual, openForAllies = :openForAllies, agrIskKilled = :agrIskKilled, dfdIskKilled = :dfdIskKilled, lastChecked = now() where warID = :warID", array(
+							":aggressor" => $warInfo->aggressor->id,
+							":defender" => $warInfo->defender->id,
+							":timeDeclared" => $warInfo->timeDeclared,
+							":timeStarted" => $warInfo->timeStarted,
+							":timeFinished" => $warInfo->timeFinished,
+							":agrShipsKilled" => $warInfo->aggressor->shipsKilled,
+							":dfdShipsKilled" => $warInfo->defender->shipsKilled,
+							":agrIskKilled" => $warInfo->aggressor->iskKilled,
+							":dfdIskKilled" => $warInfo->defender->iskKilled,
+							":mutual" => $warInfo->mutual,
+							":openForAllies" => $warInfo->openForAllies,
+							":warID" => $id,
+							));
+				$diff = $timer->stop() - $now;
+				if ($diff < 200)
+				{
+					$sleep = 200 - $diff;
+					usleep(1000 * $sleep);
+				}
 			}
 		}
 		if ($added > 0) Log::log("CREST (war): Added $added killmails");

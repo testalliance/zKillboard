@@ -17,10 +17,10 @@
  */
 
 $wars = array();
-$wars[] = War::getNamedWars("Active Wars by Kills", "select warID from zz_wars where timeFinished is not null order by (agrShipsKilled + dfdShipsKilled) desc limit 10");
-$wars[] = War::getNamedWars("Active Wars by ISK", "select warID from zz_wars where timeFinished is not null order by (agrIskKilled + dfdIskKilled) desc limit 10");
-$wars[] = War::getNamedWars("Closed Wars by Kills", "select warID from zz_wars where timeFinished is null order by (agrShipsKilled + dfdShipsKilled) desc limit 10");
-$wars[] = War::getNamedWars("Closed Wars by ISK", "select warID from zz_wars where timeFinished is null order by (agrIskKilled + dfdIskKilled) desc limit 10");
+$wars[] = War::getNamedWars("Active Wars by Kills", "select warID from zz_wars where timeFinished is null order by (agrShipsKilled + dfdShipsKilled) desc limit 10");
+$wars[] = War::getNamedWars("Active Wars by ISK", "select warID from zz_wars where timeFinished is null order by (agrIskKilled + dfdIskKilled) desc limit 10");
+$wars[] = War::getNamedWars("Closed Wars by Kills", "select warID from zz_wars where timeFinished is not null order by (agrShipsKilled + dfdShipsKilled) desc limit 10");
+$wars[] = War::getNamedWars("Closed Wars by ISK", "select warID from zz_wars where timeFinished is not null order by (agrIskKilled + dfdIskKilled) desc limit 10");
 
 Info::addInfo($wars);
 
