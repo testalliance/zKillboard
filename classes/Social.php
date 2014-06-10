@@ -55,7 +55,7 @@ class Social
 
 		global $fullAddr, $twitterName;
 		$url = "$fullAddr/kill/$killID/";
-		//if ($totalPrice >= $twitMin) $url = Twit::shortenUrl($url);
+
 		if ($url == "") $url = "$fullAddr/kill/$killID/";
 		$message = "|g|" . $victimInfo["shipName"] . "|n| worth |r|" . Util::formatIsk($totalPrice) . " ISK|n| was destroyed! $url";
 		if (!isset($victimInfo["characterName"])) $victimInfo["characterName"] = $victimInfo["corporationName"];
@@ -71,6 +71,8 @@ class Social
 		$message = Log::stripIRCColors($message);
 
 		$message .= " #tweetfleet #eveonline";
+		if (strlen($message) > 120) $message = str_replace(" worth ", ": ", $message);
+		if (strlen($message) > 120) $message = str_replace(" was destroyed!", "", $message);
 		if ($tweetIt && strlen($message) <= 120) {
 			$return = Twit::sendMessage($message);
 			$twit = "https://twitter.com/{$twitterName}/status/" . $return->id;
