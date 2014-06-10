@@ -38,6 +38,7 @@ $entities = array(
 //define our array for the results
 $search_results = array();
 
+$ids = array();
 //for each entity type, get any matches and process them
 foreach ($entities as $key => $entity)
 {
@@ -46,7 +47,11 @@ foreach ($entities as $key => $entity)
 	//merge the reults into an single array to throw back to the browser
 	foreach ($results as $result)
 	{
-		$search_results[] = array_merge($result, array('type' => $entity['type'], 'image' => sprintf($entity['image'], $result['id'])));
+		if (!in_array($result['id'], $ids))
+		{
+			$search_results[] = array_merge($result, array('type' => $entity['type'], 'image' => sprintf($entity['image'], $result['id'])));
+			$ids[] = $result['id'];
+		}
 	}
 }
 
