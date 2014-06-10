@@ -358,16 +358,7 @@ class Info
 		$name = Db::queryField("select name from zz_corporations where corporationID = :id", "name",
 				array(":id" => $id), 3600);
 		if ($name != null) return $name;
-
-		$pheal = Util::getPheal();
-		$pheal->scope = "corp";
-		$corpInfo = $pheal->CorporationSheet(array("corporationID" => $id));
-		$name = $corpInfo->corporationName;
-		if ($name != null) { // addName($id, $name, 1, 2, 2);
-			Db::execute("insert ignore into zz_corporations (corporationID, name) values (:id, :name)",
-					array(":id" => $id, ":name" => $name));
-		}
-		return $name;
+		return "Corporation $id";
 	}
 
 	/**
