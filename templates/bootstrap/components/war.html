@@ -1,6 +1,7 @@
 <div class="row">
 <h3>War: {{ war.dscr }}<small> <strong>Start</strong>: {{ war.timeStarted }} <strong>End</strong>: {{ war.timeFinished }}</small></h3>
 {% include 'components/war_table.html' %}
-<strong>This page is a work in progress, we aren't even close to done yet</strong><br/>
-<i>FYI - There is a bug in the CREST war API that only allows us to fetch 2,000 mails of a war and no more.</i>
 </div>
+{% if (war.dfdShipsKilled + war.agrShipsKilled) >= 2000 %}
+<div class="alert">FYI - There is a bug in the CREST war API that only allows us to fetch the first 2,000 killmails of a war and no more.</div>
+{% endif %}

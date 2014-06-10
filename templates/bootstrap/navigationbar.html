@@ -20,9 +20,12 @@
 			<div class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
 					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Kills <b class="caret"></b></a>
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Menu <b class="caret"></b></a>
 						<ul class="dropdown-menu">
-							<li><a href="/kills/">All Kills</a></li>
+							<li><a href="/wars/">Wars</a></li>
+							<li><a href="/intel/supers/">Intel - Supers</a></li>
+							<li><a href="/ranks/recent/killers">Top Ranks</a></li>
+							<li class="divider"></li>
 							<li><a href="/kills/bigkills/">Big Kills</a></li>
 							<li><a href="/kills/awox/">Awox</a></li>
 							<li><a href="/kills/w-space/">W-Space</a></li>
@@ -100,13 +103,6 @@
 						</ul>
 					</li>
 					{% endif %}
-					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Top/Rank <b class="caret"></b></a>
-						<ul class="dropdown-menu">
-							<li><a href="/top/lasthour/">Last Hour</a></li>
-							<li><a href="/ranks/recent/killers">Ranks</a></li>
-						</ul>
-					</li>
 					<li class="hidden-xs hidden-sm"><a href="/post/">Post</a></li>
 					{% if statslink %}
 						<li class="hidden-xs hidden-sm"><a href="{{ statslink }}">Stats</a></li>
