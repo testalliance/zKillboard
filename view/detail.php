@@ -50,7 +50,7 @@ if($_POST)
 $killdata = Kills::getKillDetails($id);
 
 if (sizeof($killdata["victim"]) == 0) {
-	return $app->render("detail.html", array("message" => "KillID $id does not exist."));
+	return $app->render("404.html", array("message" => "KillID $id does not exist."));
 }
 
 // create the dropdown involved array
