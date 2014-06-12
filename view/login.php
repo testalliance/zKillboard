@@ -1,4 +1,10 @@
 <?php
+
+if (User::isLoggedIn()) {
+        $app->redirect("/", 302);
+        die();
+}
+
 $referer = @$_SERVER["HTTP_REFERER"];
 if($_POST)
 {
