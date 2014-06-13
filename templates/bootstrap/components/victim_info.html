@@ -38,7 +38,7 @@
 	{% endif %}
 	<tr>
 		<th>Ship:</th>
-		<td style="width: 100%">{% include 'components/text_ship.html' %}</td>
+		<td style="width: 100%">{% include 'components/text_ship.html' %} <small>( {% include 'components/text_group.html' %} )</small></td>
 	</tr>
         {% if killdata.victim.related.killID %}
 		{% set shipImageLinkOverride = killdata.victim.related.killID %}
