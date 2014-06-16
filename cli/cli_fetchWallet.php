@@ -81,7 +81,6 @@ class cli_fetchWallet implements cliCommand
 				$subdomain = str_replace("http://", "", $subdomain);
 				$subdomain = str_replace("https://", "", $subdomain);
 				$subdomain = str_replace("/", "", $subdomain);
-echo "$subdomain\n";
 
 				$aff = $db->execute("insert into zz_subdomains (subdomain, adfreeUntil) values (:subdomain, date_add(now(), interval $months month)) on duplicate key update adfreeUntil = date_add(if(adfreeUntil is null, now(), adfreeUntil), interval $months month)", array(":subdomain" => $subdomain));
 				if ($aff) $db->execute("update zz_account_wallet set paymentApplied = 1 where refID = :refID", array(":refID" => $row["refID"]));
@@ -96,8 +95,12 @@ echo "$subdomain\n";
 			if ($userID == null) 
 			{
 				$charID = $row["ownerID1"];
-				$keyID = $db->queryField("select keyID from zz_api_characters where characterID = :charID", "keyID", array(":charID" => $charID), 1);
-				$userID = $db->queryField("select userID from zz_api where keyID = :keyID", "userID", array(":keyID" => $keyID), 1);
+				$keyIDs = $db->query("select keyID from zz_api_characters where characterID = :charID", array(":charID" => $charID), 1);
+				foreach($keyIDs as $keyIDRow) {
+					if ($userID) continue;
+					$keyID = $keyIDRow["keyID"];
+					$userID = $db->queryField("select userID from zz_api where keyID = :keyID", "userID", array(":keyID" => $keyID), 1);
+				}
 			}
 
 			if ($userID)
@@ -128,7 +131,7 @@ echo "$subdomain\n";
 						":taxReceiverID" => $record["taxReceiverID"],
 						":taxAmount"     => $record["taxAmount"]
 					     )
-				   );
+				    );
 		}
 	}
 }
