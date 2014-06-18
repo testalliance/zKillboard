@@ -62,6 +62,10 @@ class cli_hourly implements cliCommand
 		//$db->execute("update zz_killmails set kill_json = '' where processed = 2 and killID < 0 and kill_json != ''");
 		$db->execute("delete from zz_errors where date < date_sub(now(), interval 1 day)");
 
+		// Ensure char/corp tables know about all char/corps from API
+		$db->execute("insert ignore into zz_characters (characterID) select distinct characterID from zz_api_characters");
+		$db->execute("insert ignore into zz_corporations (corporationID) select distinct corporationID from zz_api_characters where corporationID > 0");
+
 		$fileCache = new FileCache();
 		$fileCache->cleanup();
 
