@@ -23,7 +23,7 @@ $pageType = @$input[2];
 
 if ($pageType == "history") $app->redirect("../stats/");
 
-$validPageTypes = array("overview", "kills", "losses", "top", "topalltime", "solo", "stats", "wars");
+$validPageTypes = array("overview", "kills", "losses", "top", "topalltime", "solo", "stats", "wars", "supers");
 if ($key == "alliance")
 {
 	$validPageTypes[] = "api";
@@ -205,6 +205,33 @@ if ($pageType == "wars" && $extra["hasWars"])
 	$extra["wars"][] = War::getNamedWars("Closed Wars - Aggressor", "select * from zz_wars where aggressor = $warID and timeFinished is not null order by timeFinished desc");
 	$extra["wars"][] = War::getNamedWars("Closed Wars - Defending", "select * from zz_wars where defender = $warID and timeFinished is not null order by timeFinished desc");
 }
+
+$filter = "";
+switch ($key)
+{
+	case "corporation":
+	case "alliance":
+	case "faction":
+		$filter = "{$key}ID = :id";
+}
+$hasSupers = Db::queryField("select killID from zz_participants where isVictim = 0 and groupID in (30, 659) and $filter and dttm >= date_sub(now(), interval 90 day) limit 1", "killID", array(":id" => $id));
+$extra["hasSupers"] = $hasSupers > 0;
+$extra["supers"] = array();
+if ($filter != "" && $pageType == "supers" && $hasSupers)
+{
+	$months = 3;
+	$data = array();
+	$data["titans"]["data"] = Db::query("select distinct characterID, count(distinct killID) kills, shipTypeID from zz_participants where dttm >= date_sub(now(), interval $months month) and isVictim = 0 and groupID = 30 and $filter group by characterID order by 2 desc", array(":id" => $id));
+	$data["titans"]["title"] = "Titans";
+
+	$data["moms"]["data"] = Db::query("select distinct characterID, count(distinct killID) kills, shipTypeID from zz_participants where dttm >= date_sub(now(), interval $months month) and isVictim = 0 and groupID = 659 and $filter group by characterID order by 2 desc", array(":id" => $id));
+	$data["moms"]["title"] = "Supercarriers";
+
+	Info::addInfo($data);
+	$extra["supers"] = $data;
+	$extra["hasSupers"] = sizeof($data["titans"]["data"]) || sizeof($data["moms"]["data"]);
+}
+
 
 $renderParams = array("pageName" => $pageName, "kills" => $kills, "losses" => $losses, "detail" => $detail, "page" => $page, "topKills" => $topKills, "mixed" => $mixedKills, "key" => $key, "id" => $id, "pageType" => $pageType, "solo" => $solo, "topLists" => $topLists, "corps" => $corpList, "corpStats" => $corpStats, "summaryTable" => $stats, "pager" => (sizeof($kills) >= $limit), "datepicker" => true, "apiVerified" => $apiVerified, "prevID" => $prevID, "nextID" => $nextID, "extra" => $extra);
 
