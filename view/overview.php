@@ -214,22 +214,24 @@ switch ($key)
 	case "faction":
 		$filter = "{$key}ID = :id";
 }
-$hasSupers = Db::queryField("select killID from zz_participants where isVictim = 0 and groupID in (30, 659) and $filter and dttm >= date_sub(now(), interval 90 day) limit 1", "killID", array(":id" => $id));
-$extra["hasSupers"] = $hasSupers > 0;
-$extra["supers"] = array();
-if ($filter != "" && $pageType == "supers" && $hasSupers)
-{
-	$months = 3;
-	$data = array();
-	$data["titans"]["data"] = Db::query("select distinct characterID, count(distinct killID) kills, shipTypeID from zz_participants where dttm >= date_sub(now(), interval $months month) and isVictim = 0 and groupID = 30 and $filter group by characterID order by 2 desc", array(":id" => $id));
-	$data["titans"]["title"] = "Titans";
+if ($filter != "") {
+	$hasSupers = Db::queryField("select killID from zz_participants where isVictim = 0 and groupID in (30, 659) and $filter and dttm >= date_sub(now(), interval 90 day) limit 1", "killID", array(":id" => $id));
+	$extra["hasSupers"] = $hasSupers > 0;
+	$extra["supers"] = array();
+	if ($pageType == "supers" && $hasSupers)
+	{
+		$months = 3;
+		$data = array();
+		$data["titans"]["data"] = Db::query("select distinct characterID, count(distinct killID) kills, shipTypeID from zz_participants where dttm >= date_sub(now(), interval $months month) and isVictim = 0 and groupID = 30 and $filter group by characterID order by 2 desc", array(":id" => $id));
+		$data["titans"]["title"] = "Titans";
 
-	$data["moms"]["data"] = Db::query("select distinct characterID, count(distinct killID) kills, shipTypeID from zz_participants where dttm >= date_sub(now(), interval $months month) and isVictim = 0 and groupID = 659 and $filter group by characterID order by 2 desc", array(":id" => $id));
-	$data["moms"]["title"] = "Supercarriers";
+		$data["moms"]["data"] = Db::query("select distinct characterID, count(distinct killID) kills, shipTypeID from zz_participants where dttm >= date_sub(now(), interval $months month) and isVictim = 0 and groupID = 659 and $filter group by characterID order by 2 desc", array(":id" => $id));
+		$data["moms"]["title"] = "Supercarriers";
 
-	Info::addInfo($data);
-	$extra["supers"] = $data;
-	$extra["hasSupers"] = sizeof($data["titans"]["data"]) || sizeof($data["moms"]["data"]);
+		Info::addInfo($data);
+		$extra["supers"] = $data;
+		$extra["hasSupers"] = sizeof($data["titans"]["data"]) || sizeof($data["moms"]["data"]);
+	}
 }
 
 
