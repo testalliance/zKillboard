@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-$validPages = array("about", "legal", "killmails", "payments");
+$validPages = array("about", "legal", "killmails", "payments", "faq");
 if (!in_array($page, $validPages)) $app->redirect("/");
 
 $info = array();
