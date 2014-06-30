@@ -397,7 +397,7 @@ class Util
 
 	public static function themesAvailable()
 	{
-		$dir = "templates/";
+		$dir = "themes/";
 		$avail = scandir($dir);
 		foreach($avail as $key => $val)
 			if($val == "." || $val == "..")
