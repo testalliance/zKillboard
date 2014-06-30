@@ -35,15 +35,5 @@ include( "routes.php" );
 // Load twig stuff
 include( "twig.php" );
 
-// Send debug info to chrome logger
-if($debug)
-{
-	ChromePhp::log($_SERVER);
-	ChromePhp::log("Cache Used: ". Cache::getClass());
-	ChromePhp::log("Queries: ". Db::getQueryCount());
-	ChromePhp::log("IP Server sees: ". IP::get());
-	ChromePhp::log("Page generation time (Minus queries): ". Util::pageTimer());
-}
-
 // Run the thing!
 $app->run();
