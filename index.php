@@ -21,7 +21,7 @@ if(!User::isLoggedIn()) User::autoLogin();
 if(User::isLoggedIn())
 	$theme = UserConfig::get("theme");
 
-if (!is_dir("themes/$theme"))
+if(!is_dir("themes/$theme") || !isset($theme))
 	$theme = "zkillboard";
 
 $app->config(array("templates.path" => $baseDir."themes/" . $theme));
