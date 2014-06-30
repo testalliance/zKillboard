@@ -18,11 +18,13 @@ session_start();
 if(!User::isLoggedIn()) User::autoLogin();
 
 // Theme
-$viewtheme = null;
 if(User::isLoggedIn())
-	$viewtheme = UserConfig::get("viewtheme");
-if (!is_dir("templates/$viewtheme")) $viewtheme = "bootstrap";
-$app->config(array("templates.path" => $baseDir."templates/" . ($viewtheme ? $viewtheme : "bootstrap")));
+	$theme = UserConfig::get("theme");
+
+if (!is_dir("themes/$theme"))
+	$theme = "zkillboard";
+
+$app->config(array("templates.path" => $baseDir."themes/" . $theme));
 
 // Error handling
 $app->error(function (\Exception $e) use ($app){
