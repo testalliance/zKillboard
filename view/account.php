@@ -115,7 +115,7 @@ if($_POST)
 
 	// Style
 	$style = Util::getPost("style");
-	if(isset($theme))
+	if(isset($style))
 	{
 		UserConfig::set("style", $style);
 		$app->redirect($_SERVER["REQUEST_URI"]);
