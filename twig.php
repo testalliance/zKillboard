@@ -121,6 +121,9 @@ Subdomains::getSubdomainParameters($_SERVER["SERVER_NAME"]);
 
 $twig->addGlobal("KillboardName", (isset($killboardName) ? $killboardName : "zKillboard"));
 
+// Set the style used side wide to the user selected one, or the config default
+$twig->addGlobal("style", UserConfig::get("style", $style));
+
 $detect = new Mobile_Detect();
 $twig->addGlobal("isMobile", ($detect->isMobile() ? true : false));
 $twig->addGlobal("isTablet", ($detect->isTablet() ? true : false));

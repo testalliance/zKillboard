@@ -68,10 +68,6 @@
 		<link rel="canonical" href="{{ canonical }}">
 		<link rel="search" type="application/opensearchdescription+xml" href="//{{ siteurl }}/xml/zkbsearch.xml" title="zKillboard">
 
-		{% if style is not defined %}
-			{% set style = 'cyborg' %}
-		{% endif %}
-
 		{% if style == "cyborg" %}
 			{% set version = "3.1.1" %}
 		{% else %}
