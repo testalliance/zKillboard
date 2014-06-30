@@ -25,15 +25,13 @@ $accountBalance = 0;
 $userShowAds = true;
 if(User::isLoggedIn()) 
 {
-	$viewtheme = UserConfig::get("viewtheme");
-  if (!is_dir("templates/$viewtheme")) $viewtheme = "bootstrap";
 	$accountBalance = User::getBalance(User::getUserID());
 	$adFreeUntil = UserConfig::get("adFreeUntil", null);
 	$userShowAds = $adFreeUntil == null ? true : $adFreeUntil <= date("Y-m-d H:i");
 }
-$cachepath = "cache/templates/" . ($viewtheme ? $viewtheme : "bootstrap");
 
 // Setup Twig
+$cachepath = "cache/templates/" . $theme;
 $view = $app->view();
 $view->parserOptions = array(
     "debug" => $debug,
