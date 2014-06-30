@@ -68,23 +68,23 @@
 		<link rel="canonical" href="{{ canonical }}">
 		<link rel="search" type="application/opensearchdescription+xml" href="//{{ siteurl }}/xml/zkbsearch.xml" title="zKillboard">
 
-		{% if theme is not defined %}
-			{% set theme = 'cyborg' %}
+		{% if style is not defined %}
+			{% set style = 'cyborg' %}
 		{% endif %}
 
-		{% if theme == "cyborg" %}
+		{% if style == "cyborg" %}
 			{% set version = "3.1.1" %}
 		{% else %}
 			{% set version = "latest" %}
 		{% endif %}
 
-		{% if theme == "default" %}
+		{% if style == "default" %}
 			<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">
 		{% else %}
-			<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootswatch/{{ version }}/{{ theme }}/bootstrap.min.css">
+			<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootswatch/{{ version }}/{{ style }}/bootstrap.min.css">
 		{% endif %}
 
-		<link rel="stylesheet" href="/css/theme-edits/{{theme}}-main.css">
+		<link rel="stylesheet" href="/css/style-edits/{{ style }}-main.css">
 		<link rel="stylesheet" href="/css/datepicker.css">
 		<link rel="stylesheet" href="/css/main.css">
 		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.min.css">
