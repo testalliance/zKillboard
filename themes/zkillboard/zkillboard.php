@@ -1,13 +1,15 @@
 <?php
-
-public static function availableStyles()
+class zkillboard
 {
-	$json = json_decode(self::getData("http://api.bootswatch.com/3/"));
+	public static function availableStyles()
+	{
+		$json = json_decode(Util::getData("http://api.bootswatch.com/3/"));
 
-	$available = array();
-	foreach($json->themes as $theme)
-		$available[] = strtolower($theme->name);
+		$available = array();
+		foreach($json->themes as $theme)
+			$available[] = strtolower($theme->name);
 
-	$available[] = "default";
-	return $available;
+		$available[] = "default";
+		return $available;
+	}
 }
