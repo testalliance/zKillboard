@@ -16,6 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// Ensure PHP 5.4 or higher
+if (version_compare(phpversion(), '5.4.1', '<'))
+{
+	die("PHP 5.4 or higher is required");
+}
+
 // config load
 require_once( "config.php" );
 
