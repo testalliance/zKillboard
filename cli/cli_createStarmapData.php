@@ -86,7 +86,8 @@ class cli_createStarmapData implements cliCommand
      * @return void
      */
     public function writeStaticData($file_name, $data_array) {
-        $file_name = $this->base . '/public/js/' . $file_name . '.json';
+        global $theme;
+        $file_name = $this->base . '/themes/'. $theme .'/js/' . $file_name . '.json';
 
         CLI::out('Creating JSON string');
         $json = json_encode($data_array, JSON_NUMERIC_CHECK);
