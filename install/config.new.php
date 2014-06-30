@@ -42,6 +42,11 @@ $baseAddr = "%baseaddr%";
 $fullAddr = "http://" . $baseAddr;
 chdir($baseDir);
 
+// Theme / Style and Name
+$killboardName = "zKillboard";
+$theme = "zkillboard";
+$style = "cyborg";
+
 // Debug
 $debug = true;
 
