@@ -124,6 +124,10 @@ $twig->addGlobal("KillboardName", (isset($killboardName) ? $killboardName : "zKi
 // Set the style used side wide to the user selected one, or the config default
 $twig->addGlobal("style", UserConfig::get("style", $style));
 
+// Set the theme global for twig.
+$twig->addGlobal("theme", UserConfig::get("theme", $theme));
+
+// Detect mobile devices
 $detect = new Mobile_Detect();
 $twig->addGlobal("isMobile", ($detect->isMobile() ? true : false));
 $twig->addGlobal("isTablet", ($detect->isTablet() ? true : false));
