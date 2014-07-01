@@ -19,15 +19,15 @@
 		<meta name="application-name" content="zKillboard"/>
 		<meta name="msapplication-TileColor" content="#000000"/>
 		<meta name="mobile-web-app-capable" content="yes">
-		<link rel="shortcut icon" sizes="310x310" href="/img/tile/large.png">
-		<link rel="shortcut icon" sizes="70x70" href="/img/tile/tiny.png">
-		<link rel="shortcut icon" sizes="150x150" href="/img/tile/square.png">
-		<link rel="shortcut icon" sizes="310x150" href="/img/tile/wide.png">
-		<link rel="shortcut icon" sizes="16x16" href="/favicon.ico" />
-		<meta name="msapplication-square70x70logo" content="/img/tile/tiny.png"/>
-		<meta name="msapplication-square150x150logo" content="/img/tile/square.png"/>
-		<meta name="msapplication-wide310x150logo" content="/img/tile/wide.png"/>
-		<meta name="msapplication-square310x310logo" content="/img/tile/large.png"/>
+		<link rel="shortcut icon" sizes="310x310" href="/themes/zkillboard/img/tile/large.png">
+		<link rel="shortcut icon" sizes="70x70" href="/themes/zkillboard/img/tile/tiny.png">
+		<link rel="shortcut icon" sizes="150x150" href="/themes/zkillboard/img/tile/square.png">
+		<link rel="shortcut icon" sizes="310x150" href="/themes/zkillboard/img/tile/wide.png">
+		<link rel="shortcut icon" sizes="16x16" href="/themes/zkillboard/favicon.ico" />
+		<meta name="msapplication-square70x70logo" content="/themes/zkillboard/img/tile/tiny.png"/>
+		<meta name="msapplication-square150x150logo" content="/themes/zkillboard/img/tile/square.png"/>
+		<meta name="msapplication-wide310x150logo" content="/themes/zkillboard/img/tile/wide.png"/>
+		<meta name="msapplication-square310x310logo" content="/themes/zkillboard/img/tile/large.png"/>
 		<meta name="quicklink" content="{{ fullsiteurl }}/kills/">
 		<meta name="quicklink" content="{{ fullsiteurl }}/post/">
 		<meta name="quicklink" content="{{ fullsiteurl }}/top/lasthour/">
@@ -41,11 +41,11 @@
 			<meta name="twitter:title" content="{{ pageTitle }} | zKillboard">
 			<meta name="twitter:card" content="summary">
 			<meta name="twitter:description" content="{{ description }}">
-			<meta name="twitter:image" content="{{ fullsiteurl }}/3D.png">
+			<meta name="twitter:image" content="{{ fullsiteurl }}/themes/zkillboard/img/3D.png">
 			<meta name="og:title" content="{{ siteurl }} / {{ pageTitle }}">
 			<meta name="og:url" content="{{ fullsiteurl }}">
 			<meta name="og:description" content="{{ description }}">
-			<meta name="og:image" content="{{ fullsiteurl }}/3D.png">
+			<meta name="og:image" content="{{ fullsiteurl }}/themes/zkillboard/img/3D.png">
 		{% endblock %}
 
 		{% block robots %}
@@ -66,27 +66,23 @@
 		{% endif %}
 
 		<link rel="canonical" href="{{ canonical }}">
-		<link rel="search" type="application/opensearchdescription+xml" href="//{{ siteurl }}/xml/zkbsearch.xml" title="zKillboard">
+		<link rel="search" type="application/opensearchdescription+xml" href="//{{ siteurl }}/themes/zkillboard/xml/zkbsearch.xml" title="zKillboard">
 
-		{% if theme is not defined %}
-			{% set theme = 'cyborg' %}
-		{% endif %}
-
-		{% if theme == "cyborg" %}
+		{% if style == "cyborg" %}
 			{% set version = "3.1.1" %}
 		{% else %}
 			{% set version = "latest" %}
 		{% endif %}
 
-		{% if theme == "default" %}
+		{% if style == "default" %}
 			<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">
 		{% else %}
-			<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootswatch/{{ version }}/{{ theme }}/bootstrap.min.css">
+			<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootswatch/{{ version }}/{{ style }}/bootstrap.min.css">
 		{% endif %}
 
-		<link rel="stylesheet" href="/css/theme-edits/{{theme}}-main.css">
-		<link rel="stylesheet" href="/css/datepicker.css">
-		<link rel="stylesheet" href="/css/main.css">
+		<link rel="stylesheet" href="/themes/zkillboard/css/style-edits/{{ style }}-main.css">
+		<link rel="stylesheet" href="/themes/zkillboard/css/datepicker.css">
+		<link rel="stylesheet" href="/themes/zkillboard/css/main.css">
 		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.min.css">
 
 		{% block style %}
@@ -171,10 +167,10 @@
 		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.1.0/jquery.timeago.min.js"></script>
 		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/jquery.dataTables.min.js"></script>
 		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
-		<script type="text/javascript" src="/js/bootstrap-datepicker.js"></script>
-		<script type="text/javascript" src="/js/search.js"></script>
-		<script type="text/javascript" src="/js/common.js?a=1"></script>
-		<script type="text/javascript" src="/js/sclock1.js"></script>
+		<script type="text/javascript" src="/themes/zkillboard/js/bootstrap-datepicker.js"></script>
+		<script type="text/javascript" src="/themes/zkillboard/js/search.js"></script>
+		<script type="text/javascript" src="/themes/zkillboard/js/common.js?a=1"></script>
+		<script type="text/javascript" src="/themes/zkillboard/js/sclock1.js"></script>
 		{% if disqusLoad %}
 			<script type="text/javascript">
 				var disqus_shortname = 'zkillboard';

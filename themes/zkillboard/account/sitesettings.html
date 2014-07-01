@@ -4,13 +4,13 @@
 		<div class="well">
 			<h4>Skin</h4>
 			<div class="row">
-				<form class="form-horizontal" name="themes" method="post" action="/account/sitesettings/">
+				<form class="form-horizontal" name="styles" method="post" action="/account/sitesettings/">
 					<div class="form-group col-lg-3">
-						<select name="theme" class="form-control input-sm">
-						{% for t in data.themes %}
+						<select name="style" class="form-control input-sm">
+						{% for style in data.stylesAvailable %}
 							{% set selected = "" %}
-							{% if t == theme %}{% set selected = "selected"%}{% endif %}
-							<option value="{{ t }}" {{ selected }}>{{ t }}</option>
+							{% if style == data.currentStyle %}{% set selected = "selected"%}{% endif %}
+							<option value="{{ style }}" {{ selected }}>{{ style }}</option>
 						{% endfor %}
 						</select>
 					</div>
@@ -20,13 +20,13 @@
 				</form>
 			</div>
 			<div class="row">
-				<form class="form-horizontal" name="viewthemes" method="post" action="/account/sitesettings/">
+				<form class="form-horizontal" name="themes" method="post" action="/account/sitesettings/">
 					<div class="form-group col-lg-3">
-						<select name="viewtheme" class="form-control input-sm">
-						{% for viewtheme in data.viewthemes %}
+						<select name="theme" class="form-control input-sm">
+						{% for theme in data.themesAvailable %}
 							{% set selected = "" %}
-							{% if viewtheme == data.sessionviewtheme %}{% set selected = "selected"%}{% endif %}
-							<option value="{{ viewtheme }}" {{ selected }}>{{ viewtheme }}</option>
+							{% if theme == data.currentTheme %}{% set selected = "selected"%}{% endif %}
+							<option value="{{ theme }}" {{ selected }}>{{ theme }}</option>
 						{% endfor %}
 						</select>
 					</div>

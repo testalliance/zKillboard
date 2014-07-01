@@ -31,9 +31,6 @@ see `LICENSE.md` file
 - Composer
 - cURL and it's php library, php5-curl
 
-## Path
-Always use the /public/ dir in your httpd, many things are located in said directory that are needed for the page to work.
-
 ## Nginx Config
 ```
 upstream php-upstream {
@@ -44,7 +41,7 @@ upstream php-upstream {
 server {
   server_name example.com www.example.com;
   listen      80;
-  root        /path/to/zkb_install/public;
+  root        /path/to/zkb_install;
 
   location    / {
     try_files $uri $uri/ /index.php?$args;
@@ -61,15 +58,15 @@ server {
 ```
 
 ## Apache rewrite
-Apache rewrite is handled by the .htaccess, located in the /public directory.
+Apache rewrite is handled by the .htaccess.
 
 ## Apache Config
 ```
 <VirtualHost *:80>
         ServerAlias yourdomain.tld
 
-        DocumentRoot /path/to/zkb_install/public/
-        <Directory /path/to/zkb_install/public/>
+        DocumentRoot /path/to/zkb_install/
+        <Directory /path/to/zkb_install/>
           Require all granted
           Options FollowSymLinks MultiViews
           AllowOverride All
@@ -89,7 +86,7 @@ url.redirect = (
 url.rewrite-if-not-file = (
   "(.*)" => "/index.php/$0"
 )
-server.document-root = "/path/to/zkb_install/public/"
+server.document-root = "/path/to/zkb_install/"
 ```
 
 ## Other webservers

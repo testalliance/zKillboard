@@ -105,17 +105,21 @@ if($_POST)
 	if(isset($deletekeyid) && !isset($deleteentity))
 		$error = Api::deleteKey($deletekeyid);
 
-	$viewtheme = Util::getPost("viewtheme");
-	// Theme stuff
-	if(isset($viewtheme))
+	// Theme
+	$theme = Util::getPost("theme");
+	if(isset($theme))
 	{
-		UserConfig::set("viewtheme", $viewtheme);
+		UserConfig::set("theme", $theme);
 		$app->redirect($_SERVER["REQUEST_URI"]);
 	}
 
-	$theme = Util::getPost("theme");
-	if(isset($theme))
-		UserConfig::set("theme", $theme);
+	// Style
+	$style = Util::getPost("style");
+	if(isset($style))
+	{
+		UserConfig::set("style", $style);
+		$app->redirect($_SERVER["REQUEST_URI"]);
+	}
 
 	$orgpw = Util::getPost("orgpw");
 	$password = Util::getPost("password");
@@ -191,16 +195,22 @@ if($_POST)
 }
 
 $data["entities"] = Account::getUserTrackerData();
-$data["themes"] = Util::bootstrapThemes();
-$data["viewthemes"] = Util::themesAvailable();
+
+// Theme
+$theme = UserConfig::get("theme", "zkillboard");
+$data["themesAvailable"] = Util::themesAvailable();
+$data["currentTheme"] = $theme;
+
+// Style
+$data["stylesAvailable"] = $theme::availableStyles();
+$data["currentStyle"] = UserConfig::get("style");
+
 $data["apiKeys"] = Api::getKeys($userID);
 $data["apiChars"] = Api::getCharacters($userID);
 $charKeys = Api::getCharacterKeys($userID);
 $charKeys = Info::addInfo($charKeys);
 $data["apiCharKeys"] = $charKeys;
 $data["userInfo"] = User::getUserInfo();
-$data["currentTheme"] = UserConfig::get("theme", "cyborg");
-$data["sessionviewtheme"] = UserConfig::get("viewtheme", "bootstrap");
 $data["timeago"] = UserConfig::get("timeago");
 $data["ddcombine"] = UserConfig::get("ddcombine");
 $data["ddmonthyear"] = UserConfig::get("ddmonthyear");

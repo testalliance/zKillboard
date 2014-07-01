@@ -15,6 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+if(php_sapi_name() != "cli")
+    die("This is a cli script!");
 
 $base = dirname(__FILE__);
 
