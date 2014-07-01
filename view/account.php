@@ -202,7 +202,7 @@ $data["themesAvailable"] = Util::themesAvailable();
 $data["currentTheme"] = $theme;
 
 // Style
-$data["stylesAvailable"] = zkillboard::availableStyles();
+$data["stylesAvailable"] = $theme::availableStyles();
 $data["currentStyle"] = UserConfig::get("style");
 
 $data["apiKeys"] = Api::getKeys($userID);
