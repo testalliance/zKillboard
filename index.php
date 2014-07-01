@@ -23,7 +23,6 @@ if(User::isLoggedIn())
 if(!is_dir("themes/$theme") || !isset($theme))
 	$theme = "zkillboard";
 $app->config(array("templates.path" => $baseDir."themes/" . $theme));
-require_once("themes/$theme/$theme.php");
 
 // Error handling
 $app->error(function (\Exception $e) use ($app){
@@ -35,6 +34,9 @@ include( "routes.php" );
 
 // Load twig stuff
 include( "twig.php" );
+
+// Load the theme stuff AFTER routes and Twig, so themers can add crap to twig's global space
+require_once("themes/$theme/$theme.php");
 
 // Run the thing!
 $app->run();
