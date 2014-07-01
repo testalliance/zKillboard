@@ -12,7 +12,7 @@
 		"filp/whoops": "1.*",
 		"zeuxisoo/slim-whoops": "0.2.0",
 		"twig/twig": "1.*",
-		"cebe/markdown": "*"
+		"erusev/parsedown": "dev-master"
 	},
 	"minimum-stability": "stable",
 	"prefer-stable": true
