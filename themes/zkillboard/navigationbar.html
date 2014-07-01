@@ -125,9 +125,15 @@
 						<li><a href="/livechat/">Live Chat</a></li>
 						<li class="divider"></li>
 						<li class="dropdown-header">Information</li>
-						<li><a href="/information/about/">About</a></li>
-						<li><a href="/information/killmails/">Killmails</a></li>
-						<li><a href="/information/legal/">Legal</a></li>
+						{% for key, data in navInfo %}
+							{% if data is not iterable %}
+								<li><a href="/information/{{ data }}/">{{ data|capitalize }}</a></li>
+							{% else %}
+								{% for sub in data %}
+									<li><a href="/information/{{ sub }}/">{{ sub|replace({(key~'/'): "" }) }}</a></li>
+								{% endfor %}
+							{% endif %}
+						{% endfor %}
 						{% if adFreeMonthCost > 0 %}
 						<li><a href="/information/payments/">Payments</a></li>
 						{% endif %}

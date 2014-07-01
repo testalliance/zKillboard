@@ -151,6 +151,26 @@ $twig->addFunction(new Twig_SimpleFunction("isMaintenance", "Util::isMaintenance
 $twig->addFunction(new Twig_SimpleFunction("getMaintenanceReason", "Util::getMaintenanceReason"));
 $twig->addFunction(new Twig_SimpleFunction("getNotification", "Util::getNotification"));
 
+// Information dropdown
+$links = Util::informationPages();
+$navInfo = array();
+foreach($links as $key => $data)
+{
+	if(count($data) >= 2) // Multi menu
+	{
+		foreach($data as $subData)
+		{
+			$navInfo[$key][] = $key."/".$subData["name"];
+		}
+	}
+	else
+	{
+		$navInfo[$key] = $data[0]["name"];
+	}
+}
+$twig->addGlobal("navInfo", $navInfo);
+
+// IGB
 $igb = false;
 if(stristr(@$_SERVER["HTTP_USER_AGENT"], "EVE-IGB"))
 	$igb = true;
