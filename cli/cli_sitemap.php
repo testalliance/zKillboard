@@ -41,7 +41,7 @@ class cli_sitemap implements cliCommand
 		// next line of code if you want though...
 		if ($baseAddr != "zkillboard.com") return;
 
-		@mkdir("$baseDir/public/sitemaps/");
+		@mkdir("$baseDir/sitemaps/");
 		$locations = array();
 		$baseQuery = "select distinct :id from (select * from zz_participants group by killID order by killID desc limit 500000) as foo where :id != 0 limit 50000";
 		$types = array("character", "corporation", "alliance", "faction");
@@ -53,7 +53,7 @@ class cli_sitemap implements cliCommand
 				$url = $xml->addChild("url");
 				$loc = $url->addChild("loc", "https://$baseAddr/${type}/" . $row["${type}ID"] . "/");
 			}
-			file_put_contents("$baseDir/public/sitemaps/${type}s.xml", $xml->asXML());
+			file_put_contents("$baseDir/sitemaps/${type}s.xml", $xml->asXML());
 			$locations[] = "https://$baseAddr/sitemaps/${type}s.xml";
 		}
 
@@ -64,7 +64,7 @@ class cli_sitemap implements cliCommand
 			$url = $xml->addChild("url");
 			$loc = $url->addChild("loc", "https://$baseAddr/kill/$killID/");
 		}
-		file_put_contents("$baseDir/public/sitemaps/kills.xml", $xml->asXML());
+		file_put_contents("$baseDir/sitemaps/kills.xml", $xml->asXML());
 		$locations[] = "https://$baseAddr/sitemaps/kills.xml";
 
 		$xml = new SimpleXmlElement("<?xml version=\"1.0\" encoding=\"UTF-8\"?><sitemapindex xmlns=\"http://www.google.com/schemas/sitemap/0.84\"/>");
@@ -73,7 +73,7 @@ class cli_sitemap implements cliCommand
 			$sitemap = $xml->addChild("sitemap");
 			$sitemap->addChild("loc", $location);
 		}
-		file_put_contents("$baseDir/public/sitemaps/sitemaps.xml", $xml->asXML());
+		file_put_contents("$baseDir/sitemaps/sitemaps.xml", $xml->asXML());
 
 		file_get_contents("http://www.google.com/webmasters/sitemaps/ping?sitemap=https://zkillboard.com/sitemaps/sitemaps.xml");
 	}

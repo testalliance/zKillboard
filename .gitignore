@@ -15,4 +15,4 @@ cache/sessions
 atlassian-ide-plugin.xml
 .idea
 killmails
-public/sitemaps/
+sitemaps/
