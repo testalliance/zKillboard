@@ -30,7 +30,7 @@ die("<script type='text/javascript'>location.reload();</script>");
 });
 
 //  Information about zKillboard
-$app->get("/information(/:page)/", function($page = "about") use ($app) {
+$app->get("/information/(:page/)(:subPage/)", function($page = "about", $subPage = null) use ($app) {
     include( "view/information.php" );
 });
 

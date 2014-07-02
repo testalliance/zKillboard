@@ -4,20 +4,20 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "4a7904d037443b7742510525e1979c88",
+    "hash": "b47f77381626ceb7de2f5bedf9cebb45",
     "packages": [
         {
             "name": "3rdpartyeve/perry",
-            "version": "1.3.0",
+            "version": "1.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/3rdpartyeve/perry.git",
-                "reference": "22a83ff68fe5d3e0f6083e505e7409eee436e78c"
+                "reference": "14d2eae8f450f0b2b8d2bbff72a4783c48c8b420"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/3rdpartyeve/perry/zipball/22a83ff68fe5d3e0f6083e505e7409eee436e78c",
-                "reference": "22a83ff68fe5d3e0f6083e505e7409eee436e78c",
+                "url": "https://api.github.com/repos/3rdpartyeve/perry/zipball/14d2eae8f450f0b2b8d2bbff72a4783c48c8b420",
+                "reference": "14d2eae8f450f0b2b8d2bbff72a4783c48c8b420",
                 "shasum": ""
             },
             "require": {
@@ -45,7 +45,7 @@
                 }
             ],
             "description": "A PHP Library to access EVE Online's CREST API",
-            "time": "2014-06-18 14:33:40"
+            "time": "2014-07-01 14:11:43"
         },
         {
             "name": "3rdpartyeve/phealng",
@@ -198,6 +198,45 @@
                 "twitter"
             ],
             "time": "2014-03-10 18:09:07"
+        },
+        {
+            "name": "erusev/parsedown",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/erusev/parsedown.git",
+                "reference": "e33ac1c56ea591f21b9cf2fa74356ef708d4e130"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/erusev/parsedown/zipball/e33ac1c56ea591f21b9cf2fa74356ef708d4e130",
+                "reference": "e33ac1c56ea591f21b9cf2fa74356ef708d4e130",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Parsedown": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Emanuil Rusev",
+                    "email": "hello@erusev.com",
+                    "homepage": "http://erusev.com"
+                }
+            ],
+            "description": "Parser for Markdown.",
+            "homepage": "http://parsedown.org",
+            "keywords": [
+                "markdown",
+                "parser"
+            ],
+            "time": "2014-06-18 09:27:25"
         },
         {
             "name": "filp/whoops",
@@ -730,9 +769,9 @@
 
     ],
     "minimum-stability": "stable",
-    "stability-flags": [
-
-    ],
+    "stability-flags": {
+        "erusev/parsedown": 20
+    },
     "platform": [
 
     ],
