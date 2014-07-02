@@ -186,7 +186,7 @@ hhvm.mysql.typed_results = true
 
 # Admin account
 
-Every clean zKillboard installation comes with an admin account, default username and password is `admin`, it it highly recommended that you immediately change this password after you finish your installation.
+Every clean zKillboard installation comes with an admin account, default username and password is `admin`, it is highly recommended that you immediately change this password after you finish your installation.
 
 Current special features to the admin account:
 
