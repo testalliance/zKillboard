@@ -13,3 +13,10 @@ There are two methods of paying.
 
 - Include your account name in the reason code. E.g. if your login is <strong>squizz</strong>, then include <strong>squizz</strong> in the payment reason. Must be an exact match!
 - Have an <a href="/account/api/"">API tied to your account</a> that includes the character you sent the ISK from.
+
+# Subdomain
+To make a payment for a subdomain, all you have to do is include the <strong>URL</strong>, and only the <strong>URL</strong> of the subdomain in the payment reason.
+
+<br>![](/themes/zkillboard/img/squizz_subdomain_example.png)
+
+Anyone can make the payment for any killboard!
