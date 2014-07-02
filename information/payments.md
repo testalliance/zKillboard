@@ -1,7 +1,10 @@
 # Payments
 <hr/>
+
+<a href="#" onClick="CCPEVE.showInfo(1377, 93382481);">![zkillboard](https://image.eveonline.com/Character/93382481_128.jpg "zkillboard")</a>
 - You can make payments to <a href="#" onClick="CCPEVE.showInfo(1377, 93382481);">zKillboard</a> that will remove ads when you're logged in.
 - You can be ad free on zKillboard.com and all subdomains when they are implemented (SoonTM)
+- Each month of ad free time costs <strong>{cost}</strong> ISK.
 - Each 6 months you purchase will give you a bonus month
 - To make a payment, send ISK to the character <a href="https://zkillboard.com/character/93382481/">zKillboard</a>, or use this handy in game link: <a href="#" onClick="CCPEVE.showInfo(1377, 93382481);">zKillboard</a>.
 - The wallet is checked aproximately every 35 minutes.

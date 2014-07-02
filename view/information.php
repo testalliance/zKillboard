@@ -49,7 +49,12 @@ $markdown = file_get_contents($path);
 $parsedown = new Parsedown();
 $output = $parsedown->text($markdown);
 
-// This is only really needed for the statistics page.. Since it's all kinds of stoopid
+if($page == "payments")
+{
+	global $adFreeMonthCost;
+	$output = str_replace("{cost}", $adFreeMonthCost, $output);
+}
+
 if($page == "statistics")
 {
 	// Replace certain tags with different data
