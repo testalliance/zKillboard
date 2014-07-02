@@ -19,15 +19,15 @@
 		<meta name="application-name" content="{{ siteurl }}"/>
 		<meta name="msapplication-TileColor" content="#000000"/>
 		<meta name="mobile-web-app-capable" content="yes">
-		<link rel="shortcut icon" sizes="310x310" href="/themes/{{ theme }}/img/tile/large.png">
-		<link rel="shortcut icon" sizes="70x70" href="/themes/{{ theme }}/img/tile/tiny.png">
-		<link rel="shortcut icon" sizes="150x150" href="/themes/{{ theme }}/img/tile/square.png">
-		<link rel="shortcut icon" sizes="310x150" href="/themes/{{ theme }}/img/tile/wide.png">
-		<link rel="shortcut icon" sizes="16x16" href="/themes/{{ theme }}/favicon.ico" />
-		<meta name="msapplication-square70x70logo" content="/themes/{{ theme }}/img/tile/tiny.png"/>
-		<meta name="msapplication-square150x150logo" content="/themes/{{ theme }}/img/tile/square.png"/>
-		<meta name="msapplication-wide310x150logo" content="/themes/{{ theme }}/img/tile/wide.png"/>
-		<meta name="msapplication-square310x310logo" content="/themes/{{ theme }}/img/tile/large.png"/>
+		<link rel="shortcut icon" sizes="310x310" href="//{{ siteurl }}/themes/{{ theme }}/img/tile/large.png">
+		<link rel="shortcut icon" sizes="70x70" href="//{{ siteurl }}/themes/{{ theme }}/img/tile/tiny.png">
+		<link rel="shortcut icon" sizes="150x150" href="//{{ siteurl }}/themes/{{ theme }}/img/tile/square.png">
+		<link rel="shortcut icon" sizes="310x150" href="//{{ siteurl }}/themes/{{ theme }}/img/tile/wide.png">
+		<link rel="shortcut icon" sizes="16x16" href="//{{ siteurl }}/themes/{{ theme }}/favicon.ico" />
+		<meta name="msapplication-square70x70logo" content="//{{ siteurl }}/themes/{{ theme }}/img/tile/tiny.png"/>
+		<meta name="msapplication-square150x150logo" content="//{{ siteurl }}/themes/{{ theme }}/img/tile/square.png"/>
+		<meta name="msapplication-wide310x150logo" content="//{{ siteurl }}/themes/{{ theme }}/img/tile/wide.png"/>
+		<meta name="msapplication-square310x310logo" content="//{{ siteurl }}/themes/{{ theme }}/img/tile/large.png"/>
 		{% block opengraph %}
 			<meta name="twitter:title" content="{{ pageTitle }} | {{ siteurl }}">
 			<meta name="twitter:card" content="summary">
@@ -71,9 +71,9 @@
 			<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootswatch/{{ version }}/{{ style }}/bootstrap.min.css">
 		{% endif %}
 
-		<link rel="stylesheet" href="/themes/{{ theme }}/css/style-edits/{{ style }}-main.css">
-		<link rel="stylesheet" href="/themes/{{ theme }}/css/datepicker.css">
-		<link rel="stylesheet" href="/themes/{{ theme }}/css/main.css">
+		<link rel="stylesheet" href="//{{ siteurl }}/themes/{{ theme }}/css/style-edits/{{ style }}-main.css">
+		<link rel="stylesheet" href="//{{ siteurl }}/themes/{{ theme }}/css/datepicker.css">
+		<link rel="stylesheet" href="//{{ siteurl }}/themes/{{ theme }}/css/main.css">
 		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.min.css">
 
 		{% block style %}
@@ -158,10 +158,10 @@
 		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.1.0/jquery.timeago.min.js"></script>
 		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/jquery.dataTables.min.js"></script>
 		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
-		<script type="text/javascript" src="/themes/{{ theme }}/js/bootstrap-datepicker.js"></script>
-		<script type="text/javascript" src="/themes/{{ theme }}/js/search.js"></script>
-		<script type="text/javascript" src="/themes/{{ theme }}/js/common.js?a=1"></script>
-		<script type="text/javascript" src="/themes/{{ theme }}/js/sclock1.js"></script>
+		<script type="text/javascript" src="//{{ siteurl }}/themes/{{ theme }}/js/bootstrap-datepicker.js"></script>
+		<script type="text/javascript" src="//{{ siteurl }}/themes/{{ theme }}/js/search.js"></script>
+		<script type="text/javascript" src="//{{ siteurl }}/themes/{{ theme }}/js/common.js?a=1"></script>
+		<script type="text/javascript" src="//{{ siteurl }}/themes/{{ theme }}/js/sclock1.js"></script>
 		{% if disqusLoad %}
 			<script type="text/javascript">
 				var disqus_shortname = '{{ disqusShortName }}';
