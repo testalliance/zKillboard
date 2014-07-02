@@ -42,7 +42,8 @@ class cli_fightFinder implements cliCommand
 		$minPilots = 200;
 		$minWrecks = 200;
 		$result = $db->query("select * from (select solarSystemID, count(distinct characterID) count, count(distinct killID) kills from zz_participants where characterID != 0 and killID > 0 and dttm > date_sub(now(), interval 1 hour) group by 1 order by 2 desc) f where count >= $minPilots and kills > $minWrecks");
-		foreach($result as $row) {
+		foreach($result as $row)
+		{
 			$systemID = $row["solarSystemID"];
 			$key = ($row["solarSystemID"] * 100) + date("H");
 			$key2 = ($row["solarSystemID"] * 100) + date("H", time() + 3600);
@@ -61,7 +62,8 @@ class cli_fightFinder implements cliCommand
 			// Insert into (or update) zz_battles
 			$db->execute("INSERT INTO zz_battles (solarSystemID, solarSystemName, dttm, involved, kills) VALUES (:solarSystemID, :solarSystemName, :timestamp, :involved, :kills)", array(":solarSystemID" => $systemID, ":solarSystemName" => $system, ":timestamp" => $date, ":involved" => $involved, ":kills" => $wrecks));
 
-			if ($socialCount == 0) {
+			if ($socialCount == 0)
+			{
 				$message = "Battle detected in |g|$system|n| with |g|$involved|n| involved and |g|$wrecks|n| wrecks.";
 				Log::irc($message . " |g|$link");
 
