@@ -35,7 +35,7 @@ see `LICENSE.md` file
 - Linux
 - MariaDB 5.5+
 - Composer
-- APC
+- APC / Redis / Memcached (Doesn't matter which one)
 - cURL and php5-curl
 
 # Nginx Config
@@ -51,7 +51,7 @@ server {
   root        /path/to/zkb_install;
 
   location    / {
-    try_files $uri $uri/ /index.php?$args;
+    try_files $uri $uri/ /index.php$is_args$args;
   }
 
   location    ~ \.php$ {
@@ -182,7 +182,6 @@ hhvm.mysql.slow_query_threshold = 4000
 hhvm.mysql.kill_on_timeout = true
 hhvm.mysql.wait_timeout = -1
 hhvm.mysql.typed_results = true
-
 ```
 
 # Admin account
