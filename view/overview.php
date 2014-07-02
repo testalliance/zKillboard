@@ -234,8 +234,7 @@ if ($filter != "") {
 	}
 }
 
-
-$renderParams = array("pageName" => $pageName, "kills" => $kills, "losses" => $losses, "detail" => $detail, "page" => $page, "topKills" => $topKills, "mixed" => $mixedKills, "key" => $key, "id" => $id, "pageType" => $pageType, "solo" => $solo, "topLists" => $topLists, "corps" => $corpList, "corpStats" => $corpStats, "summaryTable" => $stats, "pager" => (sizeof($kills) >= $limit), "datepicker" => true, "apiVerified" => $apiVerified, "prevID" => $prevID, "nextID" => $nextID, "extra" => $extra);
+$renderParams = array("pageName" => $pageName, "kills" => $kills, "losses" => $losses, "detail" => $detail, "page" => $page, "topKills" => $topKills, "mixed" => $mixedKills, "key" => $key, "id" => $id, "pageType" => $pageType, "solo" => $solo, "topLists" => $topLists, "corps" => $corpList, "corpStats" => $corpStats, "summaryTable" => $stats, "pager" => (sizeof($kills) + sizeof($losses) >= $limit), "datepicker" => true, "apiVerified" => $apiVerified, "prevID" => $prevID, "nextID" => $nextID, "extra" => $extra);
 
 //$app->etag(md5(serialize($renderParams)));
 //$app->expires("+5 minutes");
