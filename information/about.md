@@ -1,5 +1,5 @@
-# zKillboard
-
+# About
+<hr/>
 zKillboard is a collaborative effort by many people, see our GitHub repository for a complete history.
 
 # Contacts

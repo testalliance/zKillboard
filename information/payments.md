@@ -1,5 +1,5 @@
 # Payments
-
+<hr/>
 - You can make payments to <a href="#" onClick="CCPEVE.showInfo(1377, 93382481);">zKillboard</a> that will remove ads when you're logged in.
 - You can be ad free on zKillboard.com and all subdomains when they are implemented (SoonTM)
 - Each 6 months you purchase will give you a bonus month

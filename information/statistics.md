@@ -1,5 +1,5 @@
 # Statistics
-
+<hr/>
 ### Kills
 {kills} kills processed ({percentage}%)<br>
 {total} total kills in the database<br>
