@@ -7,11 +7,11 @@
     <head>
         <meta http-equiv="content-type" content="text/html;"charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <meta name="title" content="zKillboard.com / {{ pageTitle }}">
+        <meta name="title" content="{{ siteurl }} / {{ pageTitle }}">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
-        <title>zKillboard.com / Disqus Login</title>
-{% if sessiontheme is not defined %}{% set sessiontheme = 'cyborg' %}{% endif %}
+        <title>{{ siteurl }} / Disqus Login</title>
+		{% if sessiontheme is not defined %}{% set sessiontheme = 'cyborg' %}{% endif %}
 		{% if sessiontheme == "default" %}
 		<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/3.0.0/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
 		{% else %}

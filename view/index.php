@@ -20,7 +20,7 @@ $page = 1;
 $pageTitle = "";
 $pageType = "index";
 $serverName = $_SERVER["SERVER_NAME"];
-global $baseAddr;
+global $baseAddr, $fullAddr;
 if ($serverName != $baseAddr) {
 	$numDays = 7;
 	$p = Subdomains::getSubdomainParameters($serverName);
@@ -30,7 +30,7 @@ if ($serverName != $baseAddr) {
 	$columnName = key($p);
 	$id = reset($p);
 
-	if (sizeof($p) <= 1) $app->redirect("https://zkillboard.com", 302);
+	if (sizeof($p) <= 1) $app->redirect($fullAddr, 302);
 
 	$topPoints = array();
 	$topPods = array();

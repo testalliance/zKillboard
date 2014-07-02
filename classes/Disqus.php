@@ -21,7 +21,7 @@ class Disqus
 
 	public static function init()
 	{
-		global $disqusSecretKey, $disqusPublicKey;
+		global $disqusSecretKey, $disqusPublicKey, $theme, $fullAddr;
 
 		$userInfo = User::getUserInfo();
 		$userID = $userInfo["id"];
@@ -44,10 +44,10 @@ class Disqus
 		$js .= "\n";
 		$js .= "		this.sso = {\n";
 		$js .= "			name: 'zKillboard',\n";
-		$js .= "			button: 'https://zkillboard.com/themes/{{ theme }}/img/disqus_button.png',\n";
-		$js .= "			icon: 'https://zkillboard.com/themes/{{ theme }}/favicon.ico',\n";
-		$js .= "			url: 'https://zkillboard.com/dlogin/',\n";
-		$js .= "			logout: 'https://zkillboard.com/logout',\n";
+		$js .= "			button: '".$fullAddr."/themes/".$theme."/img/disqus_button.png',\n";
+		$js .= "			icon: '".$fullAddr."/themes/".$theme."/favicon.ico',\n";
+		$js .= "			url: '".$fullAddr."/dlogin/',\n";
+		$js .= "			logout: '".$fullAddr."/logout',\n";
 		$js .= "			width: '300',\n";
 		$js .= "			height: '232'\n";
 		$js .= "		};\n";

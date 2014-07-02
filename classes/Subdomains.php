@@ -24,16 +24,16 @@ class Subdomains
 {
 	public static function getSubdomainParameters($serverName)
 	{
-		global $app, $twig;
+		global $app, $twig, $baseAddr;
 
 		$adfree = Db::queryField("select count(*) count from zz_subdomains where adfreeUntil >= now() and subdomain = :serverName", "count", array(":serverName" => $serverName));
 
-		$board = str_replace(".zkillboard.com", "", $serverName);
+		$board = str_replace(".$baseAddr", "", $serverName);
 		$board = str_replace("_", " ", $board);
 		$board = preg_replace('/^dot\./i', '.', $board);
 		$board = preg_replace('/\.dot$/i', '.', $board);
 		try {
-			if ($board == "www") $app->redirect("https://zkillboard.com", 302);
+			if ($board == "www") $app->redirect($fullAddr, 302);
 		} catch (Exception $e) {
 			return;
 		}

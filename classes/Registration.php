@@ -25,6 +25,8 @@ class Registration
 
 	public static function registerUser($username, $password, $email)
 	{
+		global $baseAddr;
+
 		if (strtolower($username) == "evekill" || strtolower($username) == "eve-kill")
 			return array("type" => "error", "message" => "Restrictd user name");
 
@@ -32,8 +34,8 @@ class Registration
 		if ($check == 0) {
 			$hashedpassword = Password::genPassword($password);
 			Db::execute("INSERT INTO zz_users (username, password, email) VALUES (:username, :password, :email)", array(":username" => $username, ":password" => $hashedpassword, ":email" => $email));
-			$subject = "zKillboard Registration";
-			$message = "Thank you, $username, for registering at zKillboard.com";
+			$subject = "$baseAddr Registration";
+			$message = "Thank you, $username, for registering at $baseAddr";
 			Email::send($email, $subject, $message);
 			$message = "You have been registered, you should recieve a confirmation email in a moment, in the mean time you can click login and login!";
 			return array("type" => "success", "message" => $message);

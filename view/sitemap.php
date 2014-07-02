@@ -19,7 +19,7 @@
 $data = array();
 
 $data["map"] = array(
-	"Realtime Map" => "http://map.zkillboard.com",
+	"Realtime Map" => "https://map.zkillboard.com",
 	);
 
 $data["kills"] = array(

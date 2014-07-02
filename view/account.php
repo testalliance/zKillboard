@@ -30,13 +30,13 @@ $bannerUpdates = array();
 if(isset($req))
 	$key = $req;
 
+global $twig, $adFreeMonthCost, $baseAddr;
 if($_POST)
 {
 	// Check for adfree purchase
 	$purchase = Util::getPost("purchase");
 	if ($purchase)
 	{
-		global $twig;
 		if ($purchase == "donate")
 		{
 			$amount = User::getBalance($userID);
@@ -50,8 +50,6 @@ if($_POST)
 		}
 		else
 		{
-			global $adFreeMonthCost;
-
 			$months = str_replace("buy", "", $purchase);
 			if ($months > 12 || $months < 0) $months = 1;
 			$balance = User::getBalance($userID);
@@ -232,7 +230,7 @@ $corps = array();
 $allis = array();
 foreach ($domainChars as $domainChar) {
 	if (@$domainChar["isCEO"]) {
-		$subdomain = modifyTicker($domainChar["corpTicker"]) . ".zkillboard.com";
+		$subdomain = modifyTicker($domainChar["corpTicker"]) . ".$baseAddr";
 		if (isset($bannerUpdates[$subdomain])) {
 			$banner = $bannerUpdates[$subdomain];
 			Db::execute("insert into zz_subdomains (subdomain, banner) values (:subdomain, :banner) on duplicate key update banner = :banner", array(":subdomain" => $subdomain, ":banner" => $banner));
@@ -244,7 +242,7 @@ foreach ($domainChars as $domainChar) {
 		$corps[] = $domainChar;
 	}
 	if (@$domainChar["isExecutorCEO"]) {
-		$subdomain = modifyTicker($domainChar["alliTicker"]) . ".zkillboard.com";
+		$subdomain = modifyTicker($domainChar["alliTicker"]) . ".$baseAddr";
 		if (isset($bannerUpdates[$subdomain])) {
 			$banner = $bannerUpdates[$subdomain];
 			Db::execute("insert into zz_subdomains (subdomain, banner) values (:subdomain, :banner) on duplicate key update banner = :banner", array(":subdomain" => $subdomain, ":banner" => $banner));

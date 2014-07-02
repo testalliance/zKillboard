@@ -47,6 +47,9 @@ $killboardName = "zKillboard";
 $theme = "zkillboard";
 $style = "cyborg";
 
+// Generate sitemaps
+$generateSiteMaps = false;
+
 // Debug
 $debug = true;
 

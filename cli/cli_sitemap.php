@@ -35,11 +35,11 @@ class cli_sitemap implements cliCommand
 
 	public function execute($parameters, $db)
 	{
-		global $baseAddr, $baseDir;
+		global $baseAddr, $baseDir, $generateSiteMaps;
 
 		// This is really only for zkillboard.com, you can disable the
 		// next line of code if you want though...
-		if ($baseAddr != "zkillboard.com") return;
+		if (!isset($generatesiteMaps) || $generateSiteMaps == false) return;
 
 		@mkdir("$baseDir/sitemaps/");
 		$locations = array();
@@ -75,6 +75,6 @@ class cli_sitemap implements cliCommand
 		}
 		file_put_contents("$baseDir/sitemaps/sitemaps.xml", $xml->asXML());
 
-		file_get_contents("http://www.google.com/webmasters/sitemaps/ping?sitemap=https://zkillboard.com/sitemaps/sitemaps.xml");
+		file_get_contents("http://www.google.com/webmasters/sitemaps/ping?sitemap=https://$baseAddr/sitemaps/sitemaps.xml");
 	}
 }

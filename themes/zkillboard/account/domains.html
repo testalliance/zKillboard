@@ -14,26 +14,26 @@
 		{% set field = data %}
 		<tr>
 			<td>{% include 'components/text_corp.html' %}</td>
-			<td><a href="http://{{ field.corpTicker|lower }}.zkillboard.com" target="_blank">http://{{ field.corpTicker|lower }}.zkillboard.com</a></td>
+			<td><a href="http://{{ field.corpTicker|lower }}.{{ siteurl }}" target="_blank">http://{{ field.corpTicker|lower }}.{{ siteurl }}</a></td>
 			{% if field.adfreeUntil %}
 				<td>Adfree until {{ field.adfreeUntil }}</td>
 			{% else %}
 				<td><em>Ads are displayed...</em></td>
 			{% endif %}
-				<td><form method="post" action="." name="banner"><input class="form-control" type="url" placeholder="No banner..." name="banner" value="{{ field.banner }}"><input class="btn btn-default btn-xs btn-success" type="submit" value="Update"><input type="hidden" name="subdomain" value="{{ field.corpTicker|lower }}.zkillboard.com"></form></td>
+				<td><form method="post" action="." name="banner"><input class="form-control" type="url" placeholder="No banner..." name="banner" value="{{ field.banner }}"><input class="btn btn-default btn-xs btn-success" type="submit" value="Update"><input type="hidden" name="subdomain" value="{{ field.corpTicker|lower }}.{{ siteurl }}"></form></td>
 		</tr>
         {% endfor %}
         {% for data in data.domainAllis %}
                 {% set field = data %}
                 <tr>   
                         <td>{% include 'components/text_alli.html' %}</td>
-                        <td><a href="http://{{ field.alliTicker|lower }}.zkillboard.com" target="_blank">http://{{ field.alliTicker|lower }}.zkillboard.com</a></td>
+                        <td><a href="http://{{ field.alliTicker|lower }}.{{ siteurl }}" target="_blank">http://{{ field.alliTicker|lower }}.{{ siteurl }}</a></td>
                         {% if field.adfreeUntil %}
                                 <td>Adfree until {{ field.adfreeUntil }}</td>
                         {% else %}
                                 <td><em>Ads are displayed...</em></td>
                         {% endif %}
-                                <td><form method="post" action="." name="banner"><input class="form-control" type="url" placeholder="No banner..." name="banner" value="{{ field.banner }}"><input class="btn btn-default btn-xs btn-success" type="submit" value="Update"><input type="hidden" name="subdomain" value="{{ field.alliTicker|lower }}.zkillboard.com"></form></td>
+                                <td><form method="post" action="." name="banner"><input class="form-control" type="url" placeholder="No banner..." name="banner" value="{{ field.banner }}"><input class="btn btn-default btn-xs btn-success" type="submit" value="Update"><input type="hidden" name="subdomain" value="{{ field.alliTicker|lower }}.{{ siteurl }}"></form></td>
                 </tr>
         {% endfor %}
 	<tr><td colspan="3"><td class="text-align: right" colspan="4">Banner Example: <a href="http://i.imgur.com/qZ4ETsf.png" target="_blank">http://i.imgur.com/qZ4ETsf.png</a></td></tr>
@@ -60,10 +60,10 @@
 		<tr>
 			<td>{% include 'components/text_char.html' %}</td>
 			<td>{% include 'components/text_corp.html' %}</td>
-			<td><a href="http://{{ field.corpTicker|lower }}.zkillboard.com" target="_blank">http://{{ field.corpTicker|lower }}.zkillboard.com</a></td>
+			<td><a href="http://{{ field.corpTicker|lower }}.{{ siteurl }}" target="_blank">http://{{ field.corpTicker|lower }}.{{ siteurl }}</a></td>
 			{% if field.allianceID != 0 %}
 			<td>{% include 'components/text_alli.html' %}</td>
-			<td><a href="http://{{ field.alliTicker|lower }}.zkillboard.com" target="_blank">http://{{ field.alliTicker|lower }}.zkillboard.com</a></td>
+			<td><a href="http://{{ field.alliTicker|lower }}.{{ siteurl }}" target="_blank">http://{{ field.alliTicker|lower }}.{{ siteurl }}</a></td>
 			{% else %}
 			<td>&nbsp;</td>
 			<td>&nbsp;</td>
