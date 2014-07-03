@@ -97,13 +97,6 @@
 				{% include "navigationbar.html" %}
 			</div>
 
-			<!-- CREST Market fetching / no parsing information header -->
-			{% if noparsetime %}
-				<div class="container">
-					<div class="row alert"><center><strong>Between 00:00 and 01:05 no kills are processed while we wait for CCP's Market CREST cache to clear...</strong></center></div>
-				</div>
-			{% endif %}
-
 			<!-- Maintenance alert -->
 			{% if isMaintenance() %}
 				<div class="alert alert-danger"><center>Site is in maintenance mode<br/><small>During this time no kills are processed<br/>{{ getMaintenanceReason() }}</small></center></div>
@@ -124,9 +117,6 @@
 				{% if showAds != false %}
 					<div class="centered" id="adsensetop" style="margin-bottom: 5px;">
 						{% if eveigb %}{{ igbtopad|raw }}{% elseif isMobile and isTablet == false %}{{ mobiletopad|raw }}{% else %}{{ topad|raw }}{% endif %}
-						{% if adFreeMonthCost %}
-						<br/><small><a href='/information/payments/'>Click here to remove ads!</a></small>
-						{% endif %}
 					</div>
 				{% endif %}
 
