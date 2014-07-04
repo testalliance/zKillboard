@@ -333,6 +333,7 @@ class Kills
 			foreach($k["items"] as $itm)
 			{
 				// Take the flags we get from $itemToSlot and replace it with the proper flag from the database
+				if (!(isset($itm["flag"]) && isset($flags[$itm["flag"]]))) continue;
 				$itm["flagName"] = $flags[$itm["flag"]];
 
 				// create the flag!
