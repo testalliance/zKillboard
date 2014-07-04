@@ -107,18 +107,27 @@ class Filters
 		}
 
 		if (array_key_exists("lowsec", $parameters)) {
+			$systems = array();
+			$rows = Db::query("select solarSystemID from ccp_systems where security >= 0 and security < 0.5", array(), 3600);
+			foreach($rows as $row) $systems[] = $row["solarSystemID"];
 			$tables[] = "zz_participants p";
-			$whereClauses[] = "(regionID IN (SELECT regionID FROM ccp_systems WHERE security > 0.0 AND security < 0.5 GROUP BY regionID))";
+			$whereClauses[] = " solarSystemID in (" . implode(",", $systems) . ")";
 		}
 
 		if (array_key_exists("highsec", $parameters)) {
+			$systems = array();
+			$rows = Db::query("select solarSystemID from ccp_systems where security >= 0.5", array(), 3600);
+			foreach($rows as $row) $systems[] = $row["solarSystemID"];
 			$tables[] = "zz_participants p";
-			$whereClauses[] = "(regionID IN (SELECT regionID FROM ccp_systems WHERE security >= 0.5 GROUP BY regionID))";
+			$whereClauses[] = " solarSystemID in (" . implode(",", $systems) . ")";
 		}
 
 		if (array_key_exists("nullsec", $parameters)) {
+			$regions = array();
+			$rows = Db::query("select distinct(regionID) regionID from ccp_systems where security < 0 and (regionID < 11000001 or regionID > 11000030)", array(), 3600);
+			foreach($rows as $row) $regions[] = $row["regionID"];
 			$tables[] = "zz_participants p";
-			$whereClauses[] = "(regionID IN (SELECT regionID FROM ccp_systems WHERE security <= 0.0 GROUP BY regionID))";
+			$whereClauses[] = " regionID in (" . implode(",", $regions) . ")";
 		}
 
 		if (array_key_exists("beforeKillID", $parameters)) {
