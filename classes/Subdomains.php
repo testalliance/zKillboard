@@ -24,7 +24,7 @@ class Subdomains
 {
 	public static function getSubdomainParameters($serverName)
 	{
-		global $app, $twig, $baseAddr;
+		global $app, $twig, $baseAddr, $fullAddr;
 
 		$adfree = Db::queryField("select count(*) count from zz_subdomains where adfreeUntil >= now() and subdomain = :serverName", "count", array(":serverName" => $serverName));
 
