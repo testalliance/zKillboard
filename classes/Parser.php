@@ -46,6 +46,7 @@ class Parser
 			Db::execute("delete from zz_participants_temporary");
 
 			$minMax = $parseAscending ? "min" : "max";
+			if (date("Gi") < 105) $minMax = "min"; // Override during CREST cache interval
 			$id = Db::queryField("select $minMax(killID) killID from zz_killmails where processed = 0 and killID > 0", "killID", array(), 0);
 
 			if ($id === null) $id = Db::queryField("select min(killID) killID from zz_killmails where processed = 0", "killID", array(), 0);
@@ -72,7 +73,11 @@ class Parser
 
 				// Because of CREST caching and the want for accurate prices, don't process the first hour
 				// of kills until after 01:05 each day
-				if (date("Gi") < 105) return;
+				if (date("Gi") < 105 && $kill["killTime"] >= date("Y-m-d 00:00:00"))
+				{
+					sleep(1);
+					continue;
+				}
 
 				// Cleanup if we're reparsing
 				$cleanupKills[] = $killID;
