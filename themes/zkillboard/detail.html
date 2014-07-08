@@ -22,7 +22,6 @@
 {% endblock %}
 
 {% block content %}
-{% cache 'kill' ~ canonical 900 %}
 <div class="navbar navbar-default hidden-xs">
 	<div class="navbar-header">
 		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
@@ -179,7 +178,6 @@
 	</tbody>
 </table>
 {% endif %}
-{% endcache %}
 {% endblock %}
 
 {% block modal %}
