@@ -12,7 +12,9 @@
 		"filp/whoops": "1.*",
 		"zeuxisoo/slim-whoops": "0.2.0",
 		"twig/twig": "1.*",
-		"erusev/parsedown": "dev-master"
+		"erusev/parsedown": "dev-master",
+		"asm89/twig-cache-extension" : "*",
+		"doctrine/cache" : "*"
 	},
 	"minimum-stability": "stable",
 	"prefer-stable": true

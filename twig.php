@@ -155,6 +155,16 @@ $twig->addFunction(new Twig_SimpleFunction("isMaintenance", "Util::isMaintenance
 $twig->addFunction(new Twig_SimpleFunction("getMaintenanceReason", "Util::getMaintenanceReason"));
 $twig->addFunction(new Twig_SimpleFunction("getNotification", "Util::getNotification"));
 
+use Doctrine\Common\Cache\FilesystemCache;
+use Asm89\Twig\CacheExtension\CacheProvider\DoctrineCacheAdapter;
+use Asm89\Twig\CacheExtension\CacheStrategy\LifetimeCacheStrategy;
+use Asm89\Twig\CacheExtension\Extension as CacheExtension;
+$cacheProvider  = new DoctrineCacheAdapter(new FilesystemCache("/tmp/doctrinecache/"));
+$cacheStrategy  = new LifetimeCacheStrategy($cacheProvider);
+$cacheExtension = new CacheExtension($cacheStrategy);
+
+$twig->addExtension($cacheExtension);
+
 // Information dropdown
 $links = Util::informationPages();
 $navInfo = array();
