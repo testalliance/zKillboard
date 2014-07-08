@@ -61,7 +61,6 @@ class Parser
 			$processedKills = array();
 			$cleanupKills = array();
 			foreach ($result as $row) {
-				$numKills++;
 				$kill = json_decode(Killmail::get($row["killID"]), true);
 				if (!isset($kill["killID"])) {
 					if ($debug) Log::log("Problem with kill " . $row["killID"]);
@@ -81,6 +80,7 @@ class Parser
 
 				// Cleanup if we're reparsing
 				$cleanupKills[] = $killID;
+				$numKills++;
 				if ($debug) Log::log("Processing kill $killID");
 
 				if ($killID < 0) { // Manual mail, make sure we aren't duping an api verified mail
