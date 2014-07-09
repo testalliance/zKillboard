@@ -39,7 +39,7 @@ class cli_summary implements cliCommand
 		if (!isset($beSocial)) $beSocial = false;
 
 		$minute = date("i");
-		//if ($minute != "00" && !in_array('-f', $parameters)) return;
+		if ($minute != "00" && !in_array('-f', $parameters)) return;
 
 		$killsAdded = (int) Storage::retrieve("KillsAdded");
 		Storage::store("KillsAdded", 0);
