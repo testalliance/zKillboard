@@ -119,16 +119,17 @@ class Parser
 				Db::execute("update zz_participants_temporary set points = :points, number_involved = :numI, total_price = :tp where killID = :killID", array(":killID" => $killID, ":points" => $points, ":numI" => sizeof($kill["attackers"]), ":tp" => $totalCost));
 
 				$processedKills[] = $killID;
-				Db::execute("insert into zz_storage (locker, contents) values ('KillsAdded', 1) on duplicate key update contents = contents + 1");
 			}
 
 			if (sizeof($cleanupKills)) {
 				Db::execute("delete from zz_participants where killID in (" . implode(",", $cleanupKills) . ")");
 			}
 			Db::execute("insert into zz_participants select * from zz_participants_temporary");
-			if (sizeof($processedKills)) {
+			$numProcessed = sizeof($processedKills);
+			if ($numProcessed) {
 				Db::execute("insert ignore into zz_stats_queue values (" . implode("), (", $processedKills) . ")");
 				Db::execute("update zz_killmails set processed = 1 where killID in (" . implode(",", $processedKills) . ")");
+				Db::execute("insert into zz_storage (locker, contents) values ('KillsAdded', :num) on duplicate key update contents = contents + :num", array(":num" => $numProcessed));
 			}
 		}
 		if ($numKills > 0)
