@@ -28,7 +28,7 @@ class cli_summary implements cliCommand
 		return ""; // Space seperated list
 	}
 
-	public function getCronInfo()
+	public function ggetCronInfo()
 	{
 		return array(0 => "");
 	}
@@ -39,7 +39,12 @@ class cli_summary implements cliCommand
 		if (!isset($beSocial)) $beSocial = false;
 
 		$minute = date("i");
-		if ($minute != "00" && !in_array('-f', $parameters)) return;
+		//if ($minute != "00" && !in_array('-f', $parameters)) return;
+
+		$killsAdded = (int) Storage::retrieve("KillsAdded");
+		Storage::store("KillsAdded", 0);
+		Db::execute("update zz_storage set contents = 0 where locker = 'KillsAdded'");
+		if ($beSocial) Log::irc("|g|$killsAdded|n| kills processed.");
 
 		$lastActualKills = $db->queryField("select contents count from zz_storage where locker = 'actualKills'", "count", array(), 0);
 		$actualKills = $db->queryField("select count(*) count from zz_killmails where processed != 0", "count", array(), 0);
@@ -50,10 +55,5 @@ class cli_summary implements cliCommand
 		$db->execute("replace into zz_storage (locker, contents) values ('totalKills', $totalKills)");
 		$db->execute("replace into zz_storage (locker, contents) values ('actualKills', $actualKills)");
 		$db->execute("delete from zz_storage where locker like '%KillsProcessed'");
-
-		$actualDifference = number_format($actualKills - $lastActualKills, 0);
-		$totalDifference = number_format($totalKills - $lastTotalKills, 0);
-
-		if ($beSocial) Log::irc("|g|$actualDifference|n| mails processed | |g|$totalDifference|n| kills added");
 	}
 }

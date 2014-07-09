@@ -119,6 +119,7 @@ class Parser
 				Db::execute("update zz_participants_temporary set points = :points, number_involved = :numI, total_price = :tp where killID = :killID", array(":killID" => $killID, ":points" => $points, ":numI" => sizeof($kill["attackers"]), ":tp" => $totalCost));
 
 				$processedKills[] = $killID;
+				Db::execute("insert into zz_storage (locker, contents) values ('KillsAdded', 1) on duplicate key update contents = contents + 1");
 			}
 
 			if (sizeof($cleanupKills)) {
