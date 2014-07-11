@@ -38,7 +38,7 @@ class cli_priceCheck implements cliCommand
 	{
 		if (date("Gi") != 105 && !in_array('-f', $parameters)) return; // Only execute at 01:05
 		global $debug;
-		$typeIDs = $db->query("select typeID from ccp_invTypes where published = 1", array(), 0);
+		$typeIDs = $db->query("select typeID from ccp_invTypes where published = 1 and marketGroupID != 0", array(), 0);
 		$size = count($typeIDs);
 		$count = 0;
 		foreach ($typeIDs as $row)
