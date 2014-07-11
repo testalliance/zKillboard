@@ -252,7 +252,7 @@ class Stats
 		if ($typeID == 0) return;
 		Db::execute("insert into zz_stats (type, typeID, groupID, lost, pointsLost, iskLost) values (:type, :typeID, :groupID, :modifier, :points, :isk)
 				on duplicate key update lost = lost + :modifier, pointsLost = pointsLost + :points, iskLost = iskLost + :isk",
-				array(":type" => $type, ":typeID" => $typeID, ":groupID" => $groupID, ":modifier" => $modifier, ":points" => $points, ":isk" => $isk));
+				array(":type" => $type, ":typeID" => $typeID, ":groupID" => $groupID, ":modifier" => $modifier, ":points" => ($points * $modifier), ":isk" => ($isk * $modifier)));
 	}
 
 	/**
@@ -263,6 +263,6 @@ class Stats
 		if ($typeID == 0) return;
 		Db::execute("insert into zz_stats (type, typeID, groupID, destroyed, pointsDestroyed, iskDestroyed) values (:type, :typeID, :groupID, :modifier, :points, :isk)
 				on duplicate key update destroyed = destroyed + :modifier, pointsDestroyed = pointsDestroyed + :points, iskDestroyed = iskDestroyed + :isk",
-				array(":type" => $type, ":typeID" => $typeID, ":groupID" => $groupID, ":modifier" => $modifier, ":points" => $points, ":isk" => $isk));
+				array(":type" => $type, ":typeID" => $typeID, ":groupID" => $groupID, ":modifier" => $modifier, ":points" => ($points * $modifier), ":isk" => ($isk * $modifier)));
 	}
 }
