@@ -76,7 +76,6 @@ class Price
 		if ($typeID != 2233 && $isDone) return;
 
 		static::doPopulateRareItemPrices($todaysLookup); // Populate rare items and today's lookup and do some cleanup
-		Storage::store($todaysLookupTypeID, "true"); // Add today's lookup entry for this item
 
 		if ($typeID == 2233)
 		{
@@ -87,6 +86,7 @@ class Price
 			$cores = Price::getItemPrice(2872, $date, true);
 			$total = $gantry + (($nodes + $modules + $mainframes + $cores) * 8);
 			Db::execute("replace into zz_item_price_lookup (typeID, priceDate, lowPrice, avgPrice, highPrice) values (:typeID, :date, :low, :avg, :high)", array(":typeID" => $typeID, ":date" => $date, ":low" => $total, ":avg" => $total, ":high" => $total));
+			Storage::store($todaysLookupTypeID, "true"); // Add today's lookup entry for this item
 			return $total;
 		}
 
@@ -102,6 +102,7 @@ class Price
 				Db::execute("insert ignore into zz_item_price_lookup (typeID, priceDate, lowPrice, avgPrice, highPrice) values (:typeID, :date, :low, :avg, :high)", array(":typeID" => $typeID, ":date" => $row["date"], ":low" => $row["lowPrice"], ":avg" => $row["avgPrice"], ":high" => $row["highPrice"]));
 			}
 		}
+		Storage::store($todaysLookupTypeID, "true"); // Add today's lookup entry for this item
 	}
 
 	/**
