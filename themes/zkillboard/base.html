@@ -115,6 +115,9 @@
 
 				<!-- Top ad -->
 				{% if showAds != false %}
+					{% if not isMobile %}
+					<div class="row hidden-lg hidden-md"><center><em>pssst... make your browser wider for a better experience...</em></center></div>
+					{% endif %}
 					<div class="centered" id="adsensetop" style="margin-bottom: 5px;">
 						{% if eveigb %}{{ igbtopad|raw }}{% elseif isMobile and isTablet == false %}{{ mobiletopad|raw }}{% else %}{{ topad|raw }}{% endif %}
 					</div>
