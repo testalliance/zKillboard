@@ -16,123 +16,140 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * Parser for raw killmails from ingame EVE.
+ */
+
 class Related
 {
-	public static function buildSummary(&$kills, $parameters = array(), $key)
+	private static $killstorage = array();
+
+	public static function buildSummary(&$kills, $parameters, $options)
 	{
-		if ($kills == null || !is_array($kills) || sizeof($kills) == 0) return array();
+		$involvedEntities = array();
+		foreach($kills as $killID => $kill) static::addAllInvolved($involvedEntities, $killID);
 
-		$key = "related:$key";
-		$mc = Cache::get($key);
-		//if ($mc) return $mc;
+		$redTeam = static::findWinners($kills, "allianceID");
+		foreach($involvedEntities as $entity=>$chars) if (!in_array($entity, $redTeam)) $blueTeam[] = $entity;
 
-		// Determine which entity got on the most killmails
-		$involvedArray = self::findWinners($kills, $typeColumn = "allianceID");
+		if (isset($options["A"])) static::assignSides($options["A"], $redTeam, $blueTeam);
+		if (isset($options["B"])) static::assignSides($options["B"], $blueTeam, $redTeam);
 
-		// Sort the array
-		uasort($involvedArray, "Related::involvedArraySort");
-		reset($involvedArray);
+		$redInvolved = static::getInvolved($kills, $redTeam);
+		$blueInvolved = static::getInvolved($kills, $blueTeam);
 
-		// Determine sides based on who shot the most of who
-		$teamAKills = array();
-		$teamBKills = array();
-		self::filterKills($kills, $involvedArray, $teamAKills, $teamBKills);
+		$redKills = static::getKills($kills, $redTeam);
+		$blueKills = static::getKills($kills, $blueTeam);
 
-		$teamAKillIDs = array_keys($teamAKills);
-		$teamBKillIDs = array_keys($teamBKills);
+		static::addMoreInvolved($redInvolved, $redKills);
+		static::addMoreInvolved($blueInvolved, $blueKills);
 
-		$teamAList = array();
-		$teamBList = array();
-		self::hashPilots($teamBKills, $teamBList, $teamAList);
-		self::hashPilots($teamAKills, $teamAList, $teamBList);
+		$redTotals = static::getStatsKillList(array_keys($redKills));
+		$redTotals["pilotCount"] = sizeof($redInvolved);
+		$blueTotals = static::getStatsKillList(array_keys($blueKills));
+		$blueTotals["pilotCount"] = sizeof($blueInvolved);
 
-		$teamATotals = self::getStatsKillList($teamAKillIDs);
-                $teamATotals["pilotCount"] = sizeof($teamAList);
-		$teamBTotals = self::getStatsKillList($teamBKillIDs);
-                $teamBTotals["pilotCount"] = sizeof($teamBList);
-
-                uksort($teamAList, "self::shipGroupSort");
-                uksort($teamBList, "self::shipGroupSort");
-
-		$killHashes = self::buildKillHashArray($kills);
-                $teamAList = self::addInfo($teamAList, $killHashes);
-                $teamBList = self::addInfo($teamBList, $killHashes);
-
-		// Summarize data
+		$red = static::addInfo($redTeam);
+		asort($red);
+		$blue = static::addInfo($blueTeam);	
+		asort($blue);
 
 		$retValue = array(
 				"teamA" => array(
-					"list" => $teamAList,
-					"kills" => $teamAKills,
-					"totals" => $teamATotals,
+					"list" => $redInvolved,
+					"kills" => $redKills,
+					"totals" => $redTotals,
+					"entities" => $red,
 					),
 				"teamB" => array(
-					"list" => $teamBList,
-					"kills" => $teamBKills,
-					"totals" => $teamBTotals,
+					"list" => $blueInvolved,
+					"kills" => $blueKills,
+					"totals" => $blueTotals,
+					"entities" => $blue,
 					),
 				);
 
 		return $retValue;
 	}
 
-	private static function filterKills(&$kills, $involvedArray, &$team1, &$team2, $entity = null, $depth = 1)
+	private static function addAllInvolved(&$entities, $killID)
 	{
-		if ($depth > 2) return;
-		$i = array_keys($involvedArray);
-		if ($entity === null) $entity = array_shift($i);
-		if ($entity === 0) return;
-		$killIDs = @$involvedArray[$entity];
-		if ($killIDs === null) return;
+		$killjson = Killmail::get($killID);
+		$kill = json_decode($killjson, true);
 
-		foreach ($killIDs as $killID)
+		static::$killstorage[$killID] = $kill;
+
+		$victim = $kill["victim"];
+		static::addInvolved($entities, $victim);
+		$involved = $kill["attackers"];
+		foreach($involved as $entry) static::addInvolved($entities, $entry);
+	}
+
+	private static function addInvolved(&$entities, &$entry)
+	{
+		$entity = isset($entry["allianceID"]) && $entry["allianceID"] != 0 ? $entry["allianceID"] : $entry["corporationID"];
+		if (!isset($entities["$entity"])) $entities["$entity"] = array();
+		if (!in_array($entry["characterID"], $entities["$entity"])) $entities["$entity"][] = $entry["characterID"];
+	}
+
+	private static function getInvolved(&$kills, $team)
+	{
+		$involved = array();
+		foreach($kills as $kill)
 		{
-			$kill = @$kills[$killID];
-			if ($kill === null) continue;
-			$team2[$killID] = $kill;
-			self::filterKills($kills, $involvedArray, $team2, $team1, $kill["victim"]["allianceID"], $depth + 1);
-			self::filterKills($kills, $involvedArray, $team2, $team1, $kill["victim"]["corporationID"], $depth + 1);
-			self::filterKills($kills, $involvedArray, $team2, $team1, $kill["victim"]["characterID"], $depth + 1);
+			$kill = static::$killstorage[$kill["victim"]["killID"]];
+
+			$attackers = $kill["attackers"];
+			foreach($attackers as $entry)
+			{
+				$add = false;
+				if (in_array($entry["allianceID"], $team)) $add = true;
+				if (in_array($entry["corporationID"], $team)) $add = true;
+
+				if ($add)
+				{
+					$key = $entry["characterID"] . ":" . $entry["corporationID"] . ":" . $entry["allianceID"] . ":" . $entry["shipTypeID"];
+					if (!in_array($key, $involved)) $involved[$key] = $entry;
+				}
+			}
 		}
+		return $involved;
 	}
 
-	/**
-	 * @param string $typeColumn
-	 */
-	private static function findWinners($kills, $typeColumn)
+	private static function addMoreInvolved(&$team, $kills)
 	{
-		$involvedArray = array();
-		foreach ($kills as $killID=>$kill) {
-			$finalBlow = $kill["finalBlow"];
-			$added = self::addInvolvedEntity($involvedArray, $killID, $finalBlow["allianceID"]);
-			if (!$added) $added = self::addInvolvedEntity($involvedArray, $killID, $finalBlow["corporationID"]);
-			if (!$added) $added = self::addInvolvedEntity($involvedArray, $killID, $finalBlow["characterID"]);
-		}
-		return $involvedArray;
-	}
-
-	private static function addInvolvedEntity(&$involvedArray, &$killID, &$entity)
-	{
-		if ($entity == 0) return false;
-		if (!isset($involvedArray["$entity"])) $involvedArray["$entity"] = array();
-		if (!in_array($killID, $involvedArray["$entity"]))
+		foreach($kills as $kill)
 		{
-			$involvedArray["$entity"][] = $killID;
-			return true;
+			$victim = $kill["victim"];
+			Info::addInfo($victim);
+			if ($victim["characterID"] > 0 && $victim["groupID"] != 29)
+			{
+				$key = $victim["characterID"] . ":" . $victim["corporationID"] . ":" . $victim["allianceID"] . ":" . $victim["shipTypeID"];
+				$victim["destroyed"] = true;
+				$team[$key] = $victim;
+			}
 		}
-		return false;
 	}
 
-	public static function involvedArraySort($a, $b)
+	private static function getKills(&$kills, $team)
 	{
-		return sizeof($a) < sizeof($b);
+		$teamsKills = array();
+		foreach($kills as $killID=>$kill)
+		{
+			$victim = $kill["victim"];
+			$add = in_array($victim["allianceID"], $team) || in_array($victim["corporationID"], $team);
+
+			if ($add)
+			{
+				$teamsKills[$killID] = $kill;
+			}
+		}
+		return $teamsKills;
 	}
 
-	/**
-	 * @param array $kills
-	 * @return array
-	 */
-	private static function getStatsKillList(&$killIDs)
+
+
+	private static function getStatsKillList($killIDs)
 	{
 		$totalPrice = 0;
 		$totalPoints = 0;
@@ -164,144 +181,53 @@ class Related
 			    );
 	}
 
-	protected static function hashPilots($kills, &$teamBs, &$teamAs)
+	private static function addInfo(&$team)
 	{
-		$pilotsAdded = array();
-		ksort($kills);
-
-		$validEntities = array();
-		$validEntities["allis"] = array();
-		$validEntities["corps"] = array();
-		// Preprocess the opposition
-		foreach ($kills as $killID => $kill) {
-			$victim = $kill['victim'];
-
-			if ($victim["allianceID"] != 0) $validEntities["allis"][] = $victim["allianceID"];
-			if ($victim["corporationID"] != 0) $validEntities["corps"][] = $victim["corporationID"];
+		$retValue = array();
+		foreach($team as $entity) 
+		{
+			$alliName = Info::getAlliName($entity);
+			if ($alliName) $retValue[$entity] = $alliName;
+			else $retValue[$entity] = Info::getCorpName($entity);
 		}
-
-		foreach ($kills as $killID => $kill) {
-			$victim = $kill['victim'];
-			$characterID = $victim["characterID"];
-			$shipTypeID = $victim["shipTypeID"];
-			if (($shipTypeID == 0 || $shipTypeID == 670) && in_array($characterID, $pilotsAdded)) continue;
-			if ($shipTypeID != 670 && $shipTypeID != 0) $pilotsAdded[] = $characterID;
-			self::addRelatedPilots($teamBs, $kill, $victim);
-
-			$attackers = Db::query("select * from zz_participants where killID = :killID and isVictim = '0'",
-					array(":killID" => $killID), 3600);
-			foreach ($attackers as $attacker) {
-				$shipTypeID = $attacker["shipTypeID"];
-
-				if ($attacker["allianceID"] != 0 && in_array($attacker["allianceID"], $validEntities["allis"])) continue;
-				if (in_array($attacker["corporationID"], $validEntities["corps"])) continue;
-
-				if ($shipTypeID != 0 && $shipTypeID != 670) self::addRelatedPilots($teamAs, $kill, $attacker);
-				if (!in_array($attacker["characterID"], $pilotsAdded)) $pilotsAdded[] = $attacker["characterID"];
-			}
-			foreach ($attackers as $attacker) {
-				if (!in_array($attacker["characterID"], $pilotsAdded)) self::addRelatedPilots($teamAs, $kill, $attacker);
-			}
-		}
+		return $retValue;
 	}
 
 	/**
-	 * @param array $array
-	 * @param array $kill
-	 * @param array $pilot
+	 * @param string $typeColumn
 	 */
-	protected static function addRelatedPilots(&$array, &$kill, &$pilot)
+	private static function findWinners(&$kills, $typeColumn)
 	{
-		$characterID = $pilot['characterID'];
-		$corporationID = $pilot['corporationID'];
-		$allianceID = $pilot["allianceID"];
-		$shipTypeID = $pilot['shipTypeID'];
-
-		if ($characterID == 0) return;
-
-		if ($shipTypeID != 670 && $shipTypeID != 0) {
-			$podHash = "670|$corporationID|$characterID|$allianceID";
-			$s0Hash = "0|$corporationID|$characterID|$allianceID";
-			unset($array[$podHash]);
-			unset($array[$s0Hash]);
+		$involvedArray = array();
+		foreach ($kills as $killID=>$kill) {
+			$finalBlow = $kill["finalBlow"];
+			$added = self::addInvolvedEntity($involvedArray, $killID, $finalBlow["allianceID"]);
+			if (!$added) $added = self::addInvolvedEntity($involvedArray, $killID, $finalBlow["corporationID"]);
+			if (!$added) $added = self::addInvolvedEntity($involvedArray, $killID, $finalBlow["characterID"]);
 		}
-		$hash = "$shipTypeID|$corporationID|$characterID|$allianceID";
-		$array[$hash] = array("kill" => $kill, "pilot" => $pilot);
+		return array_keys($involvedArray);
 	}
 
-	protected static function buildKillHashArray($kills)
+
+
+	private static function addInvolvedEntity(&$involvedArray, &$killID, &$entity)
 	{
-		$hashes = array();
-		foreach($kills as $kill) {
-			$pilot = $kill["victim"];
-			$characterID = $pilot['characterID'];
-			$corporationID = $pilot['corporationID'];
-			$allianceID = $pilot["allianceID"];
-			$shipTypeID = $pilot['shipTypeID'];
-			$hash = "$shipTypeID|$corporationID|$characterID|$allianceID";
-			$hashes[$hash] = $pilot["killID"];
+		if ($entity == 0) return false;
+		if (!isset($involvedArray["$entity"])) $involvedArray["$entity"] = array();
+		if (!in_array($killID, $involvedArray["$entity"]))
+		{
+			$involvedArray["$entity"][] = $killID;
+			return true;
 		}
-		return $hashes;
+		return false;
 	}
 
-	/**
-	 * @param array $array
-	 * @param array $killHash
-	 * @return array
-	 */
-	private static function addInfo($array, $killHash)
+	private static function assignSides($assignees, &$teamA, &$teamB)
 	{
-		$results = array();
-		foreach ($array as $hash => $kill) {
-			$split = explode("|", $hash);
-			$row = array();
-			$row["shipTypeID"] = $split[0];
-			$row["corporationID"] = $split[1];
-			$row["characterID"] = $split[2];
-			$row["allianceID"] = $split[3];
-			$row["destroyed"] = in_array($hash, array_keys($killHash)) ? $killHash[$hash] : 0;
-			$podHash = "670|" . $row["corporationID"] . "|" . $row["characterID"] . "|" . $row["allianceID"];
-			$row["podded"] = in_array($podHash, $killHash) ? 1 : 0;
-			Info::addInfo($row);
-			$results[] = $row;
+		foreach($assignees as $id)
+		{
+			if (!isset($teamA[$id])) $teamA[] = $id;
+			if (($key = array_search($id, $teamB)) !== false) unset($teamB[$key]);
 		}
-		return $results;
-	}
-
-	/**
-	 * @param array $a
-	 * @param array $b
-	 * @return int|null|string
-	 */
-	public static function shipGroupSort($a, $b)
-	{
-		$split1 = explode("|", $a);
-		$split2 = explode("|", $b);
-		$shipTypeID1 = $split1[0];
-		$shipTypeID2 = $split2[0];
-
-		$volumeID1 = Db::queryField("select volume from ccp_invTypes where typeID = :typeID", "volume",
-				array(":typeID" => $shipTypeID1));
-		$volumeID2 = Db::queryField("select volume from ccp_invTypes where typeID = :typeID", "volume",
-				array(":typeID" => $shipTypeID2));
-
-		if ($volumeID1 != $volumeID2) return $volumeID2 - $volumeID1;
-
-		if ($shipTypeID1 == $shipTypeID2) {
-			if ($split1[1] == $split2[1]) {
-				return $split1[2] - $split2[2];
-			}
-			return $split1[1] - $split2[1];
-		}
-
-		$groupID1 = Db::queryField("select groupID from ccp_invTypes where typeID = :typeID", "groupID",
-				array(":typeID" => $shipTypeID1));
-		$groupID2 = Db::queryField("select groupID from ccp_invTypes where typeID = :typeID", "groupID",
-				array(":typeID" => $shipTypeID2));
-		if ($groupID1 == $groupID2) {
-			return $shipTypeID2 - $shipTypeID1;
-		}
-		if ($groupID1 == $groupID2) return 0;
-		return $groupID2 - $groupID1;
 	}
 }

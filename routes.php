@@ -68,8 +68,18 @@ $app->get("/kills(/:type)(/page/:page)/", function($type = NULL, $page = 1) use 
 });
 
 // View related kills
-$app->get("/related/:system/:time/(extended/:exHours/)", function($system, $time, $exHours = 0) use ($app) {
+$app->get("/related/:system/:time/(o/:options/)", function($system, $time, $options = "") use ($app) {
     include( "view/related.php" );
+});
+
+// View Battle Report
+$app->get("/br/:battleID/", function($battleID) use ($app) {
+    include( "view/battle_report.php" );
+});
+
+// View Battle Report
+$app->get("/brsave/", function() use ($app) {
+    include( "view/brsave.php" );
 });
 
 // View top
