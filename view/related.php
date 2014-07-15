@@ -64,7 +64,7 @@ if (!$mc)
 	$kills = Kills::getKills($parameters);
 	$summary = Related::buildSummary($kills, $parameters, $json_options);
 	$mc = array("summary" => $summary, "systemName" => $systemName, "regionName" => $regionName, "time" => $time, "exHours" => $exHours, "solarSystemID" => $systemID, "relatedTime" => $relatedTime, "options" => json_encode($json_options));
-	//Cache::set($key, $mc, 300);
+	Cache::set($key, $mc, 300);
 }
 
 $app->render("related.html", $mc);
