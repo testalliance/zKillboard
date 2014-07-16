@@ -30,6 +30,10 @@
 		<th class="col-lg-6" style="text-align: center"><h5>Team B ({{ teamBSize }} involved)</h5></th>
 	</tr>
 	<tr>
+		<td><a href="/related/{{ solarSystemID }}/{{ relatedTime }}/">Reset Report</a> </td>
+		<td style="text-align: right"><a href="/brsave/?sID={{ solarSystemID }}&dttm={{ relatedTime }}&options={{ options }}">Save Battle Report</a></td>
+	</tr>
+	<tr>
 		<td>
 			{% for entity, name in summary.teamA.entities %}
 				<div><a href="./?right={{entity}}"><span class="glyphicon glyphicon-circle-arrow-right"></span></a> {{ name }}</div>
@@ -40,10 +44,6 @@
 			<div>{{ name }} <a href="./?left={{entity}}"><span class="glyphicon glyphicon-circle-arrow-left"></a></div>
 			{% endfor %}
 		</td>
-	</tr>
-	<tr>
-		<td><a href="/related/{{ solarSystemID }}/{{ relatedTime }}/">Reset Report</a> </td>
-		<td style="text-align: right"><a href="/brsave/?sID={{ solarSystemID }}&dttm={{ relatedTime }}&options={{ options }}">Save Battle Report</a></td>
 	</tr>
 	<tr>
 		<td>{% set groupIDs = summary.teamA.totals.groupIDs %}{% include 'components/related_summary.html' %}</td>
