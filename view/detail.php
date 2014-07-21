@@ -115,6 +115,7 @@ $extra["crest"] = Db::queryRow("select killID, hash from zz_crest_killmail where
 $extra["prevKillID"] = Db::queryField("select killID from zz_participants where killID < :killID order by killID desc limit 1", "killID", array(":killID" => $id), 300);
 $extra["nextKillID"] = Db::queryField("select killID from zz_participants where killID > :killID order by killID asc limit 1", "killID", array(":killID" => $id), 300);
 $extra["warInfo"] = War::getKillIDWarInfo($id);
+$extra["insertTime"] = Db::queryField("select insertTime from zz_killmails where killID = :killID", "insertTime", array(":killID" => $id), 300);
 
 $systemID = $killdata["info"]["solarSystemID"];
 $data = Info::getWormholeSystemInfo($systemID);
