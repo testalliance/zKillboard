@@ -37,12 +37,14 @@ class Kills
 
 		$tables = array_unique($tables);
 		if (sizeof($tables) == 0) $tables[] = "zz_participants p";
+		if (sizeof($tables) > 2) throw new Exception("More than 2 tables not supported yet");
 
 		$tablePrefix = substr($tables[0], strlen($tables[0]) - 1, 1);
+		$tablePrefixOther = sizeof($tables) == 2 ? substr($tables[1], strlen($tables[1]) - 1, 1) : "p";
 
 		$query = "select distinct ${tablePrefix}.killID from ";
 		$query .= implode(" left join ", array_unique($tables));
-		if (sizeof($tables) == 2) $query .= " on ($tablePrefix.killID = p.killID) ";
+		if (sizeof($tables) == 2) $query .= " on ($tablePrefix.killID = ${tablePrefixOther}.killID) ";
 		if (sizeof($andWhereClauses) || sizeof($orWhereClauses)) {
 			$query .= " where ";
 			if (sizeof($orWhereClauses) > 0) {

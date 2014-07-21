@@ -144,8 +144,9 @@ class Filters
 			$killdttm = Db::queryField("select dttm from zz_participants where killID = :killID limit 1", "dttm", array(":killID" => $killID));
 			$whereClauses[] = "p.dttm >= '$killdttm'";
 		}
-		if (array_key_exists("war", $parameters)) {
-			$warID = (int)$parameters["war"];
+		if (array_key_exists("war", $parameters) || array_key_exists("warID", $parameters)) {
+			$warID = isset($parameters["war"]) ? (int)$parameters["war"] : $parameters["warID"];
+			$tables[] = "zz_participants p";
 			$tables[] = "zz_warmails w";
 			$whereClauses[] = "w.warID = $warID";
 		}

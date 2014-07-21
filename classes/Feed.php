@@ -34,46 +34,8 @@ class Feed
 		$userAgent = @$_SERVER["HTTP_USER_AGENT"];
 
 		if ($debug) Log::log("API Fetch: " . $_SERVER["REQUEST_URI"] . " (" . $ip . " / " . $userAgent . ")");
-		$tables = array();
-		$orWhereClauses = array();
-		$andWhereClauses = array();
-		Filters::buildFilters($tables, $orWhereClauses, $andWhereClauses, $parameters, true);
-
-		$tables = array_unique($tables);
-		//if (sizeof($tables) > 1) throw new Exception("Advanced multi-table searching is currently disabled");
-		if (sizeof($tables) == 0) $tables[] = "zz_participants p";
-
-		if (sizeof($tables) == 2) $tablePrefix = "k";
-		else $tablePrefix = substr($tables[0], strlen($tables[0]) - 1, 1);
-
-		$query = "select distinct ${tablePrefix}.killID from ";
-		$query .= implode(" left join ", array_unique($tables));
-		if (sizeof($tables) == 2) $query .= " on (k.killID = p.killID) ";
-		if (sizeof($andWhereClauses) || sizeof($orWhereClauses)) {
-			$query .= " where ";
-			if (sizeof($orWhereClauses) > 0) {
-				$andOr = array_key_exists("combined", $parameters) && $parameters["combined"] == true ? " or " : " and ";
-				$query .= " ( " . implode($andOr, $orWhereClauses) . " ) ";
-				if (sizeof($andWhereClauses)) $query .= " and ";
-			}
-			if (sizeof($andWhereClauses)) $query .= implode(" and ", $andWhereClauses);
-		}
-
-		if (array_key_exists("limit", $parameters) && $parameters["limit"] < 200) {
-			$limit = $parameters["limit"];
-			$offset = 0;
-		} else {
-			$limit = 200; // Hardcoded, yes. This number should never change. -- Squizz
-			$page = array_key_exists("page", $parameters) ? (int)$parameters["page"] : 1;
-			$offset = ($page - 1) * $limit;
-		}
-
-		$orderDirection = array_key_exists("orderDirection", $parameters) ? $parameters["orderDirection"] : "desc";
-		$query .= " order by ${tablePrefix}.dttm $orderDirection limit $offset, $limit";
-
-		$cacheTime = 3600;
-
-		$kills = Db::query($query, array(), $cacheTime);
+		$parameters["limit"] = 200; // Always 200 -- Squizz
+		$kills = Kills::getKills($parameters, true, false);
 
 		return self::getJSON($kills, $parameters);
 	}
