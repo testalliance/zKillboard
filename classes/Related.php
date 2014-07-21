@@ -29,6 +29,7 @@ class Related
 		$involvedEntities = array();
 		foreach($kills as $killID => $kill) static::addAllInvolved($involvedEntities, $killID);
 
+		$blueTeam = array();
 		$redTeam = static::findWinners($kills, "allianceID");
 		foreach($involvedEntities as $entity=>$chars) if (!in_array($entity, $redTeam)) $blueTeam[] = $entity;
 
