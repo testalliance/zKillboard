@@ -47,7 +47,11 @@ class cli_crestapi implements cliCommand
 		$timer = new Timer();
 
 		do {
-			$crests = $db->query("select * from zz_crest_killmail where processed = 0 order by killID desc limit 30", array(), 0);
+			// Put priority on unknown kills first
+			$crests = $db->query("select c.* from zz_crest_killmail c left join zz_killmails k on (c.killID = k.killID) where c.processed = 0 and k.killID is null order by killID desc limit 30", array(), 0);
+Log::log("crest size: " . count($crests));
+			// If no unknown kills, then check the rest
+			if (count($crests) == 0) $crests = $db->query("select * from zz_crest_killmail where processed = 0 order by killID desc limit 30", array(), 0);
 			foreach ($crests as $crest) {
 				try {
 					$now = $timer->stop();
