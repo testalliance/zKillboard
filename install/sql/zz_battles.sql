@@ -4,7 +4,7 @@ CREATE TABLE `zz_battles` (
   `battleID` int(11) NOT NULL AUTO_INCREMENT,
   `solarSystemID` int(11) NOT NULL,
   `solarSystemName` varchar(100) NOT NULL,
-  `dttm` datetime NOT NULL,
+  `dttm` varchar(16) NOT NULL,
   `involved` int(11) NOT NULL,
   `kills` int(11) NOT NULL,
   PRIMARY KEY (`battleID`),
