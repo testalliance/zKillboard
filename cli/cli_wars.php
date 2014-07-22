@@ -51,6 +51,7 @@ class cli_wars implements cliCommand
 
 			foreach ($warRows as $warRow)
 			{
+				if ($timer->stop() > 65000) continue;
 				$id = $warRow["warID"];
 				$href = "https://public-crest.eveonline.com/wars/$id/";
 				$warInfo = Perry::fromUrl($href);
@@ -62,12 +63,17 @@ class cli_wars implements cliCommand
 				if ($prevKills != $currKills)
 				{
 					$kmHref = $warInfo->killmails;
+					$warKillCount = Db::queryField("select count(*) count from zz_warmails where warID = :id", "count", array(":id" => $id), 0);
+					$page = floor(($warKillCount / 2000) - 1);
+					if ($page > 1) $kmHref .= "?page=$page";
 					while ($kmHref != null)
 					{
+						if ($timer->stop() > 65000) continue;
 						$killmails = json_decode(file_get_contents($kmHref), true);
 
 						foreach($killmails["items"] as $kill)
 						{
+							if ($timer->stop() > 65000) continue;
 							$href = $kill["href"];
 							$exploded = explode("/", $href);
 							$killID = $exploded[4];
@@ -79,12 +85,11 @@ class cli_wars implements cliCommand
 						}
 						$next = @$killmails["next"]["href"];
 						if ($next != $kmHref) $kmHref = $next;
-						/* else */$kmHref = null;
-						if ($kmHref != null) Log::log($kmHref);
+						else $kmHref = null;
 					}
 				}
 
-				$db->execute("update zz_wars set defender = :defender, aggressor = :aggressor, timeDeclared = :timeDeclared, timeStarted = :timeStarted, timeFinished = :timeFinished, agrShipsKilled = :agrShipsKilled, dfdShipsKilled = :dfdShipsKilled, mutual = :mutual, openForAllies = :openForAllies, agrIskKilled = :agrIskKilled, dfdIskKilled = :dfdIskKilled, lastChecked = now() where warID = :warID", array(
+				if ($timer->stop() < 65000) $db->execute("update zz_wars set defender = :defender, aggressor = :aggressor, timeDeclared = :timeDeclared, timeStarted = :timeStarted, timeFinished = :timeFinished, agrShipsKilled = :agrShipsKilled, dfdShipsKilled = :dfdShipsKilled, mutual = :mutual, openForAllies = :openForAllies, agrIskKilled = :agrIskKilled, dfdIskKilled = :dfdIskKilled, lastChecked = now() where warID = :warID", array(
 							":aggressor" => $warInfo->aggressor->id,
 							":defender" => $warInfo->defender->id,
 							":timeDeclared" => $warInfo->timeDeclared,
