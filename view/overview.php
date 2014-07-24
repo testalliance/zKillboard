@@ -63,6 +63,7 @@ $parameters["limit"] = $limit;
 $parameters["page"] = $page;
 try {
 	$detail = call_user_func($map[$key]["details"], $id, $parameters);
+	if (isset($detail["valid"]) && $detail["valid"] == false) $app->notFound();
 } catch (Exception $ex) 
 {
 	$app->render("error.html", array("message" => "There was an error fetching information for the $key you specified."));
