@@ -588,10 +588,16 @@ class Info
 	public static function getPilotDetails($id, $parameters = array())
 	{
 		$data = Db::queryRow("select characterID, corporationID, allianceID, factionID from zz_participants where characterID = :id and dttm >= date_sub(now(), interval 7 day) order by killID desc limit 1", array(":id" => $id), 3600);
-		if (sizeof($data) == 0) {
+		if (sizeof($data) == 0)
+		{
 			$data = Db::queryRow("select characterID, corporationID, allianceID, 0 factionID from zz_characters where characterID = :id", array(":id" => $id));
 		}
-		if (sizeof($data) == 0) $data["characterID"] = $id;
+		if (sizeof($data) == 0)
+		{
+			$data["characterID"] = $id;
+			$data["valid"] = false;
+			return $data;
+		}
 		self::addInfo($data);
 		if (isset($data["corporationID"])) $data["isCEO"] = Db::queryField("select count(*) count from zz_corporations where ceoID = :charID and corporationID = :corpID", "count", array(":charID" => $id, ":corpID" => $data["corporationID"]));
 		else $data["isCEO"] = false;
