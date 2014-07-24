@@ -133,14 +133,14 @@ class Filters
 		if (array_key_exists("beforeKillID", $parameters)) {
 			$killID = (int)$parameters["beforeKillID"];
 			$tables[] = "zz_participants p";
-			$whereClauses[] = "killID < $killID";
+			$whereClauses[] = "p.killID < $killID";
 			$killdttm = Db::queryField("select dttm from zz_participants where killID = :killID limit 1", "dttm", array(":killID" => $killID));
 			$whereClauses[] = "p.dttm <= '$killdttm'";
 		}
 		if (array_key_exists("afterKillID", $parameters)) {
 			$killID = (int)$parameters["afterKillID"];
 			$tables[] = "zz_participants p";
-			$whereClauses[] = "killID > $killID";
+			$whereClauses[] = "p.killID > $killID";
 			$killdttm = Db::queryField("select dttm from zz_participants where killID = :killID limit 1", "dttm", array(":killID" => $killID));
 			$whereClauses[] = "p.dttm >= '$killdttm'";
 		}
