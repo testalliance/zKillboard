@@ -74,8 +74,8 @@ class Filters
 				$exHours = (int)$parameters["exHours"];
 				if ($exHours > 1 && $exHours <= 12) $hourModifier = $exHours;
 			}
-			$whereClauses[] = "p.dttm >= '" . date("Y:m:d H:i:00", $unixTime - ($hourModifier * 3600)) . "'";
-			$whereClauses[] = "p.dttm <= '" . date("Y:m:d H:i:00", $unixTime + ($hourModifier * 3600)) . "'";
+			$whereClauses[] = "p.dttm >= '" . date("Y-m-d H:i:00", $unixTime - ($hourModifier * 3600)) . "'";
+			$whereClauses[] = "p.dttm <= '" . date("Y-m-d H:i:00", $unixTime + ($hourModifier * 3600)) . "'";
 			$parameters["limit"] = 10000;
 		}
 		if (array_key_exists("startTime", $parameters)) {
@@ -145,7 +145,7 @@ class Filters
 			$whereClauses[] = "p.dttm >= '$killdttm'";
 		}
 		if (array_key_exists("war", $parameters) || array_key_exists("warID", $parameters)) {
-			$warID = isset($parameters["war"]) ? (int)$parameters["war"] : $parameters["warID"];
+			$warID = isset($parameters["war"]) ? (int)$parameters["war"] : (int)$parameters["warID"];
 			$tables[] = "zz_participants p";
 			$tables[] = "zz_warmails w";
 			$whereClauses[] = "w.warID = $warID";
