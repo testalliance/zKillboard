@@ -74,8 +74,8 @@ class Filters
 				$exHours = (int)$parameters["exHours"];
 				if ($exHours > 1 && $exHours <= 12) $hourModifier = $exHours;
 			}
-			$whereClauses[] = "p.dttm >= '" . date("Y:m:d H:i:00", $unixTime - ($hourModifier * 3600)) . "'";
-			$whereClauses[] = "p.dttm <= '" . date("Y:m:d H:i:00", $unixTime + ($hourModifier * 3600)) . "'";
+			$whereClauses[] = "p.dttm >= '" . date("Y-m-d H:i:00", $unixTime - ($hourModifier * 3600)) . "'";
+			$whereClauses[] = "p.dttm <= '" . date("Y-m-d H:i:00", $unixTime + ($hourModifier * 3600)) . "'";
 			$parameters["limit"] = 10000;
 		}
 		if (array_key_exists("startTime", $parameters)) {
