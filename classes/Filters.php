@@ -145,7 +145,7 @@ class Filters
 			$whereClauses[] = "p.dttm >= '$killdttm'";
 		}
 		if (array_key_exists("war", $parameters) || array_key_exists("warID", $parameters)) {
-			$warID = isset($parameters["war"]) ? (int)$parameters["war"] : $parameters["warID"];
+			$warID = isset($parameters["war"]) ? (int)$parameters["war"] : (int)$parameters["warID"];
 			$tables[] = "zz_participants p";
 			$tables[] = "zz_warmails w";
 			$whereClauses[] = "w.warID = $warID";
