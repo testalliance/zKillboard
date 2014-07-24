@@ -110,6 +110,7 @@ class Related
 				if ($add)
 				{
 					$key = $entry["characterID"] . ":" . $entry["corporationID"] . ":" . $entry["allianceID"] . ":" . $entry["shipTypeID"];
+					$entry["shipName"] = Info::getItemName($entry["shipTypeID"]);
 					if (!in_array($key, $involved)) $involved[$key] = $entry;
 				}
 			}
@@ -126,7 +127,7 @@ class Related
 			if ($victim["characterID"] > 0 && $victim["groupID"] != 29)
 			{
 				$key = $victim["characterID"] . ":" . $victim["corporationID"] . ":" . $victim["allianceID"] . ":" . $victim["shipTypeID"];
-				$victim["destroyed"] = true;
+				$victim["destroyed"] = $victim["killID"];
 				$team[$key] = $victim;
 			}
 		}
