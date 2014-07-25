@@ -177,6 +177,8 @@ subs:
 					$eftarray["high"][$itm["flag"]][] = array("typeName" => $itm["typeName"], "typeID" => $itm["typeID"], "charge" => true);
 				if($itm["flagName"] == "Mid Slots") // mid slot ammo
 					$eftarray["mid"][$itm["flag"]][] = array("typeName" => $itm["typeName"], "typeID" => $itm["typeID"], "charge" => true);
+				if($itm["flagName"] == "Low Slots") // mid slot ammo
+					$eftarray["low"][$itm["flag"]][] = array("typeName" => $itm["typeName"], "typeID" => $itm["typeID"], "charge" => true);
 			}
 		}
 		foreach($eftarray as $key=>$value) {
