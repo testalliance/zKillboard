@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-use Perry\Perry;
 
 class cli_wars implements cliCommand
 {
@@ -53,8 +52,9 @@ class cli_wars implements cliCommand
 			{
 				if ($timer->stop() > 65000) continue;
 				$id = $warRow["warID"];
+
 				$href = "https://public-crest.eveonline.com/wars/$id/";
-				$warInfo = Perry::fromUrl($href);
+				$warInfo = Util::getCrest($href);
 
 				$prevKills = $warRow["agrShipsKilled"] + $warRow["dfdShipsKilled"];
 				$currKills = $warInfo->aggressor->shipsKilled + $warInfo->defender->shipsKilled;
@@ -69,12 +69,12 @@ class cli_wars implements cliCommand
 					while ($kmHref != null)
 					{
 						if ($timer->stop() > 65000) continue;
-						$killmails = json_decode(file_get_contents($kmHref), true);
+						$killmails = Util::getCrest($kmHref);
 
-						foreach($killmails["items"] as $kill)
+						foreach($killmails->items as $kill)
 						{
 							if ($timer->stop() > 65000) continue;
-							$href = $kill["href"];
+							$href = $kill->href;
 							$exploded = explode("/", $href);
 							$killID = $exploded[4];
 							$hash = $exploded[5];
@@ -83,7 +83,7 @@ class cli_wars implements cliCommand
 							$db->execute("insert ignore into zz_warmails values (:killID, :warID)", array(":killID" => $killID, ":warID" => $id));
 							$added += $aff;
 						}
-						$next = @$killmails["next"]["href"];
+						$next = @$killmails->next->href;
 						if ($next != $kmHref) $kmHref = $next;
 						else $kmHref = null;
 					}

@@ -38,6 +38,12 @@ class Util
 		return $stop904 > 0;
 	}
 
+	public static function getCrest($url)
+	{
+		\Perry\Setup::$fetcherOptions = ["connect_timeout" => 15, "timeout" => 30];
+		return \Perry\Perry::fromUrl($url);
+	}
+
 	/**
 	 * @param integer $keyID
 	 * @param string $vCode
