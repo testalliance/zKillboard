@@ -1,3 +1,4 @@
+{% set shortLength = 100 %}
 {% if detail.characterName %}{% set name = detail.characterName %}
 {% elseif detail.corporationName %}{% set name = detail.corporationName %}
 {% elseif detail.allianceName %}{% set name = detail.allianceName %}
@@ -13,9 +14,12 @@
 <h2><small>Overview for</small> {{ name }}</h2>
 {% endif %}
 
-<div class="row">
-	<div class="col-lg-6">
+<div class="row" style="margin: 0px; padding: 0px;">
+	<div class="col-lg-6" style="margin: 0px; padding: 0px;">
+		<table style="margin: 0px; padding: 0px; background-color: transparent;" class="table table-condensed">
+		<tr><td style="width: 130px;">
 		{% include 'components/info_top_image.html' %}
+		</td><td>
 		<div itemscope class="pull-left">
 		{% if not detail.groupShips %}
 	        <table class="table table-condensed">
@@ -108,6 +112,7 @@
         </table>
 		{% endif %}
 	</div>
+	</td></tr></table>
 	</div>
 	<div class="col-lg-6 pull-right">
 		{% include 'components/stats_box.html' %}
