@@ -79,6 +79,7 @@ $settings["baseaddr"] = prompt("Domain name?", "zkillboard.com");
 
 // Log
 $settings["logfile"] = prompt("Log file location?", "/var/log/zkb.log");
+touch($settings["logfile"]); // Touch the log file so that it'll actually get created.
 
 // Image server
 out("Image and API server.");
