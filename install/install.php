@@ -114,17 +114,29 @@ try
 	out("|g|Config file written, now attempting to initialize settings");
 	require_once( "$base/../config.php" );
 
-	out("Installing composer:\n");
-	chdir("$base/..");
+	// Check if composer isn't already installed
+	$location = exec("which composer");
+	if(!$location) // Composer isn't installed
+	{
+		out("Installing composer:\n");
+		chdir("$base/..");
 
-	passthru("php -r \"eval('?>'.file_get_contents('https://getcomposer.org/installer'));\"");
+		passthru("php -r \"eval('?>'.file_get_contents('https://getcomposer.org/installer'));\"");
 
-	chdir("$base/..");
-	out("\nInstalling vendor files");
-	passthru("php composer.phar install --optimize-autoloader");
+		chdir("$base/..");
+		out("\nInstalling vendor files");
+		passthru("php composer.phar install --optimize-autoloader");
 
-	out("\n|g|composer install complete!");
-
+		out("\n|g|composer install complete!");
+	}
+	else // Composer IS installed
+	{
+		out("Using already installed composer:\n");
+		chdir("$base/..");
+		out("\nInstalling vendor files.");
+		passthru("composer install --optimize-autoloader");
+		out("\n|g|Vendor file installation completed.");
+	}
 	chdir("$base/..");
 
 	require_once("$base/../init.php" );
