@@ -1,8 +1,6 @@
 {% if pageType == "kills" or pageType == "overview" or pageType == "solo" or pageType=="losses" %}
 	{% set pageBase = requestUriPager %}
-{% elseif pageType == "subdomain" %}
-	{% set pageBase = '/' %}
-{% elseif pageType == "index" %}
+{% elseif (pageType == "index" or pageType == "subdomain") %}
 	{% set pageBase = "/kills/" %}
 {% else %}
 	{% set pageBase = requesturi %}
