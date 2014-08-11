@@ -94,7 +94,12 @@ class Killmail
 		$victimID = $victim["characterID"] == 0 ? "None" : $victim["characterID"];
 
 		$attackers = $killmail["attackers"];
-		$attacker = $attackers[0];
+		$attacker = null;
+		foreach($attackers as $att)
+		{
+			if ($att["finalBlow"] != 0) $attacker = $att;
+		}
+		if ($attacker == null) $attacker = $attackers[0];
 		$attackerID = $attacker["characterID"] == 0 ? "None" : $attacker["characterID"];
 
 		$shipTypeID = $victim["shipTypeID"];

@@ -21,6 +21,8 @@ if (!isset($input[1])) $app->redirect("/");
 $id = $input[1];
 $pageType = @$input[2];
 
+if (strlen("$id") > 11) $app->redirect("/");
+
 if ($pageType == "history") $app->redirect("../stats/");
 
 $validPageTypes = array("overview", "kills", "losses", "top", "topalltime", "solo", "stats", "wars", "supers");
