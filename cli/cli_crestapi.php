@@ -75,7 +75,7 @@ class cli_crestapi implements cliCommand
 					$json = json_encode($killmail);
 					$killmailHash = Util::getKillHash(null, json_decode($json));
 
-					$db->execute("insert ignore into zz_killmails (killID, hash, source, kill_json) values (:killID, :hash, :source, :json)", array(":killID" => $killID, ":hash" => $killmailHash, ":source" => "crest:$killID", ":json" => $json));
+					$c = $db->execute("insert ignore into zz_killmails (killID, hash, source, kill_json) values (:killID, :hash, :source, :json)", array(":killID" => $killID, ":hash" => $killmailHash, ":source" => "crest:$killID", ":json" => $json));
 					$db->execute("update zz_crest_killmail set processed = 1 where killID = :killID", array(":killID" => $killID));
 					// Share with zKillboard
 					if ($baseAddr != "zkillboard.com") file_get_contents("https://zkillboard.com/crestmail/$killID/$hash/");
@@ -84,7 +84,7 @@ class cli_crestapi implements cliCommand
 					$xml = Util::xmlOut(array($killmail), array());
 					Util::sendToEveKill("0_0_$killID.xml", $xml);
 
-					$count++;
+					if ($c > 0) $count++;
 					$diff = $timer->stop() - $now;
 					if ($diff < 200)
 					{
