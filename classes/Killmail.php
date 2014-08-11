@@ -84,4 +84,26 @@ class Killmail
 		$file = "$dir/k$midDir.json";
 		return $file;
 	}
+
+	// https://forums.eveonline.com/default.aspx?g=posts&m=4900335#post4900335
+	public static function getCrestHash($killID)
+	{
+		$killmail = json_decode(Killmail::get($killID), true);
+
+		$victim = $killmail["victim"];
+		$victimID = $victim["characterID"] == 0 ? "None" : $victim["characterID"];
+
+		$attackers = $killmail["attackers"];
+		$attacker = $attackers[0];
+		$attackerID = $attacker["characterID"] == 0 ? "None" : $attacker["characterID"];
+
+		$shipTypeID = $victim["shipTypeID"];
+
+		$dttm = (strtotime($killmail["killTime"]) * 10000000) + 116444736000000000;
+
+		$string = "$victimID$attackerID$shipTypeID$dttm";
+
+		$sha = sha1($string);
+		return $sha;
+	}
 }
