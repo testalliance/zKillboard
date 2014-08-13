@@ -25,7 +25,7 @@ class cli_crestapi implements cliCommand
 
 	/**
 	 * @return string|array
-	*/
+	 */
 	public function getAvailMethods()
 	{
 		return ""; // Space seperated list
@@ -59,7 +59,22 @@ class cli_crestapi implements cliCommand
 
 					$url = "http://public-crest.eveonline.com/killmails/$killID/$hash/";
 					if ($debug) Log::log($url);
-					$perrymail = \Perry\Perry::fromUrl($url);
+
+					$ch = curl_init();
+					curl_setopt($ch, CURLOPT_URL, $url);
+					curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+					curl_setopt($ch, CURLOPT_USERAGENT, "API Fetcher for http://$baseAddr");
+					$body = curl_exec($ch);
+					$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+					if ($httpCode != 200)
+					{
+						Db::execute("update zz_crest_killmail set processed = :i where killID = :killID", array(":i" => (-1 * $httpCode), ":killID" => $killID));
+						usleep(250000);
+						continue;
+					}
+
+					$perrymail = json_decode($body, false);
 
 					$killmail = array();
 					$killmail["killID"] = (int) $killID;
@@ -82,13 +97,13 @@ class cli_crestapi implements cliCommand
 
 					// Write this file to eve-kill's parse directory
 					$xml = Util::xmlOut(array($killmail), array());
-					Util::sendToEveKill("0_0_$killID.xml", $xml);
+					//Util::sendToEveKill("0_0_$killID.xml", $xml);
 
 					if ($c > 0) $count++;
 					$diff = $timer->stop() - $now;
-					if ($diff < 200)
+					if ($diff < 100)
 					{
-						$sleepTime = 200 - $diff;
+						$sleepTime = 100 - $diff;
 						usleep(1000 * $sleepTime);
 					}
 				} catch (Exception $ex) {
