@@ -17,4 +17,16 @@
  */
 
 if ($killID > 0 && strlen($hash) == 40)
-	Db::execute("insert ignore into zz_crest_killmail (killID, hash) values (:killID, :hash)", array(":killID" => $killID, ":hash" => $hash));
+{
+	$i = Db::execute("insert ignore into zz_crest_killmail (killID, hash) values (:killID, :hash)", array(":killID" => $killID, ":hash" => $hash));
+	if ($i)
+	{
+		// Do we already have this mail? If not, announce it
+		$count = Db::queryField("select count(*) count from zz_killmails where killID = :killID", "killID", array(":killID" => $killID), 0);
+		if ($count == 0)
+		{
+			$ip = $_SERVER["REMOTE_ADDR"];
+			Log::log("Remote CREST Submission: $killID ($ip)");
+		}
+	}
+}
