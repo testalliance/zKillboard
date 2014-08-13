@@ -44,7 +44,7 @@ class cli_summary implements cliCommand
 		$killsAdded = (int) Storage::retrieve("KillsAdded");
 		Storage::store("KillsAdded", 0);
 		Db::execute("update zz_storage set contents = 0 where locker = 'KillsAdded'");
-		if ($beSocial) Log::irc("|g|$killsAdded|n| kills processed.");
+		if ($beSocial) Log::irc("|g|" . number_format($killsAdded, 0) . "|n| kills processed.");
 
 		$lastActualKills = $db->queryField("select contents count from zz_storage where locker = 'actualKills'", "count", array(), 0);
 		$actualKills = $db->queryField("select count(*) count from zz_killmails where processed != 0", "count", array(), 0);
