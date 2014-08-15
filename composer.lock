@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "b47f77381626ceb7de2f5bedf9cebb45",
+    "hash": "8484b92d751739da72ad0f371b48a939",
     "packages": [
         {
             "name": "3rdpartyeve/perry",
@@ -48,17 +48,20 @@
         },
         {
             "name": "3rdpartyeve/phealng",
-            "version": "1.0.0",
+            "version": "1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/3rdpartyeve/phealng.git",
-                "reference": "7fe9822b671c5f5d6a0c6dcb8d0a31ec9b4e5980"
+                "reference": "9ade7445bfbb7897184f76a48ff35b1b5b76855f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/3rdpartyeve/phealng/zipball/7fe9822b671c5f5d6a0c6dcb8d0a31ec9b4e5980",
-                "reference": "7fe9822b671c5f5d6a0c6dcb8d0a31ec9b4e5980",
+                "url": "https://api.github.com/repos/3rdpartyeve/phealng/zipball/9ade7445bfbb7897184f76a48ff35b1b5b76855f",
+                "reference": "9ade7445bfbb7897184f76a48ff35b1b5b76855f",
                 "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
             },
             "type": "library",
             "autoload": {
@@ -89,7 +92,7 @@
                 "Pheal",
                 "PhealNG"
             ],
-            "time": "2014-05-10 11:07:18"
+            "time": "2014-06-17 10:36:52"
         },
         {
             "name": "cvweiss/zcache",
@@ -204,12 +207,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/erusev/parsedown.git",
-                "reference": "e33ac1c56ea591f21b9cf2fa74356ef708d4e130"
+                "reference": "9437766539f6f88e748e7b6183ea31f78e154df5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/erusev/parsedown/zipball/e33ac1c56ea591f21b9cf2fa74356ef708d4e130",
-                "reference": "e33ac1c56ea591f21b9cf2fa74356ef708d4e130",
+                "url": "https://api.github.com/repos/erusev/parsedown/zipball/9437766539f6f88e748e7b6183ea31f78e154df5",
+                "reference": "9437766539f6f88e748e7b6183ea31f78e154df5",
                 "shasum": ""
             },
             "type": "library",
@@ -235,7 +238,7 @@
                 "markdown",
                 "parser"
             ],
-            "time": "2014-06-18 09:27:25"
+            "time": "2014-08-13 22:27:48"
         },
         {
             "name": "filp/whoops",
@@ -358,16 +361,16 @@
         },
         {
             "name": "guzzlehttp/streams",
-            "version": "1.4.0",
+            "version": "1.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/streams.git",
-                "reference": "3b761a328e5ed6ed519e960aded95d7acbe77894"
+                "reference": "fb0d1ee29987c2bdc59867bffaade6fc88c2675f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/streams/zipball/3b761a328e5ed6ed519e960aded95d7acbe77894",
-                "reference": "3b761a328e5ed6ed519e960aded95d7acbe77894",
+                "url": "https://api.github.com/repos/guzzle/streams/zipball/fb0d1ee29987c2bdc59867bffaade6fc88c2675f",
+                "reference": "fb0d1ee29987c2bdc59867bffaade6fc88c2675f",
                 "shasum": ""
             },
             "require": {
@@ -379,7 +382,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.4.x-dev"
+                    "dev-master": "1.5-dev"
                 }
             },
             "autoload": {
@@ -407,7 +410,7 @@
                 "Guzzle",
                 "stream"
             ],
-            "time": "2014-07-19 18:43:42"
+            "time": "2014-08-10 23:57:01"
         },
         {
             "name": "ircmaxell/password-compat",
