@@ -1,6 +1,6 @@
 {
 	"require": {
-		"3rdpartyeve/phealng": "1.0.*",
+		"3rdpartyeve/phealng": "1.*",
 		"3rdpartyeve/perry": "1.*",
 		"phpmailer/phpmailer": "*",
 		"mobiledetect/mobiledetectlib": "*",
