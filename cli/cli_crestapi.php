@@ -105,7 +105,7 @@ class cli_crestapi implements cliCommand
 					$diff = $timer->stop() - $now;
 					if ($diff < 100)
 					{
-						$sleepTime = 100 - $diff;
+						$sleepTime = 50 - $diff;
 						usleep(1000 * $sleepTime);
 					}
 				} catch (Exception $ex) {
