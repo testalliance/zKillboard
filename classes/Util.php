@@ -228,6 +228,7 @@ class Util
 				break;
 				case "beforeKillID":
 				case "afterKillID":
+				case "killID":
 					if (!is_numeric($value)) throw new Exception("$value is not a valid entry for $key");
 					$parameters[$key] = (int) $value;
 				break;
