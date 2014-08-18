@@ -2,7 +2,6 @@
 <hr/>
 ### Kills
 {kills} kills processed ({percentage}%)<br>
-{total} total kills in the database<br>
 ######*These numbers are updated hourly...*
 
 ### API
