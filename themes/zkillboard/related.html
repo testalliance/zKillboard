@@ -36,12 +36,12 @@
 	<tr>
 		<td>
 			{% for entity, name in summary.teamA.entities %}
-				<div><a href="./?right={{entity}}"><span class="glyphicon glyphicon-circle-arrow-right"></span></a> {{ name }}</div>
+				<div><a rel="nofollow" href="./?right={{entity}}"><span class="glyphicon glyphicon-circle-arrow-right"></span></a> {{ name }}</div>
 			{% endfor %}
 		</td>
 		<td style="text-align: right;">
 			{% for entity, name in summary.teamB.entities %}
-			<div>{{ name }} <a href="./?left={{entity}}"><span class="glyphicon glyphicon-circle-arrow-left"></a></div>
+			<div>{{ name }} <a rel="nofollow" href="./?left={{entity}}"><span class="glyphicon glyphicon-circle-arrow-left"></a></div>
 			{% endfor %}
 		</td>
 	</tr>
