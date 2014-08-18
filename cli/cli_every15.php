@@ -37,6 +37,8 @@ class cli_every15 implements cliCommand
 
 	public function execute($parameters, $db)
 	{
+		global $baseDir;
+
 		$p = array();
 		$numDays = 7;
 		$p["limit"] = 10;
@@ -54,5 +56,9 @@ class cli_every15 implements cliCommand
 		Storage::store("TopIsk", json_encode(Stats::getTopIsk(array("pastSeconds" => ($numDays*86400), "limit" => 5))));
 		Storage::store("TopPods", json_encode(Stats::getTopIsk(array("groupID" => 29, "pastSeconds" => ($numDays*86400), "limit" => 5))));
 		Storage::store("TopPoints", json_encode(Stats::getTopPoints("killID", array("losses" => true, "pastSeconds" => ($numDays*86400), "limit" => 5))));
+
+                // Clean up the related killmails cache
+                $cache = new FileCache($baseDir . "/cache/related/");
+                $cache->cleanUp();
 	}
 }
