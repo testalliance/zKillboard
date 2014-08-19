@@ -35,6 +35,8 @@ class cli_crestHashGenerate implements cliCommand
 
 	public function execute($parameters, $db)
 	{
+		$count = Db::queryField("select count(*) count from zz_crest_killmail where processed = 0", "count", array(), 0);
+		if ($count > 10000) return;
 		$timer = new Timer();
 		while ($timer->stop() < 59000)
 		{
