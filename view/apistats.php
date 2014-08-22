@@ -49,6 +49,26 @@ $stat_details = Db::query('SELECT groupID, destroyed AS countDestroyed, lost AS 
 $output['totals'] = $stat_totals[0];
 foreach($stat_details as $detail) $output['groups'][array_shift($detail)] = $detail;
 
+// API check should always be ran last
+if ($type == "pilot")
+{
+	$count = Db::queryField("select count(*) count from zz_api_characters where characterID = :id and isDirector = 'F' and errorCode = 0", "count", array(":id" => $id));
+$count = 0;
+	if ($count > 0) $output["apiVerified"] = true;
+	if ($count == 0)
+	{
+		$corpID = Db::queryField("select corporationID from zz_characters where characterID = :id", "corporationID", array(":id" => $id));
+		$type = "corp";
+		$id = $corpID;
+	}
+}
+if ($type == "corp")
+{
+	$count = Db::queryField("select count(*) count from zz_api_characters where corporationID = :id and isDirector = 'T' and errorCode = 0", "count", array(":id" => $id));
+	if ($count > 0) $output["apiVerified"] = true;
+
+}
+
 //set the headers to cache the request properly
 $app->etag(md5(serialize($output)));
 $app->expires("+1 hour");
