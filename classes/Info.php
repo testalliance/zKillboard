@@ -272,7 +272,7 @@ class Info
 	 */
 	public static function getFactionID($name)
 	{
-		$data = Db::queryRow("select * from zz_factions where name = :name", array(":name" => $name));
+		$data = Db::queryRow("select * from ccp_zfactions where name = :name", array(":name" => $name));
 		return isset($data["factionID"]) ? $data["factionID"] : null;
 	}
 
@@ -283,7 +283,7 @@ class Info
 	 */
 	public static function getFactionName($id)
 	{
-		$data = Db::queryRow("select * from zz_factions where factionID = :id", array(":id" => $id));
+		$data = Db::queryRow("select * from ccp_zfactions where factionID = :id", array(":id" => $id));
 		return isset($data["name"]) ? $data["name"] : "Faction $id";
 	}
 
@@ -517,8 +517,8 @@ class Info
 	 * @var array
 	 */
 	private static $entities = array(
-			array("faction", "SELECT factionID, factionID id FROM zz_factions WHERE name "),
-			array("faction", "SELECT factionID, factionID id FROM zz_factions WHERE ticker "),
+			array("faction", "SELECT factionID, factionID id FROM ccp_zfactions WHERE name "),
+			array("faction", "SELECT factionID, factionID id FROM ccp_zfactions WHERE ticker "),
 			array("alliance", "SELECT allianceID, allianceID id FROM zz_alliances WHERE name "),
 			array("alliance", "SELECT allianceID, allianceID id FROM zz_alliances WHERE ticker ", true),
 			array("corporation", "SELECT corporationID, corporationID id FROM zz_corporations WHERE name "),

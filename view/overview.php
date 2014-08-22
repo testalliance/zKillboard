@@ -191,7 +191,8 @@ $prevID = null;
 $nextID = null;
 if (in_array($key, array("character", "corporation", "alliance", "faction")))
 {
-	$table = "zz_${key}s";
+	if ($key == "faction") $table = "ccp_zfactions";
+	else $table = "zz_${key}s";
 	$column = "${key}ID";
 	$prevID = Db::queryField("select $column from $table where $column < :id order by $column desc limit 1", $column, array(":id" => $id), 300);
 	$nextID = Db::queryField("select $column from $table where $column > :id order by $column asc limit 1", $column, array(":id" => $id), 300);
