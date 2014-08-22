@@ -5,7 +5,11 @@
 
 {% block content %}
 <h2>404</h2>
-<div class="alert">The content you're after isn't here. Please go <a onClick="history.go(-1); this.preventDefault()" href="#">back</a> and try again, or use the mighty fine search at the top! ;)</div>
+<div class="alert alert-danger">The content you're after isn't here. Please go <a onClick="history.go(-1); this.preventDefault()" href="#">back</a> and try again, or use the mighty fine search at the top! ;)
+{% if message %}
+	<br/>{{ message }}
+{% endif %}
+</div>
 {% endblock %}
 
 {% block robots %}
