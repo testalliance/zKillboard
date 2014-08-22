@@ -5,7 +5,7 @@ CREATE TABLE `zz_characters` (
   `corporationID` int(16) NOT NULL DEFAULT '0',
   `allianceID` int(16) NOT NULL DEFAULT '0',
   `name` varchar(128) NOT NULL,
-  `lastUpdated` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `lastUpdated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`characterID`),
   KEY `name` (`name`),
   KEY `lastUpdated` (`lastUpdated`)
