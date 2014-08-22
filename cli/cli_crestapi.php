@@ -49,9 +49,9 @@ class cli_crestapi implements cliCommand
 		$db::execute("update zz_crest_killmail set processed = 0 where processed < -500");
 		do {
 			// Put priority on unknown kills first
-			$crests = $db->query("select c.* from zz_crest_killmail c left join zz_killmails k on (c.killID = k.killID) where c.processed = 0 and k.killID is null order by killID desc limit 30", array(), 0);
+			/*$crests = $db->query("select c.* from zz_crest_killmail c left join zz_killmails k on (c.killID = k.killID) where c.processed = 0 and k.killID is null order by killID desc limit 30", array(), 0);
 			// If no unknown kills, then check the rest
-			if (count($crests) == 0) $crests = $db->query("select * from zz_crest_killmail where processed = 0 order by killID limit 30", array(), 0);
+			if (count($crests) == 0)*/ $crests = $db->query("select * from zz_crest_killmail where processed = 0 order by killID desc limit 1", array(), 0);
 			foreach ($crests as $crest) {
 				try {
 					$now = $timer->stop();
@@ -99,14 +99,14 @@ class cli_crestapi implements cliCommand
 
 					// Write this file to eve-kill's parse directory
 					$xml = Util::xmlOut(array($killmail), array());
-					//Util::sendToEveKill("0_0_$killID.xml", $xml);
+					Util::sendToEveKill("0_0_$killID.xml", $xml);
 
 					if ($c > 0) $count++;
 					$diff = $timer->stop() - $now;
 					if ($diff < 100)
 					{
-						$sleepTime = 50 - $diff;
-						usleep(1000 * $sleepTime);
+						$sleepTime = 30 - $diff;
+						//usleep(1000 * $sleepTime);
 					}
 				} catch (Exception $ex) {
 					Log::log("CREST exception: $killID - " . $ex->getMessage());

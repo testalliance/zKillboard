@@ -40,7 +40,7 @@ class cli_crestHashGenerate implements cliCommand
 		$timer = new Timer();
 		while ($timer->stop() < 59000)
 		{
-			$kills = $db::query("select k.killID from zz_killmails k left join zz_crest_killmail c on (k.killID = c.killID) where k.processed > 0 and k.killID > 0 and c.killID is null limit 1000", array(), 0);
+			$kills = $db::query("select k.killID from zz_killmails k left join zz_crest_killmail c on (k.killID = c.killID) where k.processed > 0 and k.killID > 0 and c.killID is null order by k.killID limit 1000", array(), 0);
 			foreach($kills as $row)
 			{
 				$killID = $row["killID"];
