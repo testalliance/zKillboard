@@ -55,6 +55,9 @@ class cli_statsQueue implements cliCommand
 					$zkb = array();
 					$zkb["totalValue"] = $stuff["total_price"];
 					$zkb["points"] = $stuff["points"];
+					$hash = Db::queryField("select hash from zz_crest_killmail where killID = :killID and processed = 1", "hash", array(":killID" => $killID));
+					$zkb["source"] = $hash ? "CREST" : "API";
+					if ($hash) $zkb["hash"] = $hash;
 					$json["zkb"] = $zkb;
 
 					$raw = json_encode($json);
