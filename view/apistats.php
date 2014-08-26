@@ -46,7 +46,8 @@ $stat_totals  = Db::query('SELECT SUM(destroyed) AS countDestroyed, SUM(lost) AS
 $stat_details = Db::query('SELECT groupID, destroyed AS countDestroyed, lost AS countLost, pointsDestroyed, pointsLost, iskDestroyed, iskLost FROM ' . $stats_table . ' WHERE type = :type AND typeID = :id', array(':type' => $type, ':id' => $id));
 
 //build our output data
-$output['totals'] = $stat_totals[0];
+$output = array();
+if (isset($stat_totals[0]["countDestroyed"])) $output['totals'] = $stat_totals[0];
 foreach($stat_details as $detail) $output['groups'][array_shift($detail)] = $detail;
 
 // API check should always be ran last
