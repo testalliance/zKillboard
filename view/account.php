@@ -26,6 +26,7 @@ $key = "me";
 $error = "";
 
 $bannerUpdates = array();
+$aliasUpdates = array();
 
 if(isset($req))
 	$key = $req;
@@ -185,9 +186,12 @@ if($_POST)
 		UserConfig::set("ddmonthyear",$ddmonthyear);
 
 	$subdomain = Util::getPost("subdomain");
-	if ($subdomain) {
+	if ($subdomain) 
+	{
 		$banner = Util::getPost("banner");
+		$alias = Util::getPost("alias");
 		$bannerUpdates = array("$subdomain" => $banner);
+		if (strlen($alias) >= 6 && strlen($alias) <= 64) $aliasUpdates = array("$subdomain" => $alias);
 		// table is updated if user is ceo/executor in code thta loads this information below
 	}
 }
@@ -233,12 +237,29 @@ foreach ($domainChars as $domainChar) {
 		$subdomain = modifyTicker($domainChar["corpTicker"]) . ".$baseAddr";
 		if (isset($bannerUpdates[$subdomain])) {
 			$banner = $bannerUpdates[$subdomain];
+			
 			Db::execute("insert into zz_subdomains (subdomain, banner) values (:subdomain, :banner) on duplicate key update banner = :banner", array(":subdomain" => $subdomain, ":banner" => $banner));
-			$error = "Banner updated for $subdomain, please wait 2 minutes for the change to take effect.";
+			$error = "$subdomain has been updated, please wait up to 2 minutes for the changes to take effect.";
 		}
-		$corpStatus = Db::queryRow("select adfreeUntil, banner from zz_subdomains where subdomain = :subdomain", array(":subdomain" => $subdomain), 0);
+		if (isset($aliasUpdates[$subdomain])) 
+		{
+			$alias = $aliasUpdates[$subdomain];
+			// Make sure no one else has the alias
+			$count = Db::queryField("select count(*) count from zz_subdomains where alias = :alias and subdomain != :subdomain", "count", array(":subdomain" => $subdomain, ":alias" => $alias));
+			if ($count == 0)
+			{			
+				Db::execute("insert into zz_subdomains (subdomain, alias) values (:subdomain, :alias) on duplicate key update alias = :alias", array(":subdomain" => $subdomain, ":alias" => $alias));
+				$error = "$subdomain has been updated, please wait up to 2 minutes for the changes to take effect.";
+			} else
+			{
+				$error = "Sorry, someone has already taken the subdomain $alias";
+			}
+		}
+		
+		$corpStatus = Db::queryRow("select adfreeUntil, banner, alias from zz_subdomains where subdomain = :subdomain", array(":subdomain" => $subdomain), 0);
 		$domainChar["adfreeUntil"] = @$corpStatus["adfreeUntil"];
 		$domainChar["banner"] = @$corpStatus["banner"];
+		$domainChar["alias"] = @$corpStatus["alias"];
 		$corps[] = $domainChar;
 	}
 	if (@$domainChar["isExecutorCEO"]) {

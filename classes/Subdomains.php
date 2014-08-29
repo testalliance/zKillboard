@@ -26,6 +26,17 @@ class Subdomains
 	{
 		global $app, $twig, $baseAddr, $fullAddr;
 
+		// Are we looking at an aliased subdomain?
+		$alias = Db::queryField("select alias from zz_subdomains where subdomain = :serverName", "alias", array(":serverName" => $serverName), 60);
+		if ($alias)
+		{
+			header("Location: http://$alias") ;
+			exit();
+		}
+		if (strlen(str_replace(".$baseAddr", "", $serverName)) > 5) 
+		{
+			$serverName = Db::queryField("select subdomain from zz_subdomains where alias = :serverName", "subdomain", array(":serverName" => $serverName));
+		}
 		$adfree = Db::queryField("select count(*) count from zz_subdomains where adfreeUntil >= now() and subdomain = :serverName", "count", array(":serverName" => $serverName));
 
 		$board = str_replace(".$baseAddr", "", $serverName);
