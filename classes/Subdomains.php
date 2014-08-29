@@ -33,9 +33,14 @@ class Subdomains
 			header("Location: http://$alias") ;
 			exit();
 		}
-		if (strlen(str_replace(".$baseAddr", "", $serverName)) > 5) 
+		if ($serverName != $baseAddr && strlen(str_replace(".$baseAddr", "", $serverName)) > 5) 
 		{
 			$serverName = Db::queryField("select subdomain from zz_subdomains where alias = :serverName", "subdomain", array(":serverName" => $serverName));
+			if (strlen($serverName) == 0)
+			{
+				header("Location: http://$baseAddr") ;
+				exit();
+			}
 		}
 		$adfree = Db::queryField("select count(*) count from zz_subdomains where adfreeUntil >= now() and subdomain = :serverName", "count", array(":serverName" => $serverName));
 
