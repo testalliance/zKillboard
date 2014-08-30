@@ -54,8 +54,8 @@ class Util
 
 		if (static::is904Error()) 
 		{
-			Log::log("Aborting thread because of API 904");
-			exit();
+			if (php_sapi_name() == 'cli') exit();
+			return null; // Web requests shouldn't be hitting the API...
 		}
 
 		\Pheal\Core\Config::getInstance()->http_method = "curl";
