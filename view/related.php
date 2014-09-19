@@ -20,6 +20,7 @@ global $baseDir;
 
 $systemID = (int) $system;
 $relatedTime = (int) $time;
+$relatedTime = $time;
 
 $json_options = json_decode($options, true);
 if (!isset($json_options["A"])) $json_options["A"] = array();

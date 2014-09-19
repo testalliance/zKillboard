@@ -2,7 +2,7 @@
         {% set imageSize = 32 %}
         {% include 'components/image_corp.html' %}
 {% endif %}
-{% if shortLength is not defined %}{% set shortLength = 30%}{% endif %}
+{% if shortLength is not defined %}{% set shortLength = 24%}{% endif %}
 {% if field.executorCorpID and field.executorCorpName %}
 	<a href="/corporation/{{ field.executorCorpID }}/">{{ shortString(field.executorCorpName, shortLength) }}</a>
 {% else %}

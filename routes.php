@@ -34,6 +34,7 @@ $app->get("/information/(:page/)(:subPage/)", function($page = "about", $subPage
     include( "view/information.php" );
 });
 
+/*
 // Support
 $app->get("/livechat/", function() use ($app) {
 	include( "view/livechat.php" );
@@ -47,6 +48,7 @@ $app->map("/tickets/", function() use ($app) {
 $app->map("/tickets/view/:id/", function($id) use ($app) {
 	include( "view/tickets_view.php" );
 })->via("GET", "POST");
+*/
 
 // Campaigns
 $app->map("/campaign/:uri/", function($uri) use($app) {
@@ -147,10 +149,11 @@ $app->map("/changepassword/:hash/", function($hash) use ($app) {
 })->via("GET", "POST");
 
 // Register
-$app->map("/register/", function() use ($app) {
+/*$app->map("/register/", function() use ($app) {
     global $cookie_name, $cookie_time;
     include( "view/register.php" );
 })->via("GET", "POST");
+*/
 
 // Account
 $app->map("/account(/:req)(/:reqid)/", function($req = NULL, $reqid = NULL) use ($app) {
@@ -178,9 +181,11 @@ $app->get("/stacktrace/:hash/", function($hash) use ($app) {
     $app->render("/components/stacktrace.html", array("stacktrace" => $trace, "url" => $url));
 });
 
+/*
 $app->get("/comments/", function() use ($app) {
     $app->render("/comments.html");
 });
+*/
 
 // API
 $app->get("/api/stats/:flags+/", function($flags) use ($app) {
@@ -229,6 +234,7 @@ $app->get("/crestmail/:killID/:hash/", function($killID, $hash) use ($app) {
 	include("view/crestmail.php");
 });
 
+/*
 // War!
 $app->get("/war/:warID/", function($warID) use ($app) {
 	include("view/war.php");
@@ -236,6 +242,7 @@ $app->get("/war/:warID/", function($warID) use ($app) {
 $app->get("/wars/", function() use ($app) {
 	include("view/wars.php");
 });
+*/
 
 // The Overview stuff
 $app->get("/:input+/", function($input) use ($app) {

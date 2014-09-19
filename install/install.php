@@ -19,6 +19,7 @@ if(php_sapi_name() != "cli")
     die("This is a cli script!");
 
 $base = dirname(__FILE__);
+require_once('password.php');
 
 function exception_error_handler($errno, $errstr, $errfile, $errline )
 {

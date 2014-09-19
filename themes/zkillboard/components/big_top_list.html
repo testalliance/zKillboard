@@ -21,10 +21,7 @@
 		{% else %}
 		  {% include 'components/text_corp.html' %} </td>
 		{% endif %}<br/></span>
-		<h6>{{ formatIsk(data.info.total_price) }} ISK
-          {% if disqusLoad %}
-            <a class="hidden-xs" href="/kill/{{ data.info.killID }}/#comments" data-disqus-identifier="{{ data.info.commentID }}" rel="tooltip" title="Comments"></a>
-          {% endif %}</h6>
+		<h6>{{ formatIsk(data.info.total_price) }} ISK</h6>
 	  <br/>
   </div>
 {% endfor %}

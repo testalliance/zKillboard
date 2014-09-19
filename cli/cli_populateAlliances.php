@@ -43,7 +43,7 @@ class cli_populateAlliances implements cliCommand
 	private static function populateAlliances($db)
 	{
 		if (Util::is904Error()) return;
-		//CLI::out("Repopulating the alliance table");
+		CLI::out("Repopulating the alliance table");
 		Log::log("Repopulating alliance tables.");
 		$allianceCount = 0;
 		$corporationCount = 0;
@@ -61,6 +61,7 @@ class cli_populateAlliances implements cliCommand
 			$db->execute("update zz_alliances set memberCount = 0");
 			$db->execute("update zz_corporations set allianceID = 0");
 			foreach ($list->alliances as $alliance) {
+				print(".");
 				$allianceCount++;
 				$allianceID = $alliance['allianceID'];
 				$shortName = $alliance['shortName'];
@@ -80,13 +81,14 @@ class cli_populateAlliances implements cliCommand
 							array(":alliID" => $allianceID, ":corpID" => $corpID));
 				}
 			}
+			print("\n");
 
 			$allianceCount = number_format($allianceCount, 0);
 			$corporationCount = number_format($corporationCount, 0);
-			//CLI::out("Alliance tables repopulated - $allianceCount active Alliances with a total of $corporationCount Corporations");
+			CLI::out("Alliance tables repopulated - $allianceCount active Alliances with a total of $corporationCount Corporations");
 			Log::log("Alliance tables repopulated - $allianceCount active Alliances with a total of $corporationCount Corporations");
 		} else {
-			//CLI::out("Unable to pull Alliance XML from API.  Will try again later.");
+			CLI::out("Unable to pull Alliance XML from API.  Will try again later.");
 			Log::log("Unable to pull Alliance XML from API.  Will try again later.");
 			if ($exception != null) throw $exception;
 			throw new Exception("Unable to pull Alliance XML from API.  Will try again later");

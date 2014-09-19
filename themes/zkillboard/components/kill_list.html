@@ -45,9 +45,6 @@
           {% else %}
             {{ kill.info.killTime|slice(10) }}
           {% endif %}
-          {% if disqusLoad %}
-            <small><a href="/kill/{{ kill.info.killID }}/#comments" data-disqus-identifier="{{ kill.info.commentID }}" rel="tooltip" title="Comments"></a></small>
-          {% endif %}
           <br/><a href="/kill/{{ kill.info.killID }}/">{{ formatIsk(kill.info.total_price) }}</a>
         </td>
         <td class="icon hidden-xs" style="text-align: center; vertical-align: middle;">
