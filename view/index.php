@@ -46,7 +46,8 @@ if ($serverName != $baseAddr) {
 	$top[] = Info::doMakeCommon("Top Systems", "solarSystemID", Stats::getTopSystems($p));
 
 	$p["limit"] = 5;
-	$topIsk = Stats::getTopIsk($p);
+	$ids = array(498125261,99003384);
+	$hallOfShame = Stats::getTopIsk(array("losses" => true, "pastSeconds" => (14*86400), "limit" => 5, "allianceID" => $ids));
 	unset($p["pastSeconds"]);
 	unset($p["kills"]);
 
@@ -67,7 +68,8 @@ if ($serverName != $baseAddr) {
 	$pageType = "subdomain";
 } else {
 	$topPoints = array();
-	$topIsk = json_decode(Storage::retrieve("TopIsk"), true);
+	$ids = array(498125261,99003384);
+	$hallOfShame = Stats::getTopIsk(array("losses" => true, "pastSeconds" => (14*86400), "limit" => 5, "allianceID" => $ids));
 	$topPods = json_decode(Storage::retrieve("TopPods"), true);
 	$topPointList = json_decode(Storage::retrieve("TopPoints"), true);
 
@@ -85,4 +87,4 @@ if ($serverName != $baseAddr) {
 	$kills = Kills::getKills(array("limit" => $killsLimit));
 }
 
-$app->render("index.html", array("topPods" => $topPods, "topIsk" => $topIsk, "topPoints" => $topPoints, "topKillers" => $top, "kills" => $kills, "page" => $page, "pageType" => $pageType, "pager" => true, "pageTitle" => $pageTitle));
+$app->render("index.html", array("topPods" => $topPods, "hallOfShame" => $hallOfShame, "topPoints" => $topPoints, "topKillers" => $top, "kills" => $kills, "page" => $page, "pageType" => $pageType, "pager" => true, "pageTitle" => $pageTitle));
